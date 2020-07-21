@@ -1,0 +1,28 @@
+﻿@model FishBusiness.Models.BoatType
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="page-header m-3">
+    <div class="page-title">
+        <h3 class="mr-2">تعديل نوع المركب </h3>
+    </div>
+</div>
+<div class="container mt-3 col-6">
+    <form asp-action="Edit">
+        <div class="form-group mb-3">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="TypeID" />
+            <label asp-for="TypeName" class="text-black font-weight-bold ">نوع المركب</label>
+            <input asp-for="TypeName" class="form-control" aria-describedby="emailHelp1" placeholder="نوع المركب">
+            <span asp-validation-for="TypeName" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3 ml-auto">حفظ</button>
+        <a asp-action="Index" class="btn btn-secondary mt-3">عوده الي القائمة</a>
+    </form>
+</div>
+
+
+

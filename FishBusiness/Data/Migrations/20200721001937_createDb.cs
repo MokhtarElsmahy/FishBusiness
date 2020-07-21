@@ -224,13 +224,13 @@ namespace FishBusiness.Data.Migrations
                         column: x => x.BoatID,
                         principalTable: "Boats",
                         principalColumn: "BoatID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_BoatOwnerReciepts_Sarhas_SarhaID",
                         column: x => x.SarhaID,
                         principalTable: "Sarhas",
                         principalColumn: "SarhaID",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(

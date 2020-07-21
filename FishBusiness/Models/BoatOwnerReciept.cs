@@ -19,6 +19,7 @@ namespace FishBusiness.Models
 
         [ForeignKey("Sarha")]
         public int SarhaID { get; set; }
+        [Required]
         public virtual Sarha Sarha { get; set; }
 
 

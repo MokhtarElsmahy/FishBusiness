@@ -18,6 +18,8 @@ namespace FishBusiness
         {
             modelBuilder.Entity<Debts_Sarha>()
                 .HasKey(c => new { c.DebtID, c.SarhaID });
+
+           
             base.OnModelCreating(modelBuilder);
             //modelBuilder.Entity<Debt>()
             //    .HasMany(c => c.Debts_Sarhas)
@@ -29,7 +31,7 @@ namespace FishBusiness
             //    .WithRequired()
             //    .HasForeignKey(c => c.MediaId);
         }
-
+    
         public virtual DbSet<Boat> Boats { get; set; }
         public virtual DbSet<BoatOwnerItem> BoatOwnerItems { get; set; }
         public virtual DbSet<BoatOwnerReciept> BoatOwnerReciepts { get; set; }

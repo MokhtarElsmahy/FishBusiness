@@ -1,16 +1,27 @@
 
+@import url('https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i');
+@import url('https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i');
+@import url(https://fonts.googleapis.com/earlyaccess/droidarabickufi.css);
+
 html { min-height: 100%; direction: rtl; }
+* {
+    font-family: 'Droid Arabic Kufi';
+}
 body {
     color: #888ea8;
     height: 100%;
     font-size: 0.875rem;
+    font-family: 'Droid Arabic Kufi';
     background: #f1f2f3;
     overflow-x: hidden;
     overflow-y: auto;
     letter-spacing: 0.0312rem;
     font-family: 'Quicksand', sans-serif;
 }
-h1, h2, h3, h4, h5, h6 { color: #3b3f5c; }
+h1, h2, h3, h4, h5, h6 {
+    color: #3b3f5c;
+    font-family: 'Droid Arabic Kufi';
+}
 :focus { outline: none; }
 ::-moz-selection { /* Code for Firefox */
   color: #1b55e2;
@@ -20,7 +31,12 @@ h1, h2, h3, h4, h5, h6 { color: #3b3f5c; }
   color: #1b55e2;
   background: transparent;
 }
-p { margin-top: 0; margin-bottom: 0.625rem; color: #515365 }
+p {
+    margin-top: 0;
+    margin-bottom: 0.625rem;
+    color: #515365;
+    font-family: 'Droid Arabic Kufi';
+}
 hr {
     margin-top: 20px;
     margin-bottom: 20px;
@@ -148,6 +164,7 @@ blockquote.media-object .media .usr-img img {
 a {
     color: #515365;
     outline: none;
+    font-family: 'Droid Arabic Kufi';
 }
 a:hover {
     color: #555555;

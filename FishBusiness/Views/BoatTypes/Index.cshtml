@@ -1,0 +1,70 @@
+﻿@model IEnumerable<FishBusiness.Models.BoatType>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="layout-px-spacing">
+    <div class="container row">
+        <div class="page-header m-3">
+            <div class="page-title">
+                <h3>ادارة انواع المراكب</h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <a asp-action="Create" class="btn btn-primary">اضافة نوع جديد</a>
+        </div>
+    </div>
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <div class="table-responsive mb-4 mt-4">
+                    <table id="default-ordering" class="table table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>
+                                    نوع المركب
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Any())
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.TypeName)
+                                        </td>
+                                        <td>
+                                            <a asp-action="Edit" class="btn btn-success" asp-route-id="@item.TypeID">تعديل</a> |
+                                            <a asp-action="Delete" class="btn btn-danger" onclick="return confirm('هل انت متأكد من عملية الحذف ؟ ')" asp-route-id="@item.TypeID">حذف</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td></td>
+                                    <td class="font-weight-bolder">
+                                        لا توجد انواع مسجلة
+                                    </td>
+                                </tr>
+                            }
+
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+

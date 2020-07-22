@@ -1,0 +1,24 @@
+﻿@model FishBusiness.Models.ProductionType
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="page-header m-3">
+    <div class="page-title">
+        <h3 class="mr-2">اضافة نوع الانتاج</h3>
+    </div>
+</div>
+<div class="container mt-3 col-6    ">
+    <form asp-action="Create">
+        <div class="form-group mb-3">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <label asp-for="ProductionName" class="text-black font-weight-bold ">نوع الانتاج</label>
+            <input asp-for="ProductionName" class="form-control" aria-describedby="emailHelp1" placeholder="نوع الانتاج">
+            <span asp-validation-for="ProductionName" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary  mt-3 ml-auto">حفظ</button>
+        <a asp-action="Index" class="btn btn-secondary  mt-3">عوده الي القائمة</a>
+    </form>
+</div>
+

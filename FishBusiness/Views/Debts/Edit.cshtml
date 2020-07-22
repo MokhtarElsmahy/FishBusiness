@@ -1,0 +1,25 @@
+﻿@model FishBusiness.Models.Debt
+
+@{
+    ViewData["Title"] = "Create";
+}
+<div class="page-header m-3">
+    <div class="page-title">
+        <h3 class="mr-2">اضافة نوع مركب جديد</h3>
+    </div>
+</div>
+<div class="container mt-3 col-6">
+    <form asp-action="Edit">
+        <div class="form-group mb-3">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="DebtID" />
+            <label asp-for="DebtName" class="text-black font-weight-bold ">نوع هالك</label>
+            <input asp-for="DebtName" class="form-control" aria-describedby="emailHelp1" placeholder="نوع الهالك">
+            <span asp-validation-for="DebtName" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3 ml-auto">حفظ</button>
+        <a asp-action="Index" class="btn btn-secondary mt-3">عوده الي القائمة</a>
+    </form>
+</div>
+

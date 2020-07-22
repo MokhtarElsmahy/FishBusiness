@@ -42,7 +42,7 @@ namespace FishBusiness.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(boatType);
+                _context.BoatTypes.Add(boatType);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

@@ -1,0 +1,25 @@
+﻿@model FishBusiness.Models.Fish
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="page-header m-3">
+    <div class="page-title">
+        <h3 class="mr-2">اضافة نوع سمك جديد</h3>
+    </div>
+</div>
+<div class="container mt-3 col-6">
+    <form asp-action="Edit">
+        <div class="form-group mb-3">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="FishID" />
+            <label asp-for="FishName" class="text-black font-weight-bold ">نوع السمك</label>
+            <input asp-for="FishName" class="form-control" aria-describedby="emailHelp1" placeholder="نوع السمك">
+            <span asp-validation-for="FishName" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3 ml-auto">حفظ</button>
+        <a asp-action="Index" class="btn btn-secondary mt-3">عوده الي القائمة</a>
+    </form>
+</div>
+

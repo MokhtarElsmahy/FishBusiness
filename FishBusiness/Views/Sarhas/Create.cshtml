@@ -145,10 +145,12 @@ $("selector").steps({
                 "add": function (val) {
                     //Add to the items.
                     items.push(val);
+                    var date = new Date();
+                    date.setTime(date.getTime() + (15 * 1000));
                     //Save the items to a cookie.
                     //EDIT: Modified from linked answer by Nick see
                     //      http://stackoverflow.com/questions/3387251/how-to-store-array-in-jquery-cookie
-                    $.cookie(cookieName, items.join(','));
+                    $.cookie(cookieName, items.join(','), { expires: date });
                 },
                 "remove": function (val) {
                     //EDIT: Thx to Assef and luke for remove.

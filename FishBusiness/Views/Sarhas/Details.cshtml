@@ -1,0 +1,192 @@
+﻿@model FishBusiness.Models.Sarha
+
+@{
+    ViewData["Title"] = "Details";
+}
+@section Styles{
+    <link href="~/assets/css/dashboard/dash_2.css" rel="stylesheet" type="text/css" class="dashboard-sales" />
+}
+<div class="layout-px-spacing">
+
+    <div class="container row">
+        <div class="page-header m-3">
+            <div class="page-title">
+                <h3>تفاصيل السرحة</h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <a asp-action="Index" class="btn btn-primary">العودة الي القائمة</a>
+        </div>
+    </div>
+
+    <div class="row layout-top-spacing">
+        <div class="col-xl-5 col-lg-12 col-md-6 col-sm-12 col-12 layout-spacing">
+            <div class="widget widget-table-one">
+                <div class="widget-heading">
+                    <h5 class="">بيانات السرحة</h5>
+                </div>
+
+                <div class="widget-content">
+                    <div class="transactions-list">
+                        <div class="t-item">
+                            <div class="t-company-name">
+                                <div class="t-icon">
+                                    <div class="icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                                    </div>
+                                </div>
+                                <div class="t-name">
+                                    <h4>
+                                        رقم السرحة
+                                    </h4>
+                                </div>
+
+                            </div>
+                            <div class="t-rate rate-dec">
+                                <p>
+                                    <span>
+                                        @Html.DisplayFor(model => model.SarhaID)
+                                    </span> </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="transactions-list">
+                        <div class="t-item">
+                            <div class="t-company-name">
+                                <div class="t-icon">
+                                    <div class="icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                                    </div>
+                                </div>
+                                <div class="t-name">
+                                    <h4>
+                                        @Html.DisplayNameFor(model => model.Boat.BoatName)
+                                    </h4>
+                                </div>
+
+                            </div>
+                            <div class="t-rate rate-dec">
+                                <p>
+                                    <span>
+                                        @Html.DisplayFor(model => model.Boat.BoatName)
+                                    </span> </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="transactions-list">
+                        <div class="t-item">
+                            <div class="t-company-name">
+                                <div class="t-icon">
+                                    <div class="icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                    </div>
+                                </div>
+                                <div class="t-name">
+                                    <h4>
+                                        @Html.DisplayNameFor(model => model.NumberOfFishermen)
+                                    </h4>
+                                </div>
+
+                            </div>
+                            <div class="t-rate rate-dec">
+                                <p>
+                                    <span>
+                                        @Html.DisplayFor(model => model.NumberOfFishermen)
+                                    </span> 
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="transactions-list">
+                        <div class="t-item">
+                            <div class="t-company-name">
+                                <div class="t-icon">
+                                    <div class="icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                                    </div>
+                                </div>
+                                <div class="t-name">
+                                    <h4>
+                                        @Html.DisplayNameFor(model => model.NumberOfBoxes)
+                                    </h4>
+                                </div>
+
+                            </div>
+                            <div class="t-rate rate-dec">
+                                <p>
+                                    <span>
+                                        @Html.DisplayFor(model => model.NumberOfBoxes)
+                                    </span> </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="transactions-list">
+                        <div class="t-item">
+                            <div class="t-company-name">
+                                <div class="t-icon">
+                                    <div class="icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>                                    </div>
+                                </div>
+                                <div class="t-name">
+                                    <h4>
+                                        @Html.DisplayNameFor(model => model.DateOfSarha)
+                                    </h4>
+                                </div>
+
+                            </div>
+                            <div class="t-rate rate-dec">
+                                <p>
+                                    <span>
+                                        @Html.DisplayFor(model => model.DateOfSarha)
+                                    </span> </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 col-12 layout-spacing">
+
+            <div class="widget widget-account-invoice-one">
+
+                <div class="widget-heading">
+                    <h5 class="">تفاصيل الهالك</h5>
+                </div>
+
+                <div class="widget-content">
+                    <div class="invoice-box">
+
+                        <div class="acc-total-info">
+                            <h5>الاجمالي</h5>
+                            <p class="acc-amount">@ViewBag.Total جنيه مصري</p>
+                        </div>
+
+                        <div class="inv-detail">
+                            @foreach (var item in ViewBag.depts as IEnumerable<FishBusiness.Models.Debts_Sarha>)
+                            {
+                                <div class="info-detail-1">
+                                    <p>@item.Debt.DebtName</p>
+                                    <p>@item.Price</p>
+                                </div>
+                            }
+
+                        </div>
+
+                        
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+    </div>
+
+</div>
+
+
+

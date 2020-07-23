@@ -100,7 +100,7 @@ namespace FishBusiness.Controllers
             }
 
             var sarha = await _context.Sarhas.FindAsync(id);
-            var dept_sarha =  _context.Debts_Sarhas.Where(x=>x.SarhaID==id);
+            var dept_sarha =  _context.Debts_Sarhas.Where(x=>x.SarhaID==id).Include(x=>x.Debt);
             if (sarha == null)
             {
                 return NotFound();

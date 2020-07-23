@@ -59,7 +59,7 @@ namespace FishBusiness.Controllers
                     BoatLeader = model.BoatLeader,
                     BoatLicenseNumber = model.BoatLicenseNumber,
                     DebtsOfHalek = model.DebtsOfHalek,
-                    DebtsOfMulfunction = model.DebtsOfMulfunction,
+                   // DebtsOfMulfunction = model.DebtsOfMulfunction,
                     BoatNumber = model.BoatNumber,
                     DebtsOfStartingWork = model.DebtsOfStartingWork
                 };
@@ -117,7 +117,7 @@ namespace FishBusiness.Controllers
                 BoatLeader = model.BoatLeader,
                 BoatLicenseNumber = model.BoatLicenseNumber,
                 DebtsOfHalek = model.DebtsOfHalek,
-                DebtsOfMulfunction = model.DebtsOfMulfunction,
+               // DebtsOfMulfunction = model.DebtsOfMulfunction,
                 BoatNumber = model.BoatNumber,
                 DebtsOfStartingWork = model.DebtsOfStartingWork,
                 
@@ -153,7 +153,7 @@ namespace FishBusiness.Controllers
                     BoatLeader = model.BoatLeader,
                     BoatLicenseNumber = model.BoatLicenseNumber,
                     DebtsOfHalek = model.DebtsOfHalek,
-                    DebtsOfMulfunction = model.DebtsOfMulfunction,
+                   // DebtsOfMulfunction = model.DebtsOfMulfunction,
                     BoatNumber = model.BoatNumber,
                     DebtsOfStartingWork = model.DebtsOfStartingWork
                 };

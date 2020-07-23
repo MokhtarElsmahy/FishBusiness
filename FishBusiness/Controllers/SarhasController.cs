@@ -66,11 +66,14 @@ namespace FishBusiness.Controllers
         {
             if (ModelState.IsValid)
             {
+               
                 _context.Add(sarha);
                 await _context.SaveChangesAsync();
                 var latestSarha = _context.Sarhas.Max(x => x.SarhaID);
+
                 var deptPriceCookie = Request.Cookies["MyItems"];
                 decimal[] result = deptPriceCookie.Split(",".ToCharArray()).Select(c => Convert.ToDecimal(c)).ToArray();
+                // decimal[] result = deptPriceCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
                 int i = 0;
                 foreach (var item in _context.Debts.ToList())
                 {

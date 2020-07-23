@@ -62,15 +62,18 @@ namespace FishBusiness.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(SarhaViewModel sarhaViewModel)
+        public async Task<IActionResult> Create([Bind("SarhaID,BoatID,NumberOfFishermen,NumberOfBoxes,DateOfSarha")] Sarha sarha)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(sarhaViewModel.Sarha);
+               
+                _context.Add(sarha);
                 await _context.SaveChangesAsync();
                 var latestSarha = _context.Sarhas.Max(x => x.SarhaID);
+
                 var deptPriceCookie = Request.Cookies["MyItems"];
                 decimal[] result = deptPriceCookie.Split(",".ToCharArray()).Select(c => Convert.ToDecimal(c)).ToArray();
+                // decimal[] result = deptPriceCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
                 int i = 0;
                 foreach (var item in _context.Debts.ToList())
                 {
@@ -84,14 +87,11 @@ namespace FishBusiness.Controllers
                     await _context.SaveChangesAsync();
                     i++;
                 }
-                var boat = _context.Boats.Find(sarhaViewModel.Sarha.BoatID);
-                boat.DebtsOfHalek += result.Sum();
-                await _context.SaveChangesAsync();
                 Response.Cookies.Delete("MyItems");
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.Boats = new SelectList(_context.Boats, "BoatID", "BoatName", sarhaViewModel.Sarha.BoatID);
-            return View(sarhaViewModel.Sarha);
+            ViewBag.Boats = new SelectList(_context.Boats, "BoatID", "BoatName", sarha.BoatID);
+            return View(sarha);
         }
 
         // GET: Sarhas/Edit/5
@@ -114,10 +114,6 @@ namespace FishBusiness.Controllers
                 Debts_Sarha = dept_sarha
             };
             ViewBag.Boats = new SelectList(_context.Boats, "BoatID", "BoatName", sarha.BoatID);
-            var boat = _context.Boats.Find(sarha.BoatID);
-            var Halek = _context.Debts_Sarhas.Where(x => x.SarhaID == id).Sum(x => x.Price);
-            boat.DebtsOfHalek -= Halek;
-            await _context.SaveChangesAsync();
             return View(sarhaViewModel);
         }
 
@@ -147,10 +143,8 @@ namespace FishBusiness.Controllers
                         item.Price = result[i];
                         i++;
                     }
-                    Response.Cookies.Delete("MyItems");
-                    var boat = _context.Boats.Find(sarhaViewModel.Sarha.BoatID);
-                    boat.DebtsOfHalek += result.Sum();
                     await _context.SaveChangesAsync();
+                    Response.Cookies.Delete("MyItems");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -185,9 +179,6 @@ namespace FishBusiness.Controllers
                 return NotFound();
             }
             _context.Sarhas.Remove(sarha);
-            var boat = _context.Boats.Find(sarha.BoatID);
-            var Halek = _context.Debts_Sarhas.Where(x => x.SarhaID == id).Sum(x => x.Price);
-            boat.DebtsOfHalek -= Halek;
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

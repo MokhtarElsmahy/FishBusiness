@@ -41,6 +41,9 @@ namespace FishBusiness.Models
         public decimal TotalAfterPaying { get; set; }
 
 
+        [Display(Name = "ايراد السرحة")]
+        public decimal FinalIncome { get; set; }
+
         public virtual ICollection<BoatOwnerItem> BoatOwnerItems { get; set; }
 
 

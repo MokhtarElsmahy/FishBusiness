@@ -25,8 +25,11 @@ namespace FishBusiness.Models
         [Display(Name = "ديون الهالك")]
         public decimal DebtsOfHalek { get; set; }
 
-        [Display(Name = "ديون اعطال")]
-        public decimal DebtsOfMulfunction { get; set; }
+        //[Display(Name = "ديون اعطال")]
+        //public decimal DebtsOfMulfunction { get; set; }
+
+        [Display(Name = "ايراد المركب الشريك")]
+        public decimal IncomeOfSharedBoat { get; set; }
 
         [Display(Name = "ديون الشغل")]
         public decimal DebtsOfStartingWork { get; set; }
@@ -49,6 +52,8 @@ namespace FishBusiness.Models
         public virtual ICollection<BoatOwnerReciept> BoatOwnerReciepts { get; set; }
         public virtual ICollection<MerchantRecieptItem> MerchantRecieptItems { get; set; }
         public virtual ICollection<Sarha> Sarhas { get; set; }
+        public virtual ICollection<Expense> Expenses { get; set; }
+        public virtual ICollection<SharedBoatsIncome> SharedBoatsIncomes { get; set; }
 
 
 

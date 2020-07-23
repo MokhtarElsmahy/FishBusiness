@@ -46,6 +46,9 @@ namespace FishBusiness
         public virtual DbSet<MerchantRecieptItem> MerchantRecieptItems { get; set; }
         public virtual DbSet<ProductionType> ProductionTypes { get; set; }
         public virtual DbSet<Sarha> Sarhas { get; set; }
+        public virtual DbSet<SharedBoatsIncome> SharedBoatsIncomes { get; set; }
+        
+        public virtual DbSet<Expense> Expenses { get; set; }
 
 
     }

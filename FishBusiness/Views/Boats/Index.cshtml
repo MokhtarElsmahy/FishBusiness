@@ -1,8 +1,7 @@
-﻿@model IEnumerable<FishBusiness.Models.Fish>
+﻿@model IEnumerable<FishBusiness.Models.Boat>
 @{
     ViewData["Title"] = "Index";
 }
-
 
 @section Styles{
     <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/datatables.css">
@@ -10,21 +9,14 @@
 
 }
 <div class="layout-px-spacing">
-
-    @*<div class="page-header">
-            <div class="page-title">
-                <h3>المراكب</h3>
-            </div>
-        </div>*@
-
     <div class="container row">
         <div class="page-header m-3">
             <div class="page-title">
-                <h3>ادارة الاسماك</h3>
+                <h3>ادارة المراكب</h3>
             </div>
         </div>
         <div class="mt-4 ml-auto">
-            <a asp-action="Create" class="btn btn-primary">اضافة نوع جديد</a>
+            <a asp-action="Create" class="btn btn-primary">اضافة مركب جديد</a>
         </div>
     </div>
 
@@ -36,7 +28,9 @@
                     <table id="zero-config" class="table table-hover" style="width:100%">
                         <thead>
                             <tr>
-                                <th>نوع السمك</th>
+                                <th>رقم المركب</th>
+                                <th>اسم المركب</th>
+                                <th>ريس المركب</th>
                                 <th></th>
 
 
@@ -45,19 +39,20 @@
                         <tbody>
                             @if (Model.Any())
                             {
-                                @foreach (var fish in Model)
+                                @foreach (var boat in Model)
                                 {
                                     <tr>
-                                        <td>@fish.FishName</td>
-                                      
+                                        <td>@boat.BoatNumber</td>
+                                        <td>@boat.BoatName</td>
+                                        <td>@boat.BoatLeader</td>
                                         <td>
 
-                                            <a asp-action="Edit" asp-route-id="@fish.FishID" class="btn btn-success mb-2">تعديل</a>
-                                            
-                                            <a asp-action="Delete" onclick="return confirm('هل انت متأكد من عملية الحذف ؟ ')" asp-route-id="@fish.FishID" class="btn btn-danger mb-2">حذف</a>
+                                            <a asp-action="Edit" asp-route-id="@boat.BoatID" class="btn btn-success mb-2">تعديل</a>
+                                            <a href="#" onclick="Details(@boat.BoatID)" class="btn btn-info mb-2">تفاصيل</a>
+                                            <a asp-action="Delete" onclick="return confirm('هل انت متأكد من عملية الحذف ؟ ')" asp-route-id="@boat.BoatID" class="btn btn-danger mb-2">حذف</a>
 
                                         </td>
-                                        @*<td><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle table-cancel"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></td>*@
+                                        
                                     </tr>
                                 }
 
@@ -66,7 +61,7 @@
                             {
                                 <tr>
 
-                                    <td class="font-weight-bolder">لا توجد اسماك مسجلة</td>
+                                    <td class="font-weight-bolder">لا توجد مراكب</td>
 
                                     @*<td><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle table-cancel"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></td>*@
                                 </tr>
@@ -74,7 +69,7 @@
 
 
                         </tbody>
-                   
+                     
                     </table>
                 </div>
             </div>
@@ -91,3 +86,52 @@
         <p class="">Coded with <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></p>
     </div>
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @*<div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                ddddddddddddddddd
+            </div>*@
+            <div class="modal-body" id="ModalBodyDiv2">
+               
+                <hr>
+                <center>
+                  
+                </center>
+            </div>
+            <div class="modal-footer">
+              
+                    <button type="button" class="btn btn-default" data-dismiss="modal">اغلاق</button> 
+               
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+
+        })
+        var Details = function (id) {
+            var url = "/Boats/Details?id=" + id;
+            $("#ModalBodyDiv2").load(url, function () {
+                $("#myModal").modal("show");
+            })
+           
+
+        }
+    </script>
+
+}

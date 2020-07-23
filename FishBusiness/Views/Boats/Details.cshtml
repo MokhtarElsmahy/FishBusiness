@@ -1,0 +1,19 @@
+﻿@model FishBusiness.Models.Boat
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+    <center>
+        <img src="~/img/@Model.BoatImage" name="aboutme" width="140" height="140" border="0" class="img-circle"></a>
+        <h3 class="media-heading">مركب : @Model.BoatName</h3>
+        <h4 class="media-heading">الريس : @Model.BoatLeader</h4>
+        <span><strong>بيانات المركب</strong></span><br />
+     
+    </center>
+    <div>
+        <span class="text-danger">هالك : @Model.DebtsOfHalek</span><br />
+        <span class="text-danger">اعطال : @Model.DebtsOfMulfunction </span><br />
+        <span class="text-danger">دين العمل : @Model.DebtsOfStartingWork</span><br />
+        <span class="text-info">الرخصة : @Model.BoatLicenseNumber </span><br />
+        <span class="text-info">رقم المركب : @Model.BoatNumber </span><br />
+        <span class="text-info">نوع المركب : @Model.BoatType.TypeName </span><br />
+    </div>

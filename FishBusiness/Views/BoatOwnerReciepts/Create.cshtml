@@ -1,58 +1,320 @@
-﻿@model FishBusiness.Models.BoatOwnerReciept
+﻿@model FishBusiness.ViewModels.BoatReceiptViewModel
 
 @{
     ViewData["Title"] = "Create";
 }
+@section Styles {
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <link href="~/plugins/animate/animate.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/components/custom-modal.css" rel="stylesheet" type="text/css" />
+    <!--  END CUSTOM STYLE FILE  -->
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link href="~/assets/css/apps/scrumboard.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/forms/theme-checkbox-radio.css" rel="stylesheet" type="text/css">
+    <!-- END PAGE LEVEL STYLES -->
+}
+<div class="layout-px-spacing">
 
-<h1>Create</h1>
+    <div class="container row mb-0">
+        <div class="page-header m-3 ">
+            <div class="page-title">
+                <h3>اضافة فاتورة جديدة</h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <a asp-action="Index" class="btn btn-primary">قائمة الفواتير</a>
+        </div>
+    </div>
 
-<h4>BoatOwnerReciept</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="BoatID" class="control-label"></label>
-                <select asp-for="BoatID" class ="form-control" asp-items="ViewBag.BoatID"></select>
+    <div class="action-btn layout-top-spacing mb-1 mt-1">
+        @*<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Boards</p>
+            <button id="add-list" class="btn btn-primary">Add List</button>*@
+    </div>
+    <div class="row scrumboard" id="cancel-row">
+
+        <div class="col-lg-4 layout-spacing">
+            <form asp-action="Create" id="Addform">
+                <div class="task-list-section">
+
+                    <div data-section="s-new" class="task-list-container" data-connect="sorting">
+                        <div class="connect-sorting">
+                            <div class="task-container-header">
+                                <h6 class="s-heading" data-listTitle="In Progress">اضافة تفاصيل الفاتورة</h6>
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink-1">
+                                        <a class="dropdown-item list-edit" href="javascript:void(0);">Edit</a>
+                                        <a class="dropdown-item list-delete" href="javascript:void(0);">Delete</a>
+                                        <a class="dropdown-item list-clear-all" href="javascript:void(0);">Clear All</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="connect-sorting-content" data-sortable="true">
+
+
+                                <div data-draggable="true" class="card simple-title-task" style="">
+                                    <div class="card-body">
+
+                                        <div class="task-header">
+                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                            <div class="form-group">
+                                                <label asp-for="BoatOwnerReciept.Boat.BoatName" class="control-label"></label>
+                                                <select asp-for="BoatOwnerReciept.BoatID" class="form-control" asp-items="ViewBag.BoatID"></select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div data-draggable="true" class="card simple-title-task" style="">
+                                    <div class="card-body">
+
+                                        <div class="task-header">
+                                            <div class="form-group">
+                                                <label asp-for="BoatOwnerReciept.Date" class="control-label"></label>
+                                                <input asp-for="BoatOwnerReciept.Date" class="form-control" />
+                                                <span asp-validation-for="BoatOwnerReciept.Date" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="add-s-task">
+                                <a class="addTask" data-toggle="modal" data-target="#fadeleftModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg> اضافة انواع الاسماك</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </form>
+        </div>
+        <div class="col-xl-8 col-lg-8 col-sm-8  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <div class="table-responsive mb-4 ">
+                    <table class="table table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.BoatOwnerItem.Fish.FishName)
+                                </th>
+                                <th>
+                                    نوع الانتاج
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.BoatOwnerItem.Qty)
+                                </th>
+
+                                <th>
+                                    @Html.DisplayNameFor(model => model.BoatOwnerItem.UnitPrice)
+                                </th>
+
+                                <th>اجمالي</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="total text-info">اجمالي الفاتورة</td>
+                                <td class="total" id="TotalBeforePayment">0</td>
+                                <td class="total text-info"> العمولة</td>
+                                <td class="total" id="commision">0</td>
+
+                            </tr>
+                            <tr class="total">
+                                <td>المدفوع من الهالك</td>
+                                <td colspan="2">
+                                    <div class="form-group">
+                                        <input asp-for="BoatOwnerReciept.PaidFromDebts" class="form-control" />
+                                        <span asp-validation-for="BoatOwnerReciept.PaidFromDebts" class="text-danger"></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="btn btn-secondary" id="btnCalc">تأكيد</button>
+                                </td>
+                            </tr>
+                            <tr class="total">
+                                <td class="text-info">صافي انتاج المركب</td>
+                                <td id="TotalProduction"></td>
+                                <td></td>
+                                <td>
+                                    <button type="submit" form="Addform" class="btn btn-success" id="btnSave">حفظ الفاتورة</button>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
             </div>
-            <div class="form-group">
-                <label asp-for="SarhaID" class="control-label"></label>
-                <select asp-for="SarhaID" class ="form-control" asp-items="ViewBag.SarhaID"></select>
+
+        </div>
+    </div>
+
+
+</div>
+
+<div id="fadeleftModal" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">التفاصيل الخاصة بالاسماك</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
             </div>
-            <div class="form-group">
-                <label asp-for="TotalBeforePaying" class="control-label"></label>
-                <input asp-for="TotalBeforePaying" class="form-control" />
-                <span asp-validation-for="TotalBeforePaying" class="text-danger"></span>
+            <div class="modal-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="BoatOwnerItem.Fish.FishName" class="control-label"></label>
+                    <select asp-for="BoatOwnerItem.FishID" class="form-control" asp-items="ViewBag.FishID"></select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="BoatOwnerItem.ProductionType.ProductionName" class="control-label">نوع الانتاج</label>
+                    <select asp-for="BoatOwnerItem.ProductionTypeID" class="form-control" asp-items="ViewBag.ProductionTypeID"></select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="BoatOwnerItem.Qty" class="control-label"></label>
+                    <input asp-for="BoatOwnerItem.Qty" class="form-control" />
+                    <span asp-validation-for="BoatOwnerItem.Qty" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="BoatOwnerItem.UnitPrice" class="control-label"></label>
+                    <input asp-for="BoatOwnerItem.UnitPrice" class="form-control" />
+                    <span asp-validation-for="BoatOwnerItem.UnitPrice" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
+            <div class="modal-footer md-button">
+                <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> اغلاق</button>
+                <button type="button" class="btn btn-primary" id="NewRows">حفظ</button>
             </div>
-            <div class="form-group">
-                <label asp-for="Commission" class="control-label"></label>
-                <input asp-for="Commission" class="form-control" />
-                <span asp-validation-for="Commission" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PaidFromDebts" class="control-label"></label>
-                <input asp-for="PaidFromDebts" class="form-control" />
-                <span asp-validation-for="PaidFromDebts" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalAfterPaying" class="control-label"></label>
-                <input asp-for="TotalAfterPaying" class="form-control" />
-                <span asp-validation-for="TotalAfterPaying" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
+@section scripts{
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#btnSave').hide();
+            $('.total').hide();
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+        })
+        $("#NewRows").click(function () {
+            var BoatOwnerItem_FishID = $('#BoatOwnerItem_FishID option:selected').text()
+            var BoatOwnerItem_ProductionTypeID = $('#BoatOwnerItem_ProductionTypeID option:selected').text()
+            var BoatOwnerItem_Qty = $('#BoatOwnerItem_Qty').val()
+            var BoatOwnerItem_UnitPrice = $('#BoatOwnerItem_UnitPrice').val()
+            var addControls = "<tr>"
+            addControls += "<td class='fishes'>" + BoatOwnerItem_FishID + "</td>"
+            addControls += "<td class='productions'>" + BoatOwnerItem_ProductionTypeID + "</td>"
+            addControls += "<td class='qtys'>" + BoatOwnerItem_Qty + "</td>"
+            addControls += "<td class='unitprices'>" + BoatOwnerItem_UnitPrice + "</td>"
+            addControls += "<td class='prices'>" + BoatOwnerItem_UnitPrice * BoatOwnerItem_Qty + "</td>"
+            addControls += "</tr>";
+            $('#TotalBeforePayment').text(parseFloat($('#TotalBeforePayment').text()) + BoatOwnerItem_UnitPrice * BoatOwnerItem_Qty);
+            $('#commision').text(@ViewBag.Commission.Value * parseFloat($('#TotalBeforePayment').text()) / 100)
+            $('#TotalProduction').text(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').text()))
 
+            $('#btnSave').show();
+            $('.total').show();
+            $('#BoatOwnerItem_Qty').val('');
+            $('#BoatOwnerItem_UnitPrice').val('');
+            $('table tbody').append(addControls);
+
+        });
+        $("#btnCalc").click(function () {
+            if (!$('#BoatOwnerReciept_PaidFromDebts').val()) {
+                $('#TotalProduction').text(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').text()))
+            }
+            else {
+                $('#TotalProduction').text(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').text()) - parseFloat($('#BoatOwnerReciept_PaidFromDebts').val()));
+            }
+        });
+
+        var cookieList = function (cookieName) {
+            //When the cookie is saved the items will be a comma seperated string
+            //So we will split the cookie by comma to get the original array
+            var cookie = $.cookie(cookieName);
+            //Load the items or a new array if null.
+            var items = cookie ? cookie.split(/,/) : new Array();
+
+            //Return a object that we can use to access the array.
+            //while hiding direct access to the declared items array
+            //this is called closures see http://www.jibbering.com/faq/faq_notes/closures.html
+            return {
+                "add": function (val) {
+                    //Add to the items.
+                    items.push(val);
+                    var date = new Date();
+                    date.setTime(date.getTime() + (45 * 1000));
+                    //Save the items to a cookie.
+                    //EDIT: Modified from linked answer by Nick see
+                    //      http://stackoverflow.com/questions/3387251/how-to-store-array-in-jquery-cookie
+                    $.cookie(cookieName, items.join(','), { expires: date });
+                },
+                "remove": function (val) {
+                    //EDIT: Thx to Assef and luke for remove.
+                    indx = items.indexOf(val);
+                    if (indx != -1) items.splice(indx, 1);
+                    $.cookie(cookieName, items.join(','));
+                },
+                "clear": function () {
+                    items = null;
+                    //clear the cookie.
+                    $.cookie(cookieName, null);
+                },
+                "items": function () {
+                    //Get all the items.
+                    return items;
+                }
+            }
+        }
+        $("#btnSave").click(function () {
+
+            var TotalBeforePayment = new cookieList("TotalBeforePayment"); // all items in the array.
+            TotalBeforePayment.add($('#TotalBeforePayment').text())
+            var commision = new cookieList("commision"); // all items in the array.
+            commision.add($('#commision').text())
+            var  PaidFromDebts = new cookieList("PaidFromDebts"); // all items in the array.
+            PaidFromDebts.add($('#BoatOwnerReciept_PaidFromDebts').val())
+            var TotalProduction = new cookieList("TotalProduction"); // all items in the array.
+            TotalProduction.add($('#TotalProduction').text())
+
+
+            var FishNames = new cookieList("FishNames"); // all items in the array.
+            $('.fishes').each(function () {
+                FishNames.add($(this).text());
+            })
+            var ProductionTypes = new cookieList("ProductionTypes"); // all items in the array.
+            $('.productions').each(function () {
+                ProductionTypes.add($(this).text());
+            })
+            var qtys = new cookieList("qtys"); // all items in the array.
+            $('.qtys').each(function () {
+                qtys.add($(this).text());
+            })
+            var unitprices = new cookieList("unitprices"); // all items in the array.
+            $('.unitprices').each(function () {
+                unitprices.add($(this).text());
+            })
+            var prices = new cookieList("prices"); // all items in the array.
+            $('.prices').each(function () {
+                prices.add($(this).text());
+            })
+        });
+    </script>
+
+}

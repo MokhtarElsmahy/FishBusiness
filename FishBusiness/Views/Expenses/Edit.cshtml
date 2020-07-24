@@ -1,0 +1,79 @@
+﻿@model FishBusiness.Models.Expense
+
+@{
+    ViewData["Title"] = "Create";
+}
+@section Styles{
+
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="~/plugins/select2/select2.min.css">
+    <!--  END CUSTOM STYLE FILE  -->
+
+}
+
+<br />
+
+<h4>مصروف مركب</h4>
+<hr />
+<div class="container">
+    <div class="container">
+        <div class="row layout-top-spacing" id="cancel-row">
+
+            <div id="fs2Basic" class="col-lg-12 layout-spacing">
+                <div class="statbox widget box box-shadow">
+                    <div class="widget-header">
+                        <div class="row">
+                            <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                <h4>Basic</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="widget-content widget-content-area">
+                        <form asp-action="Edit">
+
+                            <input type="hidden" asp-for="ExpenseID" class="form-control" />
+                            @*<p>Use <code>select2()</code> function on select element to convert it to Select 2.</p>*@
+                            <label asp-for="Boat.BoatName" class="control-label"></label>
+                            <select asp-for="BoatID" class="form-control  basic" asp-items="ViewBag.BoatID">
+                            </select>
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                            <div class="form-group">
+                                <label asp-for="Price" class="control-label"></label>
+                                <input asp-for="Price" class="form-control" />
+                                <span asp-validation-for="Price" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Cause" class="control-label"></label>
+                                <input asp-for="Cause" class="form-control" />
+                                <span asp-validation-for="Cause" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Date" class="control-label"></label>
+                                <input asp-for="Date" class="form-control" />
+                                <span asp-validation-for="Date" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="تعديل المصروف" class="btn btn-primary btn-block" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section scripts{
+
+    <!--  BEGIN CUSTOM SCRIPTS FILE  -->
+    <script src="~/assets/js/scrollspyNav.js"></script>
+    <script src="~/plugins/select2/select2.min.js"></script>
+    <script src="~/plugins/select2/custom-select2.js"></script>
+    <!--  BEGIN CUSTOM SCRIPTS FILE  -->
+}
+

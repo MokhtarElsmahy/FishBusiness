@@ -100,6 +100,7 @@ namespace FishBusiness.Controllers
                 boat = new Boat();
             }
             boat = db.Boats.Include(b => b.BoatType).FirstOrDefault(c => c.BoatID == id);
+            ViewBag.expenses = db.Expenses.Where(e => e.BoatID == id).Sum(r => r.Price);
             return PartialView(boat);
         }
 

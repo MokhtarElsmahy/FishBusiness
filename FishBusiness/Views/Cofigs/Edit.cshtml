@@ -1,0 +1,31 @@
+﻿@model FishBusiness.Models.Cofig
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="page-header m-3">
+    <div class="page-title">
+        <h3 class="mr-2">اضافة نوع مركب جديد</h3>
+    </div>
+</div>
+<div class="container mt-3 col-6">
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group mb-3">
+            <input asp-for="ID" class="form-control" aria-describedby="emailHelp1">
+            <label asp-for="Name" class="text-black font-weight-bold "> اسم العموله</label>
+            <input asp-for="Name" class="form-control" aria-describedby="emailHelp1" placeholder=" اسم العموله">
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="Value" class="text-black font-weight-bold ">قيمة العموله</label>
+            <input asp-for="Value" class="form-control" aria-describedby="emailHelp1" placeholder="قيمة العموله">
+            <span asp-validation-for="Value" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3 ml-auto">حفظ</button>
+        <a asp-action="Index" class="btn btn-secondary mt-3">عوده الي القائمة</a>
+    </form>
+</div>
+

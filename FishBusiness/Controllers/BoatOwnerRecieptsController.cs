@@ -43,7 +43,7 @@ namespace FishBusiness.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.Items = _context.BoatOwnerItems.Where(i => i.BoatOwnerRecieptID == id).Include(x=>x.Fish).Include(x=>x.ProductionType);
             return View(boatOwnerReciept);
         }
 

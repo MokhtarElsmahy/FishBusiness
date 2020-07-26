@@ -1,0 +1,72 @@
+﻿@model FishBusiness.Models.Merchant
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = null;
+}
+
+
+<form id="MyForm">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="MerchantID" />
+    <div class="form-group">
+        <label asp-for="MerchantName" class="control-label"></label>
+        <input asp-for="MerchantName" class="form-control" />
+        <span asp-validation-for="MerchantName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="PreviousDebts" class="control-label"></label>
+        <input asp-for="PreviousDebts" class="form-control" />
+        <span asp-validation-for="PreviousDebts" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Phone" class="control-label"></label>
+        <input asp-for="Phone" class="form-control" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Address" class="control-label"></label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+</form>
+
+<div class="modal-footer md-button">
+    <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> اغلاق</button>
+    <button type="submit" onclick="fun()" class="btn btn-primary" id="NewRows">حفظ</button>
+</div>
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+    })
+
+    var fun = function () {
+
+        var myform = $("#MyForm").serialize();
+
+        $.ajax({
+            type: "POST",
+            url: "/Merchants/cEdit",
+            type: "POST",
+            data: myform,
+
+            success: function (response) {
+                    if (response.message == "success") {
+                        $("#fadeleftModal").modal("hide");
+                        window.location.href = "/Merchants/Index";
+                    }
+                    else {
+                        alert("Error")
+                    }
+
+             }
+
+
+        });
+    }
+
+</script>

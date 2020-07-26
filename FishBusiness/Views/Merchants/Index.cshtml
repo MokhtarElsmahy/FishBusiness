@@ -1,0 +1,227 @@
+﻿@model IEnumerable<FishBusiness.Models.Merchant>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Styles{
+    <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/datatables.css">
+    <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/dt-global_style.css">
+
+
+
+    <link href="~/plugins/animate/animate.css" rel="stylesheet" type="text/css" />
+
+
+}
+<div class="layout-px-spacing">
+
+    @*<div class="page-header">
+            <div class="page-title">
+                <h3>المراكب</h3>
+            </div>
+        </div>*@
+
+    <div class="container row">
+        <div class="page-header m-3">
+            <div class="page-title">
+                <h3>ادارة العملاء</h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <a href="#" onclick="CreateShow()" class="btn btn-primary">اضافة عميل جديد</a>
+        </div>
+    </div>
+
+
+    <div id="TableItemsDiv">
+
+        @*@Html.Partial("TableItems")*@
+
+        <div class="row layout-top-spacing" id="cancel-row">
+
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+                    <div class="table-responsive mb-4 mt-4">
+                        <table id="zero-config" class="table table-hover" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>اسم العميل</th>
+                                    <th>عنوان العميل</th>
+                                    <th>تلفون العميل</th>
+                                    <th>ديون العميل</th>
+                                    <th></th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Any())
+                                {
+                                    @foreach (var merchant in Model)
+                                    {
+                                        <tr>
+                                            <td>@merchant.MerchantName</td>
+                                            <td>@merchant.Address</td>
+                                            <td>@merchant.Phone</td>
+                                            <td class="text-danger">@merchant.PreviousDebts</td>
+
+                                            <td>
+
+                                                <a href="#" onclick="EditShow(@merchant.MerchantID)" class="btn btn-success mb-2">تعديل</a>
+                                                <a asp-action="Delete" asp-route-id="@merchant.MerchantID" class="btn btn-info mb-2">تفاصيل</a>
+
+                                                <a asp-action="Delete" onclick="return confirm('هل انت متأكد من عملية الحذف ؟ ')" asp-route-id="@merchant.MerchantID" class="btn btn-danger mb-2">حذف</a>
+
+                                            </td>
+
+                                        </tr>
+                                    }
+
+                                }
+                                else
+                                {
+                                    <tr>
+
+                                        <td class="font-weight-bolder">لا توجد عملاء</td>
+
+
+                                    </tr>
+                                }
+
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="footer-wrapper">
+    <div class="footer-section f-section-1">
+        <p class="">Copyright © 2020 <a target="_blank" href="https://designreset.com/">DesignReset</a>, All rights reserved.</p>
+    </div>
+    <div class="footer-section f-section-2">
+        <p class="">Coded with <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-heart"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></p>
+    </div>
+</div>
+
+
+
+<div id="fadeleftModal" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">اضافة عميل</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+
+
+            <div class="modal-body" id="ModalBodyDiv">
+               
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+
+        })
+        var Create = function () {
+            var fd = $("#MyForm").serialize();
+            $.ajax({
+
+                url: "/Merchants/CreateC",
+                type: "POST",
+                dataType: "json",
+                data: fd,
+                success: function (response) {
+                    if (response.message == "success") {
+                        $("#fadeleftModal").modal("hide");
+                        window.location.href = "/Merchants/Index";
+                    }
+                    else {
+                        alert("Error")
+                    }
+
+                }
+
+
+
+            })
+
+
+            //$.ajax({
+            //    async: false,
+            //    url: '/Merchants/Create',
+            //    data: fd,
+            //    type: 'POST',
+            //    success: function (objOperations) {
+            //        $("#TableItemsDiv").html(objOperations);
+            //        $("#fadeleftModal").modal("toggle");
+            //    }
+            //});
+        }
+        var CreateShow = function (id) {
+            var url = "/Merchants/Create";
+            $("#ModalBodyDiv").load(url, function () {
+                $("#fadeleftModal").modal("show");
+            })
+        }
+
+
+
+
+        //var Edit = function () {
+        //    var fd = $("#MyForm").serialize();
+        //    $.ajax({
+
+        //        url: "/Merchants/Edit",
+        //        type: "POST",
+        //        dataType: "json",
+        //        data: fd,
+        //        success: function (response) {
+        //            if (response.message == "success") {
+        //                $("#fadeleftModal").modal("hide");
+        //                window.location.href = "/Merchants/Index";
+        //            }
+        //            else {
+        //                alert("Error")
+        //            }
+
+        //        }
+
+
+
+        //    })
+
+        //}
+        var EditShow = function (id) {
+            $.ajax({
+                url: "/Merchants/Edit",
+                type: "GET",
+                data: { id: id },
+                success: function (response) {
+                        $("#fadeleftModal").modal("show");
+                        $("#ModalBodyDiv").html(response);
+                   
+                }
+
+
+
+            })
+        }
+
+    </script>
+
+}

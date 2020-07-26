@@ -18,7 +18,7 @@ namespace FishBusiness.Models
 
         [Display(Name = "سعر الوحدة")]
         [Required(ErrorMessage = "برجاء ادخال سعر الوحدة")]
-        public int UnitPrice { get; set; }
+        public decimal UnitPrice { get; set; }
 
         [ForeignKey("ProductionType")]
         public int ProductionTypeID { get; set; }

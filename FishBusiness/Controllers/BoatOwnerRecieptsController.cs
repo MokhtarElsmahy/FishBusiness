@@ -129,92 +129,34 @@ namespace FishBusiness.Controllers
             return RedirectToAction(nameof(Index));
            
         }
-
-        // GET: BoatOwnerReciepts/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var boatOwnerReciept = await _context.BoatOwnerReciepts.FindAsync(id);
-            if (boatOwnerReciept == null)
-            {
-                return NotFound();
-            }
-            ViewData["BoatID"] = new SelectList(_context.Boats, "BoatID", "BoatLeader", boatOwnerReciept.BoatID);
-            ViewData["SarhaID"] = new SelectList(_context.Sarhas, "SarhaID", "SarhaID", boatOwnerReciept.SarhaID);
-            return View(boatOwnerReciept);
-        }
-
-        // POST: BoatOwnerReciepts/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BoatOwnerRecieptID,BoatID,SarhaID,TotalBeforePaying,Date,Commission,PaidFromDebts,TotalAfterPaying")] BoatOwnerReciept boatOwnerReciept)
-        {
-            if (id != boatOwnerReciept.BoatOwnerRecieptID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(boatOwnerReciept);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BoatOwnerRecieptExists(boatOwnerReciept.BoatOwnerRecieptID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["BoatID"] = new SelectList(_context.Boats, "BoatID", "BoatLeader", boatOwnerReciept.BoatID);
-            ViewData["SarhaID"] = new SelectList(_context.Sarhas, "SarhaID", "SarhaID", boatOwnerReciept.SarhaID);
-            return View(boatOwnerReciept);
-        }
-
+      
         // GET: BoatOwnerReciepts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
-            }
-
-            var boatOwnerReciept = await _context.BoatOwnerReciepts
-                .Include(b => b.Boat)
-                .Include(b => b.Sarha)
-                .FirstOrDefaultAsync(m => m.BoatOwnerRecieptID == id);
+            }           
+            var boatOwnerReciept = await _context.BoatOwnerReciepts.FindAsync(id);
             if (boatOwnerReciept == null)
             {
                 return NotFound();
             }
+            // Increase Halek Again
+            var boat = _context.Boats.Find(boatOwnerReciept.BoatID);
+            boat.DebtsOfHalek += Convert.ToDecimal(boatOwnerReciept.PaidFromDebts);
 
-            return View(boatOwnerReciept);
-        }
+            // Decrease Shared Boat Income
+            if (boat.TypeID == 5)
+            {
+                boat.IncomeOfSharedBoat -= boatOwnerReciept.FinalIncome;
+            }
 
-        // POST: BoatOwnerReciepts/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var boatOwnerReciept = await _context.BoatOwnerReciepts.FindAsync(id);
             _context.BoatOwnerReciepts.Remove(boatOwnerReciept);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool BoatOwnerRecieptExists(int id)
         {

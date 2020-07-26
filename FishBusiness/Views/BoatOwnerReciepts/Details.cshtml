@@ -55,7 +55,9 @@
 
                                         <div class="col-sm-7 align-self-center">
                                             <p class="inv-customer-name"> @Html.DisplayNameFor(model => model.Boat.BoatName) : @Html.DisplayFor(model => model.Boat.BoatName)</p>
+                                            <p class="inv-street-addr">رقم الفاتورة : @Html.DisplayFor(model => model.BoatOwnerRecieptID)</p>
                                             <p class="inv-street-addr">رقم السرحة : @Html.DisplayFor(model => model.SarhaID)</p>
+                                            <p class="inv-street-addr">تاريخ السرحة : @Html.DisplayFor(model => model.Sarha.DateOfSarha)</p>
                                             <p class="inv-email-address">@Html.DisplayNameFor(model => model.Date) : @Html.DisplayFor(model => model.Date)</p>
                                         </div>
                                     </div>
@@ -157,7 +159,7 @@
 </div>
 
 @section scripts{
-    <script src="~/assets/js/print.min.js"></script>
+ @*   <script src="~/assets/js/print.min.js"></script>*@
     <script src="~/assets/js/apps/invoice.js"></script>
 
 

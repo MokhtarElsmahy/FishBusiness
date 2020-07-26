@@ -69,7 +69,7 @@
                                             <td>
 
                                                 <a href="#" onclick="EditShow(@merchant.MerchantID)" class="btn btn-success mb-2">تعديل</a>
-                                                <a asp-action="Delete" asp-route-id="@merchant.MerchantID" class="btn btn-info mb-2">تفاصيل</a>
+                                                <a asp-action="Details" asp-route-id="@merchant.MerchantID" class="btn btn-info mb-2">تفاصيل</a>
 
                                                 <a asp-action="Delete" onclick="return confirm('هل انت متأكد من عملية الحذف ؟ ')" asp-route-id="@merchant.MerchantID" class="btn btn-danger mb-2">حذف</a>
 
@@ -220,6 +220,31 @@
 
 
             })
+        }
+
+        var fun = function () {
+
+            var myform = $("#MyForm").serialize();
+
+            $.ajax({
+                type: "POST",
+                url: "/Merchants/cEdit",
+                type: "POST",
+                data: myform,
+
+                success: function (response) {
+                    if (response.message == "success") {
+                        $("#fadeleftModal").modal("hide");
+                        window.location.href = "/Merchants/Index";
+                    }
+                    else {
+                        alert("Error")
+                    }
+
+                }
+
+
+            });
         }
 
     </script>

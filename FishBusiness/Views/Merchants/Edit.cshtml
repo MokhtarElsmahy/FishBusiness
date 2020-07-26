@@ -44,29 +44,29 @@
 
     })
 
-    var fun = function () {
+    //var fun = function () {
 
-        var myform = $("#MyForm").serialize();
+    //    var myform = $("#MyForm").serialize();
 
-        $.ajax({
-            type: "POST",
-            url: "/Merchants/cEdit",
-            type: "POST",
-            data: myform,
+    //    $.ajax({
+    //        type: "POST",
+    //        url: "/Merchants/cEdit",
+    //        type: "POST",
+    //        data: myform,
 
-            success: function (response) {
-                    if (response.message == "success") {
-                        $("#fadeleftModal").modal("hide");
-                        window.location.href = "/Merchants/Index";
-                    }
-                    else {
-                        alert("Error")
-                    }
+    //        success: function (response) {
+    //                if (response.message == "success") {
+    //                    $("#fadeleftModal").modal("hide");
+    //                    window.location.href = "/Merchants/Index";
+    //                }
+    //                else {
+    //                    alert("Error")
+    //                }
 
-             }
+    //         }
 
 
-        });
-    }
+    //    });
+    //}
 
 </script>

@@ -4,39 +4,164 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+@section Styles{
+    <link href="~/plugins/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" type="text/css" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/apps/invoice.css" rel="stylesheet" type="text/css" />
+    <!--  END CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/print.min.css" rel="stylesheet" />
+}
+<div class="layout-px-spacing">
 
-<div>
-    <h4>MerchantReciept</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Merchant)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Merchant.MerchantName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalOfReciept)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalOfReciept)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.payment)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.payment)
-        </dd>
-    </dl>
+    <div class="container row">
+        <div class="page-header m-3">
+            <div class="page-title">
+                <h3>تفاصيل الفاتورة</h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <a asp-action="Index" class="btn btn-primary">قائمة الفواتير</a>
+        </div>
+    </div>
+
+    <div class="row invoice layout-top-spacing">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="doc-container">
+
+
+                <div class="invoice-container">
+
+                    <div id="ct" class="">
+
+                        <div class="invoice-00001">
+                            <div class="content-section  animated animatedFadeInUp fadeInUp">
+
+                                <div class="row inv--head-section">
+
+                                    <div class="col-sm-6 col-12">
+                                        <h3 class="in-heading">فاتورة تاجر</h3>
+                                    </div>
+                                    @*<div class="col-sm-6 col-12 align-self-center text-sm-right">
+                                            <div class="company-info">
+                                                <button class="btn btn-secondary .action-print" id="btnPrint">طباعة</button>
+                                            </div>
+                                        </div>*@
+
+                                </div>
+                                <div id="Invoice">
+                                    <div class="row inv--detail-section">
+
+
+
+                                        <div class="col-sm-7 align-self-center">
+                                            <p class="inv-customer-name"> @Html.DisplayNameFor(model => model.Merchant.MerchantName) : @Html.DisplayFor(model => model.Merchant.MerchantName)</p>
+                                            <p class="inv-street-addr">رقم الفاتورة : @Html.DisplayFor(model => model.MerchantRecieptID)</p>
+                                           
+                                            <p class="inv-street-addr">تاريخ  : @Html.DisplayFor(model => model.Date)</p>
+                                           
+                                        </div>
+                                    </div>
+
+                                    <div class="row inv--product-table-section">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <thead class="">
+                                                        <tr>
+                                                            <th scope="col">مركب</th>
+                                                            <th scope="col">النوع</th>
+                                                            <th class="text-right" scope="col">الانتاج</th>
+                                                            <th class="text-right" scope="col">الكمية</th>
+                                                            <th class="text-right" scope="col">سعر الوحدة</th>
+                                                            <th class="text-right" scope="col">الاجمالي</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var item in ViewBag.Items)
+                                                        {
+                                                            <tr>
+                                                                <td>@item.Boat.BoatName</td>
+                                                                <td>@item.Fish.FishName</td>
+                                                                <td class="text-right">@item.ProductionType.ProductionName</td>
+                                                                <td class="text-right">@item.Qty</td>
+                                                                <td class="text-right">@item.UnitPrice</td>
+                                                                <td class="text-right">@Convert.ToDecimal(item.Qty * Convert.ToDouble(item.UnitPrice))</td>
+                                                            </tr>
+                                                        }
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-4">
+                                        <div class="col-sm-5 col-12 order-sm-0 order-1">
+                                        </div>
+                                        <div class="col-sm-7 col-12 order-sm-1 order-0">
+                                            <div class="inv--total-amounts text-sm-right">
+                                                <div class="row">
+                                                    <div class="col-sm-8 col-7">
+                                                        <p class="">اجمالى الفاتوره  </p>
+                                                    </div>
+                                                    <div class="col-sm-4 col-5">
+                                                        <p class="">@Html.DisplayFor(model => model.TotalOfReciept) </p>
+                                                    </div>
+                                                    <div class="col-sm-8 col-7">
+                                                        <p class="">المبلغ المدفوع </p>
+                                                    </div>
+                                                    <div class="col-sm-4 col-5">
+                                                        <p class="">@Html.DisplayFor(model => model.payment)</p>
+                                                    </div>
+                                                    <div class="col-sm-8 col-7">
+                                                        <p class=" discount-rate text-info">الديون حتى هذه الفاتوره</p>
+                                                    </div>
+                                                    <div class="col-sm-4 col-5">
+                                                        <p class="text-info">@Html.DisplayFor(model => model.CurrentDebt)</p>
+                                                    </div>
+                                                    <hr />
+                                                    <div class="col-sm-8 col-7">
+                                                        <p class=" discount-rate text-info">الديون </p>
+                                                    </div>
+                                                    <div class="col-sm-4 col-5">
+                                                        <p class="text-info">@Html.DisplayFor(model => model.Merchant.PreviousDebts)</p>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div class="inv--thankYou">
+                        <div class="row">
+                            <div class="col-sm-12 col-12">
+                                <p class="">Thank you for doing Business with us.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.MerchantRecieptID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+@section scripts{
+    @*   <script src="~/assets/js/print.min.js"></script>*@
+    <script src="~/assets/js/apps/invoice.js"></script>
+
+
+}
+
+

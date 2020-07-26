@@ -43,7 +43,7 @@ namespace FishBusiness.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.Items = _context.MerchantRecieptItems.Where(i => i.MerchantRecieptID == id).Include(x => x.Fish).Include(x => x.ProductionType).Include(x=>x.Boat);
             return View(merchantReciept);
         }
 
@@ -95,7 +95,7 @@ namespace FishBusiness.Controllers
         {
             if (ModelState.IsValid)
             {
-                MerchantReciept merchantReciept = new MerchantReciept() { Date = model.Date, payment = model.payment, TotalOfReciept = model.TotalOfReciept, MerchantID = model.MerchantID };
+                MerchantReciept merchantReciept = new MerchantReciept() { Date = model.Date, payment = model.payment, TotalOfReciept = model.TotalOfReciept, MerchantID = model.MerchantID,CurrentDebt=model.CurrentDebt };
                 _context.Add(merchantReciept);
                 await _context.SaveChangesAsync();
 
@@ -141,87 +141,48 @@ namespace FishBusiness.Controllers
             return Json(new { message = "fail" });
         }
 
-        // GET: MerchantReciepts/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var merchantReciept = await _context.MerchantReciepts.FindAsync(id);
-            if (merchantReciept == null)
-            {
-                return NotFound();
-            }
-            ViewData["MerchantID"] = new SelectList(_context.Merchants, "MerchantID", "MerchantName", merchantReciept.MerchantID);
-            return View(merchantReciept);
-        }
-
-        // POST: MerchantReciepts/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MerchantRecieptID,Date,MerchantID,TotalOfReciept,payment")] MerchantReciept merchantReciept)
-        {
-            if (id != merchantReciept.MerchantRecieptID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(merchantReciept);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MerchantRecieptExists(merchantReciept.MerchantRecieptID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["MerchantID"] = new SelectList(_context.Merchants, "MerchantID", "MerchantName", merchantReciept.MerchantID);
-            return View(merchantReciept);
-        }
+       
 
         // GET: MerchantReciepts/Delete/5
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var merchantReciept = await _context.MerchantReciepts
+        //        .Include(m => m.Merchant)
+        //        .FirstOrDefaultAsync(m => m.MerchantRecieptID == id);
+        //    if (merchantReciept == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(merchantReciept);
+        //}
+
+        // POST: MerchantReciepts/Delete/5
+       
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
-            var merchantReciept = await _context.MerchantReciepts
-                .Include(m => m.Merchant)
-                .FirstOrDefaultAsync(m => m.MerchantRecieptID == id);
+            var merchantReciept = await _context.MerchantReciepts.Include(ww=>ww.Merchant).FirstOrDefaultAsync(ww=>ww.MerchantRecieptID==id);
             if (merchantReciept == null)
             {
                 return NotFound();
             }
+            var merchantRecieptItems = _context.MerchantRecieptItems.Where(x=>x.MerchantRecieptID==id).ToList();
+            _context.MerchantRecieptItems.RemoveRange(merchantRecieptItems);
 
-            return View(merchantReciept);
-        }
-
-        // POST: MerchantReciepts/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var merchantReciept = await _context.MerchantReciepts.FindAsync(id);
+            var merchant =  _context.Merchants.Find(merchantReciept.MerchantID);
+            merchant.PreviousDebts -= merchantReciept.TotalOfReciept;
             _context.MerchantReciepts.Remove(merchantReciept);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
 
         private bool MerchantRecieptExists(int id)

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FishBusiness;
 using FishBusiness.Models;
+using FishBusiness.ViewModels;
 
 namespace FishBusiness.Controllers
 {
@@ -28,19 +29,21 @@ namespace FishBusiness.Controllers
         // GET: Merchants/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //var merchant = await _context.Merchants
-            //    .FirstOrDefaultAsync(m => m.MerchantID == id);
-            //if (merchant == null)
-            //{
-            //    return NotFound();
-            //}
-
-            return View(await _context.Merchants.ToListAsync());
+            if (id == null)
+            {
+                return NotFound();
+            }
+            MerchantDetailsVm model = new MerchantDetailsVm();
+            var merchant = await _context.Merchants
+                .FirstOrDefaultAsync(m => m.MerchantID == id);
+            if (merchant == null)
+            {
+                return NotFound();
+            }
+            model.Merchant = merchant;
+            model.MerchantReciepts =await _context.MerchantReciepts.Include(x=>x.Merchant).Where(x => x.MerchantID == id).ToListAsync();
+           
+            return View(model);
         }
 
         public IActionResult TableItems()

@@ -26,6 +26,11 @@ namespace FishBusiness.Models
         [Required(ErrorMessage = "برجاء ادخال المبلغ")]
         public decimal payment { get; set; }
 
+
+        [Display(Name = "ديون حتى اللحظه")]
+     
+        public decimal CurrentDebt { get; set; }
+
         public virtual ICollection<MerchantRecieptItem> MerchantRecieptItems { get; set; }
 
 

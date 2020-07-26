@@ -14,11 +14,11 @@ namespace FishBusiness.Controllers
     public class MerchantRecieptsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private int Id;
+        //private int Id;
         public MerchantRecieptsController(ApplicationDbContext context)
         {
             _context = context;
-            Id = 0;
+           
         }
 
         // GET: MerchantReciepts

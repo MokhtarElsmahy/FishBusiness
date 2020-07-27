@@ -133,7 +133,7 @@ namespace FishBusiness.Controllers
                 m.PreviousDebts = model.CurrentDebt;
 
                 await _context.SaveChangesAsync();
-                return Json(new { message = "success" });
+                return Json(new { message = "success" , id= merchantReciept.MerchantRecieptID });
                 //return RedirectToAction(nameof(Index));
             }
             ViewData["MerchantID"] = new SelectList(_context.Merchants, "MerchantID", "MerchantName", model.MerchantID);

@@ -286,8 +286,6 @@
             });
 
             $("#MerDDL").on("change", function () {
-
-
                 $.ajax({
                     url: "/MerchantReciepts/GetMerchant/",
                     type: "GET",
@@ -379,7 +377,7 @@
                     },
                     success: function (result) {
                         if (result.message == "success") {
-                            window.location.href = "/MerchantReciepts/Index";
+                            window.location.href = "/MerchantReciepts/Details/" + result.id;
                         } else {
                             alert("خطا !!!!! تاكد من ادخل التاريخ")
                             body.html("");

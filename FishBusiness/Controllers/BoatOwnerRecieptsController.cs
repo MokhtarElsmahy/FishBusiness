@@ -126,7 +126,8 @@ namespace FishBusiness.Controllers
                 _context.BoatOwnerItems.Add(boatOwnerItem);
                 _context.SaveChanges();
             }
-            return RedirectToAction(nameof(Index));
+            //return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details",new { id= latestReceipt });
            
         }
       

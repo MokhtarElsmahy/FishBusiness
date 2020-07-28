@@ -20,6 +20,11 @@
                 <h3>تفاصيل الفاتورة</h3>
             </div>
         </div>
+        <div class="col-sm-6 col-12 align-self-center text-sm-right">
+            <div class="company-info">
+                <button class="btn btn-secondary" id="btnPrint">طباعة</button>
+            </div>
+        </div>
         <div class="mt-4 ml-auto">
             <a asp-action="Index" class="btn btn-primary">قائمة الفواتير</a>
         </div>
@@ -57,9 +62,9 @@
                                         <div class="col-sm-7 align-self-center">
                                             <p class="inv-customer-name"> @Html.DisplayNameFor(model => model.Merchant.MerchantName) : @Html.DisplayFor(model => model.Merchant.MerchantName)</p>
                                             <p class="inv-street-addr">رقم الفاتورة : @Html.DisplayFor(model => model.MerchantRecieptID)</p>
-                                           
+
                                             <p class="inv-street-addr">تاريخ  : @Html.DisplayFor(model => model.Date)</p>
-                                           
+
                                         </div>
                                     </div>
 
@@ -160,7 +165,11 @@
 @section scripts{
     @*   <script src="~/assets/js/print.min.js"></script>*@
     <script src="~/assets/js/apps/invoice.js"></script>
-
+    <script>
+        $("#btnPrint").click(function () {
+            window.print()
+        });
+    </script>
 
 }
 

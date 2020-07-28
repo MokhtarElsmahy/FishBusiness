@@ -19,9 +19,15 @@
                 <h3>تفاصيل الفاتورة</h3>
             </div>
         </div>
+        <div class="col-sm-6 col-12 align-self-center text-sm-right">
+            <div class="company-info">
+                <button class="btn btn-secondary" id="btnPrint">طباعة</button>
+            </div>
+        </div>
         <div class="mt-4 ml-auto">
             <a asp-action="Index" class="btn btn-primary">قائمة الفواتير</a>
         </div>
+
     </div>
 
     <div class="row invoice layout-top-spacing">
@@ -41,11 +47,7 @@
                                     <div class="col-sm-6 col-12">
                                         <h3 class="in-heading">فاتورة المركب</h3>
                                     </div>
-                                    @*<div class="col-sm-6 col-12 align-self-center text-sm-right">
-                                        <div class="company-info">
-                                            <button class="btn btn-secondary .action-print" id="btnPrint">طباعة</button>
-                                        </div>
-                                    </div>*@
+                                   
 
                                 </div>
                                 <div id="Invoice">
@@ -161,6 +163,10 @@
 @section scripts{
  @*   <script src="~/assets/js/print.min.js"></script>*@
     <script src="~/assets/js/apps/invoice.js"></script>
-
+    <script>
+        $("#btnPrint").click(function () {
+            window.print()
+        });
+    </script>
 
 }

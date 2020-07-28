@@ -8,14 +8,15 @@ namespace FishBusiness.ViewModels
     public class MerRecCreateVm
     {
         public DateTime Date { get; set; }
-      
-        public int MerchantID { get; set; }
-       
 
-      
+        public int MerchantID { get; set; }
+
+
+
         public decimal TotalOfReciept { get; set; }
 
-       
+        public int RecID { get; set; }
+
         public decimal payment { get; set; }
         public decimal CurrentDebt { get; set; }
     }

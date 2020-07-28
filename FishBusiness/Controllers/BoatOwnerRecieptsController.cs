@@ -43,7 +43,7 @@ namespace FishBusiness.Controllers
             {
                 return NotFound();
             }
-            ViewBag.Items = _context.BoatOwnerItems.Where(i => i.BoatOwnerRecieptID == id).Include(x=>x.Fish).Include(x=>x.ProductionType);
+            ViewBag.Items = _context.BoatOwnerItems.Where(i => i.BoatOwnerRecieptID == id).Include(x => x.Fish).Include(x => x.ProductionType);
             return View(boatOwnerReciept);
         }
 
@@ -52,27 +52,145 @@ namespace FishBusiness.Controllers
         {
             ViewData["BoatID"] = new SelectList(_context.Boats, "BoatID", "BoatName");
             ViewData["ProductionTypeID"] = new SelectList(_context.ProductionTypes, "ProductionTypeID", "ProductionName");
+
             ViewData["FishID"] = new SelectList(_context.Fishes, "FishID", "FishName");
+
+            //
+            ViewData["MerchantID"] = new SelectList(_context.Merchants, "MerchantID", "MerchantName");
             // commission
-            ViewBag.Commission = _context.Cofigs.Find(1);
-            //ViewBag.Commission = _context.Cofigs.Find(2);
+            //ViewBag.Commission = _context.Cofigs.Find(1);
+            ViewBag.Commission = _context.Cofigs.Find(2);
             return View();
         }
+        public IActionResult GetBoatItems(int? id)
+        {
+            var LastRecieptOfBoat = _context.BoatOwnerReciepts.Where(r => r.BoatID == id).Max(rs => rs.BoatOwnerRecieptID);
+            var itemsOfLastReciept = _context.BoatOwnerItems.Where(i => i.BoatOwnerRecieptID == LastRecieptOfBoat).Include(i => i.Fish);
+            var res = itemsOfLastReciept.Select(r => new { fishId = r.Fish.FishID, fishName = r.Fish.FishName });
+            return Json(res);
 
+        }
+        public IActionResult GetMerchant(int? id, DateTime date)
+        {
+            Merchant m = _context.Merchants.Find(id);
+            var rowsOfRec = _context.MerchantReciepts.Where(i => i.MerchantID == id);
+            int recID = 0;
+            if (rowsOfRec.Any())
+            {
+                recID = rowsOfRec.Max(i => i.MerchantRecieptID);
+            }
+            var rec = _context.MerchantReciepts.Find(recID);
+            if (rec != null)
+            {
+                if (rec.Date.ToShortDateString() == date.ToShortDateString())
+                {
+                    return Json(new { RecID = recID, debts = m.PreviousDebts });
+                }
+                return Json(new { RecID = 0, debts = m.PreviousDebts });
+            }
+
+            return Json(new { RecID = 0, debts = m.PreviousDebts });
+
+        }
+        public IActionResult SaveItems(MerchantRecieptItem item)
+        {
+
+
+
+            // items.Add(item);
+            Fish fish = _context.Fishes.Find(item.FishID);
+            Boat boat = _context.Boats.Find(item.BoatID);
+            ProductionType production = _context.ProductionTypes.Find(item.ProductionTypeID);
+            var res = new { boatName = boat.BoatName, productionName = production.ProductionName, fishName = fish.FishName, qty = item.Qty, unitPrice = item.UnitPrice, total = item.Qty * item.UnitPrice };
+
+            return Json(res);
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MCreate(MerRecCreateVm model)
+        {
+            if (ModelState.IsValid)
+            {
+
+                var FishesCookie = Request.Cookies["MFishNames"];
+                var ProductionTypesCookie = Request.Cookies["MProductionTypes"];
+                var qtysCookie = Request.Cookies["Mqtys"];
+                var unitpricesCookie = Request.Cookies["Munitprices"];
+                var boatsCookie = Request.Cookies["Mboats"];
+                string[] Fishes = FishesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
+                string[] Productions = ProductionTypesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
+                string[] boats = boatsCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
+                int[] qtys = qtysCookie.Split(",").Select(c => Convert.ToInt32(c)).ToArray();
+                decimal[] unitPrices = unitpricesCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
+
+
+                MerchantReciept merchantReciept;
+                Merchant m;
+                if (model.RecID == 0)
+                {
+                    merchantReciept = new MerchantReciept() { Date = model.Date, payment = model.payment, TotalOfReciept = model.TotalOfReciept, MerchantID = model.MerchantID, CurrentDebt = model.CurrentDebt };
+                    _context.Add(merchantReciept);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    merchantReciept = _context.MerchantReciepts.Find(model.RecID);
+                    m = _context.Merchants.Find(model.MerchantID);
+                    merchantReciept.TotalOfReciept += model.TotalOfReciept;
+                    merchantReciept.payment += model.payment;
+                }
+
+
+
+
+                for (int i = 0; i < Fishes.Length; i++)
+                {
+                    var fish = _context.Fishes.Single(x => x.FishName == Fishes[i]);
+                    var Produc = _context.ProductionTypes.Single(x => x.ProductionName == Productions[i]);
+                    var boat = _context.Boats.Single(x => x.BoatName == boats[i]);
+                    MerchantRecieptItem MerchantRecieptItems = new MerchantRecieptItem()
+                    {
+                        MerchantRecieptID = merchantReciept.MerchantRecieptID,
+                        FishID = fish.FishID,
+                        ProductionTypeID = Produc.ProductionTypeID,
+                        Qty = qtys[i],
+                        UnitPrice = unitPrices[i],
+                        BoatID = boat.BoatID
+                    };
+
+                    _context.MerchantRecieptItems.Add(MerchantRecieptItems);
+                    await _context.SaveChangesAsync();
+                }
+
+                m = _context.Merchants.Find(model.MerchantID);
+                m.PreviousDebts = model.CurrentDebt;
+                merchantReciept.CurrentDebt = model.CurrentDebt;
+
+
+                await _context.SaveChangesAsync();
+                return Json(new { message = "success", id = merchantReciept.MerchantRecieptID });
+                //return RedirectToAction(nameof(Index));
+            }
+            ViewData["MerchantID"] = new SelectList(_context.Merchants, "MerchantID", "MerchantName", model.MerchantID);
+            //return View(model);
+            return Json(new { message = "fail" });
+        }
         // POST: BoatOwnerReciepts/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(BoatOwnerReciept boatOwnerReciept)
         {
-           // Cookies Of Boat Owner Receipt
-            var TotalBeforePaymentCookie = Request.Cookies["TotalBeforePayment"];
-            var commisionCookie = Request.Cookies["commision"];
-            var PaidFromDebtsCookie = Request.Cookies["PaidFromDebts"];
-            var TotalProductionCookie = Request.Cookies["TotalProduction"];
+
+
+            var TotalBeforePaymentCookie = boatOwnerReciept.TotalBeforePaying;
+            var commisionCookie = boatOwnerReciept.Commission;
+            var PaidFromDebtsCookie = boatOwnerReciept.PaidFromDebts;
+            var TotalProductionCookie = boatOwnerReciept.TotalAfterPaying;
             //find latest sarha related to selected boat
-            var sarhaId = _context.Sarhas.Where(x => x.BoatID == boatOwnerReciept.BoatID).Max(x=>x.SarhaID);
+            var sarhaId = _context.Sarhas.Where(x => x.BoatID == boatOwnerReciept.BoatID).Max(x => x.SarhaID);
             boatOwnerReciept.SarhaID = sarhaId;
             boatOwnerReciept.TotalBeforePaying = Convert.ToDecimal(TotalBeforePaymentCookie);
             boatOwnerReciept.Commission = Convert.ToDecimal(commisionCookie);
@@ -127,17 +245,18 @@ namespace FishBusiness.Controllers
                 _context.SaveChanges();
             }
             //return RedirectToAction(nameof(Index));
-            return RedirectToAction("Details",new { id= latestReceipt });
-           
+            //return RedirectToAction("Details",new { id= latestReceipt });
+            return Json(new { message = "success", id = boatOwnerReciept.BoatID, reciept = boatOwnerReciept.BoatOwnerRecieptID });
+
         }
-      
+
         // GET: BoatOwnerReciepts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
-            }           
+            }
             var boatOwnerReciept = await _context.BoatOwnerReciepts.FindAsync(id);
             if (boatOwnerReciept == null)
             {

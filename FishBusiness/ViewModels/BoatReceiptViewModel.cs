@@ -10,5 +10,6 @@ namespace FishBusiness.ViewModels
     {
         public BoatOwnerReciept BoatOwnerReciept  { get; set; }
         public BoatOwnerItem BoatOwnerItem  { get; set; }
+        public MerchantReciept merchantReciept { get; set; }
     }
 }

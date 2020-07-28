@@ -42,7 +42,7 @@
                     <div data-section="s-new" class="task-list-container" data-connect="sorting">
                         <div class="connect-sorting">
                             <div class="task-container-header">
-                                <h6 class="s-heading" data-listTitle="In Progress">اضافة تفاصيل الفاتورة</h6>
+                                <h6 class="s-heading" data-listTitle="In Progress">اضافة تفاصيل فاتورة المركب</h6>
                                 <div class="dropdown">
                                     <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
@@ -65,7 +65,7 @@
                                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                             <div class="form-group">
                                                 <label asp-for="BoatOwnerReciept.Boat.BoatName" class="control-label"></label>
-                                                <select asp-for="BoatOwnerReciept.BoatID" class="form-control" asp-items="ViewBag.BoatID"></select>
+                                                <select asp-for="BoatOwnerReciept.BoatID" id="boatDDL" class="form-control" asp-items="ViewBag.BoatID"></select>
                                             </div>
                                         </div>
 
@@ -77,7 +77,8 @@
                                         <div class="task-header">
                                             <div class="form-group">
                                                 <label asp-for="BoatOwnerReciept.Date" class="control-label"></label>
-                                                <input asp-for="BoatOwnerReciept.Date" class="form-control" />
+                                                <input asp-for="BoatOwnerReciept.Date" id="BoatOwnerReciept_Date" class="form-control" />
+
                                                 <span asp-validation-for="BoatOwnerReciept.Date" class="text-danger"></span>
                                             </div>
                                         </div>
@@ -124,7 +125,7 @@
 
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="BoatBody">
                         </tbody>
                         <tfoot>
                             <tr>
@@ -151,7 +152,163 @@
                                 <td id="TotalProduction"></td>
                                 <td></td>
                                 <td>
-                                    <button type="submit" form="Addform" class="btn btn-success" id="btnSave">حفظ الفاتورة</button>
+                                    <button type="button" class="btn btn-success" style="margin-left:5px;" id="btnSave">حفظ الفاتورة</button>
+                                    @*<div >
+
+                                        </div>*@
+                                    @*<button type="button" class="btn btn-info" hidden id="btnDetails">عرض فاتورة المركب</button>*@
+                                    @*<button type="submit" form="Addform" class="btn btn-success" id="btnSave">حفظ الفاتورة</button>*@
+                                </td>
+                                <td id="redirectPrint">
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    @*-------------------------------------------------*@
+
+
+
+
+
+
+
+
+    <div class="row scrumboard MerchantArea" style="display:none" id="cancel-row">
+
+        <div class="col-lg-4 layout-spacing">
+            <form>
+                <div class="task-list-section">
+
+                    <div data-section="s-new" class="task-list-container" data-connect="sorting">
+                        <div class="connect-sorting">
+                            <div class="task-container-header">
+                                <h6 class="s-heading" data-listTitle="In Progress">اضافة تفاصيل فاتورة التاجر</h6>
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink-1">
+                                        <a class="dropdown-item list-edit" href="javascript:void(0);">Edit</a>
+                                        <a class="dropdown-item list-delete" href="javascript:void(0);">Delete</a>
+                                        <a class="dropdown-item list-clear-all" href="javascript:void(0);">Clear All</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="connect-sorting-content" data-sortable="true">
+
+
+                                <div data-draggable="true" class="card simple-title-task" style="">
+                                    <div class="card-body">
+
+                                        <div class="task-header">
+                                            <div class="form-group">
+                                                <label class="control-label"> اسم التاجر</label>
+                                                <select class="form-control" asp-for="merchantReciept.MerchantID" id="MerDDL" asp-items="ViewBag.MerchantID as SelectList">
+
+                                                    <option value="-1">اختر تاجر </option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                @*<div data-draggable="true" class="card simple-title-task" style="">
+                                        <div class="card-body">
+
+                                            <div class="task-header">
+                                                <div class="form-group">
+                                                    <label class="control-label">تاريخ الفاتوره</label>
+                                                    <input asp-for="merchantReciept.Date" id="MerRecDate" class="form-control" />
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>*@
+
+
+                            </div>
+
+                            <div class="add-s-task">
+                                @*onclick="delete()"*@
+                                <a class="addTask" data-toggle="modal" id="Buy" data-target="#MfadeleftModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg> شراء</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </form>
+        </div>
+        <div class="col-xl-8 col-lg-8 col-sm-8  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <div class="table-responsive mb-4 ">
+                    <table class="table table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+
+                                <th>
+                                    نوع السمك
+                                </th>
+                                <th>
+                                    نوع الانتاج
+                                </th>
+                                <th>
+                                    اسم المركب
+                                </th>
+                                <th>
+                                    الكميه
+                                </th>
+
+                                <th>
+                                    السعر
+                                </th>
+
+                                <th>اجمالي</th>
+                                <th>#</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody id="TBody">
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="total text-info">اجمالي الفاتورة</td>
+                                <td class="total" id="MTotalBeforePayment">0</td>
+                                @*<td class="total text-info"> العمولة</td>
+                                    <td class="total" id="commision">0</td>*@
+
+                            </tr>
+                            <tr class="total">
+                                <td>المدفوع من الديون</td>
+                                <td colspan="2">
+                                    <div class="form-group">
+                                        <input class="form-control" id="MpayFromDebt" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="btn btn-secondary" id="MbtnCalc">خصم</button>
+                                </td>
+                            </tr>
+                            <tr class="total">
+                                <td class="text-info">باقى ديون</td>
+                                <td id="MPreviousDebts"></td>
+                                <td id="MPreviousDebts2"></td>
+                                <td></td>
+                                <td>
+                                    <button type="button" class="btn btn-success" id="MbtnSave">حفظ الفاتورة</button>
+                                    <input type="hidden" id="RecID" />
                                 </td>
                             </tr>
                         </tfoot>
@@ -204,13 +361,238 @@
         </div>
     </div>
 </div>
+
+@*----------------------------------------------------------------------------------*@
+
+
+
+<div id="MfadeleftModal" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">التفاصيل الخاصة بالاسماك</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="MyForm">
+                    <div class="form-group">
+                        @*<label class="control-label">اسم المركب</label>
+                            <select class="form-control" asp-items="ViewBag.Boats" id="boatDDL" name="BoatID">
+
+                                <option>اختر مركب </option>
+                            </select>*@
+                        <input class="form-control" type="hidden" id="MBoatID" name="BoatID" />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">نوع السمك</label>
+                        <select class="form-control" id="boatItemsDDL" name="FishID"></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">نوع الانتاج</label>
+                        <select class="form-control" asp-items="ViewBag.ProductionTypeID" name="ProductionTypeID"></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">الكميه</label>
+                        <input class="form-control" name="Qty" />
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">سعر الوحده</label>
+                        <input class="form-control" name="UnitPrice" />
+                        <span class="text-danger"></span>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer md-button">
+                <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> اغلاق</button>
+                <button type="button" class="btn btn-primary" id="MNewRows">حفظ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 @section scripts{
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script>
         $(document).ready(function () {
             $('#btnSave').hide();
             $('.total').hide();
+            var boatId = 0;
 
+
+
+            $("#boatDDL").on("change", function () {
+
+                $("#MBoatID").val($("#boatDDL").val());
+                var body = $("#BoatBody")
+                body.html("");
+                $('#btnSave').hide();
+                $('.total').hide();
+                $('#TotalBeforePayment').text('0')
+                $('#commision').text('0')
+                $('#BoatOwnerReciept_PaidFromDebts').val('')
+                $('#TotalProduction').text('')
+
+                var printBody = $("#redirectPrint")
+                printBody.html("");
+                $(".MerchantArea").hide();
+
+
+
+            });
+            $("#MerDDL").on("change", function () {
+                var Date = $("#BoatOwnerReciept_Date").val();
+                var id = $("#MerDDL").val()
+
+
+                $.ajax({
+                    url: "/BoatOwnerReciepts/GetMerchant/",
+                    type: "GET",
+                    contentType: "json",
+                    traditional: true,
+                    data: {
+                        id:id,
+                        date: Date
+                    }, //id of the state which is used to extract cities
+                    success: function (result) {
+                        $('#MPreviousDebts').text(result.debts)
+                        $('#MPreviousDebts2').text(result.recId)
+                        $('#RecID').val(result.recID)
+                    },
+                    error: function () {
+                        alert("Something went wrong call the police");
+                    }
+                });
+            });
+            var i = 0;
+            //var RecId = 0;
+            $("#MNewRows").on("click", function () {
+                var fd = $("#MyForm").serialize();
+                var body = $("#TBody");
+                var TotalBeforPayment = $("#MTotalBeforePayment");
+                $.ajax({
+                    url: "/BoatOwnerReciepts/SaveItems/",
+                    type: "GET",
+                    dataType: "json",
+                    data: fd,
+                    success: function (result) {
+                        i = i + 1;
+                        body.append("<tr id='row_" + result.fishName + i + "' data-price=" + result.total + ">" +
+
+                            "<td class='Mfishes'>" + result.fishName + "</td>" +
+                            "<td class='Mproductions'>" + result.productionName + "</td>" +
+                            "<td class='Mboats'>" + result.boatName + "</td>" +
+                            "<td class='Mqtys'>" + result.qty + "</td>" +
+                            "<td class='Munitprices'>" + result.unitPrice + "</td>" +
+                            "<td>" + result.total + "</td>" +
+                            "<td> <a href='#' onclick=remove('" + result.fishName + i + "')>" + "X</a> </td>" +
+                            + "</tr>");
+
+                        $('#MTotalBeforePayment').text(parseFloat($('#MTotalBeforePayment').text()) + result.total);
+                        $("#MbtnSave").show()
+
+                    },
+                    error: function () {
+                        alert("Something went wrong call the police");
+                    }
+                });
+            });
+
+            $("#MbtnSave").on("click", function () {
+
+                var RecID = parseInt($('#RecID').val());
+
+                var CurrentDebt = parseFloat($('#MPreviousDebts').text());
+                var MTotalBeforePayment = parseFloat($('#MTotalBeforePayment').text());
+                var MpayFromDebt = parseFloat($('#MpayFromDebt').val());
+                var MerchantID = $("#MerDDL").val();
+                var MerRecDate = $("#MerRecDate").val();
+                var FishNames = new cookieList("MFishNames"); // all items in the array.
+                $('.Mfishes').each(function () {
+                    FishNames.add($(this).text());
+                });
+                var ProductionTypes = new cookieList("MProductionTypes"); // all items in the array.
+                $('.Mproductions').each(function () {
+                    ProductionTypes.add($(this).text());
+                });
+                var qtys = new cookieList("Mqtys"); // all items in the array.
+                $('.Mqtys').each(function () {
+                    qtys.add($(this).text());
+                });
+                var unitprices = new cookieList("Munitprices"); // all items in the array.
+                $('.Munitprices').each(function () {
+                    unitprices.add($(this).text());
+                })
+                var boats = new cookieList("Mboats"); // all items in the array.
+                $('.Mboats').each(function () {
+                    boats.add($(this).text());
+                });
+                var body = $("#TBody");
+                var Date = $("#BoatOwnerReciept_Date").val();
+                $.ajax({
+                    url: "/BoatOwnerReciepts/MCreate/",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        Date: Date,
+                        MerchantID: MerchantID,
+                        TotalOfReciept: MTotalBeforePayment,
+                        payment: MpayFromDebt,
+                        CurrentDebt: CurrentDebt,
+                        RecID: RecID
+
+                    },
+                    success: function (result) {
+                        if (result.message == "success") {
+
+                            alert("تم حفظ الفاتوره بنجاح")
+                            $('#MTotalBeforePayment').text('0')
+                            $('#MpayFromDebt').val('')
+                            $('#MPreviousDebts').text('0')
+                            $("#MbtnSave").hide()
+
+
+                            $('#MerDDL option[value=-1]').prop('selected', true);
+
+                            body.html("");
+                        } else {
+                            alert("خطا !!!!! تاكد من ادخل التاريخ")
+                            body.html("");
+                            $('#MTotalBeforePayment').text("0")
+                        }
+                    },
+                    error: function () {
+                        alert("Something went wrong call the police");
+
+                    }
+                });
+                debugger
+
+
+            });
+
+            $("#MbtnCalc").on("click", function () {
+
+                var pd = parseFloat($('#MPreviousDebts').text());
+                var tbp = parseFloat($('#MTotalBeforePayment').text());
+                var pfd = parseFloat($('#MpayFromDebt').val());
+
+                if ($('#MpayFromDebt').val()) {
+                    $('#MPreviousDebts').text(
+                        pd + tbp - pfd)
+
+                }
+                else {
+                    alert("ادخل قيمة الخصم")
+                }
+                //$('#MpayFromDebt').val('0')
+            });
         })
         $("#NewRows").click(function () {
             var BoatOwnerItem_FishID = $('#BoatOwnerItem_FishID option:selected').text()
@@ -232,16 +614,19 @@
             $('.total').show();
             $('#BoatOwnerItem_Qty').val('');
             $('#BoatOwnerItem_UnitPrice').val('');
-            $('table tbody').append(addControls);
+            $('#BoatBody').append(addControls);
 
         });
         $("#btnCalc").click(function () {
             if (!$('#BoatOwnerReciept_PaidFromDebts').val()) {
                 $('#TotalProduction').text(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').text()))
+
             }
             else {
                 $('#TotalProduction').text(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').text()) - parseFloat($('#BoatOwnerReciept_PaidFromDebts').val()));
             }
+
+            //$('#BoatOwnerReciept_PaidFromDebts').val('')
         });
 
         var cookieList = function (cookieName) {
@@ -282,16 +667,20 @@
                 }
             }
         }
+
+
+
         $("#btnSave").click(function () {
 
-            var TotalBeforePayment = new cookieList("TotalBeforePayment"); // all items in the array.
-            TotalBeforePayment.add($('#TotalBeforePayment').text())
-            var commision = new cookieList("commision"); // all items in the array.
-            commision.add($('#commision').text())
-            var  PaidFromDebts = new cookieList("PaidFromDebts"); // all items in the array.
-            PaidFromDebts.add($('#BoatOwnerReciept_PaidFromDebts').val())
-            var TotalProduction = new cookieList("TotalProduction"); // all items in the array.
-            TotalProduction.add($('#TotalProduction').text())
+
+
+            var TotalBeforePayment = parseFloat($('#TotalBeforePayment').text());
+            var Date = $("#BoatOwnerReciept_Date").val();
+            var commision = parseFloat($('#commision').text());
+            var PaidFromDebts = parseFloat($('#BoatOwnerReciept_PaidFromDebts').val());
+            var TotalProduction = parseFloat($('#TotalProduction').text());
+            var boatID = $("#boatDDL").val();
+
 
 
             var FishNames = new cookieList("FishNames"); // all items in the array.
@@ -314,7 +703,75 @@
             $('.prices').each(function () {
                 prices.add($(this).text());
             })
+
+
+            $.ajax({
+                url: "/BoatOwnerReciepts/Create/",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    BoatID: boatID,
+                    TotalBeforePaying: TotalBeforePayment,
+                    Date: Date,
+                    Commission: commision,
+                    PaidFromDebts: PaidFromDebts,
+                    TotalAfterPaying: TotalProduction
+                },
+                success: function (result) {
+                    if (result.message == "success") {
+                        //window.location.href = "/MerchantReciepts/Details/" + result.id;
+                        alert("تم حفظ الفاتوره");
+                        $list = $("#boatItemsDDL");
+                        $.ajax({
+                            url: "/BoatOwnerReciepts/GetBoatItems/",
+                            type: "GET",
+                            contentType: "json",
+                            data: { id: result.id },
+                            traditional: true,
+                            success: function (result) {
+                                $list.empty();
+
+                                $.each(result, function (i, item) {
+                                    $list.append('<option value="' + item.fishId + '"> ' + item.fishName + ' </option>');
+                                });
+
+
+                            },
+                            error: function () {
+                                alert("خطا ..هذا المركب ليس له انتاج حاليا");
+                            }
+                        });
+
+                        $("#redirectPrint").append("<a  class='btn btn-info' href='/BoatOwnerReciepts/Details/" + result.reciept + "' >عرض فاتورة المركب</a>")
+                        $(".MerchantArea").show();
+                        $("#btnSave").hide();
+                    } else {
+                        alert("error")
+
+                    }
+
+
+                },
+                error: function () {
+                    alert("Something went wrong call the police");
+
+                }
+            });
         });
+
+        var remove = function (id) {
+
+            var price = $("#row_" + id).attr('data-price');
+            if (price) {
+                var tbp = parseFloat($('#MTotalBeforePayment').text());
+                var p = parseFloat(price);
+                $('#MTotalBeforePayment').text(tbp - p)
+                $("#row_" + id).remove();
+            }
+        }
+
+
+
     </script>
 
 }

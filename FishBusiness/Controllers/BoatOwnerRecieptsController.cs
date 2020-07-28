@@ -54,8 +54,8 @@ namespace FishBusiness.Controllers
             ViewData["ProductionTypeID"] = new SelectList(_context.ProductionTypes, "ProductionTypeID", "ProductionName");
             ViewData["FishID"] = new SelectList(_context.Fishes, "FishID", "FishName");
             // commission
-            //ViewBag.Commission = _context.Cofigs.Find(1);
-            ViewBag.Commission = _context.Cofigs.Find(2);
+            ViewBag.Commission = _context.Cofigs.Find(1);
+            //ViewBag.Commission = _context.Cofigs.Find(2);
             return View();
         }
 

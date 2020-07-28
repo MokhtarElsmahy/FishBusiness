@@ -20,13 +20,14 @@
                 <h3>تفاصيل الفاتورة</h3>
             </div>
         </div>
-        <div class="col-sm-6 col-12 align-self-center text-sm-right">
-            <div class="company-info">
-                <button class="btn btn-secondary" id="btnPrint">طباعة</button>
-            </div>
-        </div>
+       
         <div class="mt-4 ml-auto">
-            <a asp-action="Index" class="btn btn-primary">قائمة الفواتير</a>
+            <div class="row">
+            <div class="company-info ml-2" style="margin-left:5px;">
+                <button class="btn btn-secondary ml-2" id="btnPrint">طباعة</button>
+            </div>
+            <a asp-action="Index" class="btn btn-primary mr-2 ">قائمة الفواتير</a>
+            </div>
         </div>
     </div>
 
@@ -48,10 +49,10 @@
                                         <h3 class="in-heading">فاتورة تاجر</h3>
                                     </div>
                                     @*<div class="col-sm-6 col-12 align-self-center text-sm-right">
-                                            <div class="company-info">
-                                                <button class="btn btn-secondary .action-print" id="btnPrint">طباعة</button>
-                                            </div>
-                                        </div>*@
+                            <div class="company-info">
+                                <button class="btn btn-secondary .action-print" id="btnPrint">طباعة</button>
+                            </div>
+                        </div>*@
 
                                 </div>
                                 <div id="Invoice">
@@ -138,13 +139,18 @@
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
 
 
                     </div>
 
-
+                    <div class="col-sm-6 col-12 align-self-center text-sm-right mb-2 ml-auto">
+                        <div class="company-info">
+                            <button class="btn btn-secondary" id="btnPrint1">طباعة</button>
+                        </div>
+                    </div>
 
                     <div class="inv--thankYou">
                         <div class="row">
@@ -167,6 +173,9 @@
     <script src="~/assets/js/apps/invoice.js"></script>
     <script>
         $("#btnPrint").click(function () {
+            window.print()
+        });
+        $("#btnPrint1").click(function () {
             window.print()
         });
     </script>

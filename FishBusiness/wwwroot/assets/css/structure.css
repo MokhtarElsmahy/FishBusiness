@@ -773,7 +773,9 @@ code { color: #e7515a; }
 
 .sidebar-wrapper {
 }
-.sidebar-theme #compactSidebar { background: #5c1ac3; }
+.sidebar-theme #compactSidebar {
+    background: #1b55e2;
+}
 
 .sidebar-closed #content {
     margin-right: 0;

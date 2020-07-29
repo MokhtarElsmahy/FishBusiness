@@ -86,7 +86,8 @@ namespace FishBusiness.Controllers
                 return NotFound();
             }
 
-            db.Boats.Remove(boat);
+
+            boat.IsActive = false;
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }

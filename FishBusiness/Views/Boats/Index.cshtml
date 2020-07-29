@@ -49,11 +49,12 @@
 
                                             <a asp-action="Edit" asp-route-id="@boat.BoatID" class="btn btn-success mb-2">تعديل</a>
                                             <a href="#" onclick="Details(@boat.BoatID)" class="btn btn-info mb-2">تفاصيل</a>
+                                            @*<a asp-action="Delete" asp-route-id="@boat.BoatID"  class="btn btn-info mb-2">حذف</a>*@
                                             <a class="btn btn-danger mb-2 delete"
                                                data-id="@boat.BoatID"
                                                data-controller="Boats"
                                                data-action="Delete"
-                                               data-body-message="هل انت متأكد من عملية الحذف ؟">حذف</a>
+                                               data-body-message="هل انت متأكد من ارشفة هذا المركب ؟">ارشفة</a>
                                         </td>
                                         
                                     </tr>

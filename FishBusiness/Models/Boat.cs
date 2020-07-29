@@ -49,6 +49,9 @@ namespace FishBusiness.Models
         public int TypeID { get; set; }
         public virtual BoatType BoatType { get; set; }
 
+
+        public bool IsActive { get; set; }
+
         public virtual ICollection<BoatOwnerReciept> BoatOwnerReciepts { get; set; }
         public virtual ICollection<MerchantRecieptItem> MerchantRecieptItems { get; set; }
         public virtual ICollection<Sarha> Sarhas { get; set; }

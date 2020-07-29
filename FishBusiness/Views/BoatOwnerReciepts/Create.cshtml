@@ -4,6 +4,7 @@
     ViewData["Title"] = "Create";
 }
 @section Styles {
+
     <!-- BEGIN PAGE LEVEL PLUGINS -->
     <link href="~/plugins/animate/animate.css" rel="stylesheet" type="text/css" />
     <!-- END PAGE LEVEL PLUGINS -->
@@ -15,6 +16,8 @@
     <link href="~/assets/css/apps/scrumboard.css" rel="stylesheet" type="text/css" />
     <link href="~/assets/css/forms/theme-checkbox-radio.css" rel="stylesheet" type="text/css">
     <!-- END PAGE LEVEL STYLES -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
 }
 <div class="layout-px-spacing">
 
@@ -424,9 +427,6 @@
             $('#btnSave').hide();
             $('.total').hide();
             var boatId = 0;
-
-
-
             $("#boatDDL").on("change", function () {
 
                 $("#MBoatID").val($("#boatDDL").val());
@@ -466,7 +466,11 @@
                         $('#RecID').val(result.recID)
                     },
                     error: function () {
-                        alert("Something went wrong call the police");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حاول مرة اخري',
+                        });
                     }
                 });
             });
@@ -499,7 +503,11 @@
 
                     },
                     error: function () {
-                        alert("Something went wrong call the police");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حاول مرة اخري',
+                        });
                     }
                 });
             });
@@ -551,7 +559,13 @@
                     success: function (result) {
                         if (result.message == "success") {
 
-                            alert("تم حفظ الفاتوره بنجاح")
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'تم حفظ الفاتورة بنجاح',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
                             $('#MTotalBeforePayment').text('0')
                             $('#MpayFromDebt').val('')
                             $('#MPreviousDebts').text('0')
@@ -568,11 +582,14 @@
                         }
                     },
                     error: function () {
-                        alert("Something went wrong call the police");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حاول مرة اخري',
+                        });
 
                     }
                 });
-                debugger
 
 
             });
@@ -589,7 +606,11 @@
 
                 }
                 else {
-                    alert("ادخل قيمة الخصم")
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'حدث خطأ',
+                        text: 'ادخل قيمة الخصم',
+                    });
                 }
                 //$('#MpayFromDebt').val('0')
             });
@@ -628,7 +649,6 @@
 
             //$('#BoatOwnerReciept_PaidFromDebts').val('')
         });
-
         var cookieList = function (cookieName) {
             //When the cookie is saved the items will be a comma seperated string
             //So we will split the cookie by comma to get the original array
@@ -667,9 +687,6 @@
                 }
             }
         }
-
-
-
         $("#btnSave").click(function () {
 
 
@@ -720,7 +737,13 @@
                 success: function (result) {
                     if (result.message == "success") {
                         //window.location.href = "/MerchantReciepts/Details/" + result.id;
-                        alert("تم حفظ الفاتوره");
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'تم حفظ الفاتورة بنجاح',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
                         $list = $("#boatItemsDDL");
                         $.ajax({
                             url: "/BoatOwnerReciepts/GetBoatItems/",
@@ -746,19 +769,26 @@
                         $(".MerchantArea").show();
                         $("#btnSave").hide();
                     } else {
-                        alert("error")
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حاول مرة اخري',
+                        });
 
                     }
 
 
                 },
                 error: function () {
-                    alert("Something went wrong call the police");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'حدث خطأ',
+                        text: 'حاول مرة اخري',
+                    });
 
                 }
             });
         });
-
         var remove = function (id) {
 
             var price = $("#row_" + id).attr('data-price');
@@ -769,9 +799,6 @@
                 $("#row_" + id).remove();
             }
         }
-
-
-
     </script>
 
 }

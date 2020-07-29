@@ -6,6 +6,7 @@
 @section Styles{
     <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/datatables.css">
     <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/dt-global_style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
 }
 <div class="layout-px-spacing">
@@ -30,9 +31,9 @@
                             <tr>
                                 <th>رقم الفاتورة</th>
                                 <th>المركب</th>
-                                <th>@Html.DisplayNameFor(i=>i.Date)</th>
-                                <th>@Html.DisplayNameFor(i=>i.Commission)</th>
-                                <th>@Html.DisplayNameFor(i=>i.TotalAfterPaying)</th>
+                                <th>@Html.DisplayNameFor(i => i.Date)</th>
+                                <th>@Html.DisplayNameFor(i => i.Commission)</th>
+                                <th>@Html.DisplayNameFor(i => i.TotalAfterPaying)</th>
                                 <th></th>
 
 
@@ -52,7 +53,11 @@
                                         <td>
 
                                             <a asp-action="Details" asp-route-id="@item.BoatOwnerRecieptID" class="btn btn-info mb-2">تفاصيل</a>
-                                            <a asp-action="Delete" onclick="return confirm('هل انت متأكد من عملية الحذف ؟ ')" asp-route-id="@item.BoatOwnerRecieptID" class="btn btn-danger mb-2">حذف</a>
+                                            <a  class="btn btn-danger mb-2 delete"
+                                               data-id="@item.BoatOwnerRecieptID"
+                                               data-controller="BoatOwnerReciepts"
+                                               data-action="Delete"
+                                               data-body-message="هل انت متأكد من عملية الحذف ؟">حذف</a>
 
                                         </td>
 
@@ -82,4 +87,25 @@
 
 </div>
 
+@section scripts{
+    <script>
+        function DeleteConfirmation() {
+            Swal.fire({
+                title: 'هل انت متأكد من الحذف ؟',
+                text: "لن تكون قادر علي الاسترجاع مرة اخري",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'تأكيد الحذف'
+            }).then((result) => {
+                if (result.value) {
+                    return true;
+                }
+                else
+                    return false;
+            })
+        };
+    </script>
+}
 

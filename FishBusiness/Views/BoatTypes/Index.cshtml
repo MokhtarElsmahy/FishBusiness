@@ -40,7 +40,11 @@
                                         </td>
                                         <td>
                                             <a asp-action="Edit" class="btn btn-success" asp-route-id="@item.TypeID">تعديل</a> |
-                                            <a asp-action="Delete" class="btn btn-danger" onclick="return confirm('هل انت متأكد من عملية الحذف ؟ ')" asp-route-id="@item.TypeID">حذف</a>
+                                            <a class="btn btn-danger mb-2 delete"
+                                               data-id="@item.TypeID"
+                                               data-controller="BoatTypes"
+                                               data-action="Delete"
+                                               data-body-message="هل انت متأكد من عملية الحذف ؟">حذف</a>
                                         </td>
                                     </tr>
                                 }

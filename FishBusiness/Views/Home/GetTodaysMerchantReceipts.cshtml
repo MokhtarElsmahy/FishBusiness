@@ -1,23 +1,22 @@
-﻿@model IEnumerable<FishBusiness.Models.BoatOwnerReciept>
+﻿@model IEnumerable<FishBusiness.Models.MerchantReciept>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "GetTodaysMerchantReceipts";
 }
 @section Styles{
     <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/datatables.css">
     <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/dt-global_style.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
 }
 <div class="layout-px-spacing">
     <div class="container row">
         <div class="page-header m-3">
             <div class="page-title">
-                <h3>ادارة فواتير المراكب</h3>
+                <h3> فواتير التجار لليوم  @DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("ar-AE")) </h3>
             </div>
         </div>
         <div class="mt-4 ml-auto">
-            <a asp-action="Create" class="btn btn-primary">اضافة فاتورة جديدة</a>
+            <a asp-action="Create" asp-controller="BoatOwnerReciepts" class="btn btn-primary">اضافة فاتورة جديدة</a>
         </div>
     </div>
 
@@ -29,11 +28,12 @@
                     <table id="zero-config" class="table table-hover" style="width:100%">
                         <thead>
                             <tr>
-                                <th>رقم الفاتورة</th>
-                                <th>المركب</th>
+                                <th>رقم الفاتوره</th>
                                 <th>@Html.DisplayNameFor(i => i.Date)</th>
-                                <th>@Html.DisplayNameFor(i => i.Commission)</th>
-                                <th>@Html.DisplayNameFor(i => i.TotalAfterPaying)</th>
+                                <th>@Html.DisplayNameFor(i => i.Merchant.MerchantName)</th>
+                                @*<th>@Html.DisplayNameFor(i => i.Merchant.PreviousDebts)</th>
+                                    <th>@Html.DisplayNameFor(i => i.payment)</th>*@
+
                                 <th></th>
 
 
@@ -45,20 +45,19 @@
                                 @foreach (var item in Model)
                                 {
                                     <tr>
-                                        <td>@item.BoatOwnerRecieptID</td>
-                                        <td>@item.Boat.BoatName</td>
+                                        <td>@item.MerchantRecieptID</td>
                                         <td>@item.Date</td>
-                                        <td>@item.Commission</td>
-                                        <td>@item.TotalAfterPaying</td>
+                                        <td>@item.Merchant.MerchantName</td>
+                                        @*<td>@item.Merchant.PreviousDebts</td>
+                                            <td>@item.payment</td>*@
                                         <td>
 
-                                            <a asp-action="Details" asp-route-id="@item.BoatOwnerRecieptID" class="btn btn-info mb-2">تفاصيل</a>
-                                            <a  class="btn btn-danger mb-2 delete"
-                                               data-id="@item.BoatOwnerRecieptID"
-                                               data-controller="BoatOwnerReciepts"
+                                            <a asp-action="Details" asp-controller="MerchantReciepts" asp-route-id="@item.MerchantRecieptID" class="btn btn-info mb-2">تفاصيل</a>
+                                            <a class="btn btn-danger mb-2 delete"
+                                               data-id="@item.MerchantRecieptID"
+                                               data-controller="MerchantReciepts"
                                                data-action="Delete"
                                                data-body-message="هل انت متأكد من عملية الحذف ؟">حذف</a>
-
                                         </td>
 
                                     </tr>
@@ -86,4 +85,5 @@
     </div>
 
 </div>
+
 

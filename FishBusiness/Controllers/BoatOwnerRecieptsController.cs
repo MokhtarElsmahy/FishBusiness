@@ -58,8 +58,8 @@ namespace FishBusiness.Controllers
             //
             ViewData["MerchantID"] = new SelectList(_context.Merchants, "MerchantID", "MerchantName");
             // commission
-            //ViewBag.Commission = _context.Cofigs.Find(1);
-            ViewBag.Commission = _context.Cofigs.Find(2);
+            ViewBag.Commission = _context.Cofigs.Find(1);
+            //ViewBag.Commission = _context.Cofigs.Find(2);
             return View();
         }
         public IActionResult GetBoatItems(int? id)

@@ -1,8 +1,9 @@
 ﻿@model IEnumerable<FishBusiness.Models.BoatOwnerReciept>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "GetTodaysBoatReceipts";
 }
+
 @section Styles{
     <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/datatables.css">
     <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/dt-global_style.css">
@@ -13,11 +14,11 @@
     <div class="container row">
         <div class="page-header m-3">
             <div class="page-title">
-                <h3>ادارة فواتير المراكب</h3>
+                <h3> فواتير المراكب لليوم  @DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("ar-AE")) </h3>
             </div>
         </div>
         <div class="mt-4 ml-auto">
-            <a asp-action="Create" class="btn btn-primary">اضافة فاتورة جديدة</a>
+            <a asp-action="Create" asp-controller="BoatOwnerReciepts" class="btn btn-primary">اضافة فاتورة جديدة</a>
         </div>
     </div>
 
@@ -52,8 +53,8 @@
                                         <td>@item.TotalAfterPaying</td>
                                         <td>
 
-                                            <a asp-action="Details" asp-route-id="@item.BoatOwnerRecieptID" class="btn btn-info mb-2">تفاصيل</a>
-                                            <a  class="btn btn-danger mb-2 delete"
+                                            <a asp-action="Details" asp-controller="BoatOwnerReciepts" asp-route-id="@item.BoatOwnerRecieptID" class="btn btn-info mb-2">تفاصيل</a>
+                                            <a class="btn btn-danger mb-2 delete"
                                                data-id="@item.BoatOwnerRecieptID"
                                                data-controller="BoatOwnerReciepts"
                                                data-action="Delete"
@@ -86,4 +87,5 @@
     </div>
 
 </div>
+
 

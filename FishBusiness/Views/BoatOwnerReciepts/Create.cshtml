@@ -296,7 +296,7 @@
                                 <td>المدفوع من الديون</td>
                                 <td colspan="2">
                                     <div class="form-group">
-                                        <input class="form-control" id="MpayFromDebt" />
+                                        <input class="form-control" id="MpayFromDebt" value="0" />
                                         <span class="text-danger"></span>
                                     </div>
                                 </td>
@@ -567,7 +567,7 @@
                                 timer: 3000
                             });
                             $('#MTotalBeforePayment').text('0')
-                            $('#MpayFromDebt').val('')
+                            $('#MpayFromDebt').val('0')
                             $('#MPreviousDebts').text('0')
                             $("#MbtnSave").hide()
 
@@ -602,7 +602,7 @@
 
                 if ($('#MpayFromDebt').val()) {
                     $('#MPreviousDebts').text(
-                        pd + tbp - pfd)
+                        (pd + tbp) - pfd)
 
                 }
                 else {

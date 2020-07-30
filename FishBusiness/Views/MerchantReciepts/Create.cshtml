@@ -145,7 +145,7 @@
                                 <td>المدفوع من الديون</td>
                                 <td colspan="2">
                                     <div class="form-group">
-                                        <input class="form-control" id="payFromDebt" />
+                                        <input class="form-control" id="payFromDebt" value="0" />
                                         <span class="text-danger"></span>
                                     </div>
                                 </td>
@@ -373,7 +373,8 @@
                         MerchantID: MerchantID,
                         TotalOfReciept: TotalBeforePayment,
                         payment: payFromDebt,
-                        CurrentDebt: CurrentDebt
+                        CurrentDebt: CurrentDebt,
+                        RecID:0
                     },
                     success: function (result) {
                         if (result.message == "success") {
@@ -402,7 +403,7 @@
 
                 if ($('#payFromDebt').val()) {
                     $('#PreviousDebts').text(
-                        pd + tbp - pfd)
+                        (pd + tbp) - pfd)
 
                 }
                 else {

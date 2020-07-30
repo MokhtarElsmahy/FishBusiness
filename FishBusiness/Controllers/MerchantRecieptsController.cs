@@ -106,11 +106,11 @@ namespace FishBusiness.Controllers
                 await _context.SaveChangesAsync();
 
 
-                var FishesCookie = Request.Cookies["MFishNames"];
-                var ProductionTypesCookie = Request.Cookies["MProductionTypes"];
-                var qtysCookie = Request.Cookies["Mqtys"];
-                var unitpricesCookie = Request.Cookies["Munitprices"];
-                var boatsCookie = Request.Cookies["Mboats"];
+                var FishesCookie = Request.Cookies["FishNames"];
+                var ProductionTypesCookie = Request.Cookies["ProductionTypes"];
+                var qtysCookie = Request.Cookies["qtys"];
+                var unitpricesCookie = Request.Cookies["unitprices"];
+                var boatsCookie = Request.Cookies["boats"];
                 string[] Fishes = FishesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 string[] Productions = ProductionTypesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 string[] boats = boatsCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();

@@ -62,6 +62,7 @@ namespace FishBusiness.Controllers
                    // DebtsOfMulfunction = model.DebtsOfMulfunction,
                     BoatNumber = model.BoatNumber,
                     DebtsOfStartingWork = model.DebtsOfStartingWork
+                    ,IsActive = true
                 };
                 db.Boats.Add(boat);
                 await db.SaveChangesAsync();

@@ -19,8 +19,6 @@ namespace FishBusiness.Models
         public int SarhaID { get; set; }
         [Required]
         public virtual Sarha Sarha { get; set; }
-
-
         [Display(Name = "انتاج السرحة")]
         public decimal TotalBeforePaying { get; set; }
 

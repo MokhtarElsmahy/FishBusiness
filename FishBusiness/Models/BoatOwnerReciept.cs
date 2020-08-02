@@ -33,6 +33,9 @@ namespace FishBusiness.Models
         [Display(Name = "العموله")]
         public decimal Commission { get; set; }
 
+        [Display(Name = "نسبة العموله")]
+        public int PercentageCommission { get; set; }
+
         [Required(ErrorMessage ="برجاء ادخال المدفوع من الهالك")]
         [Display(Name = "المدفوع من الهالك")]
         public decimal PaidFromDebts { get; set; }

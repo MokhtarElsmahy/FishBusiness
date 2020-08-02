@@ -1,0 +1,80 @@
+﻿@model FishBusiness.Models.ExternalReceipt
+@{
+    ViewData["Title"] = "Create";
+}
+
+@section Styles{
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="~/plugins/jquery-step/jquery.steps.css">
+
+    <style>
+        #formValidate .wizard > .content {
+            min-height: 25em;
+        }
+
+        #example-vertical.wizard > .content {
+            min-height: 24.5em;
+        }
+    </style>
+}
+
+<div class="container">
+    <div class="container">
+
+        <div class="page-header">
+            <div class="page-title">
+                <h3>فاتورة خارجية</h3>
+            </div>
+        </div>
+
+        <div class="container mt-3    ">
+            <form asp-action="Create">
+                <div class="row">
+                    <div class="form-group mb-3 col-lg-6">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <label asp-for="Boat.BoatName" class="control-label"></label>
+                        <select asp-for="BoatID" id="boatDDL" class="form-control" asp-items="ViewBag.BoatID"></select>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label asp-for="Date"></label>
+                        <input asp-for="Date" class="form-control" id="exampleFormControlInput1">
+                        <span asp-validation-for="Date" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TotalBeforePaying">انتاج السرحة قبل العمولة</label>
+                    <input asp-for="TotalBeforePaying" type="text" class="form-control">
+                    <span asp-validation-for="TotalBeforePaying" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Commission"></label>
+                    <input asp-for="Commission" type="text"  class="form-control">
+                    <span asp-validation-for="Commission" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PaidFromDebts"></label>
+                    <input asp-for="PaidFromDebts" type="text" value="0" class="form-control">
+                    <span asp-validation-for="PaidFromDebts" class="text-danger"></span>
+                </div>
+                <div class="d-flex justify-content-end" >
+                <button type="submit" class="btn btn-lg btn-primary  mt-3 ">حفظ</button>
+                </div>
+            </form>
+        </div>
+        
+
+    </div>
+</div>
+
+
+@section scripts{
+    <script src="~/plugins/highlight/highlight.pack.js"></script>
+    <script src="~/assets/js/custom.js"></script>
+    <script src="~/assets/js/scrollspyNav.js"></script>
+    <script src="~/plugins/jquery-step/jquery.steps.min.js"></script>
+    <script src="~/plugins/jquery-step/custom-jquery.steps.js"></script>
+
+
+  }

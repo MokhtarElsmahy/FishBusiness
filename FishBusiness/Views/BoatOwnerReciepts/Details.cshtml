@@ -119,23 +119,25 @@
                                                     <div class="col-sm-4 col-5">
                                                         <p class="">@Html.DisplayFor(model => model.Commission)</p>
                                                     </div>
-                                                    <div class="col-sm-8 col-7">
-                                                        <p class=" discount-rate">ما تم دفعه من الهالك </p>
-                                                    </div>
-                                                    <div class="col-sm-4 col-5">
-                                                        <p class="">@Html.DisplayFor(model => model.PaidFromDebts)</p>
-                                                    </div>
-                                                    <div class="col-sm-8 col-7">
-                                                        <p class=" discount-rate">باقي الهالك علي المركب </p>
-                                                    </div>
-                                                    <div class="col-sm-4 col-5">
-                                                        <p class="">@Html.DisplayFor(model => model.Boat.DebtsOfHalek)</p>
-                                                    </div>
-                                                    <div class="col-sm-8 col-7 grand-total-title ">
-                                                        <h4 class="text-info">صافي انتاج المركب </h4>
-                                                    </div>
-                                                    <div class="col-sm-4 col-5 grand-total-amount">
-                                                        <h4 class="text-info">@Html.DisplayFor(model => model.TotalAfterPaying)</h4>
+                                                    <div id="hideInPrint">
+                                                        <div class="col-sm-8 col-7">
+                                                            <p class=" discount-rate">ما تم دفعه من الهالك </p>
+                                                        </div>
+                                                        <div class="col-sm-4 col-5">
+                                                            <p class="">@Html.DisplayFor(model => model.PaidFromDebts)</p>
+                                                        </div>
+                                                        <div class="col-sm-8 col-7">
+                                                            <p class=" discount-rate">باقي الهالك علي المركب </p>
+                                                        </div>
+                                                        <div class="col-sm-4 col-5">
+                                                            <p class="">@Html.DisplayFor(model => model.Boat.DebtsOfHalek)</p>
+                                                        </div>
+                                                        <div class="col-sm-8 col-7 grand-total-title ">
+                                                            <h4 class="text-info">صافي انتاج المركب </h4>
+                                                        </div>
+                                                        <div class="col-sm-4 col-5 grand-total-amount">
+                                                            <h4 class="text-info">@Html.DisplayFor(model => model.TotalAfterPaying)</h4>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -175,9 +177,12 @@
     <script src="~/assets/js/apps/invoice.js"></script>
     <script>
         $("#btnPrint").click(function () {
+            //$('#hideInPrint').attr("d")
+            $("#hideInPrint").css("display", "none");
             window.print()
         });
         $("#btnPrint1").click(function () {
+            $("#hideInPrint").css("display", "none");
             window.print()
         });
     </script>

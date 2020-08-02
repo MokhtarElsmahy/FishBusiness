@@ -37,12 +37,12 @@ namespace FishBusiness.Controllers
         public async Task<IActionResult> SharedBoats()
         {
             // Find its id in your db
-            return View(await db.Boats.Where(x => x.BoatType.TypeID == 5).ToListAsync());
+            return View(await db.Boats.Where(x => x.BoatType.TypeID == 2).ToListAsync());
         }
         public async Task<IActionResult> BasicBoats()
         {
             // Find its id in your db
-            return View(await db.Boats.Where(x => x.BoatType.TypeID == 4).ToListAsync());
+            return View(await db.Boats.Where(x => x.BoatType.TypeID == 1).ToListAsync());
         }
         [HttpGet]
         public IActionResult Create()

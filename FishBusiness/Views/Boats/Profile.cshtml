@@ -35,11 +35,15 @@
                                     <div class="col-lg-11 mx-auto">
                                         <div class="row">
                                             <div class="col-xl-2 col-lg-12 col-md-4">
-                                                <div class="" style="border:dashed">
+                                                <div class="">
                                                     <img src="~/img/@Model.BoatInfo.BoatImage" alt="" class="img-thumbnail" style="width:400px;height:200px;" />
 
-                                                    <label>اسم المركب:</label>
-                                                    <label><h6>@Model.BoatInfo.BoatName</h6></label>
+                                                    <div style="border-radius: 10px; background-color: dodgerblue">
+                                                        <div style="position:relative;top:20px">
+                                                            <label style="color:black">اسم المركب:</label>
+                                                            <label><h6>@Model.BoatInfo.BoatName</h6></label>
+                                                        </div>
+                                                    </div>
 
                                                 </div>
                                             </div>
@@ -48,47 +52,63 @@
                                                     <div class="row">
                                                         <div class="col-sm-6">
 
-                                                            <div class="form-group" style="border:dashed">
-                                                                <label>ريس المركب:</label>
-                                                                <label><h6>@Model.BoatInfo.BoatLeader</h6></label>
+                                                            <div class="form-group" style="height:80px;border-radius:10px;background-color:dodgerblue">
+                                                                <div style="position:relative;top:20px;right:100px;">
+
+                                                                    <label style="color:black">ريس المركب:</label>
+                                                                    <label><h6>@Model.BoatInfo.BoatLeader</h6></label>
+                                                                </div>
 
                                                             </div>
-                                                            <div class="form-group" style="border:dashed">
-                                                                <label>نوع المركب:</label>
-                                                                <label><h6>@Model.BoatInfo.Type</h6></label>
+                                                            <div class="form-group" style="height:80px;border-radius:10px;background-color:dodgerblue">
+                                                                <div style="position:relative;top:20px;right:100px;">
+                                                                    <label style="color:black">نوع المركب:</label>
+                                                                    <label><h6>@Model.BoatInfo.Type</h6></label>
 
+                                                                </div>
                                                             </div>
-                                                            <div class="form-group" style="border:dashed">
-                                                                <label>رخصة المركب:</label>
-                                                                <label><h6>@Model.BoatInfo.BoatLicenseNumber</h6></label>
+                                                            <div class="form-group" style="height:80px;border-radius:10px;background-color:dodgerblue">
+                                                                <div style="position:relative;top:20px;right:100px;">
+                                                                    <labe style="color:black" l>
+                                                                        رخصة المركب:</label>
+                                                                        <label><h6>@Model.BoatInfo.BoatLicenseNumber</h6></label>
 
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-6">
-                                                            <div class="form-group" style="border:dashed">
-                                                                <label>ديون الهالك:</label>
-                                                                <label style="color:forestgreen;font-size:large;font-weight:bold" id="BoatDebts">@Model.BoatInfo.DebtsOfHalek $</label>
+                                                            <div class="form-group" style="height:80px;border-radius:10px;background-color:dodgerblue">
+                                                                <div style="position:relative;top:20px;right:100px;">
+                                                                    <label style="color:black">ديون الهالك:</label>
+                                                                    <label style="color:greenyellow;font-size:large;font-weight:bold" id="BoatDebts">@Model.BoatInfo.DebtsOfHalek $</label>
 
 
+                                                                </div>
                                                             </div>
 
                                                             @if (Model.BoatInfo.TypeID == 2)//مركب شؤيك
-                                                            {<div class="form-group" style="border:dashed">
-                                                                    <label>ايراد المركب:</label>
-                                                                    <label><h6 style="color:forestgreen">@Model.BoatInfo.IncomeOfSharedBoat</h6></label>
+                                                            {<div class="form-group" style="height:80px;border-radius:10px;background-color:dodgerblue">
+                                                                    <div style="position:relative;top:20px;right:100px;">
+                                                                        <label style="color:black">ايراد المركب:</label>
+                                                                        <label><h6 style="color:greenyellow">@Model.BoatInfo.IncomeOfSharedBoat</h6></label>
 
+                                                                    </div>
                                                                 </div>}
-                                                            <div class="form-group" style="border:dashed">
-                                                                <label>اجمالى مصروف المركب:</label>
-                                                                <label style="color:forestgreen;font-size:large;font-weight:bold" id="Expensese">@Model.BoatInfo.TotalOfExpenses $</label><br />
+                                                            <div class="form-group" style="height:80px;border-radius:10px;background-color:dodgerblue">
+                                                                <div style="position:relative;top:20px;right:100px;">
+                                                                    <label style="color:black">اجمالى مصروف المركب:</label>
+                                                                    <label style="color:greenyellow;font-size:large;font-weight:bold" id="Expensese">@Model.BoatInfo.TotalOfExpenses $</label><br />
 
 
 
+                                                                </div>
                                                             </div>
-                                                            <div class="form-group" style="border:dashed">
-                                                                <label>دين الشغل "دين العرف":</label>
-                                                                <label><h6 style="color:forestgreen">@Model.BoatInfo.DebtsOfStartingWork $</h6></label>
+                                                            <div class="form-group" style="height:80px;border-radius:10px;background-color:dodgerblue">
+                                                                <div style="position:relative;top:20px;right:100px;">
+                                                                    <label style="color:black">دين الشغل "دين العرف":</label>
+                                                                    <label><h6 style="color:greenyellow">@Model.BoatInfo.DebtsOfStartingWork $</h6></label>
 
+                                                                </div>
                                                             </div>
                                                         </div>
 

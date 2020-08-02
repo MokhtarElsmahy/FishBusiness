@@ -32,5 +32,7 @@ namespace FishBusiness.Models
         public virtual ICollection<Fisherman> Fishermen { get; set; }
 
         public virtual ICollection<Debts_Sarha> Debts_Sarhas { get; set; }
+        public virtual ICollection<ExternalReceipt> ExternalReceipts { get; set; }
+
     }
 }

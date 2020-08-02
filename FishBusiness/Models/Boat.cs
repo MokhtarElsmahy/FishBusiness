@@ -61,6 +61,7 @@ namespace FishBusiness.Models
         public virtual ICollection<Sarha> Sarhas { get; set; }
         public virtual ICollection<Expense> Expenses { get; set; }
         public virtual ICollection<SharedBoatsIncome> SharedBoatsIncomes { get; set; }
+        public virtual ICollection<ExternalReceipt> ExternalReceipts { get; set; }
 
 
 

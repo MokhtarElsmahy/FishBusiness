@@ -26,7 +26,24 @@ namespace FishBusiness.Controllers
         {
             return View(await db.Boats.ToListAsync());
         }
-
+        public async Task<IActionResult> ActiveBoats()
+        {
+            return View(await db.Boats.Where(x=>x.IsActive==true).Include(x => x.BoatType).ToListAsync());
+        }
+        public async Task<IActionResult> InActiveBoats()
+        {
+            return View(await db.Boats.Where(x => x.IsActive == false).Include(x=>x.BoatType).ToListAsync());
+        }
+        public async Task<IActionResult> SharedBoats()
+        {
+            // Find its id in your db
+            return View(await db.Boats.Where(x => x.BoatType.TypeID == 5).ToListAsync());
+        }
+        public async Task<IActionResult> BasicBoats()
+        {
+            // Find its id in your db
+            return View(await db.Boats.Where(x => x.BoatType.TypeID == 4).ToListAsync());
+        }
         [HttpGet]
         public IActionResult Create()
         {
@@ -89,6 +106,25 @@ namespace FishBusiness.Controllers
 
 
             boat.IsActive = false;
+            await db.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> Restore(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var boat = await db.Boats
+                .FirstOrDefaultAsync(m => m.BoatID == id);
+            if (boat == null)
+            {
+                return NotFound();
+            }
+
+
+            boat.IsActive = true;
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }

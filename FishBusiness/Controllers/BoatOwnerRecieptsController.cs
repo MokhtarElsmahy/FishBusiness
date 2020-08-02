@@ -58,8 +58,8 @@ namespace FishBusiness.Controllers
             //
             ViewData["MerchantID"] = new SelectList(_context.Merchants, "MerchantID", "MerchantName");
             // commission
-            //ViewBag.Commission = _context.Cofigs.Find(1);
-            ViewBag.Commission = _context.Cofigs.Find(2);
+            ViewBag.Commission = _context.Cofigs.Find(1);
+            //ViewBag.Commission = _context.Cofigs.Find(2);
             return View();
         }
         public IActionResult GetBoatItems(int? id)
@@ -187,6 +187,7 @@ namespace FishBusiness.Controllers
 
             var TotalBeforePaymentCookie = boatOwnerReciept.TotalBeforePaying;
             var commisionCookie = boatOwnerReciept.Commission;
+            var PercentageCommissionCookie = boatOwnerReciept.PercentageCommission;
             var PaidFromDebtsCookie = boatOwnerReciept.PaidFromDebts;
             var TotalProductionCookie = boatOwnerReciept.TotalAfterPaying;
             //find latest sarha related to selected boat
@@ -194,6 +195,7 @@ namespace FishBusiness.Controllers
             boatOwnerReciept.SarhaID = sarhaId;
             boatOwnerReciept.TotalBeforePaying = Convert.ToDecimal(TotalBeforePaymentCookie);
             boatOwnerReciept.Commission = Convert.ToDecimal(commisionCookie);
+            boatOwnerReciept.PercentageCommission = Convert.ToInt32(PercentageCommissionCookie);
             boatOwnerReciept.PaidFromDebts = Convert.ToDecimal(PaidFromDebtsCookie);
             boatOwnerReciept.TotalAfterPaying = Convert.ToDecimal(TotalProductionCookie);
             // Subtracting Paid From Halek

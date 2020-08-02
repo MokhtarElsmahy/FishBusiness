@@ -1,6 +1,7 @@
-﻿@model IEnumerable<FishBusiness.Models.Boat>
+﻿
+@model IEnumerable<FishBusiness.Models.Boat>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "InActiveBoats";
 }
 
 @section Styles{
@@ -12,7 +13,7 @@
     <div class="container row">
         <div class="page-header m-3">
             <div class="page-title">
-                <h3>ادارة المراكب</h3>
+                <h3>المراكب المؤرشفة</h3>
             </div>
         </div>
         <div class="mt-4 ml-auto">
@@ -31,6 +32,7 @@
                                 <th>رقم المركب</th>
                                 <th>اسم المركب</th>
                                 <th>ريس المركب</th>
+                                <th>نوع المركب</th>
                                 <th></th>
 
 
@@ -45,24 +47,12 @@
                                         <td>@boat.BoatNumber</td>
                                         <td>@boat.BoatName</td>
                                         <td>@boat.BoatLeader</td>
+                                        <td>@boat.BoatType.TypeName</td>
                                         <td>
-
                                             <a asp-action="Edit" asp-route-id="@boat.BoatID" class="btn btn-success mb-2">تعديل</a>
                                             <a href="#" onclick="Details(@boat.BoatID)" class="btn btn-info mb-2">تفاصيل</a>
                                             <a asp-action="Profile" asp-route-id="@boat.BoatID" class="btn btn-info mb-2">بروفايل</a>
-                                            @*<a asp-action="Delete" asp-route-id="@boat.BoatID"  class="btn btn-info mb-2">حذف</a>*@
-                                            @if (boat.IsActive)
-                                            {
-                                                <a class="btn btn-danger mb-2 delete"
-                                                   data-id="@boat.BoatID"
-                                                   data-controller="Boats"
-                                                   data-action="Delete"
-                                                   data-body-message="هل انت متأكد من ارشفة هذا المركب ؟">ارشفة</a>
-                                            }
-                                            else
-                                            {
-                                                <a asp-action="Restore" asp-route-id="@boat.BoatID" class="btn btn-warning mb-2">استعاده</a>
-                                            }
+                                            <a asp-action="Restore" asp-route-id="@boat.BoatID" class="btn btn-warning mb-2">استعاده</a>
                                         </td>
 
                                     </tr>
@@ -139,3 +129,6 @@
     </script>
 
 }
+
+
+

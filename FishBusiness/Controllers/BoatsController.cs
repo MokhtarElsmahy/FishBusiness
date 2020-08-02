@@ -168,5 +168,76 @@ namespace FishBusiness.Controllers
             return View(model);
         }
 
+
+        [HttpGet]
+        public IActionResult Profile(int? id)
+        {
+           
+            Boat model = db.Boats.Include(b => b.BoatType).FirstOrDefault(b => b.BoatID == id);
+            ProfileVM profileVM = new ProfileVM();
+            BoatInfoVM boat = new BoatInfoVM()
+            {
+                BoatID = model.BoatID,
+                BoatName = model.BoatName,
+                Type = model.BoatType.TypeName,
+                TypeID =model.TypeID,
+                BoatImage = model.BoatImage,
+                BoatLeader = model.BoatLeader,
+                BoatLicenseNumber = model.BoatLicenseNumber,
+                DebtsOfHalek = model.DebtsOfHalek,
+                // DebtsOfMulfunction = model.DebtsOfMulfunction,
+                BoatNumber = model.BoatNumber,
+                DebtsOfStartingWork = model.DebtsOfStartingWork,
+                IncomeOfSharedBoat = model.IncomeOfSharedBoat,
+                TotalOfExpenses=model.TotalOfExpenses
+
+            };
+            var recs = db.BoatOwnerReciepts.Where(r => r.BoatID == model.BoatID).ToList();
+            var expenses = db.Expenses.Where(b => b.BoatID == model.BoatID).ToList();
+           
+
+            profileVM.BoatInfo = boat;
+            profileVM.BoatRecs = recs;
+            profileVM.BoatExpenses = expenses;
+           
+
+            return View(profileVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CalcDebts(decimal PaidValue, int BoatID)
+        {
+            if (BoatID == null)
+            {
+                return NotFound();
+            }
+
+            var boat = await db.Boats.FindAsync(BoatID);
+            if (boat == null)
+            {
+                return NotFound();
+            }
+            boat.DebtsOfHalek -= PaidValue;
+            await db.SaveChangesAsync();
+            return Json(new { debts = boat.DebtsOfHalek });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CalcExpenses(decimal PaidValue, int BoatID)
+        {
+            if (BoatID == null)
+            {
+                return NotFound();
+            }
+
+            var boat = await db.Boats.FindAsync(BoatID);
+            if (boat == null)
+            {
+                return NotFound();
+            }
+            boat.TotalOfExpenses -= PaidValue;
+            await db.SaveChangesAsync();
+            return Json(new { expenses = boat.TotalOfExpenses });
+        }
     }
 }

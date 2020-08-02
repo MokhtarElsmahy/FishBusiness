@@ -90,6 +90,24 @@ namespace FishBusiness.Controllers
             return PartialView(merchant);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CalcDebts(decimal PaidValue , int MerchantID)
+        {
+            if (MerchantID == null)
+            {
+                return NotFound();
+            }
+
+            var merchant = await _context.Merchants.FindAsync(MerchantID);
+            if (merchant == null)
+            {
+                return NotFound();
+            }
+            merchant.PreviousDebts -= PaidValue;
+           await _context.SaveChangesAsync();
+            return Json(new {debts=merchant.PreviousDebts });
+        }
+
         // POST: Merchants/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -142,6 +160,8 @@ namespace FishBusiness.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+
 
         // POST: Merchants/Delete/5
         //[HttpPost, ActionName("Delete")]

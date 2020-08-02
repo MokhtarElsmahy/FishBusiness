@@ -1,0 +1,399 @@
+﻿@model FishBusiness.ViewModels.ProfileVM
+@section Styles{
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link rel="stylesheet" type="text/css" href="~/plugins/dropify/dropify.min.css">
+    <link href="~/assets/css/users/account-setting.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/datatables.css">
+    <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/dt-global_style.css">
+
+
+}
+<!--  BEGIN CONTENT AREA  -->
+
+<div class="layout-px-spacing">
+    <div class="container row">
+        <div class="page-header m-3">
+            <div class="page-title">
+                <h3>بروفايل مركب</h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <a asp-action="Edit" asp-controller="Boats" asp-route-id="@Model.BoatInfo.BoatID" class="btn btn-primary">تعديل بيانات المركب</a>
+        </div>
+    </div>
+
+    <div class="account-settings-container layout-top-spacing">
+
+        <div class="account-content">
+            <div class="scrollspy-example" data-spy="scroll" data-target="#account-settings-scroll" data-offset="-100">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                        <form id="general-info" class="section general-info">
+                            <div class="info">
+                                <h6 class="">بيانات</h6>
+                                <div class="row">
+                                    <div class="col-lg-11 mx-auto">
+                                        <div class="row">
+                                            <div class="col-xl-2 col-lg-12 col-md-4">
+                                                <div class="" style="border:dashed">
+                                                    <img src="~/img/@Model.BoatInfo.BoatImage" alt="" class="img-thumbnail" style="width:400px;height:200px;" />
+
+                                                    <label>اسم المركب:</label>
+                                                    <label><h6>@Model.BoatInfo.BoatName</h6></label>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-10 col-lg-12 col-md-8 mt-md-0 mt-4">
+                                                <div class="form">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+
+                                                            <div class="form-group" style="border:dashed">
+                                                                <label>ريس المركب:</label>
+                                                                <label><h6>@Model.BoatInfo.BoatLeader</h6></label>
+
+                                                            </div>
+                                                            <div class="form-group" style="border:dashed">
+                                                                <label>نوع المركب:</label>
+                                                                <label><h6>@Model.BoatInfo.Type</h6></label>
+
+                                                            </div>
+                                                            <div class="form-group" style="border:dashed">
+                                                                <label>رخصة المركب:</label>
+                                                                <label><h6>@Model.BoatInfo.BoatLicenseNumber</h6></label>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <div class="form-group" style="border:dashed">
+                                                                <label>ديون الهالك:</label>
+                                                                <label style="color:forestgreen;font-size:large;font-weight:bold" id="BoatDebts">@Model.BoatInfo.DebtsOfHalek $</label>
+
+
+                                                            </div>
+
+                                                            @if (Model.BoatInfo.TypeID == 2)//مركب شؤيك
+                                                            {<div class="form-group" style="border:dashed">
+                                                                    <label>ايراد المركب:</label>
+                                                                    <label><h6 style="color:forestgreen">@Model.BoatInfo.IncomeOfSharedBoat</h6></label>
+
+                                                                </div>}
+                                                            <div class="form-group" style="border:dashed">
+                                                                <label>اجمالى مصروف المركب:</label>
+                                                                <label style="color:forestgreen;font-size:large;font-weight:bold" id="Expensese">@Model.BoatInfo.TotalOfExpenses $</label><br />
+
+
+
+                                                            </div>
+                                                            <div class="form-group" style="border:dashed">
+                                                                <label>دين الشغل "دين العرف":</label>
+                                                                <label><h6 style="color:forestgreen">@Model.BoatInfo.DebtsOfStartingWork $</h6></label>
+
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                        <div id="skill" class="section skill">
+                            <div class="info">
+                                <h5 class=""> خصم من الهالك / المصروف</h5>
+                                <div class="row progress-bar-section">
+
+                                    <div class="col-md-12 mx-auto">
+                                        <div class="form-group">
+
+                                            <div class="row">
+                                                <div class="col-md-11 mx-auto">
+                                                    <div class="input-form">
+                                                        <input type="text" class="form-control" id="skills" placeholder="المبلغ المراد خصمه من الهالك" value="">
+                                                        <button id="add-skills" class="btn btn-primary">خصم</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-11 mx-auto">
+                                                    <div class="input-form">
+                                                        <input type="text" class="form-control" id="SubExpenseValue" placeholder="المبلغ المراد خصمه من ديون المصروف" value="">
+                                                        <button id="SubExpense" class="btn btn-primary">خصم</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                        <form id="about" class="section about">
+                            <div class="info">
+                                <h5 class="">فواتير</h5>
+
+                                <div class="row layout-top-spacing" id="cancel-row">
+
+                                    <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                                        <div class="widget-content widget-content-area br-6">
+                                            <div class="table-responsive mb-4 mt-4">
+                                                <table id="zero-config" class="table table-hover" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>اجمالى الفاتوره</th>
+                                                            <th>العموله</th>
+                                                            <th>التاريخ</th>
+                                                            <th>المدفوع من الهالك</th>
+                                                            <th>الاجمالى بعد العموله والهالك</th>
+                                                            <th></th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (Model.BoatRecs.Any())
+                                                        {
+                                                            foreach (var rec in Model.BoatRecs)
+                                                            {
+                                            <tr>
+                                                <td>@rec.TotalBeforePaying</td>
+                                                <td>@rec.Commission</td>
+                                                <td>@rec.Date</td>
+                                                <td>@rec.PaidFromDebts</td>
+                                                <td>@rec.TotalAfterPaying</td>
+                                                <td>
+                                                    <a asp-action="Details" asp-controller="BoatOwnerReciepts" asp-route-id="@rec.BoatOwnerRecieptID" class="btn btn-info mb-2">تفاصيل الفاتوره</a>|
+                                                    <a asp-action="Details" asp-controller="Sarhas" asp-route-id="@rec.SarhaID" class="btn btn-info mb-2">تفاصيل السرحه</a>|
+
+                                                </td>
+
+                                            </tr>
+ }
+
+                                    }
+                                    else
+                                    {
+                        <span>لا توجد فواتير لهذا المركب</span>}
+
+
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
+
+
+                    <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                        <form id="work-platforms" class="section work-platforms">
+                            <div class="info">
+                                <h5 class="">مصروفات المركب</h5>
+
+
+                                <div class="row layout-top-spacing" id="cancel-row">
+                                    <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                                        <div class="widget-content widget-content-area br-6">
+                                            <div class="table-responsive mb-4 mt-4">
+                                                <table id="zero-config2" class="table table-hover" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>التاريخ</th>
+                                                            <th>المبلغ</th>
+                                                            <th>السبب</th>
+                                                            <th></th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (Model.BoatExpenses.Any())
+                                                        {
+                                                            foreach (var expense in Model.BoatExpenses)
+                                                            {
+                                            <tr>
+                                                <td>@expense.Date</td>
+                                                <td>@expense.Price</td>
+                                                <td>@expense.Cause</td>
+                                                <td>
+                                                    <a asp-action="Edit" asp-controller="Expenses" class="btn btn-success mb-2" asp-route-id="@expense.ExpenseID">تعديل</a>
+
+                                                    <a class="btn btn-danger mb-2 delete"
+                                                       data-id="@expense.ExpenseID"
+                                                       data-controller="Expenses"
+                                                       data-action="Delete"
+                                                       data-body-message="هل انت متأكد من عملية الحذف ؟">حذف</a>
+                                                </td>
+                                            </tr>}
+                                                        }
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+
+<!--  END CONTENT AREA  -->
+
+@section scripts{
+    <!--  BEGIN CUSTOM SCRIPTS FILE  -->
+
+    <script src="~/plugins/dropify/dropify.min.js"></script>
+    <script src="~/plugins/blockui/jquery.blockUI.min.js"></script>
+    <!-- <script src="plugins/tagInput/tags-input.js"></script> SubExpense-->
+    <script src="~/assets/js/users/account-settings.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#add-skills").on('click', function () {
+                var PaidValue = parseFloat($('#skills').val());
+                var id = @Model.BoatInfo.BoatID
+                $.ajax({
+                    url: "/Boats/CalcDebts/",
+                    type: "Post",
+                    dataType: "json",
+                    traditional: true,
+                    data: {
+                        PaidValue: PaidValue,
+                        BoatID: id
+                    }, //id of the state which is used to extract cities
+                    success: function (result) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'تم الخصم بنجاح',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                        $('#PaidValue').val('')
+                        $('#BoatDebts').text(result.debts+" $")
+
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حاول مرة اخري',
+                        });
+                    }
+                });
+            })
+
+
+            $("#SubExpense").on('click', function () {
+                var PaidValue = parseFloat($('#SubExpenseValue').val());
+                var id = @Model.BoatInfo.BoatID
+                $.ajax({
+                    url: "/Boats/CalcExpenses/",
+                    type: "Post",
+                    dataType: "json",
+                    traditional: true,
+                    data: {
+                        PaidValue: PaidValue,
+                        BoatID: id
+                    }, //id of the state which is used to extract cities
+                    success: function (result) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'تم الخصم بنجاح',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                        $('#SubExpenseValue').val('')
+                        $('#Expensese').text(result.expenses+" $")
+
+
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حاول مرة اخري',
+                        });
+                    }
+                });
+            })
+        })
+
+        var EditShow = function (id) {
+            $.ajax({
+                url: "/Merchants/Edit",
+                type: "GET",
+                data: { id: id },
+                success: function (response) {
+                    $("#fadeleftModal").modal("show");
+                    $("#ModalBodyDiv").html(response);
+
+                }
+
+            })
+        }
+
+        var fun = function () {
+
+            var myform = $("#MyForm").serialize();
+
+            $.ajax({
+                type: "POST",
+                url: "/Merchants/cEdit",
+                type: "POST",
+                data: myform,
+
+                success: function (response) {
+                    if (response.message == "success") {
+                        $("#fadeleftModal").modal("hide");
+                        location.reload();
+                    }
+                    else {
+                        alert("Error")
+                    }
+
+                }
+
+
+            });
+        }
+
+
+
+
+    </script>
+}

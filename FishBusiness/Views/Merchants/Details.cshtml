@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/dt-global_style.css">
 
     <link href="~/assets/css/users/user-profile.css" rel="stylesheet" type="text/css" />
-
+    <link href="~/assets/css/apps/scrumboard.css" rel="stylesheet" type="text/css" />
     <link href="~/plugins/animate/animate.css" rel="stylesheet" type="text/css" />
 }
 
@@ -64,71 +64,51 @@
                                         <li class="contacts-block__item">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-phone"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg> @Model.Merchant.Phone
                                         </li>
-                                        @*<li class="contacts-block__item">
-                                                <ul class="list-inline">
-                                                    <li class="list-inline-item">
-                                                        <div class="social-icon">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-facebook"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-                                                        </div>
-                                                    </li>
-                                                    <li class="list-inline-item">
-                                                        <div class="social-icon">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
-                                                        </div>
-                                                    </li>
-                                                    <li class="list-inline-item">
-                                                        <div class="social-icon">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-linkedin"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </li>*@
+
+                                        <li>
+                                            <span style="font-size:x-large;margin-left:10px;">$ </span> <label id="MerchantDebts"> @Model.Merchant.PreviousDebts</label>
+                                        </li>
+                                      
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    @*<div class="education layout-spacing ">
-                            <div class="widget-content widget-content-area">
-                                <h3 class="">Education</h3>
-                                <div class="timeline-alter">
-                                    <div class="item-timeline">
-                                        <div class="t-meta-date">
-                                            <p class="">04 Mar 2009</p>
+                    <div class="education layout-spacing ">
+                        <div class="widget-content widget-content-area">
+                            <h3 class="">دفع حساب قديم</h3>
+                            <div class="timeline-alter">
+                                <div class="connect-sorting">
+                                    
+
+                                    <div class="connect-sorting-content" data-sortable="true">
+
+
+                                        <div data-draggable="true" class="card simple-title-task" style="">
+                                            <div class="card-body">
+
+                                                <div class="task-header">
+                                                    <div class="form-group">
+                                                        <label class="control-label"> المبلغ المدفوع</label>
+                                                        
+                                                        <input type="text" id="PaidValue" class="form-control" />
+                                                    </div>
+                                                </div>
+
+                                            </div>
                                         </div>
-                                        <div class="t-dot">
-                                        </div>
-                                        <div class="t-text">
-                                            <p>Royal Collage of Art</p>
-                                            <p>Designer Illustrator</p>
-                                        </div>
+
                                     </div>
-                                    <div class="item-timeline">
-                                        <div class="t-meta-date">
-                                            <p class="">25 Apr 2014</p>
-                                        </div>
-                                        <div class="t-dot">
-                                        </div>
-                                        <div class="t-text">
-                                            <p>Massachusetts Institute of Technology (MIT)</p>
-                                            <p>Designer Illustrator</p>
-                                        </div>
+                                    <div class="add-s-task">
+
+                                        <a class="addTask" id="Sub">خصم</a>
                                     </div>
-                                    <div class="item-timeline">
-                                        <div class="t-meta-date">
-                                            <p class="">04 Apr 2018</p>
-                                        </div>
-                                        <div class="t-dot">
-                                        </div>
-                                        <div class="t-text">
-                                            <p>School of Art Institute of Chicago (SAIC)</p>
-                                            <p>Designer Illustrator</p>
-                                        </div>
-                                    </div>
+
                                 </div>
                             </div>
-                        </div>*@
+                        </div>
+                    </div>
 
                     @*<div class="work-experience layout-spacing ">
 
@@ -393,6 +373,41 @@
 </div>
 @section scripts{
     <script>
+        $(document).ready(function () {
+            $("#Sub").on('click', function () {
+                var PaidValue = parseFloat($('#PaidValue').val());
+                var id = @Model.Merchant.MerchantID
+                $.ajax({
+                    url: "/Merchants/CalcDebts/",
+                    type: "Post",
+                    dataType: "json",
+                    traditional: true,
+                    data: {
+                        PaidValue: PaidValue,
+                        MerchantID: id
+                    }, //id of the state which is used to extract cities
+                    success: function (result) {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'تم الخصم بنجاح',
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                        $('#PaidValue').val('')
+                        $('#MerchantDebts').text(result.debts)
+
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حاول مرة اخري',
+                        });
+                    }
+                });
+            })
+        })
 
         var EditShow = function (id) {
             $.ajax({
@@ -421,7 +436,7 @@
                 success: function (response) {
                     if (response.message == "success") {
                         $("#fadeleftModal").modal("hide");
-                        location.reload();  
+                        location.reload();
                     }
                     else {
                         alert("Error")

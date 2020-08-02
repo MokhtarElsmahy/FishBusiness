@@ -62,6 +62,10 @@ namespace FishBusiness.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(expense);
+              
+                Boat boat = await _context.Boats.FindAsync(expense.BoatID);
+                boat.TotalOfExpenses += expense.Price;
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -103,8 +107,24 @@ namespace FishBusiness.Controllers
             {
                 try
                 {
-                    _context.Update(expense);
+
+                    var Oldexpense = await _context.Expenses.FindAsync(expense.ExpenseID);
+                    if (Oldexpense != null)
+                    {
+                        _context.Entry(Oldexpense).State = EntityState.Detached;
+                    }
+
+                    Boat boat = await _context.Boats.FindAsync(expense.BoatID);
+
+                    boat.TotalOfExpenses -= Oldexpense.Price;
+
+                    boat.TotalOfExpenses += expense.Price;
                     await _context.SaveChangesAsync();
+
+                    _context.Update(expense);
+
+                    await _context.SaveChangesAsync();
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {

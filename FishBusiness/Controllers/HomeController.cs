@@ -25,6 +25,7 @@ namespace FishBusiness.Controllers
         {
             ViewBag.TodaysBoatReceipts = _context.BoatOwnerReciepts.ToList().Where(d=>d.Date.ToShortDateString()== DateTime.Now.ToShortDateString()).Count();
             ViewBag.TodaysMerchantReceipts = _context.MerchantReciepts.ToList().Where(d => d.Date.ToShortDateString() == DateTime.Now.ToShortDateString()).Count();
+            ViewBag.TodaysExternalBoatReceipts = _context.ExternalReceipts.ToList().Where(d => d.Date.ToShortDateString() == DateTime.Now.ToShortDateString()).Count();
             return View();
         }
 
@@ -43,6 +44,12 @@ namespace FishBusiness.Controllers
         public IActionResult GetTodaysMerchantReceipts()
         {
             var Recs = _context.MerchantReciepts.Include(m => m.Merchant).ToList().Where(d => d.Date.ToShortDateString() == DateTime.Now.ToShortDateString());
+            return View(Recs);
+        }
+        [HttpGet]
+        public IActionResult GetTodaysExternalBoatReceipts()
+        {
+            var Recs = _context.ExternalReceipts.Include(m => m.Boat).ToList().Where(d => d.Date.ToShortDateString() == DateTime.Now.ToShortDateString());
             return View(Recs);
         }
     }

@@ -20,6 +20,7 @@ namespace FishBusiness.Models
         [Required]
         public virtual Sarha Sarha { get; set; }
         [Display(Name = "انتاج السرحة")]
+        [Required(ErrorMessage = "برجاء ادخال انتاج السرحة قبل العمولة")]
         public decimal TotalBeforePaying { get; set; }
 
         [Required(ErrorMessage = "برجاء ادخال تاريخ الفاتورة")]
@@ -27,6 +28,8 @@ namespace FishBusiness.Models
         public DateTime Date { get; set; }
 
         [Display(Name = "العمولة الخارجية")]
+        [Required(ErrorMessage = "برجاء ادخال العمولة الخارجية")]
+
         public decimal Commission { get; set; }
 
         [Required(ErrorMessage = "برجاء ادخال المدفوع من الهالك")]

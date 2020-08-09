@@ -47,6 +47,9 @@ namespace FishBusiness.Models
         [Display(Name = "ايراد السرحة")]
         public decimal FinalIncome { get; set; }
 
+        public bool IsCalculated { get; set; }
+        public bool IsCollected { get; set; }
+
         public virtual ICollection<BoatOwnerItem> BoatOwnerItems { get; set; }
 
 

@@ -4,14 +4,16 @@ using FishBusiness;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FishBusiness.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200808235022_IsCollected")]
+    partial class IsCollected
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -324,29 +326,6 @@ namespace FishBusiness.Data.Migrations
                     b.HasIndex("SarhaID");
 
                     b.ToTable("Fishermen");
-                });
-
-            modelBuilder.Entity("FishBusiness.Models.IncomesOfSharedBoat", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("BoatID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("Income")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("BoatID");
-
-                    b.ToTable("IncomesOfSharedBoats");
                 });
 
             modelBuilder.Entity("FishBusiness.Models.Merchant", b =>
@@ -796,15 +775,6 @@ namespace FishBusiness.Data.Migrations
                     b.HasOne("FishBusiness.Models.Sarha", "Sarha")
                         .WithMany("Fishermen")
                         .HasForeignKey("SarhaID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("FishBusiness.Models.IncomesOfSharedBoat", b =>
-                {
-                    b.HasOne("FishBusiness.Models.Boat", "Boat")
-                        .WithMany("IncomesOfSharedBoats")
-                        .HasForeignKey("BoatID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -75,7 +75,7 @@ namespace FishBusiness.Controllers
                 // for shared boats
                 decimal FinalIncome;
                 // 5 -> Shared Boat ... We will change it later
-                if (boat.TypeID == 5)
+                if (boat.TypeID == 2)
                 {
                     FinalIncome = (Convert.ToDecimal(TotalAfterPaying) / 2) - IndividualSalary;
                     boat.IncomeOfSharedBoat += FinalIncome;
@@ -116,7 +116,7 @@ namespace FishBusiness.Controllers
             boat.DebtsOfHalek += Convert.ToDecimal(externalReceipt.PaidFromDebts);
 
             // Decrease Shared Boat Income
-            if (boat.TypeID == 5)
+            if (boat.TypeID == 2)
             {
                 boat.IncomeOfSharedBoat -= externalReceipt.FinalIncome;
             }

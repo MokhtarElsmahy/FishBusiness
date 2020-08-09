@@ -107,6 +107,16 @@ namespace FishBusiness.Controllers
 
         }
 
+        public IActionResult GetFishPrice(int fishId,int RecieptID)
+        {
+
+            var item = _context.BoatOwnerItems.SingleOrDefault(i => i.BoatOwnerRecieptID == RecieptID && i.FishID == fishId);
+            var res = new { unitPrice = item.UnitPrice };
+
+            return Json(res);
+
+        }
+
         [HttpPost]
         public async Task<IActionResult> MCreate(MerRecCreateVm model)
         {
@@ -164,7 +174,7 @@ namespace FishBusiness.Controllers
                 }
 
                 m = _context.Merchants.Find(model.MerchantID);
-                m.PreviousDebts = model.CurrentDebt;
+                m.PreviousDebts = model.CurrentDebt + model.TotalOfReciept;
                 merchantReciept.CurrentDebt = model.CurrentDebt;
 
 
@@ -188,7 +198,7 @@ namespace FishBusiness.Controllers
             var TotalBeforePaymentCookie = boatOwnerReciept.TotalBeforePaying;
             var commisionCookie = boatOwnerReciept.Commission;
             var PercentageCommissionCookie = boatOwnerReciept.PercentageCommission;
-            var PaidFromDebtsCookie = boatOwnerReciept.PaidFromDebts;
+            //var PaidFromDebtsCookie = boatOwnerReciept.PaidFromDebts;
             var TotalProductionCookie = boatOwnerReciept.TotalAfterPaying;
             //find latest sarha related to selected boat
             var sarhaId = _context.Sarhas.Where(x => x.BoatID == boatOwnerReciept.BoatID).Max(x => x.SarhaID);
@@ -196,27 +206,29 @@ namespace FishBusiness.Controllers
             boatOwnerReciept.TotalBeforePaying = Convert.ToDecimal(TotalBeforePaymentCookie);
             boatOwnerReciept.Commission = Convert.ToDecimal(commisionCookie);
             boatOwnerReciept.PercentageCommission = Convert.ToInt32(PercentageCommissionCookie);
-            boatOwnerReciept.PaidFromDebts = Convert.ToDecimal(PaidFromDebtsCookie);
             boatOwnerReciept.TotalAfterPaying = Convert.ToDecimal(TotalProductionCookie);
+            boatOwnerReciept.IsCalculated = false;
+            boatOwnerReciept.IsCollected = false;
+            //boatOwnerReciept.PaidFromDebts = Convert.ToDecimal(PaidFromDebtsCookie);
             // Subtracting Paid From Halek
-            var boat = _context.Boats.Find(boatOwnerReciept.BoatID);
-            boat.DebtsOfHalek -= Convert.ToDecimal(PaidFromDebtsCookie);
+            //var boat = _context.Boats.Find(boatOwnerReciept.BoatID);
+            //boat.DebtsOfHalek -= Convert.ToDecimal(PaidFromDebtsCookie);
             // Salary for Each One
-            var sarha = _context.Sarhas.Find(sarhaId);
-            var IndividualSalary = (Convert.ToDecimal(TotalProductionCookie) / 2) / sarha.NumberOfFishermen;
+            //var sarha = _context.Sarhas.Find(sarhaId);
+            //var IndividualSalary = (Convert.ToDecimal(TotalProductionCookie) / 2) / sarha.NumberOfFishermen;
             // Calculating Final Income 
             // for shared boats
-            decimal FinalIncome;
-            // 5 -> Shared Boat ... We will change it later
-            if (boat.TypeID == 2)
-            {
-                FinalIncome = (Convert.ToDecimal(TotalProductionCookie) / 2) - IndividualSalary;
-                boat.IncomeOfSharedBoat += FinalIncome;
-            }
-            // for ordinary boats
-            else
-                FinalIncome = Convert.ToDecimal(TotalProductionCookie);
-            boatOwnerReciept.FinalIncome = FinalIncome;
+            //decimal FinalIncome;
+            //// 5 -> Shared Boat ... We will change it later
+            //if (boat.TypeID == 2)
+            //{
+            //    FinalIncome = (Convert.ToDecimal(TotalProductionCookie) / 2) - IndividualSalary;
+            //    boat.IncomeOfSharedBoat += FinalIncome;
+            //}
+            //// for ordinary boats
+            //else
+            //    FinalIncome = Convert.ToDecimal(TotalProductionCookie);
+            //boatOwnerReciept.FinalIncome = FinalIncome;
             _context.Add(boatOwnerReciept);
             await _context.SaveChangesAsync();
             // Cookies Of Receipt Items
@@ -269,7 +281,7 @@ namespace FishBusiness.Controllers
             boat.DebtsOfHalek += Convert.ToDecimal(boatOwnerReciept.PaidFromDebts);
 
             // Decrease Shared Boat Income
-            if (boat.TypeID == 5)
+            if (boat.TypeID == 2)
             {
                 boat.IncomeOfSharedBoat -= boatOwnerReciept.FinalIncome;
             }

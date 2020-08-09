@@ -1,0 +1,232 @@
+﻿@model FishBusiness.Models.BoatOwnerReciept
+
+@if (ViewBag.sameNum == false)
+{
+
+    <div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group">
+
+            <label asp-for="TotalAfterPaying" class="control-label"></label>
+            <input class="form-control" value="@Model.TotalAfterPaying" id="TotalBeforeHalek" disabled>
+        </div>
+        <div class="form-group">
+
+            <label class="control-label">الهالك</label>
+
+            <div class="form-group row" style="margin-right:1px;">
+                <input asp-for="PaidFromDebts" class="form-control col-7" />
+                <button class="btn btn-sm btn-info col-3" style="margin-right:59px;" onclick="CalcDebt(@Model.BoatOwnerRecieptID)">حساب</button>
+            </div>
+
+
+        </div>
+        <div class="form-group">
+            <label class="control-label">نصيب الفرد</label>
+            <div class="form-group row" style="margin-right:1px;">
+                <input id="IndividualSalary" class="form-control col-7" />
+                <button class="btn btn-sm btn-info col-3" style="margin-right:59px;" onclick="ChangeSalary(@Model.BoatOwnerRecieptID)">تغيير</button>
+
+            </div>
+        </div>
+        <div class="form-group">
+
+            <label asp-for="PaidFromDebts" class="control-label"></label>
+            <input class="form-control" id="newPaid" disabled>
+        </div>
+        <div class="form-group">
+
+            <label asp-for="TotalAfterPaying" class="control-label"></label>
+            <input class="form-control" id="total" disabled>
+        </div>
+        @if (ViewBag.flag == true && ViewBag.boatType == 2)
+        {
+            <div class="form-group">
+
+                <label class="control-label">عدد الافراد</label>
+                <input class="form-control" id="NumberOfFisherMen" value="6" type="number">
+            </div>
+        }
+        @if (ViewBag.flag == true && ViewBag.boatType != 2)
+        {
+            <div class="form-group">
+              
+                <label class="control-label">خصم مصروف</label>
+                <input class="form-control" id="expense">
+            </div>
+        }
+
+    </div>
+
+}
+else
+{
+    <div class="form-group">
+        <h7>يبدو ان السرحات لها نفس عدد الانفار</h7><br />
+        <label class="control-label">اجمالى الفواتير</label>
+        <input class="form-control" value="@ViewBag.TotalOfRecs" id="TotalOfRecs" disabled>
+    </div>
+
+    <div class="form-group">
+
+        <label class="control-label">الهالك</label>
+
+        <div class="form-group row" style="margin-right:1px;">
+            <input asp-for="PaidFromDebts" class="form-control col-7" />
+            <button class="btn btn-sm btn-info col-3" style="margin-right:59px;" onclick="CalcDebt(@Model.BoatOwnerRecieptID)">حساب</button>
+        </div>
+
+
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">نصيب الفرد</label>
+        <div class="form-group row" style="margin-right:1px;">
+            <input id="IndividualSalary" class="form-control col-7" />
+            <button class="btn btn-sm btn-info col-3" style="margin-right:59px;" onclick="ChangeSalary(@Model.BoatOwnerRecieptID)">تغيير</button>
+
+        </div>
+    </div>
+
+    <div class="form-group">
+
+        <label asp-for="PaidFromDebts" class="control-label"></label>
+        <input class="form-control" id="newPaid" disabled>
+    </div>
+    <div class="form-group">
+
+        <label asp-for="TotalAfterPaying" class="control-label"></label>
+        <input class="form-control" id="total" disabled>
+    </div>
+
+    @if (ViewBag.boatType != 2)
+    {
+        <div class="form-group">
+
+            <label class="control-label">خصم مصروف</label>
+            <input class="form-control" id="expense">
+        </div>
+    }
+
+
+}
+<div class="modal-footer md-button">
+    <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> اغلاق</button>
+    <button type="button" class="btn btn-primary" onclick="SaveRec(@Model.BoatOwnerRecieptID)">حفظ</button>
+</div>
+<script>
+    var CalcDebt = function (id) {
+
+        $.ajax({
+            type: "GET",
+            url: "/Boats/CalcDebts",
+            dataType: "json",
+            data: {
+                id: id,
+                PaidFromDebts: $("#PaidFromDebts").val(),
+                total:parseFloat($("#TotalOfRecs").val()),
+
+            },
+
+            success: function (response) {
+                if (response.message == "success") {
+                    $("#IndividualSalary").val(response.salary)
+
+                }
+                else {
+                    alert("Error")
+                }
+
+            }
+
+
+        });
+    }
+
+
+    var ChangeSalary = function (id) {
+
+        $.ajax({
+            type: "GET",
+            url: "/Boats/ChangeSalary",
+            dataType: "json",
+            data: {
+                id: id,
+                newSalary: $("#IndividualSalary").val(),
+                Alltotal: parseFloat($("#TotalOfRecs").val()),
+            },
+
+            success: function (response) {
+                if (response.message == "success") {
+                    $("#newPaid").val(response.halek)
+                    $("#total").val(response.total)
+
+                }
+                else {
+                    alert("Error")
+                }
+
+            }
+
+
+        });
+    }
+
+
+    var SaveRec = function (id) {
+        var halek;
+        var total;
+        var expenses;
+        var individualSalary = parseFloat($("#IndividualSalary").val());
+        if (!$("#newPaid").val()) {
+            halek = parseFloat($("#PaidFromDebts").val())
+            total = parseFloat($("#TotalBeforeHalek").val()) - halek;
+        } else {
+            halek = parseFloat($("#newPaid").val())
+            total = parseFloat($("#total").val());
+        }
+
+        if ($("#expense").val()) {
+            expenses = parseFloat($("#expense").val());
+        }
+        $.ajax({
+            type: "POST",
+            url: "/Boats/SaveRec",
+            dataType: "json",
+            data: {
+                id: id,
+                individualSalary: individualSalary,
+                halek: halek,
+                total: total,
+                expense: expenses,
+                flag: "@ViewBag.sameNum",
+                NumberOfFisherMen: parseInt($("#NumberOfFisherMen").val())
+            },
+
+            success: function (response) {
+                if (response.message == "success") {
+                    $("#income").text(response.income)
+                    $("#BoatDebts").text(response.current)
+                    $("#Expensese").text(response.cexpense)
+                    $("#fadeleftModal").modal("hide");
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'تم الحفظ',
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                }
+                else {
+                    alert("Error")
+                }
+
+            }
+
+
+        });
+    }
+
+
+</script>

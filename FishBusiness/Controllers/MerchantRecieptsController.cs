@@ -61,16 +61,24 @@ namespace FishBusiness.Controllers
         public IActionResult GetMerchant(int? id, DateTime date)
         {
             Merchant m = _context.Merchants.Find(id);
-            var recID = _context.MerchantReciepts.Where(i => i.MerchantID == id).Max(i => i.MerchantRecieptID);
-            var rec = _context.MerchantReciepts.Find(recID);
-            if (rec.Date.ToShortDateString() == date.ToShortDateString())
+            if (m != null)
             {
-                return Json(new { RecID = recID, debts = m.PreviousDebts });
+                return Json(new { debts = m.PreviousDebts });
             }
-            return Json(new { RecID = 0, debts = m.PreviousDebts });
+            return Json(new {debts = 0 });
 
         }
+        public IActionResult GetFishPrice(int fishId, int boatId)
+        {
 
+            var BoatrecId = _context.BoatOwnerReciepts.Where(i => i.BoatID == boatId).Max(i=>i.BoatOwnerRecieptID);
+            var fishPrice = _context.BoatOwnerItems.SingleOrDefault(t => t.BoatOwnerRecieptID == BoatrecId && t.FishID == fishId);
+
+            var res = new { unitPrice = fishPrice.UnitPrice };
+
+            return Json(res);
+
+        }
         public IActionResult GetBoatItems(int? id)
         {
             var LastRecieptOfBoat = _context.BoatOwnerReciepts.Where(r => r.BoatID == id).Max(rs => rs.BoatOwnerRecieptID);
@@ -136,7 +144,9 @@ namespace FishBusiness.Controllers
                 }
 
                 Merchant m = _context.Merchants.Find(model.MerchantID);
-                m.PreviousDebts = model.CurrentDebt;
+                m.PreviousDebts = model.CurrentDebt + model.TotalOfReciept;
+                //m.PreviousDebts = model.CurrentDebt;
+                merchantReciept.CurrentDebt = model.CurrentDebt;
 
                 await _context.SaveChangesAsync();
                 return Json(new { message = "success", id = merchantReciept.MerchantRecieptID });

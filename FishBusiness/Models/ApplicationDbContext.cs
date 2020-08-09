@@ -50,6 +50,7 @@ namespace FishBusiness
         
         public virtual DbSet<Expense> Expenses { get; set; }
         public virtual DbSet<ExternalReceipt> ExternalReceipts { get; set; }
+        public virtual DbSet<IncomesOfSharedBoat> IncomesOfSharedBoats { get; set; }
 
 
     }

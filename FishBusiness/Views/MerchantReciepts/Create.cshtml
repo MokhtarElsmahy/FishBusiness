@@ -206,7 +206,7 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label">سعر الوحده</label>
-                        <input class="form-control" name="UnitPrice" />
+                        <input class="form-control" id="UnitPrice" name="UnitPrice" />
                         <span class="text-danger"></span>
                     </div>
                 </form>
@@ -220,35 +220,7 @@
     </div>
 </div>
 <hr />
-@*<div class="row">
-        <div class="col-md-4">
-            <form asp-action="Create">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Date" class="control-label"></label>
-                    <input asp-for="Date" class="form-control" />
-                    <span asp-validation-for="Date" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="MerchantID" class="control-label"></label>
-                    <select asp-for="MerchantID" class="form-control" asp-items="ViewBag.MerchantID"></select>
-                </div>
-                <div class="form-group">
-                    <label asp-for="TotalOfReciept" class="control-label"></label>
-                    <input asp-for="TotalOfReciept" class="form-control" />
-                    <span asp-validation-for="TotalOfReciept" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="payment" class="control-label"></label>
-                    <input asp-for="payment" class="form-control" />
-                    <span asp-validation-for="payment" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Create" class="btn btn-primary" />
-                </div>
-            </form>
-        </div>
-    </div>*@
+
 
 <div>
     <a asp-action="Index">Back to List</a>
@@ -274,7 +246,7 @@
                     traditional: true,
                     success: function (result) {
                         $list.empty();
-                       
+                        $list.append('<option value="-1"> اختر نوع السمك </option>');
                         $.each(result, function (i, item) {
                             $list.append('<option value="' + item.fishId + '"> ' + item.fishName + ' </option>');
                         });
@@ -286,11 +258,16 @@
             });
 
             $("#MerDDL").on("change", function () {
+                var Date = $("#MerRecDate").val();
+                var id = $("#MerDDL").val()
                 $.ajax({
                     url: "/MerchantReciepts/GetMerchant/",
                     type: "GET",
                     contentType: "json",
-                    data: { id: $("#MerDDL").val() }, //id of the state which is used to extract cities
+                    data: {
+                        id: id,
+                        date: Date
+                    }, //id of the state which is used to extract cities
                     traditional: true,
                     success: function (result) {
                         $('#PreviousDebts').text(result.debts)
@@ -299,6 +276,31 @@
                         alert("Something went wrong call the police");
                     }
                 });
+            });
+
+            $("#boatItemsDDL").on("change", function () {
+                var fishId = $("#boatItemsDDL").val();
+                var boatId = $("#boatDDL").val();
+
+                $.ajax({
+                    url: "/MerchantReciepts/GetFishPrice/",
+                    type: "GET",
+                    contentType: "json",
+                    data: {
+                        fishId: fishId,
+                        boatId: boatId,
+
+                    },
+                    traditional: true,
+                    success: function (result) {
+
+                        $("#UnitPrice").val(result.unitPrice)
+                    },
+                    error: function () {
+                        alert("خطا ..هذا المركب ليس له انتاج حاليا");
+                    }
+                });
+
             });
             var i = 0;
             $("#NewRows").on("click", function () {

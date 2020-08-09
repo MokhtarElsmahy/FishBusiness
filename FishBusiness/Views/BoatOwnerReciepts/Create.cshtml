@@ -134,23 +134,23 @@
                             <tr>
                                 <td class="total text-info">اجمالي الفاتورة</td>
                                 <td class="total" id="TotalBeforePayment">0</td>
-                                <td class="total text-info"> العمولة</td>
-                                <td class="total" id="commision">0</td>
-
+                              
                             </tr>
                             <tr class="total">
-                                <td>نسبة العمولة</td>
-                                <td colspan="2">
+                                <td class="total text-info"> العمولة</td>
+                                <td class="total" id="commision">0</td>
+                                @*<td>نسبة العمولة</td>*@
+                                <td>
                                     <div class="form-group">
-                                        <input asp-for="BoatOwnerReciept.PercentageCommission" class="form-control" />
+                                        <input asp-for="BoatOwnerReciept.PercentageCommission" style="width:100px;" class="form-control" />
                                         <span asp-validation-for="BoatOwnerReciept.PercentageCommission" class="text-danger"></span>
                                     </div>
                                 </td>
                                 <td>
-                                    <button class="btn btn-secondary" id="btnPercentage">حساب</button>
+                                    <button class="btn btn-secondary" id="btnPercentage">حساب العموله</button>
                                 </td>
                             </tr>
-                            <tr class="total">
+                            @*<tr class="total">
                                 <td>المدفوع من الهالك</td>
                                 <td colspan="2">
                                     <div class="form-group">
@@ -161,7 +161,7 @@
                                 <td>
                                     <button class="btn btn-secondary" id="btnCalc">تأكيد</button>
                                 </td>
-                            </tr>
+                            </tr>*@
 
                             <tr class="total">
                                 <td class="text-info">صافي انتاج المركب</td>
@@ -171,7 +171,7 @@
                                     <button type="button" class="btn btn-success" style="margin-left:5px;" id="btnSave">حفظ الفاتورة</button>
                                     @*<div >
 
-                </div>*@
+                                        </div>*@
                                     @*<button type="button" class="btn btn-info" hidden id="btnDetails">عرض فاتورة المركب</button>*@
                                     @*<button type="submit" form="Addform" class="btn btn-success" id="btnSave">حفظ الفاتورة</button>*@
                                 </td>
@@ -380,7 +380,7 @@
 
 @*----------------------------------------------------------------------------------*@
 
-
+<input type="hidden" id="RecieptIDD" />
 
 <div id="MfadeleftModal" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
     <div class="modal-dialog">
@@ -404,7 +404,9 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label">نوع السمك</label>
-                        <select class="form-control" id="boatItemsDDL" name="FishID"></select>
+                        <select class="form-control" id="boatItemsDDL" name="FishID">
+                          
+                        </select>
                     </div>
                     <div class="form-group">
                         <label class="control-label">نوع الانتاج</label>
@@ -412,12 +414,12 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label">الكميه</label>
-                        <input class="form-control" name="Qty" />
+                        <input class="form-control" name="Qty" id="MQty" />
                         <span class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label class="control-label">سعر الوحده</label>
-                        <input class="form-control" name="UnitPrice" />
+                        <input class="form-control" id="UnitPrice" name="UnitPrice"/>
                         <span class="text-danger"></span>
                     </div>
                 </form>
@@ -442,9 +444,12 @@
             $('#BoatOwnerReciept_PaidFromDebts').val('0')
             $('#BoatOwnerReciept_PercentageCommission').val(@ViewBag.Commission.Value)
             var boatId = 0;
+            var recieptId = 0;
+            var boatID = $("#boatDDL").val()
+            $("#MBoatID").val(boatID);
             $("#boatDDL").on("change", function () {
-
-                $("#MBoatID").val($("#boatDDL").val());
+                boatID = $("#boatDDL").val()
+                $("#MBoatID").val(boatID);
                 var body = $("#BoatBody")
                 body.html("");
                 $('#btnSave').hide();
@@ -490,6 +495,33 @@
                     }
                 });
             });
+
+            $("#boatItemsDDL").on("change", function () {
+                var fishId = $("#boatItemsDDL").val();
+                var RecieptID = $("#RecieptIDD").val();
+
+                $.ajax({
+                    url: "/BoatOwnerReciepts/GetFishPrice/",
+                    type: "GET",
+                    contentType: "json",
+                    data: {
+                        fishId: fishId ,
+                        RecieptID: RecieptID,
+
+                    },
+                    traditional: true,
+                    success: function (result) {
+
+                        $("#UnitPrice").val(result.unitPrice)
+                    },
+                    error: function () {
+                        alert("خطا ..هذا المركب ليس له انتاج حاليا");
+                    }
+                });
+
+            });
+
+
             var i = 0;
             //var RecId = 0;
             $("#MNewRows").on("click", function () {
@@ -586,9 +618,12 @@
                             $('#MpayFromDebt').val('0')
                             $('#MPreviousDebts').text('0')
                             $("#MbtnSave").hide()
-
+                          
 
                             $('#MerDDL option[value=-1]').prop('selected', true);
+                            $('#boatItemsDDL option[value=-1]').prop('selected', true);
+                            $('#MQty').val('0')
+                            $('#UnitPrice').val('0')
 
                             body.html("");
                         } else {
@@ -654,17 +689,17 @@
             $('#BoatBody').append(addControls);
 
         });
-        $("#btnCalc").click(function () {
-            if (!$('#BoatOwnerReciept_PaidFromDebts').val()) {
-                $('#TotalProduction').text(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').text()))
+        //$("#btnCalc").click(function () {
+        //    if (!$('#BoatOwnerReciept_PaidFromDebts').val()) {
+        //        $('#TotalProduction').text(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').text()))
 
-            }
-            else {
-                $('#TotalProduction').text(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').text()) - parseFloat($('#BoatOwnerReciept_PaidFromDebts').val()));
-            }
+        //    }
+        //    else {
+        //        $('#TotalProduction').text(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').text()) - parseFloat($('#BoatOwnerReciept_PaidFromDebts').val()));
+        //    }
 
-            //$('#BoatOwnerReciept_PaidFromDebts').val('')
-        });
+        //    //$('#BoatOwnerReciept_PaidFromDebts').val('')
+        //});
         var cookieList = function (cookieName) {
             //When the cookie is saved the items will be a comma seperated string
             //So we will split the cookie by comma to get the original array
@@ -714,7 +749,7 @@
             var TotalBeforePayment = parseFloat($('#TotalBeforePayment').text());
             var Date = $("#BoatOwnerReciept_Date").val();
             var commision = parseFloat($('#commision').text());
-            var PaidFromDebts = parseFloat($('#BoatOwnerReciept_PaidFromDebts').val());
+            //var PaidFromDebts = parseFloat($('#BoatOwnerReciept_PaidFromDebts').val());
             var TotalProduction = parseFloat($('#TotalProduction').text());
             var boatID = $("#boatDDL").val();
             var FishNames = new cookieList("FishNames"); // all items in the array.
@@ -749,12 +784,13 @@
                     Date: Date,
                     Commission: commision,
                     PercentageCommission: PercentageCommission,
-                    PaidFromDebts: PaidFromDebts,
+                    //PaidFromDebts: PaidFromDebts,
                     TotalAfterPaying: TotalProduction
                 },
                 success: function (result) {
                     if (result.message == "success") {
                         //window.location.href = "/MerchantReciepts/Details/" + result.id;
+
                         Swal.fire({
                             position: 'top-end',
                             icon: 'success',
@@ -762,6 +798,8 @@
                             showConfirmButton: false,
                             timer: 3000
                         });
+                        $("#RecieptIDD").val(result.reciept);
+                        
                         $list = $("#boatItemsDDL");
                         $.ajax({
                             url: "/BoatOwnerReciepts/GetBoatItems/",
@@ -771,7 +809,7 @@
                             traditional: true,
                             success: function (result) {
                                 $list.empty();
-
+                                $list.append('<option value="-1"> اختر نوع سمك </option>');
                                 $.each(result, function (i, item) {
                                     $list.append('<option value="' + item.fishId + '"> ' + item.fishName + ' </option>');
                                 });
@@ -807,7 +845,7 @@
                 }
             });
 
-            
+
         });
         var remove = function (id) {
 

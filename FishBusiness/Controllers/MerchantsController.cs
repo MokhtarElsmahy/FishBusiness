@@ -99,11 +99,15 @@ namespace FishBusiness.Controllers
             }
 
             var merchant = await _context.Merchants.FindAsync(MerchantID);
+            var LastRecIDOfMerch = _context.MerchantReciepts.Where(mr => mr.MerchantID == MerchantID).Max(mr => mr.MerchantRecieptID);
+            var LastRecOfMerch = _context.MerchantReciepts.Find(LastRecIDOfMerch);
+            LastRecOfMerch.CurrentDebt = (merchant.PreviousDebts - PaidValue);
+            LastRecOfMerch.payment += PaidValue;
             if (merchant == null)
             {
                 return NotFound();
             }
-            merchant.PreviousDebts -= PaidValue;
+            merchant.PreviousDebts = LastRecOfMerch.CurrentDebt;
            await _context.SaveChangesAsync();
             return Json(new {debts=merchant.PreviousDebts });
         }

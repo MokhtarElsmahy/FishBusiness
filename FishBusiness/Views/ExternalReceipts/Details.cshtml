@@ -84,22 +84,22 @@
                                                     <div class="col-sm-4 col-5">
                                                         <p class="">@Html.DisplayFor(model => model.Commission)</p>
                                                     </div>
-                                                    <div class="col-sm-8 col-7">
+                                                    <div class="col-sm-8 col-7 hideInPrint">
                                                         <p class=" discount-rate">ما تم دفعه من الهالك </p>
                                                     </div>
-                                                    <div class="col-sm-4 col-5">
+                                                    <div class="col-sm-4 col-5 hideInPrint">
                                                         <p class="">@Html.DisplayFor(model => model.PaidFromDebts)</p>
                                                     </div>
-                                                    <div class="col-sm-8 col-7">
+                                                    <div class="col-sm-8 col-7 hideInPrint">
                                                         <p class=" discount-rate">باقي الهالك علي المركب </p>
                                                     </div>
-                                                    <div class="col-sm-4 col-5">
+                                                    <div class="col-sm-4 col-5 hideInPrint">
                                                         <p class="">@Html.DisplayFor(model => model.Boat.DebtsOfHalek)</p>
                                                     </div>
-                                                    <div class="col-sm-8 col-7 grand-total-title ">
+                                                    <div class="col-sm-8 col-7 grand-total-title hideInPrint ">
                                                         <h4 class="text-info">صافي انتاج المركب </h4>
                                                     </div>
-                                                    <div class="col-sm-4 col-5 grand-total-amount">
+                                                    <div class="col-sm-4 col-5 grand-total-amount hideInPrint">
                                                         <h4 class="text-info">@Html.DisplayFor(model => model.TotalAfterPaying)</h4>
                                                     </div>
                                                 </div>
@@ -140,9 +140,11 @@
     <script src="~/assets/js/apps/invoice.js"></script>
     <script>
         $("#btnPrint").click(function () {
+            $(".hideInPrint").css("display", "none");
             window.print()
         });
         $("#btnPrint1").click(function () {
+            $(".hideInPrint").css("display", "none");
             window.print()
         });
     </script>

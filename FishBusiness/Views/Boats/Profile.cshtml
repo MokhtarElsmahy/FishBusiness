@@ -6,7 +6,11 @@
     <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/datatables.css">
     <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/dt-global_style.css">
 
+    <link href="~/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/components/cards/card.css" rel="stylesheet" type="text/css" />
 
+    <link href="~/plugins/animate/animate.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/components/custom-modal.css" rel="stylesheet" type="text/css" />
 }
 <!--  BEGIN CONTENT AREA  -->
 
@@ -35,16 +39,27 @@
                                     <div class="col-lg-11 mx-auto">
                                         <div class="row">
                                             <div class="col-xl-2 col-lg-12 col-md-4">
-                                                <div class="">
-                                                    <img src="~/img/@Model.BoatInfo.BoatImage" alt="" class="img-thumbnail" style="width:400px;height:200px;" />
 
-                                                    <div style="border-radius: 10px; background-color: dodgerblue">
-                                                        <div style="position:relative;top:20px">
-                                                            <label style="color:black">اسم المركب:</label>
-                                                            <label><h6>@Model.BoatInfo.BoatName</h6></label>
+                                                <div class="">
+                                                    <div class="card component-card_2">
+                                                        <img src="~/img/@Model.BoatInfo.BoatImage" class="card-img-top" alt="widget-card-2">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">اسم المركب</h5>
+                                                            <h6>@Model.BoatInfo.BoatName</h6>
                                                         </div>
                                                     </div>
 
+                                                    @if (Model.BoatInfo.TypeID == 2)//مركب شؤيك
+                                                    {
+
+                                                        <div class="card component-card_7" style="margin-bottom:10px;margin-left:2px;">
+                                                            <div class="card-body">
+                                                                <h5 class="card-text">ايراد المركب</h5>
+                                                                <label style="font-size:larger;font-weight:bolder;color:black" id="income">@Model.BoatInfo.IncomeOfSharedBoat $</label>
+
+                                                            </div>
+                                                        </div>
+                                                    }
                                                 </div>
                                             </div>
                                             <div class="col-xl-10 col-lg-12 col-md-8 mt-md-0 mt-4">
@@ -52,61 +67,54 @@
                                                     <div class="row">
                                                         <div class="col-sm-6">
 
-                                                            <div class="form-group" style="height:80px;border-radius:10px;background-color:dodgerblue">
-                                                                <div style="position:relative;top:20px;right:100px;">
-
-                                                                    <label style="color:black">ريس المركب:</label>
-                                                                    <label><h6>@Model.BoatInfo.BoatLeader</h6></label>
-                                                                </div>
-
-                                                            </div>
-                                                            <div class="form-group" style="height:80px;border-radius:10px;background-color:dodgerblue">
-                                                                <div style="position:relative;top:20px;right:100px;">
-                                                                    <label style="color:black">نوع المركب:</label>
-                                                                    <label><h6>@Model.BoatInfo.Type</h6></label>
+                                                            <div class="card component-card_7" style="margin-bottom:10px;margin-left:2px;">
+                                                                <div class="card-body">
+                                                                    <h5 class="card-text">ريس المركب</h5>
+                                                                    <label style="font-size:larger;font-weight:bolder;color:black">@Model.BoatInfo.BoatLeader</label>
 
                                                                 </div>
                                                             </div>
-                                                            <div class="form-group" style="height:80px;border-radius:10px;background-color:dodgerblue">
-                                                                <div style="position:relative;top:20px;right:100px;">
-                                                                    <labe style="color:black" l>
-                                                                        رخصة المركب:</label>
-                                                                        <label><h6>@Model.BoatInfo.BoatLicenseNumber</h6></label>
+                                                            <div class="card component-card_7" style="margin-bottom:10px;margin-left:2px;">
+                                                                <div class="card-body">
+                                                                    <h5 class="card-text">نوع المركب</h5>@*class="rating-count"*@
+                                                                    <label style="font-size:larger;font-weight:bolder;color:black">@Model.BoatInfo.Type</label>
 
                                                                 </div>
                                                             </div>
+                                                            <div class="card component-card_7" style="margin-bottom:10px;margin-left:2px;">
+                                                                <div class="card-body">
+                                                                    <h5 class="card-text">رخصة المركب</h5>
+                                                                    <label style="font-size:larger;font-weight:bolder;color:black">@Model.BoatInfo.BoatLicenseNumber</label>
+
+                                                                </div>
+                                                            </div>
+
                                                         </div>
                                                         <div class="col-sm-6">
-                                                            <div class="form-group" style="height:80px;border-radius:10px;background-color:dodgerblue">
-                                                                <div style="position:relative;top:20px;right:100px;">
-                                                                    <label style="color:black">ديون الهالك:</label>
-                                                                    <label style="color:greenyellow;font-size:large;font-weight:bold" id="BoatDebts">@Model.BoatInfo.DebtsOfHalek $</label>
 
+                                                            <div class="card component-card_7" style="margin-bottom:10px;margin-left:2px;">
+                                                                <div class="card-body">
+                                                                    <h5 class="card-text">ديون الهالك</h5>
+                                                                    <label style="font-size:larger;font-weight:bolder;color:black" id="BoatDebts">@Model.BoatInfo.DebtsOfHalek $</label>
+
+                                                                </div>
+                                                            </div>
+
+
+
+
+                                                            <div class="card component-card_7" style="margin-bottom:10px;margin-left:2px;">
+                                                                <div class="card-body">
+                                                                    <h5 class="card-text">اجمالى مصروف المركب</h5>
+                                                                    <label style="font-size:larger;font-weight:bolder;color:black" id="Expensese">@Model.BoatInfo.TotalOfExpenses $</label>
 
                                                                 </div>
                                                             </div>
 
-                                                            @if (Model.BoatInfo.TypeID == 2)//مركب شؤيك
-                                                            {<div class="form-group" style="height:80px;border-radius:10px;background-color:dodgerblue">
-                                                                    <div style="position:relative;top:20px;right:100px;">
-                                                                        <label style="color:black">ايراد المركب:</label>
-                                                                        <label><h6 style="color:greenyellow">@Model.BoatInfo.IncomeOfSharedBoat</h6></label>
-
-                                                                    </div>
-                                                                </div>}
-                                                            <div class="form-group" style="height:80px;border-radius:10px;background-color:dodgerblue">
-                                                                <div style="position:relative;top:20px;right:100px;">
-                                                                    <label style="color:black">اجمالى مصروف المركب:</label>
-                                                                    <label style="color:greenyellow;font-size:large;font-weight:bold" id="Expensese">@Model.BoatInfo.TotalOfExpenses $</label><br />
-
-
-
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group" style="height:80px;border-radius:10px;background-color:dodgerblue">
-                                                                <div style="position:relative;top:20px;right:100px;">
-                                                                    <label style="color:black">دين الشغل "دين العرف":</label>
-                                                                    <label><h6 style="color:greenyellow">@Model.BoatInfo.DebtsOfStartingWork $</h6></label>
+                                                            <div class="card component-card_7" style="margin-bottom:10px;margin-left:2px;">
+                                                                <div class="card-body">
+                                                                    <h5 class="card-text">دين الشغل "دين العرف</h5>
+                                                                    <label style="font-size:larger;font-weight:bolder;color:black" id="">@Model.BoatInfo.DebtsOfStartingWork $</label>
 
                                                                 </div>
                                                             </div>
@@ -123,51 +131,92 @@
                             </div>
                         </form>
                     </div>
-                    <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                        <div id="skill" class="section skill">
-                            <div class="info">
-                                <h5 class=""> خصم من الهالك / المصروف</h5>
-                                <div class="row progress-bar-section">
-
-                                    <div class="col-md-12 mx-auto">
-                                        <div class="form-group">
-
-                                            <div class="row">
-                                                <div class="col-md-11 mx-auto">
-                                                    <div class="input-form">
-                                                        <input type="text" class="form-control" id="skills" placeholder="المبلغ المراد خصمه من الهالك" value="">
-                                                        <button id="add-skills" class="btn btn-primary">خصم</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-11 mx-auto">
-                                                    <div class="input-form">
-                                                        <input type="text" class="form-control" id="SubExpenseValue" placeholder="المبلغ المراد خصمه من ديون المصروف" value="">
-                                                        <button id="SubExpense" class="btn btn-primary">خصم</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
+                   
                     </div>
                     <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
                         <form id="about" class="section about">
                             <div class="info">
-                                <h5 class="">فواتير</h5>
+                                <h5 class="">فواتير لم يتم المحاسبة عليها</h5>
 
                                 <div class="row layout-top-spacing" id="cancel-row">
 
                                     <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                                         <div class="widget-content widget-content-area br-6">
                                             <div class="table-responsive mb-4 mt-4">
-                                                <table id="zero-config" class="table table-hover" style="width:100%">
+                                                <table id="zero-config4" class="table table-hover" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>اجمالى الفاتوره</th>
+                                                            <th>العموله</th>
+                                                            <th>التاريخ</th>
+                                                            <th>المدفوع من الهالك</th>
+                                                            <th>الاجمالى بعد العموله والهالك</th>
+                                                            <th></th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (Model.NotCalculatedRec.Any())
+                                                        {
+                                                            foreach (var rec in Model.NotCalculatedRec)
+                                                            {
+                                                                <tr>
+                                                                    <td>@rec.TotalBeforePaying</td>
+                                                                    <td>@rec.Commission</td>
+                                                                    <td>@rec.Date</td>
+                                                                    <td>@rec.PaidFromDebts</td>
+                                                                    <td>@rec.TotalAfterPaying</td>
+                                                                    <td>
+                                                                        <a asp-action="Details" asp-controller="BoatOwnerReciepts" asp-route-id="@rec.BoatOwnerRecieptID" class="btn btn-info mb-2">عرض الفاتوره</a>|
+                                                                        <a asp-action="Details" asp-controller="Sarhas" asp-route-id="@rec.SarhaID" class="btn btn-info mb-2">السرحه</a>|
+                                                                        <a href="#" data-toggle="modal" data-target="#fadeleftModal" onclick="CalculateShow(@rec.BoatOwnerRecieptID)" class="btn btn-info mb-2">محاسبة</a>|
+
+                                                                    </td>
+
+                                                                </tr>
+                                                            }
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <tr>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td>
+
+                                                                    لا توجد فواتير لهذا المركب
+                                                                </td>
+                                                                <td></td>
+
+
+                                                            </tr>
+                                                        }
+
+
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                        <form id="about" class="section about">
+                            <div class="info">
+                                <h5 class="">فواتير تم المحاسبة عليها</h5>
+
+                                <div class="row layout-top-spacing" id="cancel-row">
+
+                                    <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                                        <div class="widget-content widget-content-area br-6">
+                                            <div class="table-responsive mb-4 mt-4">
+                                                <table id="zero-config3"  class="table table-hover" style="width:100%">
                                                     <thead>
                                                         <tr>
                                                             <th>اجمالى الفاتوره</th>
@@ -184,25 +233,23 @@
                                                         {
                                                             foreach (var rec in Model.BoatRecs)
                                                             {
-                                            <tr>
-                                                <td>@rec.TotalBeforePaying</td>
-                                                <td>@rec.Commission</td>
-                                                <td>@rec.Date</td>
-                                                <td>@rec.PaidFromDebts</td>
-                                                <td>@rec.TotalAfterPaying</td>
-                                                <td>
-                                                    <a asp-action="Details" asp-controller="BoatOwnerReciepts" asp-route-id="@rec.BoatOwnerRecieptID" class="btn btn-info mb-2">تفاصيل الفاتوره</a>|
-                                                    <a asp-action="Details" asp-controller="Sarhas" asp-route-id="@rec.SarhaID" class="btn btn-info mb-2">تفاصيل السرحه</a>|
+                                                                <tr>
+                                                                    <td>@rec.TotalBeforePaying</td>
+                                                                    <td>@rec.Commission</td>
+                                                                    <td>@rec.Date</td>
+                                                                    <td>@rec.PaidFromDebts</td>
+                                                                    <td>@rec.TotalAfterPaying</td>
+                                                                    <td>
+                                                                        <a asp-action="Details" asp-controller="BoatOwnerReciepts" asp-route-id="@rec.BoatOwnerRecieptID" class="btn btn-info mb-2">تفاصيل الفاتوره</a>|
+                                                                        <a asp-action="Details" asp-controller="Sarhas" asp-route-id="@rec.SarhaID" class="btn btn-info mb-2">تفاصيل السرحه</a>|
 
-                                                </td>
+                                                                    </td>
 
-                                            </tr>
- }
+                                                                </tr>
+                                                            }
 
-                                    }
-                                    else
-                                    {
-                        <span>لا توجد فواتير لهذا المركب</span>}
+                                                        }
+                                                    
 
 
                                                     </tbody>
@@ -218,7 +265,64 @@
                         </form>
                     </div>
 
+                    <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                        <form id="about" class="section about">
+                            <div class="info">
+                                <h5 class="">فواتير خارجيه</h5>
 
+                                <div class="row layout-top-spacing" id="cancel-row">
+
+                                    <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                                        <div class="widget-content widget-content-area br-6">
+                                            <div class="table-responsive mb-4 mt-4">
+                                                <table id="zero-config2" class="table table-hover" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>اجمالى الفاتوره</th>
+                                                            <th>العموله</th>
+                                                            <th>التاريخ</th>
+                                                            <th>المدفوع من الهالك</th>
+                                                            <th>الاجمالى بعد العموله والهالك</th>
+                                                            <th></th>
+
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (Model.ExternalRecs.Any())
+                                                        {
+                                                            foreach (var rec in Model.ExternalRecs)
+                                                            {
+                                                                <tr>
+                                                                    <td>@rec.TotalBeforePaying</td>
+                                                                    <td>@rec.Commission</td>
+                                                                    <td>@rec.Date</td>
+                                                                    <td>@rec.PaidFromDebts</td>
+                                                                    <td>@rec.TotalAfterPaying</td>
+                                                                    <td>
+                                                                        <a asp-action="Details" asp-controller="ExternalReceipts" asp-route-id="@rec.ExternalReceiptID" class="btn btn-info mb-2">تفاصيل الفاتوره</a>|
+                                                                        <a asp-action="Details" asp-controller="Sarhas" asp-route-id="@rec.SarhaID" class="btn btn-info mb-2">تفاصيل السرحه</a>|
+
+                                                                    </td>
+
+                                                                </tr>
+                                                            }
+
+                                                        }
+                                                      
+
+
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
 
                     <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
                         <form id="work-platforms" class="section work-platforms">
@@ -230,7 +334,7 @@
                                     <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                                         <div class="widget-content widget-content-area br-6">
                                             <div class="table-responsive mb-4 mt-4">
-                                                <table id="zero-config2" class="table table-hover" style="width:100%">
+                                                <table id="zero-config"  class="table table-hover" style="width:100%">
                                                     <thead>
                                                         <tr>
                                                             <th>التاريخ</th>
@@ -245,20 +349,21 @@
                                                         {
                                                             foreach (var expense in Model.BoatExpenses)
                                                             {
-                                            <tr>
-                                                <td>@expense.Date</td>
-                                                <td>@expense.Price</td>
-                                                <td>@expense.Cause</td>
-                                                <td>
-                                                    <a asp-action="Edit" asp-controller="Expenses" class="btn btn-success mb-2" asp-route-id="@expense.ExpenseID">تعديل</a>
+                                                                <tr>
+                                                                    <td>@expense.Date</td>
+                                                                    <td>@expense.Price</td>
+                                                                    <td>@expense.Cause</td>
+                                                                    <td>
+                                                                        <a asp-action="Edit" asp-controller="Expenses" class="btn btn-info mb-2" asp-route-id="@expense.ExpenseID">تعديل</a>
 
-                                                    <a class="btn btn-danger mb-2 delete"
-                                                       data-id="@expense.ExpenseID"
-                                                       data-controller="Expenses"
-                                                       data-action="Delete"
-                                                       data-body-message="هل انت متأكد من عملية الحذف ؟">حذف</a>
-                                                </td>
-                                            </tr>}
+                                                                        <a class="btn btn-danger mb-2 delete"
+                                                                           data-id="@expense.ExpenseID"
+                                                                           data-controller="Expenses"
+                                                                           data-action="Delete"
+                                                                           data-body-message="هل انت متأكد من عملية الحذف ؟">حذف</a>
+                                                                    </td>
+                                                                </tr>
+                                                            }
                                                         }
                                                     </tbody>
 
@@ -289,7 +394,24 @@
     </div>
 
 </div>
+<div id="fadeleftModal" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">محاسبة المركب</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body" id="ModalBody">
 
+               
+            </div>
+           
+        </div>
+    </div>
+</div>
 <!--  END CONTENT AREA  -->
 
 @section scripts{
@@ -302,7 +424,7 @@
 
     <script>
         $(document).ready(function () {
-            $("#add-skills").on('click', function () {
+            @*$("#add-skills").on('click', function () {
                 var PaidValue = parseFloat($('#skills').val());
                 var id = @Model.BoatInfo.BoatID
                 $.ajax({
@@ -324,6 +446,7 @@
                         });
                         $('#PaidValue').val('')
                         $('#BoatDebts').text(result.debts+" $")
+                        $('#income').text(result.income+" $")
 
                     },
                     error: function () {
@@ -334,10 +457,10 @@
                         });
                     }
                 });
-            })
+            })*@
 
 
-            $("#SubExpense").on('click', function () {
+            @*$("#SubExpense").on('click', function () {
                 var PaidValue = parseFloat($('#SubExpenseValue').val());
                 var id = @Model.BoatInfo.BoatID
                 $.ajax({
@@ -370,9 +493,11 @@
                         });
                     }
                 });
-            })
+            })*@
+         
+           
         })
-
+        
         var EditShow = function (id) {
             $.ajax({
                 url: "/Merchants/Edit",
@@ -412,6 +537,19 @@
             });
         }
 
+        var CalculateShow = function (id) {
+            $.ajax({
+                url: "/Boats/CalculateShow",
+                type: "GET",
+                data: { id: id },
+                success: function (response) {
+                    $("#fadeleftModal").modal("show");
+                    $("#ModalBody").html(response);
+
+                }
+
+            })
+        }
 
 
 

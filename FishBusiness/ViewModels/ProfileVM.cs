@@ -10,6 +10,8 @@ namespace FishBusiness.ViewModels
     {
         public BoatInfoVM BoatInfo { get; set; }
         public IEnumerable<BoatOwnerReciept> BoatRecs { get; set; }
+        public IEnumerable<BoatOwnerReciept> NotCalculatedRec { get; set; }
+        public IEnumerable<ExternalReceipt> ExternalRecs { get; set; }
         public IEnumerable<Expense> BoatExpenses { get; set; }
 
        

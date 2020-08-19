@@ -138,7 +138,8 @@
                             </tr>
                             <tr class="total">
                                 <td class="total text-info"> العمولة</td>
-                                <td class="total" id="commision">0</td>
+                                @*<td class="total" id="commision">0</td>*@
+                                <td class="total" id=""><input value="0" id="commision" style="width:100px;" class="form-control" /></td>
                                 @*<td>نسبة العمولة</td>*@
                                 <td>
                                     <div class="form-group">
@@ -165,7 +166,7 @@
 
                             <tr class="total">
                                 <td class="text-info">صافي انتاج المركب</td>
-                                <td id="TotalProduction"></td>
+                                <td id=""><input id="TotalProduction" style="width:100px;" class="form-control" /></td>
                                 <td></td>
                                 <td>
                                     <button type="button" class="btn btn-success" style="margin-left:5px;" id="btnSave">حفظ الفاتورة</button>
@@ -455,10 +456,10 @@
                 $('#btnSave').hide();
                 $('.total').hide();
                 $('#TotalBeforePayment').text('0')
-                $('#commision').text('0')
+                $('#commision').val('0')
                 $('#BoatOwnerReciept_PaidFromDebts').val('0')
                 $('#BoatOwnerReciept_PercentageCommission').val(@ViewBag.Commission.Value)
-                $('#TotalProduction').text('')
+                $('#TotalProduction').val('')
 
                 var printBody = $("#redirectPrint")
                 printBody.html("");
@@ -679,8 +680,8 @@
             addControls += "<td class='prices'>" + BoatOwnerItem_UnitPrice * BoatOwnerItem_Qty + "</td>"
             addControls += "</tr>";
             $('#TotalBeforePayment').text(parseFloat($('#TotalBeforePayment').text()) + BoatOwnerItem_UnitPrice * BoatOwnerItem_Qty);
-            $('#commision').text(parseFloat($('#BoatOwnerReciept_PercentageCommission').val()) * parseFloat($('#TotalBeforePayment').text()) / 100)
-            $('#TotalProduction').text(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').text()))
+            $('#commision').val(parseFloat($('#BoatOwnerReciept_PercentageCommission').val()) * parseFloat($('#TotalBeforePayment').text()) / 100)
+            $('#TotalProduction').val(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').val()))
 
             $('#btnSave').show();
             $('.total').show();
@@ -691,11 +692,11 @@
         });
         //$("#btnCalc").click(function () {
         //    if (!$('#BoatOwnerReciept_PaidFromDebts').val()) {
-        //        $('#TotalProduction').text(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').text()))
+        //        $('#TotalProduction').val(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').val()))
 
         //    }
         //    else {
-        //        $('#TotalProduction').text(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').text()) - parseFloat($('#BoatOwnerReciept_PaidFromDebts').val()));
+        //        $('#TotalProduction').val(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').val()) - parseFloat($('#BoatOwnerReciept_PaidFromDebts').val()));
         //    }
 
         //    //$('#BoatOwnerReciept_PaidFromDebts').val('')
@@ -748,9 +749,9 @@
             }
             var TotalBeforePayment = parseFloat($('#TotalBeforePayment').text());
             var Date = $("#BoatOwnerReciept_Date").val();
-            var commision = parseFloat($('#commision').text());
+            var commision = parseFloat($('#commision').val());
             //var PaidFromDebts = parseFloat($('#BoatOwnerReciept_PaidFromDebts').val());
-            var TotalProduction = parseFloat($('#TotalProduction').text());
+            var TotalProduction = parseFloat($('#TotalProduction').val());
             var boatID = $("#boatDDL").val();
             var FishNames = new cookieList("FishNames"); // all items in the array.
             $('.fishes').each(function () {
@@ -860,12 +861,12 @@
 
         $("#btnPercentage").click(function () {
             if (!$('#BoatOwnerReciept_PercentageCommission').val()) {
-                $('#commision').text(@ViewBag.Commission.Value * parseFloat($('#TotalBeforePayment').text()) / 100)
+                $('#commision').val(@ViewBag.Commission.Value * parseFloat($('#TotalBeforePayment').text()) / 100)
             }
             else {
-                $('#commision').text(parseFloat($('#BoatOwnerReciept_PercentageCommission').val()) * parseFloat($('#TotalBeforePayment').text()) / 100)
+                $('#commision').val(parseFloat($('#BoatOwnerReciept_PercentageCommission').val()) * parseFloat($('#TotalBeforePayment').text()) / 100)
             }
-            $('#TotalProduction').text(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').text()))
+            $('#TotalProduction').val(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').val()))
 
             //$('#BoatOwnerReciept_PaidFromDebts').val('')
         });

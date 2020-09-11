@@ -56,7 +56,7 @@ namespace FishBusiness.Controllers
             ViewData["FishID"] = new SelectList(_context.Fishes, "FishID", "FishName");
 
             //
-            ViewData["MerchantID"] = new SelectList(_context.Merchants, "MerchantID", "MerchantName");
+            ViewData["MerchantID"] = new SelectList(_context.Merchants.Where(m=>m.IsFromOutsideCity==false), "MerchantID", "MerchantName");
             // commission
            // ViewBag.Commission = _context.Cofigs.Find(1);
             ViewBag.Commission = _context.Cofigs.Find(2);
@@ -201,7 +201,7 @@ namespace FishBusiness.Controllers
             //var PaidFromDebtsCookie = boatOwnerReciept.PaidFromDebts;
             var TotalProductionCookie = boatOwnerReciept.TotalAfterPaying;
             //find latest sarha related to selected boat
-            var sarhaId = _context.Sarhas.Where(x => x.BoatID == boatOwnerReciept.BoatID).Max(x => x.SarhaID);
+            var sarhaId = _context.Sarhas.Where(x => x.BoatID == boatOwnerReciept.BoatID && x.IsFinished == false).Max(x => x.SarhaID);
             boatOwnerReciept.SarhaID = sarhaId;
             boatOwnerReciept.TotalBeforePaying = Convert.ToDecimal(TotalBeforePaymentCookie);
             boatOwnerReciept.Commission = Convert.ToDecimal(commisionCookie);
@@ -258,6 +258,9 @@ namespace FishBusiness.Controllers
                 _context.BoatOwnerItems.Add(boatOwnerItem);
                 _context.SaveChanges();
             }
+            var sarhaa = _context.Sarhas.Find(sarhaId);
+            sarhaa.IsFinished = true;
+            _context.SaveChanges();
             //return RedirectToAction(nameof(Index));
             //return RedirectToAction("Details",new { id= latestReceipt });
             return Json(new { message = "success", id = boatOwnerReciept.BoatID, reciept = boatOwnerReciept.BoatOwnerRecieptID });

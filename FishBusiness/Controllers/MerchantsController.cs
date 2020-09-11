@@ -41,8 +41,12 @@ namespace FishBusiness.Controllers
                 return NotFound();
             }
             model.Merchant = merchant;
-            model.MerchantReciepts =await _context.MerchantReciepts.Include(x=>x.Merchant).Where(x => x.MerchantID == id).ToListAsync();
-           
+            model.MerchantReciepts = await _context.MerchantReciepts.Include(x => x.Merchant).Where(x => x.MerchantID == id).ToListAsync();
+            model.IMerchantReciepts = await _context.IMerchantReciept.Include(x => x.Merchant).Where(x => x.MerchantID == id).ToListAsync();
+            model.ISellerReciepts = await _context.ISellerReciepts.Include(x => x.Merchant).Where(x => x.MerchantID == id && x.TotalOfPrices == 0).ToListAsync();
+            model.ISellerRecieptsMoneytized = await _context.ISellerReciepts.Include(x => x.Merchant).Where(x => x.MerchantID == id && x.TotalOfPrices > 0).ToListAsync();
+            model.PaidForMerchantsFromUs = await _context.PaidForMerchant.Where(c => c.IsPaidForUs == false).ToListAsync();
+            model.PaidForUs = await _context.PaidForMerchant.Where(c => c.IsPaidForUs == true).ToListAsync();
             return View(model);
         }
 
@@ -63,13 +67,13 @@ namespace FishBusiness.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateC([Bind("MerchantID,MerchantName,PreviousDebts,Phone,Address")] Merchant merchant)
+        public async Task<IActionResult> CreateC([Bind("MerchantID,MerchantName,PreviousDebts,Phone,Address,IsFromOutsideCity")] Merchant merchant)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(merchant);
                 await _context.SaveChangesAsync();
-                return Json(new {message="success" });
+                return Json(new { message = "success" });
             }
             return View(merchant);
         }
@@ -91,25 +95,42 @@ namespace FishBusiness.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CalcDebts(decimal PaidValue , int MerchantID)
+        public async Task<IActionResult> CalcDebts(decimal PaidValue, int MerchantID, bool IsCash)
         {
-            if (MerchantID == null)
-            {
-                return NotFound();
-            }
 
             var merchant = await _context.Merchants.FindAsync(MerchantID);
-            var LastRecIDOfMerch = _context.MerchantReciepts.Where(mr => mr.MerchantID == MerchantID).Max(mr => mr.MerchantRecieptID);
-            var LastRecOfMerch = _context.MerchantReciepts.Find(LastRecIDOfMerch);
-            LastRecOfMerch.CurrentDebt = (merchant.PreviousDebts - PaidValue);
-            LastRecOfMerch.payment += PaidValue;
+
             if (merchant == null)
             {
                 return NotFound();
             }
-            merchant.PreviousDebts = LastRecOfMerch.CurrentDebt;
-           await _context.SaveChangesAsync();
-            return Json(new {debts=merchant.PreviousDebts });
+
+            merchant.PreviousDebtsForMerchant -= PaidValue;
+            PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = false, Payment = PaidValue, Date = DateTime.Now, MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebtsForMerchant) };
+            _context.PaidForMerchant.Add(p);
+            await _context.SaveChangesAsync();
+
+            return Json(new { message="success", debtsForMerchant = merchant.PreviousDebtsForMerchant });
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> CalcDebtForUs(decimal PaidValue, int MerchantID, bool IsCash)
+        {
+
+            var merchant = await _context.Merchants.FindAsync(MerchantID);
+
+            if (merchant == null)
+            {
+                return NotFound();
+            }
+
+            merchant.PreviousDebts -= PaidValue;
+            PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = true, Payment = PaidValue, Date = DateTime.Now, MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebts) };
+            _context.PaidForMerchant.Add(p);
+            await _context.SaveChangesAsync();
+
+            return Json(new { message = "success", debtsOnMerchant = merchant.PreviousDebts });
         }
 
         // POST: Merchants/Edit/5
@@ -119,7 +140,7 @@ namespace FishBusiness.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> cEdit([Bind("MerchantID,MerchantName,PreviousDebts,Phone,Address")] Merchant merchant)
         {
-           
+
 
             if (ModelState.IsValid)
             {
@@ -140,7 +161,7 @@ namespace FishBusiness.Controllers
                     }
                 }
                 //return RedirectToAction(nameof(Index));
-                return Json(new { message="success"});
+                return Json(new { message = "success" });
             }
             return View(merchant);
         }

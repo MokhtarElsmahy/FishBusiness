@@ -13,7 +13,7 @@ namespace FishBusiness.Models
         [Required(ErrorMessage = "برجاء ادخال اسم التاجر")]
         public string MerchantName { get; set; }
 
-        [Display(Name = "الديون السابقة")]
+        [Display(Name = "ديون على التاجر")]
         public decimal PreviousDebts { get; set; }
         [Display(Name = "تلفون التاجر")]
         [Required(ErrorMessage = "برجاء ادخال تلفون التاجر")]
@@ -23,6 +23,16 @@ namespace FishBusiness.Models
         [Display(Name = "عنوان التاجر")]
         public string Address { get; set; }
 
+        [Display(Name = "ديون للتاجر")]
+        public decimal PreviousDebtsForMerchant { get; set; }
+
+        public bool IsFromOutsideCity { get; set; }
+        public bool IsOwner { get; set; }
+
+
         public virtual ICollection<MerchantReciept> MerchantReciepts { get; set; }
+        public virtual ICollection<IMerchantReciept> IMerchantReciepts { get; set; }
+        public virtual ICollection<ISellerReciept> ISellerReciepts { get; set; }
+        public virtual ICollection<PaidForMerchant> PaidForMerchants { get; set; }
     }
 }

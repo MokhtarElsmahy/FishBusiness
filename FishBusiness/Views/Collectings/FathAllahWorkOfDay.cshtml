@@ -1,0 +1,252 @@
+﻿
+@section Styles {
+
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <link href="~/plugins/animate/animate.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/components/custom-modal.css" rel="stylesheet" type="text/css" />
+    <!--  END CUSTOM STYLE FILE  -->
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link href="~/assets/css/apps/scrumboard.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/forms/theme-checkbox-radio.css" rel="stylesheet" type="text/css">
+    <!-- END PAGE LEVEL STYLES -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+}
+
+<div class="layout-px-spacing">
+    <div class="container row">
+        <div class="page-header m-3">
+            <div class="page-title">
+                <h3>دفتر شغل احمد فتح الله</h3>
+            </div>
+
+        </div>
+        <div class="mt-4 ml-auto">
+            <a asp-action="FathAllahMainProfile" asp-controller="Collectings" class="btn btn-primary">البروفايل</a>
+
+            
+        </div>
+    </div>
+
+    <div class="row">
+       
+            <input type="date" id="date" class="form-control col-4" />
+            <a id="btnconfirm" class="btn btn-primary" style="margin-right:10px;">تاكيد</a>
+        
+    </div>
+
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>هالك الحلقه</h3>
+                <img src="~/assets/img/loader.gif" class="loader" style="width:100px;height:100px;display:none" />
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>الاسم </th>
+                                <th>القيمه</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="TBody">
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>الاجمالى</td>
+                                <td id="Tfoot1"></td>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+
+
+                </div>
+
+
+
+
+            </div>
+         
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>مسحوبات ريس مركب</h3>
+                <img src="~/assets/img/loader.gif" class="loader" style="width:100px;height:100px;display:none" />
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>اسم</th>
+                                <th>المبلغ</th>
+
+
+
+                            </tr>
+                        </thead>
+                        <tbody id="TBody2">
+                        </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <td>الاجمالى</td>
+                                <td id="Tfoot2"></td>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+
+
+                </div>
+
+
+
+            </div>
+         
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>هالك مراكب</h3>
+                <img src="~/assets/img/loader.gif" class="loader" style="width:100px;height:100px;display:none" />
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>اسم المركب</th>
+                                <th>المبلغ</th>
+                                <th>نوع الهالك</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="TBody3">
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>الاجمالى</td>
+                                <td id="Tfoot3"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+
+                </div>
+            </div>
+         
+        </div>
+
+    </div>
+
+
+
+
+
+</div>
+@section scripts{
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            $("#btnconfirm").on('click', function () {
+                var date = $('#date').val();
+
+                $(".loader").show();
+
+                body1 = $("#TBody");
+                body2 = $("#TBody2");
+                body3 = $("#TBody3");
+             
+
+                $.ajax({
+                    url: "/Collectings/FathAllahWorkOfDayDate",
+                    type: "GET",
+                    contentType: "json",
+                    data: { Date: date },
+                    traditional: true,
+                    success: function (result) {
+                        if (result.message == "success") {
+
+                            $(".loader").hide();
+                            body1.empty();
+
+                            $.each(result.halakaHaleks, function (i, item) {
+
+                                body1.append("<tr>" +
+                                    "<td>" + item.debtName + "</td>" +
+                                    "<td>" + item.price + "</td>" +
+                                    "</tr>");
+                            });
+
+                            $("#Tfoot1").text(result.sumOfhalakaHaleks)
+
+                            //---------------------------------------
+
+                            body2.empty();
+
+                            $.each(result.loans, function (i, item) {
+
+                                body2.append("<tr>" +
+                                    "<td>" + item.leader + "</td>" +
+                                    "<td>" + item.price + "</td>" +
+                                    "</tr>");
+                            });
+
+                            $("#Tfoot2").text(result.sumOfLoans)
+
+                            //-----------------------------------------
+                            body3.empty();
+
+                            $.each(result.halek, function (i, item) {
+
+                                body3.append("<tr>" +
+                                    "<td>" + item.boatName + "</td>" +
+                                    "<td>" + item.price + "</td>" +
+                                    "<td>" + item.debtName + "</td>" +
+                                    "</tr>");
+                            });
+
+                            //------------------------------------
+                            $("#Tfoot3").text(result.sumOfHalek)
+                            //---------------------------------------------------
+
+
+
+                          
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'حدث خطأ',
+                                text: 'لا يوجد بيانات لهذا التاريخ',
+                            });
+                            $(".loader").hide();
+                        }
+
+                    },
+                    error: function () {
+                        $(".loader").hide();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حدث خطأ',
+                        });
+                    }
+                });
+
+
+            })
+        })
+       
+    </script>
+
+
+}

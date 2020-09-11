@@ -1,0 +1,145 @@
+﻿@model FishBusiness.ViewModels.ImerchRecDetailsVm
+
+@{
+    ViewData["Title"] = "Details";
+}
+@section Styles{
+    <link href="~/plugins/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" type="text/css" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/apps/invoice.css" rel="stylesheet" type="text/css" />
+    <!--  END CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/print.min.css" rel="stylesheet" />
+}
+<div class="layout-px-spacing">
+
+    <div class="container row">
+        <div class="page-header m-3">
+            <div class="page-title">
+                <h3>تفاصيل الفاتورة</h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <div class="row">
+                <div class="company-info ml-2" style="margin-left:5px;">
+                    <button class="btn btn-secondary ml-2" id="btnPrint">طباعة</button>
+                </div>
+               
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row invoice layout-top-spacing">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="doc-container">
+
+
+                <div class="invoice-container">
+
+                    <div id="ct" class="">
+
+                        <div class="invoice-00001">
+                            <div class="content-section  animated animatedFadeInUp fadeInUp">
+
+                                <div class="row inv--head-section">
+
+                                    <div class="col-sm-6 col-12">
+                                        <h3 class="in-heading">فاتورة مشتريات</h3>
+                                    </div>
+
+
+                                </div>
+                                <div id="Invoice">
+                                    <div class="row inv--detail-section">
+
+
+
+                                        <div class="col-sm-7 align-self-center">
+
+                                            <p class="inv-street-addr">تاريخ الفاتوره :@Model.ImerchantReciept.Date.ToShortDateString()</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row inv--product-table-section">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <h6>@Model.ImerchantReciept.Merchant.MerchantName</h6>
+                                                <table class="table">
+                                                    <thead class="">
+                                                        <tr>
+                                                            <th scope="col">النوع</th>
+                                                            <th class="text-right" scope="col">الانتاج</th>
+                                                            <th class="text-right" scope="col">الكمية</th>
+
+                                                            <th class="text-right" scope="col">السعر</th>
+                                                            <th class="text-right" scope="col">الاجمالى</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var item in Model.ImerchantRecieptItems)
+                                                        {
+                                                            <tr>
+
+
+                                                                <td>@item.Fish.FishName</td>
+                                                                <td class="text-right">@item.ProductionType.ProductionName</td>
+                                                                <td class="text-right">@item.Qty</td>
+
+                                                                <td class="text-right">@item.UnitPrice</td>
+                                                                <td class="text-right">@(item.UnitPrice*item.Qty)</td>
+                                                            </tr>
+                                                        }
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+                    <div class="inv--thankYou">
+                        <div class="row">
+                            <div class="col-sm-12 col-12">
+                                <p class="">Thank you for doing Business with us.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col-sm-6 col-12 align-self-center text-sm-right mb-2 ml-auto">
+                <div class="company-info">
+                    <button class="btn btn-secondary" id="btnPrint1">طباعة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    @*   <script src="~/assets/js/print.min.js"></script>*@
+    <script src="~/assets/js/apps/invoice.js"></script>
+    <script>
+        $("#btnPrint").click(function () {
+            //$('#hideInPrint').attr("d")
+            $(".hideInPrint").css("display", "none");
+            window.print()
+        });
+        $("#btnPrint1").click(function () {
+            $(".hideInPrint").css("display", "none");
+            window.print()
+        });
+    </script>
+
+}

@@ -15,5 +15,6 @@ namespace FishBusiness.Models
         [Display(Name ="نوع الهالك")]
         public string DebtName { get; set; }
         public virtual ICollection<Debts_Sarha> Debts_Sarhas { get; set; }
+        public virtual ICollection<HalakaHalek> HalakaHaleks { get; set; }
     }
 }

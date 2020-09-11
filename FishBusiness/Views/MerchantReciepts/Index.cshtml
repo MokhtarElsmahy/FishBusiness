@@ -33,8 +33,8 @@
                                 <th>@Html.DisplayNameFor(i => i.Date)</th>
                                 <th>@Html.DisplayNameFor(i => i.Merchant.MerchantName)</th>
                                 @*<th>@Html.DisplayNameFor(i => i.Merchant.PreviousDebts)</th>
-                                <th>@Html.DisplayNameFor(i => i.payment)</th>*@
-                               
+                                    <th>@Html.DisplayNameFor(i => i.payment)</th>*@
+
                                 <th></th>
 
 
@@ -50,16 +50,16 @@
                                         <td>@item.Date</td>
                                         <td>@item.Merchant.MerchantName</td>
                                         @*<td>@item.Merchant.PreviousDebts</td>
-                                        <td>@item.payment</td>*@
-                                    <td>
+                                            <td>@item.payment</td>*@
+                                        <td>
 
-                                        <a asp-action="Details" asp-route-id="@item.MerchantRecieptID" class="btn btn-info mb-2">تفاصيل</a>
-                                        <a class="btn btn-danger mb-2 delete"
-                                           data-id="@item.MerchantRecieptID"
-                                           data-controller="MerchantReciepts"
-                                           data-action="Delete"
-                                           data-body-message="هل انت متأكد من عملية الحذف ؟">حذف</a>
-                                    </td>
+                                            <a asp-action="Details" asp-route-id="@item.MerchantRecieptID" class="btn btn-info mb-2">تفاصيل</a>
+                                            <a class="btn btn-danger mb-2 delete"
+                                               data-id="@item.MerchantRecieptID"
+                                               data-controller="MerchantReciepts"
+                                               data-action="Delete"
+                                               data-body-message="هل انت متأكد من عملية الحذف ؟">حذف</a>
+                                        </td>
 
                                     </tr>
                                 }

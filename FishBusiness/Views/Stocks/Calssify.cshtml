@@ -1,0 +1,50 @@
+﻿@model FishBusiness.Models.Stock
+    <div>
+        @if (Model.TotalWeight > 0)
+        {
+
+            <div class="form-group">
+                <label asp-for="TotalWeight" class="control-label"></label>
+                <input asp-for="TotalWeight" id="OldtotalWeight" class="form-control" disabled />
+
+            </div>
+        }
+
+
+        <div class="form-group">
+            <label asp-for="Fish.FishName" class="control-label"></label>
+            <select asp-for="FishID" id="FishDDL" class="form-control" asp-items="ViewBag.FishID"></select>
+        </div>
+        <div class="form-group">
+            <label asp-for="ProductionType.ProductionName" class="control-label">نوع الانتاج</label>
+            <select asp-for="ProductionTypeID" id="ProdDDL" class="form-control" asp-items="ViewBag.ProductionTypeID"></select>
+        </div>
+        <div class="form-group">
+            <label asp-for="Qty" class="control-label"></label>
+            <input asp-for="Qty" id="Qty" class="form-control" />
+            <span asp-validation-for="Qty" class="text-danger"></span>
+        </div>
+
+
+        <input type="hidden" id="PID" value="@Model.ProductionTypeID" />
+        @*<input type="hidden" id="oldFishId" value="@Model.FishID" />*@
+        <input type="hidden" id="OldStockID" value="@Model.StockID" />
+    </div>
+
+
+@section scripts{
+    <script>
+
+
+        $(document).ready(function () {
+
+           
+           
+           
+        })
+
+     
+    </script>
+
+
+}

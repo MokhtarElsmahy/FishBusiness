@@ -42,6 +42,7 @@
                 </div>
 
             </div>
+
             <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
                 <div class="widget widget-five">
                     <div class="widget-content">
@@ -95,6 +96,93 @@
             </div>
 
 
+            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
+                <div class="widget widget-five">
+                    <div class="widget-content">
 
+                        <div class="header">
+                            <div class="header-body">
+                                <h6 class="text-info">المخزن </h6>
+                                <p class="meta-date mt-10" style="margin-top:5px">
+                                    @DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                    , @DateTime.Now.ToShortDateString()
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <div class="w-content">
+                            <div class="">
+                                <p class="task-left">@ViewBag.Stock</p>
+                                <p class="task-completed"><span><a asp-action="Index" asp-controller="Stocks" class="btn btn-warning">المخزن</a></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
+                <div class="widget widget-five">
+                    <div class="widget-content">
+
+                        <div class="header">
+                            <div class="header-body">
+                                <h6 class="text-info">مكاسب اليوم </h6>
+                                <p class="meta-date mt-10" style="margin-top:5px">
+                                    @DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                    , @DateTime.Now.ToShortDateString()
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <div class="w-content">
+                            <div class="">
+                                @if (ViewBag.ProfitOfDay != null)
+                                {
+                                    <p class="task-left">@ViewBag.ProfitOfDay</p>
+                                }
+
+                                <p class="task-completed"><span><a asp-action="Summation" asp-controller="TotalOfProfits" asp-route-Date="@DateTime.Now" class="btn btn-warning">تجميع</a></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
+                <div class="widget widget-five">
+                    <div class="widget-content">
+
+                        <div class="header">
+                            <div class="header-body">
+                                <h6 class="text-info">دفتر مكاسب الايام</h6>
+
+                            </div>
+
+                        </div>
+
+                        <div class="w-content">
+                            <div class="">
+                                @*@if (ViewBag.ProfitOfDay != null)
+                            {
+                                <p class="task-left">@ViewBag.ProfitOfDay</p>
+                            }*@
+                                <p class="task-left"></p>
+                                <p class="task-completed"><span><a asp-action="SummationOfAday" asp-controller="TotalOfProfits" class="btn btn-warning">عرض</a></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            
+       
+            
         </div>
     </div>

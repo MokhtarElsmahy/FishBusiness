@@ -19,7 +19,21 @@ namespace FishBusiness.Models
         [Required(ErrorMessage ="برجاء ادخال سعر الهالك")]
         public decimal Price { get; set; }
 
+        //[ForeignKey("Manager")]
+        //public int? ManagerID { get; set; }
+
+
+        [ForeignKey("Person")]
+        public int? PersonID { get; set; }
+
+        public DateTime Date { get; set; }
+
+
         public virtual Sarha Sarha { get; set; }
         public virtual Debt Debt { get; set; }
+
+        //public virtual Manager Manager { get; set; }
+
+        public virtual Person Person { get; set; }
     }
 }

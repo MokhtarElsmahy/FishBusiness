@@ -51,6 +51,26 @@ namespace FishBusiness
         public virtual DbSet<Expense> Expenses { get; set; }
         public virtual DbSet<ExternalReceipt> ExternalReceipts { get; set; }
         public virtual DbSet<IncomesOfSharedBoat> IncomesOfSharedBoats { get; set; }
+        public DbSet<FishBusiness.Models.IMerchantReciept> IMerchantReciept { get; set; }
+        public DbSet<FishBusiness.Models.IMerchantRecieptItem> IMerchantRecieptItem { get; set; }
+        public DbSet<FishBusiness.Models.PaidForMerchant> PaidForMerchant { get; set; }
+        public DbSet<FishBusiness.Models.Stock> Stocks { get; set; }
+
+
+        public DbSet<FishBusiness.Models.ISellerReciept> ISellerReciepts { get; set; }
+        public DbSet<FishBusiness.Models.ISellerRecieptItem> ISellerRecieptItems { get; set; }
+        public DbSet<FishBusiness.Models.TotalOfProfit> TotalOfProfits { get; set; }
+        public DbSet<FishBusiness.Models.Person> People { get; set; }
+        public DbSet<FishBusiness.Models.Collecting> Collectings { get; set; }
+        public DbSet<FishBusiness.Models.AdditionalPayment> AdditionalPayments { get; set; }
+        public DbSet<FishBusiness.Models.HalakaHalek> HalakaHaleks { get; set; }
+        public DbSet<FishBusiness.Models.LeaderLoan> LeaderLoans { get; set; }
+        public DbSet<FishBusiness.Models.LeaderPayback> LeaderPaybacks { get; set; }
+        public DbSet<FishBusiness.Models.FathAllahGift> FathAllahGifts { get; set; }
+
+
+        //public DbSet<FishBusiness.Models.Manager> Managers { get; set; }
+
 
 
     }

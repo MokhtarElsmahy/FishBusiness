@@ -50,7 +50,7 @@ namespace FishBusiness.Controllers
         // GET: MerchantReciepts/Create
         public IActionResult Create()
         {
-            ViewData["MerchantID"] = new SelectList(_context.Merchants, "MerchantID", "MerchantName");
+            ViewData["MerchantID"] = new SelectList(_context.Merchants.Where(m => m.IsFromOutsideCity == false), "MerchantID", "MerchantName");
             ViewData["Boats"] = new SelectList(_context.Boats.Where(b=>b.IsActive==true).ToList(), "BoatID", "BoatName");
             ViewData["ProductionTypeID"] = new SelectList(_context.ProductionTypes, "ProductionTypeID", "ProductionName");
 

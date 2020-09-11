@@ -1,0 +1,324 @@
+﻿@model FishBusiness.ViewModels.SummationVm
+
+
+<div class="layout-px-spacing">
+    <div class="container row">
+        <div class="page-header m-3">
+            <div class="page-title">
+                <h3>حساب مكاسب اليوم</h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <a asp-action="Index" asp-controller="Home" class="btn btn-primary">الرئيسية</a>
+        </div>
+    </div>
+
+
+    <div class="row m-3">
+        <input type="date" id="date" class="form-control col-4" />
+        <a id="btnconfirm" class="btn btn-primary" as style="margin-right:10px;">تاكيد</a>
+    </div>
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>مشتريات</h3>
+                <img src="~/assets/img/loader.gif" class="loader" style="width:100px;height:100px;display:none" />
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>اسم التاجر</th>
+                                <th>قيمة المشتريات منه</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="purchasesBody">
+                            @*@if (Model.IMerchantReciepts.Any())
+                                {
+                                    @foreach (var item in Model.IMerchantReciepts)
+                                    {
+                                        <tr>
+
+                                            <td>@item.Merchant.MerchantName</td>
+                                            <td> @item.TotalOfReciept</td>
+
+                                        </tr>
+                                    }
+
+                                }
+                                else
+                                {
+                                    <tr>
+
+                                        <td class="font-weight-bolder">لا توجد مشتريات اليوم</td>
+
+
+                                    </tr>
+                                }*@
+
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>
+                                    الاجمالى
+                                </td>
+                                <td id="totalOfPurchases">
+                                    @*  @Model.IMerchantReciepts.Select(c => c.TotalOfReciept).Sum()*@
+                                </td>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+
+
+                </div>
+
+
+
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>عربيات</h3>
+                <img src="~/assets/img/loader.gif" class="loader" style="width:100px;height:100px;display:none" />
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>اسم التاجر</th>
+                                <th>البلد</th>
+                                <th>اجرة العربيه</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody id="CarsBody">
+                            @if (Model.ISellerReciepts.Any())
+                            {
+                                @foreach (var item in Model.ISellerReciepts)
+                                {
+                                    <tr>
+
+                                        <td>@item.Merchant.MerchantName</td>
+                                        <td>@item.CarDistination</td>
+                                        <td> @item.CarPrice</td>
+
+                                    </tr>
+                                }
+
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td></td>
+                                    <td class="font-weight-bolder">-----------</td>
+                                    <td></td>
+                                    
+
+                                </tr>
+                            }
+
+
+                        </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <td>
+                                    الاجمالى
+                                </td>
+                                <td id="totalOfCars">
+                                    @*   @Model.ISellerReciepts.Select(c => c.CarPrice).Sum()*@
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+
+
+                </div>
+
+
+                <div class="form-group">
+                    <label class="control-label">تلج</label>
+                    <input disabled type="text" id="ice" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">عمال</label>
+                    <input disabled type="text" id="labour" class="form-control" />
+                </div>
+
+
+                <div class="row mt-4">
+                    <h6>اجمالى الربح</h6>
+                    <label class="text-info" style="margin-right:100px;" id="totalOfProfits">0</label>
+                </div>
+
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>مبيعات</h3>
+                <img src="~/assets/img/loader.gif" class="loader" style="width:100px;height:100px;display:none" />
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>اسم التاجر</th>
+                                <th>قيمة المبيعات </th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="SalesBody">
+                            @*@if (Model.ISellerReciepts.Any())
+                                {
+                                    @foreach (var item in Model.ISellerReciepts)
+                                    {
+                                        <tr>
+
+                                            <td>@item.Merchant.MerchantName</td>
+                                            <td>  @(item.TotalOfPrices-item.Commision)</td>
+
+                                        </tr>
+                                    }
+
+                                }
+                                else
+                                {
+                                    <tr>
+
+                                        <td class="font-weight-bolder">لا توجد مبيعات اليوم</td>
+
+
+                                    </tr>
+                                }*@
+
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>
+                                    الاجمالى
+                                </td>
+                                <td id="totalOfSales">
+                                    @* @Model.ISellerReciepts.Select(c => (c.TotalOfPrices - c.Commision)).Sum()*@
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+</div>
+
+@section scripts{
+    <script>
+
+        $(document).ready(function () {
+            $("#btnconfirm").on('click', function () {
+                var date = $('#date').val();
+
+                $(".loader").show();
+                body = $("#purchasesBody");
+                Salesbody = $("#SalesBody");
+                CarsBody = $("#CarsBody");
+                $.ajax({
+                    url: "/TotalOfProfits/SummationOfAdayDate/",
+                    type: "GET",
+                    contentType: "json",
+                    data: { Date: date },
+                    traditional: true,
+                    success: function (result) {
+                        $(".loader").hide();
+                        body.empty();
+
+                        $.each(result.purchases, function (i, item) {
+
+                            body.append("<tr>" +
+                                "<td>" + item.merchantName + "</td>" +
+                                "<td>" + item.totalOfReciept + "</td>" +
+                                "</tr>");
+                        });
+
+                        $("#totalOfPurchases").text(result.totalOfReciepts)
+
+                        //---------------------------------------
+
+                        Salesbody.empty();
+
+                        $.each(result.sales, function (i, item) {
+
+                            Salesbody.append("<tr>" +
+                                "<td>" + item.merchantName + "</td>" +
+                                "<td>" + item.salesValue + "</td>" +
+                                "</tr>");
+                        });
+
+                        $("#totalOfSales").text(result.totalOfSales)
+
+                        //-----------------------------------------
+                        CarsBody.empty();
+
+                        $.each(result.sales, function (i, item) {
+
+                            CarsBody.append("<tr>" +
+                                "<td>" + item.merchantName + "</td>" +
+                                "<td>" + item.carDistination + "</td>" +
+                                "<td>" + item.carPrice + "</td>" +
+                                "</tr>");
+                        });
+
+                        //------------------------------------
+                        $("#ice").val(result.ice)
+                        $("#labour").val(result.labour)
+                        $("#totalOfProfits").text(result.profit)
+
+                    },
+                    error: function () {
+                        alert("خطا ..هذا المركب ليس له انتاج حاليا");
+                    }
+                });
+
+                //$.ajax({
+                //    url: "/TotalOfProfits/SummationOfAday",
+                //    type: "Post",
+                //    dataType: "json",
+                //    traditional: true,
+                //    data: {
+                //        Date: date,
+
+
+                //    }, //id of the state which is used to extract cities
+                //    success: function () {
+
+                //    },
+
+                //});
+
+
+            })
+        })
+
+    </script>
+
+
+}

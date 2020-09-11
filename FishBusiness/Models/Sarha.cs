@@ -14,7 +14,8 @@ namespace FishBusiness.Models
         [ForeignKey("Boat")]
         public int BoatID { get; set; }
 
-       
+        public bool IsFinished { get; set; }
+
         [Required(ErrorMessage ="ادخل عدد الانفار")]
         [Display(Name ="عدد الانفار")]
         public int NumberOfFishermen { get; set; }

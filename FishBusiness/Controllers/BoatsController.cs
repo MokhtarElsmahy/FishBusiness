@@ -225,6 +225,7 @@ namespace FishBusiness.Controllers
                 BoatLicenseNumber = model.BoatLicenseNumber,
                 DebtsOfHalek = model.DebtsOfHalek,
                 // DebtsOfMulfunction = model.DebtsOfMulfunction,
+                DebtsOfLeader = model.DebtsOfLeader,
                 BoatNumber = model.BoatNumber,
                 DebtsOfStartingWork = model.DebtsOfStartingWork,
                 IncomeOfSharedBoat = model.IncomeOfSharedBoat,

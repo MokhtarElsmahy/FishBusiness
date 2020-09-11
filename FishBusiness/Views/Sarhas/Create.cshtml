@@ -76,7 +76,16 @@
                                     @foreach (var item in Model.Debts)
                                     {
                                         <label> @Html.DisplayFor(modelItem => item.DebtName)</label>
-                                        <input name="price" class="form-control Halekprice" id="exampleFormControlInput1">
+                                        <div class="row">
+                                            <div class="col-6"> <input name="price" class="form-control Halekprice" id="exampleFormControlInput1"></div>
+                                            <div class="col-6">
+                                                <select class="form-control personDDL" name="PersonID" asp-items="ViewBag.People as SelectList">
+                                                    <option value="-1">اختر شخص</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+
                                     }
                                 </section>
                                 <h3>انهاء</h3>
@@ -131,7 +140,7 @@ $("selector").steps({
 
 
     <script>
-       
+
         var cookieList = function (cookieName) {
             //When the cookie is saved the items will be a comma seperated string
             //So we will split the cookie by comma to get the original array
@@ -170,14 +179,27 @@ $("selector").steps({
                 }
             }
         }
-        $("#clickable").click(function () {
-            document.cookie = 'MyItems' + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-            var list = new cookieList("MyItems"); // all items in the array.
-            $('.Halekprice').each(function () {
-                list.add($(this).val());
-            })
-        });
+        $(document).ready(function () {
+            $("#clickable").click(function () {
 
+                document.cookie = 'MyItems' + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+                document.cookie = 'MyItemsPerson' + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+                var list = new cookieList("MyItems"); // all items in the array.
+                $('.Halekprice').each(function () {
+                    if (!$(this).val('')) {
+
+                        list.add($(this).val());
+                    }
+                })
+
+                var listPerson = new cookieList("MyItemsPerson"); // all items in the array.
+                $('.personDDL').each(function () {
+                    if (!$(this).val('-1')) {
+                        listPerson.add($(this).val());
+                    }
+                })
+            });
+        })
     </script>
 
 }

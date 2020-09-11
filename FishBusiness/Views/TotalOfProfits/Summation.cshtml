@@ -1,0 +1,285 @@
+﻿@model FishBusiness.ViewModels.SummationVm
+
+
+<div class="layout-px-spacing">
+    <div class="container row">
+        <div class="page-header m-3">
+            <div class="page-title">
+                <h3>حساب مكاسب اليوم</h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <a asp-action="Index" asp-controller="Home" class="btn btn-primary">الرئيسية</a>
+        </div>
+    </div>
+
+
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>مشتريات</h3>
+                <div class="table-responsive mb-4 mt-4">
+                    <table  class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>اسم التاجر</th>
+                                <th>قيمة المشتريات منه</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.IMerchantReciepts.Any())
+                            {
+                                @foreach (var item in Model.IMerchantReciepts)
+                                {
+                                    <tr>
+
+                                        <td>@item.Merchant.MerchantName</td>
+                                        <td> @item.TotalOfReciept</td>
+
+                                    </tr>
+                                }
+
+                            }
+                            else
+                            {
+                                <tr>
+
+                                    <td class="font-weight-bolder">لا توجد مشتريات اليوم</td>
+
+
+                                </tr>
+                            }
+
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>
+                                    الاجمالى
+                                </td>
+                                <td id="totalOfPurchases">
+                                    @Model.IMerchantReciepts.Select(c => c.TotalOfReciept).Sum()
+                                </td>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+
+
+                </div>
+
+
+
+
+            </div>
+
+        </div>
+        
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>عربيات</h3>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>اسم التاجر</th>
+                                <th>البلد</th>
+                                <th>اجرة العربيه</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.ISellerReciepts.Any())
+                            {
+                                @foreach (var item in Model.ISellerReciepts)
+                                {
+                                    <tr>
+
+                                        <td>@item.Merchant.MerchantName</td>
+                                        <td>@item.CarDistination</td>
+                                        <td> @item.CarPrice</td>
+
+                                    </tr>
+                                }
+
+                            }
+                            else
+                            {
+                                <tr>
+
+                                    <td class="font-weight-bolder">-----------</td>
+
+
+                                </tr>
+                            }
+
+
+                        </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <td>
+                                    الاجمالى
+                                </td>
+                                <td id="totalOfCars">
+                                    @Model.ISellerReciepts.Select(c => c.CarPrice).Sum()
+                                </td>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+
+
+                </div>
+
+
+                <div class="form-group">
+                    <label  class="control-label">تلج</label>
+                    <input type="text" id="ice" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">عمال</label>
+                    <input type="text" id="labour" class="form-control" />
+                </div>
+                <input type="button" id="CalcProfit" class="btn btn-primary" style="margin-right:135px;;" value="حساب الارباح" />
+                
+                <div class="row mt-4" >
+                    <h6>اجمالى الربح</h6>
+                    <label class="text-info" style="margin-right:100px;" id="totalOfProfits">0</label>
+                </div>
+             
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>مبيعات</h3>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>اسم التاجر</th>
+                                <th>قيمة المبيعات </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.ISellerReciepts.Any())
+                            {
+                                @foreach (var item in Model.ISellerReciepts)
+                                {
+                                    <tr>
+
+                                        <td>@item.Merchant.MerchantName</td>
+                                        <td>  @(item.TotalOfPrices-item.Commision)</td>
+
+                                    </tr>
+                                }
+
+                            }
+                            else
+                            {
+                                <tr>
+
+                                    <td class="font-weight-bolder">لا توجد مبيعات اليوم</td>
+
+
+                                </tr>
+                            }
+
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>
+                                    الاجمالى
+                                </td>
+                                <td id="totalOfSales">
+                                    @Model.ISellerReciepts.Select(c => (c.TotalOfPrices-c.Commision)).Sum()
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        
+
+    </div>
+
+
+</div>
+@section scripts{ 
+    <script>
+
+        $(document).ready(function () {
+            $("#CalcProfit").on('click', function () {
+                var ice = parseFloat($('#ice').val());
+                var labour = parseFloat($('#labour').val());
+
+                var totalOfPurchases = parseFloat($('#totalOfPurchases').text());
+                var totalOfSales = parseFloat($('#totalOfSales').text());
+                var totalOfCars = parseFloat($('#totalOfCars').text());
+
+                
+
+                $.ajax({
+                    url: "/TotalOfProfits/CalcProfits/",
+                    type: "Post",
+                    dataType: "json",
+                    traditional: true,
+                    data: {
+                        ice: ice,
+                        labour: labour,
+                        totalOfPurchases: totalOfPurchases,
+                        totalOfSales: totalOfSales,
+                        totalOfCars: totalOfCars,
+
+                    }, //id of the state which is used to extract cities
+                    success: function (result) {
+                        if (result.message == "success") {
+
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'تم الحساب',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                            $('#totalOfProfits').text(result.profits)
+                            $('#ice').prop('disabled', true)
+                            $('#labour').prop('disabled', true)
+                            $('#CalcProfit').css("display", "none");
+
+                          
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حاول مرة اخري',
+                        });
+                    }
+                });
+            })
+        })
+
+    </script>
+
+
+}

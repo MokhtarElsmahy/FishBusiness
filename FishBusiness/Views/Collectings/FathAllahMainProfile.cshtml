@@ -1,0 +1,366 @@
+﻿@model FishBusiness.ViewModels.FathAllahMainProfileVM
+@section Styles {
+
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <link href="~/plugins/animate/animate.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/components/custom-modal.css" rel="stylesheet" type="text/css" />
+    <!--  END CUSTOM STYLE FILE  -->
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link href="~/assets/css/apps/scrumboard.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/forms/theme-checkbox-radio.css" rel="stylesheet" type="text/css">
+    <!-- END PAGE LEVEL STYLES -->
+    <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/datatables.css">
+    <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/dt-global_style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+}
+<div class="layout-px-spacing">
+
+    <div class="page-header m-3">
+        <div class="page-title">
+            <h3>بروفايل احمد فتح الله </h3>
+        </div>
+    </div>
+
+    <div class="row layout-top-spacing">
+
+        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
+            <div class="widget widget-five">
+                <div class="widget-content">
+
+                    <div class="header">
+                        <div class="header-body">
+                            <h6 class="text-info">صفحة عمل</h6>
+
+                        </div>
+
+                    </div>
+
+                    <div class="w-content">
+                        <div class="">
+
+                            @*<p class="task-left"></p>*@
+                            <p class="task-completed"><span><a asp-action="FathAllahProfile" asp-controller="Collectings" class="btn btn-primary">ذهاب للعمل</a></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
+            <div class="widget widget-five">
+                <div class="widget-content">
+
+                    <div class="header">
+                        <div class="header-body">
+                            <h6 class="text-info">دفتر العمل</h6>
+
+                        </div>
+
+                    </div>
+
+                    <div class="w-content">
+                        <div class="">
+
+                            @*<p class="task-left"></p>*@
+                            <p class="task-completed"><span><a asp-action="FathAllahWorkOfDay" asp-controller="Collectings" class="btn btn-primary">عرض</a></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
+            <div class="widget widget-five">
+                <div class="widget-content">
+
+                    <div class="header">
+                        <div class="header-body">
+                            <h6 class="text-info">تسديد ديون ريس مركب</h6>
+
+                        </div>
+
+                    </div>
+
+                    <div class="w-content">
+                        <div class="">
+
+
+                            <p class="task-completed"><span><a data-toggle="modal" data-target="#MfadeleftModal" class="btn btn-primary">تسديد</a></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+            <form id="about" class="section about">
+                <div class="info">
+                    <h5 class="">سجل ديون ريس مركب</h5>
+
+                    <div class="row layout-top-spacing" id="cancel-row">
+
+                        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                            <div class="widget-content widget-content-area br-6">
+                                <div class="table-responsive mb-4 mt-4">
+                                    <table id="zero-config4" class="table table-hover" style="width:100%">
+                                        <thead>
+                                            <tr>
+
+                                                <th>الاسم</th>
+                                                <th>المبلغ</th>
+                                                <th>التاريخ</th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.LeaderLoan.Any())
+                                            {
+                                                foreach (var item in Model.LeaderLoan)
+                                                {
+                                                    <tr>
+
+                                                        <td>@item.Boat.BoatLeader</td>
+                                                        <td>@item.Price</td>
+                                                        <td>@item.Date</td>
+
+                                                    </tr>
+                                                }
+
+                                            }
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+            <form id="about" class="section about">
+                <div class="info">
+                    <h5 class="">سجل مدفوعات ريس مركب</h5>
+
+                    <div class="row layout-top-spacing" id="cancel-row">
+
+                        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                            <div class="widget-content widget-content-area br-6">
+                                <div class="table-responsive mb-4 mt-4">
+                                    <table id="zero-config6" class="table table-hover" style="width:100%">
+                                        <thead>
+                                            <tr>
+
+                                                <th>الاسم</th>
+                                                <th>المبلغ</th>
+                                                <th>التاريخ</th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.LeaderPaybacks.Any())
+                                            {
+                                                foreach (var item in Model.LeaderPaybacks)
+                                                {
+                                                    <tr>
+
+                                                        <td>@item.Boat.BoatLeader</td>
+                                                        <td>@item.Price</td>
+                                                        <td>@item.Date</td>
+
+                                                    </tr>
+                                                }
+
+                                            }
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+            <form id="about" class="section about">
+                <div class="info">
+                    <h5 class="">سجل سحب فلوس من المحصل/حج مجدى/علاء</h5>
+
+                    <div class="row layout-top-spacing" id="cancel-row">
+
+                        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                            <div class="widget-content widget-content-area br-6">
+                                <div class="table-responsive mb-4 mt-4">
+                                    <table id="zero-config7" class="table table-hover" style="width:100%">
+                                        <thead>
+                                            <tr>
+
+                                                <th>اسم الممول</th>
+                                                <th>المبلغ الدفوع</th>
+                                                <th>المبلغ قبل</th>
+                                                <th>المبلغ بعد</th>
+                                                <th>التاريخ</th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.FathAllahGifts.Any())
+                                            {
+                                                foreach (var item in Model.FathAllahGifts)
+                                                {
+                                                    <tr>
+
+                                                        <td>@item.Person.Name</td>
+                                                        <td>@item.charge</td>
+                                                        <td>@item.CreditBefore</td>
+                                                        <td>@item.CreditAfter</td>
+                                                        <td>@item.Date</td>
+
+                                                    </tr>
+                                                }
+
+                                            }
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+<div id="MfadeleftModal" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">تسديد ديون ريس مركب</h5>
+                <img src="~/assets/img/loader.gif" class="loader" style="width:100px;height:100px;display:none" />
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="MyForm">
+
+                    <div class="form-group" style="margin-top:10px">
+                        <label class="control-label">اختر ريس المركب</label>
+                        <select name="MerchantID" id="LeaderDDL" class="form-control" asp-items="ViewBag.Leaders">
+                            <option>اختر ريس مركب</option>
+                        </select>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">الديون</label>
+                        <input class="form-control" name="Debt" id="txtDebt" disabled /><img src="~/assets/img/loader.gif" class="loaderDebt" style="width:50px;height:50px;display:none" />
+                        <span class="text-danger"></span>
+
+                        
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">المبلغ</label>
+                        <input class="form-control" name="Price" id="txtPrice" />
+                        <span class="text-danger"></span>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer md-button">
+                <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> اغلاق</button>
+                <button type="button" class="btn btn-primary" id="Confirm">تاكيد</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+            $("#Confirm").on('click', function () {
+                var price = parseFloat($("#txtPrice").val());
+                var BoatID = $("#LeaderDDL").val();
+                $(".loader").show();
+                $.ajax({
+                    url: "/Collectings/PayBackLoan",
+                    type: "GET",
+                    contentType: "json",
+                    data: {
+                        BoatID: BoatID,
+                        price: price
+                    },
+                    success: function (result) {
+                        if (result.message == "success") {
+                            alert("Done..")
+                            $(".loader").hide();
+                        }
+                    }
+
+                })
+            })
+
+            $("#LeaderDDL").on("change", function () {
+                var BoatID = $("#LeaderDDL").val();
+                $(".loaderDebt").show();
+                $.ajax({
+                    url: "/Collectings/GetLeaderDebts/",
+                    type: "GET",
+                    contentType: "json",
+                    data: {
+                        BoatID: BoatID
+
+                    },
+                    traditional: true,
+                    success: function (result) {
+                        $(".loaderDebt").hide();
+                        $("#txtDebt").val(result.leaderDebts)
+                    },
+                    error: function () {
+                        alert("خطا ..هذا المركب ليس له انتاج حاليا");
+                        $(".loaderDebt").hide();
+                    }
+                });
+
+            });
+        })
+    </script>
+
+}

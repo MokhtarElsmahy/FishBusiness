@@ -33,15 +33,17 @@ namespace FishBusiness.ViewModels
         [Display(Name = "رخصة المركب")]
         public string BoatLicenseNumber { get; set; }
 
-        [Required(ErrorMessage = "ادخل رقم المركب")]
-        [Display(Name = " رقم المركب")]
-        public string BoatNumber { get; set; }
+
+        public decimal DebtsOfLeader { get; set;}
+            [Required(ErrorMessage = "ادخل رقم المركب")]
+            [Display(Name = " رقم المركب")]
+            public string BoatNumber { get; set; }
 
         [Display(Name = " صورة المركب")]
         public string BoatImage { get; set; }
         public string Type { get; set; }
         public int TypeID { get; set; }
 
-      
+
     }
 }

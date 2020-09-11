@@ -1,0 +1,373 @@
+﻿@model FishBusiness.ViewModels.ISellerRecieptDetailsVm
+
+@{
+    ViewData["Title"] = "Details";
+}
+@section Styles{
+    <link href="~/plugins/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" type="text/css" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/apps/invoice.css" rel="stylesheet" type="text/css" />
+    <!--  END CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/print.min.css" rel="stylesheet" />
+
+}
+<div class="layout-px-spacing">
+
+    <div class="container row">
+        <div class="page-header m-3">
+            <div class="page-title">
+                <h3>تسعير الفاتورة</h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <div class="row">
+                <div class="company-info ml-2" style="margin-left:5px;">
+                    <button class="btn btn-secondary ml-2" style="display:none" id="btnPrint">طباعة</button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row invoice layout-top-spacing">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="doc-container">
+
+
+                <div class="invoice-container" style="height:2000px;">
+
+                    <div id="ct" class="">
+
+                        <div class="invoice-00001">
+                            <div class="content-section  animated animatedFadeInUp fadeInUp">
+
+                                <div class="row inv--head-section">
+
+                                    <div class="col-sm-6 col-12">
+                                        <h3 class="in-heading">فاتورة السفر</h3>
+                                    </div>
+
+
+                                </div>
+                                <div id="Invoice">
+                                    <div class="row inv--detail-section">
+
+
+
+                                        <div class="col-sm-7 align-self-center">
+
+                                            <p class="inv-street-addr">تاريخ الفاتوره :@Model.ISellerReciept.Date.ToShortDateString()</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row inv--product-table-section">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <h6>@Model.ISellerReciept.Merchant.MerchantName</h6>
+                                                <table class="table">
+                                                    <thead class="">
+                                                        <tr>
+                                                            <th scope="col">النوع</th>
+                                                            <th class="text-right" scope="col">الانتاج</th>
+                                                            <th class="text-right" scope="col">الكمية بالكجم</th>
+                                                            <th class="text-right" scope="col">عدد البوكس</th>
+                                                            <th class="text-right" scope="col">السعر</th>
+                                                        </tr>
+
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var item in Model.ISellerRecieptItems)
+                                                        {
+                                                            <tr>
+
+
+                                                                <td>@item.Fish.FishName</td>
+                                                                <td class="text-right">@item.ProductionType.ProductionName</td>
+                                                                <td class="text-right">@item.Qty</td>
+                                                                <td class="text-right">@item.BoxQty</td>
+                                                                <td class="text-right prices_td"><input class="form-control prices" asp-for="@item.UnitPrice" /></td>
+
+                                                            </tr>
+                                                        }
+
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td><input type="button" class="btn btn-primary" id="btnSum" value="تجميع" /></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="total text-info">اجمالي الفاتورة</td>
+                                                            <td class="total" id="TotalBeforeCommisionOrPayment">0</td>
+                                                            <td></td>
+
+                                                        </tr>
+                                                        <tr class="total">
+                                                            <td class="total text-info"> العمولة</td>
+
+                                                            <td class="total" id="Commision_td">
+                                                            
+                                                              <input asp-for="ISellerReciept.Commision" id="Commision" style="width:100px;" class="form-control" />
+                                                            
+                                                            </td>
+
+                                                            <td><button type="button" class="btn btn-primary" style="margin-left:5px;" id="btnSub">خصم </button></td>
+                                                        </tr>
+
+                                                        <tr class="total">
+                                                            <td class="text-info">اجمالى الفاتوره بعد خصم العموله </td>
+                                                            <td id="totalAfterCommision">0</td>
+
+                                                            <td id="redirectPrint">
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="total">
+                                                            <td class="text-info">اجمالى الديون متضمن الفاتوره الحاليه </td>
+                                                            <td id="Debts">0</td>
+
+                                                            <td id="redirectPrint">
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-info">
+                                                                المدفوع من الديون
+                                                            </td>
+                                                            <td id="PaidFromDebt_td">
+                                                                <input type="text" id="PaidFromDebt" class="form-control" style="width:100px;" />
+                                                            </td>
+                                                            <td>
+                                                            </td>
+                                                        </tr>
+                                                        <tr id="hiddenRow" style="display:none;">
+                                                            <td class="text-info">
+                                                                اجمالى ديون التاجر
+                                                            </td>
+                                                            <td id="TotalDebts">
+                                                            </td>
+                                                            <td>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td></td>
+                                                            <td colspan="2"><input type="button" class="btn btn-primary" style="margin-left:5px;" id="btnSave" value="حفظ"></td>
+
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+
+                </div>
+
+            </div>
+            <div class="col-sm-6 col-12 align-self-center text-sm-right mb-2 ml-auto">
+                <div class="company-info">
+                    <button class="btn btn-secondary" style="display:none" id="btnPrint1">طباعة</button>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="pricescookie" />
+    </div>
+</div>
+
+@section scripts{
+    @*   <script src="~/assets/js/print.min.js"></script>*@
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="~/assets/js/apps/invoice.js"></script>
+    <script>
+        var cookieList = function (cookieName) {
+            //When the cookie is saved the items will be a comma seperated string
+            //So we will split the cookie by comma to get the original array
+            var cookie = $.cookie(cookieName);
+            //Load the items or a new array if null.
+            var items = cookie ? cookie.split(/,/) : new Array();
+
+            //Return a object that we can use to access the array.
+            //while hiding direct access to the declared items array
+            //this is called closures see http://www.jibbering.com/faq/faq_notes/closures.html
+            return {
+                "add": function (val) {
+                    //Add to the items.
+                    items.push(val);
+                    var date = new Date();
+                    date.setTime(date.getTime() + (45 * 1000));
+                    //Save the items to a cookie.
+                    //EDIT: Modified from linked answer by Nick see
+                    //      http://stackoverflow.com/questions/3387251/how-to-store-array-in-jquery-cookie
+                    $.cookie(cookieName, items.join(','), { expires: date });
+                },
+                "remove": function (val) {
+                    //EDIT: Thx to Assef and luke for remove.
+                    indx = items.indexOf(val);
+                    if (indx != -1) items.splice(indx, 1);
+                    $.cookie(cookieName, items.join(','));
+                },
+                "clear": function () {
+                    items = null;
+                    //clear the cookie.
+                    $.cookie(cookieName, null);
+                },
+                "items": function () {
+                    //Get all the items.
+                    return items;
+                }
+            }
+        }
+        $(document).ready(function () {
+            //
+             $("#btnSave").on("click", function (e) {
+
+
+                     $.ajax({
+                           url: "/ISellerReciepts/MoneytizationSave/",
+                           type: "POST",
+                           dataType: "json",
+                           //contentType: 'application/json', //دى احيانا بتخلى القيم تتبعت فاضيه
+                           data: {
+                               IsellerRecieptID: @Model.ISellerReciept.ISellerRecieptID,
+                               TotalOfPrices: parseFloat($("#TotalBeforeCommisionOrPayment").text()),
+                               Commision: parseFloat($("#Commision").val()),
+                               TotalOfPricesAfterCommision: parseFloat($("#totalAfterCommision").text()),
+                               PaidFromDebt: parseFloat($("#PaidFromDebt").val()),
+                               DebtsAfterCommisionAndPayment: parseFloat($("#Debts").text()),
+                               Pricescookie: $("#pricescookie").val()
+
+                           },
+                           traditional: true,
+                           statusCode: {
+                               415: function () {
+                                   Response.redirect("/ISellerReciepts/Index/");
+                               }
+                           },
+                           success: function (result) {
+                               if (result.message == "success") {
+
+                                   $("#hiddenRow").show();
+
+                                   $("#btnSum").css("display", "none");
+                                   $("#btnSub").css("display", "none");
+                                   $("#btnSave").css("display", "none");
+
+                                   $("#Commision_td").text($("#Commision").val())
+                                   $("#Commision").css("display", "none");
+
+                                   $("#PaidFromDebt_td").text($("#PaidFromDebt").val())
+                                   $("#PaidFromDebt").css("display", "none");
+
+                                   $("#btnPrint").show()
+                                   $("#btnPrint1").show();
+
+                                
+                                   $('.prices').each(function () {
+                                      
+                                       $(this).prop('disabled', true)
+                                   })
+
+                                   $("#TotalDebts").text(result.totalDebts);
+                                   Swal.fire({
+                                       position: 'top-end',
+                                       icon: 'success',
+                                       title: 'تم التسعير يمكنك الطباعه',
+                                       showConfirmButton: false,
+                                       timer: 3000
+                                   });
+
+                               }
+                               else {
+                                   Swal.fire({
+                                       icon: 'error',
+                                       title: 'حدث خطأ',
+                                       text: 'حاول مره اخرى',
+                                   });
+
+                               }
+                           },
+                           error: function (xhr, textStatus, errorThrown) {
+                               if (xhr.status == 401) {
+                                   Swal.fire({
+                                       icon: 'error',
+                                       title: 'حدث خطأ',
+                                       text: 'حاول مره اخرى',
+                                   });
+
+                               }
+                               else {
+                                   Swal.fire({
+                                       icon: 'error',
+                                       title: 'حدث خطأ',
+                                       text: 'حاول مره اخرى',
+                                   });
+                               }
+                           }
+
+                      });
+                    e.preventDefault();
+
+
+             });
+
+        });
+
+        $("#btnPrint").click(function () {
+            //$('#hideInPrint').attr("d")
+            $(".hideInPrint").css("display", "none");
+            window.print()
+        });
+        $("#btnPrint1").click(function () {
+            $(".hideInPrint").css("display", "none");
+            window.print()
+        });
+
+        $("#btnSum").click(function () {
+            var sum = 0
+            $('.prices').each(function () {
+                //unitprices.add($(this).text());
+                sum += parseFloat($(this).val())
+
+            })
+
+            var prices = new cookieList("Myprices");
+            $('.prices').each(function () {
+                prices.add($(this).val());
+            })
+
+            $("#pricescookie").val(prices.items());
+
+            $("#TotalBeforeCommisionOrPayment").text(sum);
+            $("#totalAfterCommision").text(sum);
+            $("#Debts").text(@ViewBag.PreviousDebts+parseFloat(sum));
+
+
+        });
+
+        $("#btnSub").click(function () {
+            var x = parseFloat($("#TotalBeforeCommisionOrPayment").text());
+            var y = parseFloat($("#Commision").val());
+            var z = x - y;
+            $("#totalAfterCommision").text(z);
+             $("#Debts").text(@ViewBag.PreviousDebts+parseFloat(z));
+
+        });
+
+
+    </script>
+}
+
+

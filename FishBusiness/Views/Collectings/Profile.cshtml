@@ -1,0 +1,917 @@
+﻿@model FishBusiness.ViewModels.CollectorVm
+@section Styles {
+
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <link href="~/plugins/animate/animate.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/components/custom-modal.css" rel="stylesheet" type="text/css" />
+    <!--  END CUSTOM STYLE FILE  -->
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link href="~/assets/css/apps/scrumboard.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/forms/theme-checkbox-radio.css" rel="stylesheet" type="text/css">
+    <!-- END PAGE LEVEL STYLES -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+}
+
+<div class="layout-px-spacing">
+    <div class="container row">
+        <div class="page-header m-3">
+            <div class="page-title">
+                <h3>التحصيل اليومى</h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <a asp-action="Index" asp-controller="Home" class="btn btn-primary">الرئيسية</a>
+            <a asp-action="ProfileOfDay" asp-controller="Collectings" class="btn btn-primary">السجل</a>
+            <a class="btn btn-primary" id="btnFinalSave" style="display:none;">حفظ</a>
+        </div>
+    </div>
+
+
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>مدفوعات للحلقة</h3>
+
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>اسم التاجر</th>
+                                <th>المدفوع</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="TBody">
+                            @if (Model.PaidForUs.Any())
+                            {
+                                @foreach (var item in Model.PaidForUs)
+                                {
+                                    <tr>
+
+                                        <td class="MerchantName">@item.Merchant.MerchantName</td>
+                                        <td class="Price"> @item.Payment</td>
+
+                                    </tr>
+                                }
+
+                            }
+                            else
+                            {
+                                <tr id="NoPayment">
+
+                                    <td class="font-weight-bolder">لا توجد مدفوعات</td>
+
+
+                                </tr>
+                            }
+
+
+                        </tbody>
+                        <tfoot>
+                            @if (Model.PaidForUs.Any())
+                            {
+
+
+                                <tr id="totalOfPayment_tr">
+                                    <td>
+                                        الاجمالى
+                                    </td>
+                                    <td id="totalOfPayment">
+                                        @Model.PaidForUs.Sum(c => c.Payment)
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr id="totalOfPayment_tr">
+                                    <td>
+                                        الاجمالى
+                                    </td>
+                                    <td id="totalOfPayment">
+                                        0
+                                    </td>
+                                </tr>
+                            }
+                        </tfoot>
+
+                    </table>
+
+
+                </div>
+
+
+
+
+            </div>
+            <div class="d-flex justify-content-center mt-2">
+                <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
+
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>مدفوعات للتاجر</h3>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>اسم التاجر</th>
+                                <th>المبلغ</th>
+
+
+
+                            </tr>
+                        </thead>
+                        <tbody id="TBody2">
+                            @if (Model.PaidForMerchant.Any())
+                            {
+                                @foreach (var item in Model.PaidForMerchant)
+                                {
+                                    <tr>
+
+                                        <td class="ToMerchantName">@item.Merchant.MerchantName</td>
+                                        <td class="ToPrice">@item.Payment</td>
+
+
+                                    </tr>
+                                }
+
+                            }
+                            else
+                            {
+                                <tr id="NoPaymentTo">
+
+                                    <td class="font-weight-bolder">-----------</td>
+
+
+                                </tr>
+                            }
+
+
+                        </tbody>
+
+                        <tfoot>
+                            @if (Model.PaidForMerchant.Any())
+                            {
+
+
+                                <tr id="totalOfPayment_tr2">
+                                    <td>
+                                        الاجمالى
+                                    </td>
+                                    <td id="totalOfPaymentTo">
+                                        @Model.PaidForMerchant.Sum(c => c.Payment)
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr id="totalOfPayment_tr2">
+                                    <td>
+                                        الاجمالى
+                                    </td>
+                                    <td id="totalOfPaymentTo">
+                                        0
+                                    </td>
+                                </tr>
+                            }
+                        </tfoot>
+
+                    </table>
+
+
+                </div>
+
+
+                @*<div class="form-group">
+                        <label class="control-label">تلج</label>
+                        <input type="text" id="ice" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">عمال</label>
+                        <input type="text" id="labour" class="form-control" />
+                    </div>
+                    <input type="button" id="CalcProfit" class="btn btn-primary" style="margin-right:135px;;" value="حساب الارباح" />
+
+                    <div class="row mt-4">
+                        <h6>اجمالى الربح</h6>
+                        <label class="text-info" style="margin-right:100px;" id="totalOfProfits">0</label>
+                    </div>*@
+
+
+            </div>
+            <div class="d-flex justify-content-center mt-2">
+
+                <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>هالك</h3>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>اسم المركب</th>
+                                <th>المبلغ</th>
+                                <th>نوع الهالك</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="TBody3">
+                            @if (Model.Debts_Sarha.Any())
+                            {
+                                @foreach (var item in Model.Debts_Sarha)
+                                {
+                                    <tr>
+
+                                        <td class="BoatName">@item.Sarha.Boat.BoatName</td>
+                                        <td class="HalekPrice">@item.Price</td>
+                                        <td class="HalekName">@item.Debt.DebtName</td>
+
+                                    </tr>
+                                }
+
+                            }
+                            else
+                            {
+                                <tr>
+
+                                    <td class="font-weight-bolder">............</td>
+
+
+                                </tr>
+                            }
+
+
+                        </tbody>
+                        <tfoot>
+                            @if (Model.Debts_Sarha.Any())
+                            {
+
+
+                                <tr id="totalOfPayment_tr3">
+                                    <td>
+                                        الاجمالى
+                                    </td>
+                                    <td id="totalHalek">
+                                        @Model.Debts_Sarha.Sum(c => c.Price)
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr id="totalOfPayment_tr3">
+                                    <td>
+                                        الاجمالى
+                                    </td>
+                                    <td id="totalHalek">
+                                        0
+                                    </td>
+                                </tr>
+                            }
+                        </tfoot>
+                    </table>
+
+
+                </div>
+            </div>
+            <div class="d-flex justify-content-center mt-2">
+
+                <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>نثريات</h3>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>الاسم</th>
+                                <th>المبلغ</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody id="TBody4">
+                        </tbody>
+                        <tfoot>
+
+                            <tr id="totalOfPayment_tr4">
+                                <td>
+                                    الاجمالى
+                                </td>
+                                <td id="totalAdditional">
+                                    0
+                                </td>
+                            </tr>
+
+                        </tfoot>
+                    </table>
+
+
+                </div>
+            </div>
+            <div class="d-flex justify-content-center mt-2">
+
+                <a class="btn btn-primary" data-toggle="modal" data-target="#MfadeleftModal4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>اضافة نثريات</a>
+            </div>
+        </div>
+
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>رصيد احمد فتح الله </h3>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th></th>
+                            </tr>
+
+                        </thead>
+                        <tbody id="TBody5">
+                            <tr>
+                                <td>المبلغ</td>
+                                <td><input type="text" class="form-control" id="txtFathAllah" /></td>
+
+                            </tr>
+
+
+                        </tbody>
+                        <tfoot>
+
+                            <tr id="totalOfPayment_trAhmed" style="display:none;">
+                                <td>
+                                    الاجمالى
+                                </td>
+                                <td id="totalAhmed">
+                                </td>
+                            </tr>
+
+                        </tfoot>
+
+                    </table>
+
+
+                </div>
+            </div>
+            <div class="d-flex justify-content-center mt-2">
+
+                <a class="btn btn-primary" id="btnAhmed"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
+            </div>
+        </div>
+
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>الاجمالى</h3>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>القيمه</th>
+                                <th>المبلغ</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody id="TBody6">
+                        </tbody>
+                        <tfoot>
+
+                            <tr id="totalOfPayment_tr6" style="display:none">
+                                <td>
+                                    المتبقى
+                                </td>
+                                <td id="Calc">
+                                    0
+                                </td>
+                            </tr>
+
+                        </tfoot>
+                    </table>
+
+
+                </div>
+            </div>
+            <div class="d-flex justify-content-center mt-2">
+
+                <a class="btn btn-primary" id="btnCalc"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>حساب</a>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+<div id="MfadeleftModal" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">مدفوعات للحلقة</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="MyForm">
+                    <div>
+
+                        @*<input type="checkbox" id="chkMagdy" />  الحاج مجدى*@
+                    </div>
+                    <div class="form-group" style="margin-top:10px">
+                        <label class="control-label">اختر تاجر</label>
+                        <select name="MerchantID" id="MerchantDDL" class="form-control" asp-items="ViewBag.Merchant"></select>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">المبلغ</label>
+                        <input class="form-control" name="Price" id="Price" />
+                        <span class="text-danger"></span>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer md-button">
+                <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> اغلاق</button>
+                <button type="button" class="btn btn-primary" id="MNewRows">حفظ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="MfadeleftModal2" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">مدفوعات للتجار</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="MyForm">
+
+                    <div class="form-group">
+                        <label class="control-label">اختر تاجر</label>
+                        <select name="MerchantID" id="MerchantDDLTo" class="form-control" asp-items="ViewBag.Merchant"></select>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">المبلغ</label>
+                        <input class="form-control" name="Price" id="PriceTo" />
+                        <span class="text-danger"></span>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer md-button">
+                <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> اغلاق</button>
+                <button type="button" class="btn btn-primary" id="MNewRows2">حفظ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="MfadeleftModal3" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">مدفوعات للتجار</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="MyForm">
+
+                    <div class="form-group">
+                        <label class="control-label">اختر مركب</label>
+                        <select name="BoatID" id="BoatDDL" class="form-control" asp-items="ViewBag.Boats"></select>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">اختر هالك</label>
+                        <select name="DebtID" id="DebtDDL" class="form-control" asp-items="ViewBag.Halek"></select>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">المبلغ</label>
+                        <input class="form-control" name="Price" id="PriceHalek" />
+                        <span class="text-danger"></span>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer md-button">
+                <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> اغلاق</button>
+                <button type="button" class="btn btn-primary" id="MNewRows3">حفظ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="MfadeleftModal4" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">نثريات</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="MyForm">
+
+                    <div class="form-group">
+                        <label class="control-label">الاسم</label>
+                        <input class="form-control" name="NameAdditional" id="NameAdditional" />
+                        <span class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">المبلغ</label>
+                        <input class="form-control" name="Price" id="PriceAdditional" />
+                        <span class="text-danger"></span>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer md-button">
+                <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> اغلاق</button>
+                <button type="button" class="btn btn-primary" id="MNewRows4">حفظ</button>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="text" id="indexer" style="display:none" value="0" />
+<input type="text" id="totalPaidForMerchants" style="display:none" value="0" />
+
+@section scripts{
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+
+
+            $("#MNewRows").on('click', function () {
+                //var ice = parseFloat($('#ice').val());
+                //var labour = parseFloat($('#labour').val());
+
+                //var totalOfPurchases = parseFloat($('#totalOfPurchases').text());
+                //var totalOfSales = parseFloat($('#totalOfSales').text());
+                //var totalOfCars = parseFloat($('#totalOfCars').text());
+
+                //if ($("#chkMagdy").is(":checked")) {
+                //    MerchantName = "الحج مجدى"
+                //} else {
+                var MerchantName = $('#MerchantDDL option:selected').text()
+
+
+                var Price = $('#Price').val()
+                var i = $('#indexer').val();
+                var addControls = "<tr id='row_" + i + "' data-price=" + Price + ">"
+                addControls += "<td class='MerchantName'>" + MerchantName + "</td>"
+                addControls += "<td class='Price'>" + Price + "</td>"
+                addControls += "<td> <a href='#' onclick=remove('" + i + "')>" + "X</a> </td>"
+                addControls += "</tr>";
+
+                $('#NoPayment').text('');
+                $('#totalOfPayment_tr').show();
+                $('#totalOfPayment').text(parseFloat($('#totalOfPayment').text()) + parseFloat(Price));
+                $('#TBody').append(addControls);
+                i++;
+                $('#indexer').val(i)
+
+            })
+
+            $("#MNewRows2").on('click', function () {
+
+                var MerchantName = $('#MerchantDDLTo option:selected').text()
+                var Price = $('#PriceTo').val()
+                var i = $('#indexer').val();
+                var addControls = "<tr id='row_" + i + "' data-price=" + Price + ">"
+                addControls += "<td class='ToMerchantName'>" + MerchantName + "</td>"
+                addControls += "<td class='ToPrice'>" + Price + "</td>"
+                addControls += "<td> <a href='#' onclick=removeTo('" + i + "')>" + "X</a> </td>"
+                addControls += "</tr>";
+
+                $('#NoPaymentTo').text('');
+                $('#totalOfPayment_tr2').show();
+                $('#totalOfPaymentTo').text(parseFloat($('#totalOfPaymentTo').text()) + parseFloat(Price));
+                $('#TBody2').append(addControls);
+                i++;
+                $('#indexer').val(i)
+            })
+
+            $("#MNewRows3").on('click', function () {
+
+                var BoatName = $('#BoatDDL option:selected').text()
+                var DebtName = $('#DebtDDL option:selected').text()
+                var Price = $('#PriceHalek').val()
+                var i = $('#indexer').val();
+
+                var addControls = "<tr id='row_" + i + "' data-price=" + Price + ">"
+                addControls += "<td class='BoatName'>" + BoatName + "</td>"
+                addControls += "<td class='HalekPrice'>" + Price + "</td>"
+                addControls += "<td class='HalekName'>" + DebtName + "</td>"
+
+                addControls += "<td> <a href='#' onclick=removeHalek('" + i + "')>" + "X</a> </td>"
+                addControls += "</tr>";
+
+                $('#NoPaymentTo').text('');
+                $('#totalOfPayment_tr3').show();
+                $('#totalHalek').text(parseFloat($('#totalHalek').text()) + parseFloat(Price));
+                $('#TBody3').append(addControls);
+                i++;
+                $('#indexer').val(i)
+            })
+
+            $("#MNewRows4").on('click', function () {
+
+
+                var NameAdditional = $('#NameAdditional').val()
+                var PriceAdditional = $('#PriceAdditional').val()
+                var i = $('#indexer').val();
+
+                var addControls = "<tr id='row_" + i + "' data-price=" + PriceAdditional + ">"
+
+                addControls += "<td class='Adding'>" + NameAdditional + "</td>"
+                addControls += "<td class='AddingPrice'>" + PriceAdditional + "</td>"
+
+
+                addControls += "<td> <a href='#' onclick=removeAdditional('" + i + "')>" + "X</a> </td>"
+                addControls += "</tr>";
+
+
+                $('#totalOfPayment_tr4').show();
+                $('#totalAdditional').text(parseFloat($('#totalAdditional').text()) + parseFloat(PriceAdditional));
+                $('#TBody4').append(addControls);
+                i++;
+                $('#indexer').val(i)
+            })
+
+            $("#btnAhmed").on('click', function () {
+                var AhmedMoney = $('#txtFathAllah').val()
+
+                $('#totalOfPayment_trAhmed').show();
+                $('#totalAhmed').text(AhmedMoney);
+                $('#txtFathAllah').val('')
+
+            })
+
+            $("#btnCalc").on('click', function () {
+
+
+                var paidForUs = parseFloat($('#totalOfPayment').text());
+                var paidForMerchants = parseFloat($('#totalOfPaymentTo').text());
+                var paidForHalek = parseFloat($('#totalHalek').text());
+                var paidForAdditional = parseFloat($('#totalAdditional').text());
+                var paidForFathAllah = parseFloat($('#totalAhmed').text());
+
+                var sum = paidForMerchants + paidForHalek + paidForAdditional + paidForFathAllah;
+                $("#totalPaidForMerchants").val(sum)
+
+                var addControls = "<tr>"
+
+                addControls += "<td class='paidForUs'> ما تم تحصيله</td>"
+                addControls += "<td class='pricepaidForUs'>" + paidForUs + "</td>"
+
+                addControls += "</tr>";
+
+                addControls += "<tr>"
+                addControls += "<td class='paidForUs'>ما تم دفعه </td>"
+                addControls += "<td class='pricepaidForUs'>" + sum + "</td>"
+
+                addControls += "</tr>";
+                $('#TBody6').append(addControls);
+
+                $('#totalOfPayment_tr6').show();
+                $('#Calc').text(paidForUs - sum);
+                $('#btnFinalSave').show();
+         
+
+
+            })
+
+            //$("#chkMagdy").click(function () {
+            //    if ($(this).is(":checked")) {
+            //        $("#MerchantDDL").prop("disabled", true);
+            //    } else {
+            //        $("#MerchantDDL").prop("disabled", false);
+            //    }
+
+            //});
+
+
+            $("#btnFinalSave").on('click', function () {
+
+
+                var MerchantName = new cookieList("MerchantName"); //المدفوع لينا
+                $('.MerchantName').each(function () {
+                    MerchantName.add($(this).text());
+                })
+                var Price = new cookieList("Price");
+                $('.Price').each(function () {
+                    Price.add($(this).text());
+                })
+
+                //---------------------------------------------------------
+
+
+                var ToMerchantName = new cookieList("ToMerchantName"); // اللى دفعناه
+                $('.ToMerchantName').each(function () {
+                    ToMerchantName.add($(this).text());
+                })
+                var ToPrice = new cookieList("ToPrice");
+                $('.ToPrice').each(function () {
+                    ToPrice.add($(this).text());
+                })
+
+                //---------------------------------------------------------
+                var BoatName = new cookieList("BoatName"); // الهالك اللى دفعناه
+                $('.BoatName').each(function () {
+                    BoatName.add($(this).text());
+                })
+                var HalekPrice = new cookieList("HalekPrice");
+                $('.HalekPrice').each(function () {
+                    HalekPrice.add($(this).text());
+                })
+                var HalekName = new cookieList("HalekName");
+                $('.HalekName').each(function () {
+                    HalekName.add($(this).text());
+                })
+
+                //------------------------------------------------AddingPrice
+
+                var Adding = new cookieList("Adding");
+                $('.Adding').each(function () {
+                    Adding.add($(this).text());
+                })
+                var AddingPrice = new cookieList("AddingPrice"); //المدفوع لينا
+                $('.AddingPrice').each(function () {
+                    AddingPrice.add($(this).text());
+                })
+                //-----------------------------------------------------
+
+                var fathallah = parseFloat($('#totalAhmed').text());
+                //-----------------------------------------------
+
+                //var totalPaidForUs = parseFloat($('#totalOfPayment').text());
+                //var totalPaidForMerchants = parseFloat($("#totalPaidForMerchants").val());
+
+                $.ajax({
+                    url: "/Collectings/FinalCalc/",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        fathallah: fathallah
+                        //totalPaidForUs: totalPaidForUs,
+                        //totalPaidForMerchants: totalPaidForMerchants
+                    },
+                    success: function (result) {
+                        if (result.message == "success") {
+
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'تم حفظ الفاتورة بنجاح',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'حدث خطأ',
+                                text: 'حاول مرة اخري',
+                            });
+
+                        }
+
+
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حاول مرة اخري',
+                        });
+
+                    }
+                });
+
+            })
+        })
+        var remove = function (id) {
+            var price = $("#row_" + id).attr('data-price');
+
+            if (price) {
+                $('#totalOfPayment').text(parseFloat($('#totalOfPayment').text()) - parseFloat(price));
+                $("#row_" + id).remove();
+            }
+        }
+
+        var removeTo = function (id) {
+            var price = $("#row_" + id).attr('data-price');
+
+            if (price) {
+                $('#totalOfPaymentTo').text(parseFloat($('#totalOfPaymentTo').text()) - parseFloat(price));
+                $("#row_" + id).remove();
+            }
+        }
+
+        var removeHalek = function (id) {
+            var price = $("#row_" + id).attr('data-price');
+
+            if (price) {
+                $('#totalHalek').text(parseFloat($('#totalHalek').text()) - parseFloat(price));
+                $("#row_" + id).remove();
+            }
+        }
+
+        var removeAdditional = function (id) {
+            var price = $("#row_" + id).attr('data-price');
+
+            if (price) {
+                $('#totalAdditional').text(parseFloat($('#totalAdditional').text()) - parseFloat(price));
+                $("#row_" + id).remove();
+            }
+        }
+
+        var cookieList = function (cookieName) {
+            //When the cookie is saved the items will be a comma seperated string
+            //So we will split the cookie by comma to get the original array
+            var cookie = $.cookie(cookieName);
+            //Load the items or a new array if null.
+            var items = cookie ? cookie.split(/,/) : new Array();
+
+            //Return a object that we can use to access the array.
+            //while hiding direct access to the declared items array
+            //this is called closures see http://www.jibbering.com/faq/faq_notes/closures.html
+            return {
+                "add": function (val) {
+                    //Add to the items.
+                    items.push(val);
+                    var date = new Date();
+                    date.setTime(date.getTime() + (45 * 1000));
+                    //Save the items to a cookie.
+                    //EDIT: Modified from linked answer by Nick see
+                    //      http://stackoverflow.com/questions/3387251/how-to-store-array-in-jquery-cookie
+                    $.cookie(cookieName, items.join(','), { expires: date });
+                },
+                "remove": function (val) {
+                    //EDIT: Thx to Assef and luke for remove.
+                    indx = items.indexOf(val);
+                    if (indx != -1) items.splice(indx, 1);
+                    $.cookie(cookieName, items.join(','));
+                },
+                "clear": function () {
+                    items = null;
+                    //clear the cookie.
+                    $.cookie(cookieName, null);
+                },
+                "items": function () {
+                    //Get all the items.
+                    return items;
+                }
+            }
+        }
+    </script>
+
+
+}
+
+

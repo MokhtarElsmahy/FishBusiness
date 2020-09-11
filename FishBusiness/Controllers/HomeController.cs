@@ -26,7 +26,18 @@ namespace FishBusiness.Controllers
             ViewBag.TodaysBoatReceipts = _context.BoatOwnerReciepts.ToList().Where(d=>d.Date.ToShortDateString()== DateTime.Now.ToShortDateString()).Count();
             ViewBag.TodaysMerchantReceipts = _context.MerchantReciepts.ToList().Where(d => d.Date.ToShortDateString() == DateTime.Now.ToShortDateString()).Count();
             ViewBag.TodaysExternalBoatReceipts = _context.ExternalReceipts.ToList().Where(d => d.Date.ToShortDateString() == DateTime.Now.ToShortDateString()).Count();
-            return View();
+            ViewBag.Stock = _context.Stocks.ToList().Count();
+
+            var ProfitOfDay = _context.TotalOfProfits.ToList().Where(d => d.Date.ToShortDateString() == DateTime.Now.ToShortDateString()).FirstOrDefault();
+            if (ProfitOfDay != null)
+            {
+                ViewBag.ProfitOfDay = ProfitOfDay.Profit;
+            }
+            else
+            {
+                ViewBag.ProfitOfDay = 0;
+            }
+             return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -38,6 +38,10 @@ namespace FishBusiness.Models
         [Display(Name = "ديون الشغل")]
         public decimal DebtsOfStartingWork { get; set; }
 
+
+        [Display(Name = "ديون ريس المركب")]
+        public decimal DebtsOfLeader { get; set; }
+
         [Required(ErrorMessage = "ادخل رخصة المركب")]
         [Display(Name = "رخصة المركب")]
         public string BoatLicenseNumber { get; set; }
@@ -58,11 +62,14 @@ namespace FishBusiness.Models
 
         public virtual ICollection<BoatOwnerReciept> BoatOwnerReciepts { get; set; }
         public virtual ICollection<MerchantRecieptItem> MerchantRecieptItems { get; set; }
+    
         public virtual ICollection<Sarha> Sarhas { get; set; }
         public virtual ICollection<Expense> Expenses { get; set; }
         public virtual ICollection<SharedBoatsIncome> SharedBoatsIncomes { get; set; }
         public virtual ICollection<ExternalReceipt> ExternalReceipts { get; set; }
         public virtual ICollection<IncomesOfSharedBoat> IncomesOfSharedBoats { get; set; }
+        public virtual ICollection<LeaderLoan> LeaderLoans { get; set; }
+        public virtual ICollection<LeaderPayback> LeaderPaybacks { get; set; }
 
 
 

@@ -1,0 +1,260 @@
+﻿@model IEnumerable<FishBusiness.Models.Stock>
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Styles{
+    <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/datatables.css">
+    <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/dt-global_style.css">
+
+}
+<div class="layout-px-spacing">
+    <div class="container row">
+        <div class="page-header m-3">
+            <div class="page-title">
+                <h3>المخزن</h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <a asp-action="Create" asp-controller="IMerchantReciepts" class="btn btn-primary">اضافة فاتورة</a>
+        </div>
+        <div class="mt-4 ml-auto">
+            <a asp-action="CreateReport" class="btn btn-primary">تقرير</a>
+        </div>
+    </div>
+
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <div class="table-responsive mb-4 mt-4">
+                    <table id="zero-config" class="table table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>نوع السمك</th>
+                                <th>الانتاج</th>
+                                <th>الكميه</th>
+                                <th>الوزن الاجمالى</th>
+                                <th></th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Any())
+                            {
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.Fish.FishName</td>
+                                        <td>@item.ProductionType.ProductionName</td>
+                                        <td>@item.Qty</td>
+                                        <td>@item.TotalWeight</td>
+
+                                        <td>
+
+                                            <a onclick="Details(@item.StockID)" class="btn btn-info mb-2">فرز</a>
+
+                                        </td>
+
+                                    </tr>
+                                }
+
+                            }
+                            else
+                            {
+                                <tr>
+
+                                    <td class="font-weight-bolder">لا توجد مشتريات</td>
+
+                                    @*<td><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle table-cancel"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></td>*@
+                                </tr>
+                            }
+
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">فرز و نقض</h5>
+                <input type="checkbox" id="IsCalssify" checked="@ViewBag.FirstTimeFlag" hidden>
+                <input type="text" id="prod" hidden>
+            </div>
+            <div class="modal-body" id="ModalBodyDiv2">
+
+                <hr>
+                <center>
+
+                </center>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default" id="Refresh">اغلاق</button>
+                <button type="button" id="btnSave" class="btn btn-primary">حفظ</button>
+
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+
+
+
+
+
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+
+
+          
+
+
+            $("#btnSave").on("click", function (e) {
+
+                var Qty = parseFloat($("#Qty").val());
+                var ProdID = parseInt($("#ProdDDL").val());
+                var StockID = parseInt($("#OldStockID").val());
+
+                var OldtotalWeight = parseFloat($("#OldtotalWeight").val());
+
+                var oldPID = parseInt($("#PID").val());
+
+                if (oldPID == 2 && oldPID != ProdID) {
+
+                    var FishID = parseInt($("#FishDDL").val());
+
+                    var flag = $('#IsCalssify').is(":checked")
+               
+                    $.ajax({
+                        url: "/Stocks/UpdateStock/",
+                        type: "Post",
+                        dataType: "json",
+                        //contentType: 'application/json;charset=utf-8',
+                        //data: JSON.stringify(settings),
+                        data: {
+                            FishID: FishID,
+                            StockID: StockID,
+                            ProductionTypeID: ProdID,
+                            Qty: Qty,
+                            OldtotalWeight: 0,
+                            OldProductionType: oldPID,
+                            FirstTimeFlag: flag
+
+                        },
+                        success: function (result) {
+                            $("#IsCalssify").prop("checked", false);
+
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'تم الفرز',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                            $("#OldtotalWeight").val(result.newTotalWeight)
+
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'حدث خطأ',
+                                text: 'حاول مرة اخري',
+                            });
+                        }
+                    });
+                    e.preventDefault();
+                }
+
+
+                else if (Qty <= OldtotalWeight) {
+
+                    var oldPID = parseInt($("#PID").val());
+                    var FishID = parseInt($("#FishDDL").val());
+
+                   // var flag = $('#IsCalssify').is(":checked")
+              
+                    $.ajax({
+                        url: "/Stocks/UpdateStock/",
+                        type: "Post",
+                        dataType: "json",
+                       // contentType: 'application/json;charset=utf-8',
+                       //data: JSON.stringify(settings),
+                        data: {
+                            FishID: FishID,
+                            StockID: StockID,
+                            ProductionTypeID: ProdID,
+                            Qty: Qty,
+                            OldtotalWeight: OldtotalWeight,
+                            OldProductionType: oldPID,
+                            //FirstTimeFlag: flag
+
+                        },
+                        success: function (result) {
+                            $("#IsCalssify").prop("checked", false);
+
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'تم الفرز',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                            $("#OldtotalWeight").val(result.newTotalWeight)
+
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'حدث خطأ',
+                                text: 'حاول مرة اخري',
+                            });
+                        }
+                    });
+                    e.preventDefault();
+                }
+                else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'حدث خطأ',
+                        text: 'القيمة المدخلة اكبر من القيمة الاجماليه',
+                    });
+                }
+            })
+
+            $("#Refresh").on("click", function () {
+
+                $("#myModal").modal("hide");
+                window.location.href = "/Stocks/Index";
+            })
+
+
+        })
+        var Details = function (id) {
+            $("#IsCalssify").prop("checked", true);
+            var url = "/Stocks/Calssify?id=" + id;
+            $("#ModalBodyDiv2").load(url, function () {
+                $("#myModal").modal("show");
+            })
+
+
+        }
+    </script>
+
+}

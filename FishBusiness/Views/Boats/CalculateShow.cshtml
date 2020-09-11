@@ -40,6 +40,7 @@
             <label asp-for="TotalAfterPaying" class="control-label"></label>
             <input class="form-control" id="total" disabled>
         </div>
+
         @if (ViewBag.flag == true && ViewBag.boatType == 2)
         {
             <div class="form-group">
@@ -51,12 +52,23 @@
         @if (ViewBag.flag == true && ViewBag.boatType != 2)
         {
             <div class="form-group">
-              
+
                 <label class="control-label">خصم مصروف</label>
                 <input class="form-control" id="expense">
             </div>
         }
+        <div class="form-group">
 
+            <label asp-for="Boat.DebtsOfLeader" class="control-label"></label>
+            <input class="form-control" id="OldLeaderDebts" disabled asp-for="Boat.DebtsOfLeader">
+            <input type="checkbox" id="chkLeaderDebts" onclick="ChangeCheck()" /> تسديد
+        </div>
+        <div class="form-group" id="PaymentLeaderDebtsDiv" style="display:none">
+
+            <label class="control-label">المبلغ</label>
+            <input class="form-control" id="PaymentLeaderDebts">
+
+        </div>
     </div>
 
 }
@@ -108,7 +120,18 @@ else
             <input class="form-control" id="expense">
         </div>
     }
+    <div class="form-group">
 
+        <label asp-for="Boat.DebtsOfLeader" class="control-label"></label>
+        <input class="form-control" id="OldLeaderDebts" disabled asp-for="Boat.DebtsOfLeader">
+        <input type="checkbox" id="chkLeaderDebts" onclick="ChangeCheck()" /> تسديد
+    </div>
+    <div class="form-group" id="PaymentLeaderDebtsDiv" style="display:none">
+
+        <label class="control-label">المبلغ</label>
+        <input class="form-control" id="PaymentLeaderDebts">
+
+    </div>
 
 }
 <div class="modal-footer md-button">
@@ -116,6 +139,10 @@ else
     <button type="button" class="btn btn-primary" onclick="SaveRec(@Model.BoatOwnerRecieptID)">حفظ</button>
 </div>
 <script>
+
+     //if ($("#chkMagdy").is(":checked")) {
+                //    MerchantName = "الحج مجدى"
+                //}
     var CalcDebt = function (id) {
 
         $.ajax({
@@ -173,6 +200,14 @@ else
         });
     }
 
+    var ChangeCheck = function () {
+        if ($("#chkLeaderDebts").is(":checked")) {
+
+            $("#PaymentLeaderDebtsDiv").show()
+        } else {
+            $("#PaymentLeaderDebtsDiv").hide()
+        }
+    }
 
     var SaveRec = function (id) {
         var halek;

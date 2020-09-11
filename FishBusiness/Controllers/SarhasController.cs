@@ -42,7 +42,7 @@ namespace FishBusiness.Controllers
             {
                 return NotFound();
             }
-            ViewBag.depts = _context.Debts_Sarhas.Where(x => x.SarhaID == id).Include(d => d.Debt);
+            ViewBag.depts = _context.Debts_Sarhas.Include(x => x.Person).Where(x => x.SarhaID == id).Include(d => d.Debt);
             ViewBag.Total = _context.Debts_Sarhas.Where(x => x.SarhaID == id).Sum(x => x.Price);
             return View(sarha);
         }
@@ -51,9 +51,11 @@ namespace FishBusiness.Controllers
         public IActionResult Create()
         {
             ViewBag.Boats = new SelectList(_context.Boats, "BoatID", "BoatName");
+            ViewBag.People = new SelectList(_context.People.OrderByDescending(x => x.PersonID).Take(2).ToList(), "PersonID", "Name");
             //ViewBag.halek = _context.Debts.ToList();
             SarhaViewModel sarhaViewModel = new SarhaViewModel();
             sarhaViewModel.Debts = _context.Debts.ToList();
+
             return View(sarhaViewModel);
         }
 
@@ -61,7 +63,7 @@ namespace FishBusiness.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+       // [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SarhaViewModel sarhaViewModel)
         {
             if (ModelState.IsValid)
@@ -70,24 +72,36 @@ namespace FishBusiness.Controllers
                 await _context.SaveChangesAsync();
                 var latestSarha = _context.Sarhas.Max(x => x.SarhaID);
                 var deptPriceCookie = Request.Cookies["MyItems"];
-                decimal[] result = deptPriceCookie.Split(",".ToCharArray()).Select(c => Convert.ToDecimal(c)).ToArray();
-                int i = 0;
-                foreach (var item in _context.Debts.ToList())
+                var MyItemsPerson = Request.Cookies["MyItemsPerson"];
+
+                if (deptPriceCookie != null && MyItemsPerson != null)
                 {
-                    Debts_Sarha d_s = new Debts_Sarha()
+
+
+                    decimal[] result = deptPriceCookie.Split(",".ToCharArray()).Select(c => Convert.ToDecimal(c)).ToArray();
+                    int[] resultPerson = MyItemsPerson.Split(",".ToCharArray()).Select(c => Convert.ToInt32(c)).ToArray();
+                    int i = 0;
+                    foreach (var item in _context.Debts.ToList())
                     {
-                        SarhaID = latestSarha,
-                        DebtID = item.DebtID,
-                        Price = result[i]
-                    };
-                    _context.Debts_Sarhas.Add(d_s);
+                        Debts_Sarha d_s = new Debts_Sarha()
+                        {
+                            SarhaID = latestSarha,
+                            DebtID = item.DebtID,
+                            Price = result[i],
+                            PersonID = resultPerson[i],
+                            Date = DateTime.Now
+
+                        };
+                        _context.Debts_Sarhas.Add(d_s);
+                        await _context.SaveChangesAsync();
+                        i++;
+                    }
+                    var boat = _context.Boats.Find(sarhaViewModel.Sarha.BoatID);
+                    boat.DebtsOfHalek += result.Sum();
                     await _context.SaveChangesAsync();
-                    i++;
+                    Response.Cookies.Delete("MyItems");
+
                 }
-                var boat = _context.Boats.Find(sarhaViewModel.Sarha.BoatID);
-                boat.DebtsOfHalek += result.Sum();
-                await _context.SaveChangesAsync();
-                Response.Cookies.Delete("MyItems");
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.Boats = new SelectList(_context.Boats, "BoatID", "BoatName", sarhaViewModel.Sarha.BoatID);

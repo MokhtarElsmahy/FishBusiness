@@ -1,0 +1,314 @@
+﻿
+@model FishBusiness.ViewModels.OfficeVM
+@section Styles {
+
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <link href="~/plugins/animate/animate.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/components/custom-modal.css" rel="stylesheet" type="text/css" />
+    <!--  END CUSTOM STYLE FILE  -->
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link href="~/assets/css/apps/scrumboard.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/forms/theme-checkbox-radio.css" rel="stylesheet" type="text/css">
+    <!-- END PAGE LEVEL STYLES -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+}
+
+<div class="layout-px-spacing">
+    <div class="container row">
+        <div class="page-header m-3">
+            <div class="page-title">
+                <h3>المكتب</h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <a asp-action="Index" asp-controller="Home" class="btn btn-primary">الرئيسية</a>
+            @*<a class="btn btn-primary" id="btnFinalSave" style="display:none;">حفظ</a>*@
+        </div>
+    </div>
+
+    <div class="container row">
+
+        <div class="form-group">
+            <label class="control-label" style="margin-right:12px;">رصيد باقى</label>
+            <label id="credit" class="control-label" style="color:black"></label>
+            <span class="text-danger"></span>
+        </div>
+
+    </div>
+    <div class="container row">
+
+
+        <label class="control-label" style="margin-right:12px;padding-top: 7px;">اختر تاريخ</label>
+        <input class="form-control col-2" type="date" style="margin-right:5px;" id="Date" />
+        <button type="button" class="btn btn-primary" style="margin-right:5px;" id="btnConfirm">تأكيد</button>
+      
+
+    </div>
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>مدخلات اليوم</h3>
+                <img src="~/assets/img/loader.gif" class="loaderFathallah" style="width:50px;height:50px;display:none" />
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>الاسم</th>
+                                <th>المدفوع</th>
+                                <th></th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="TBody">
+
+                            <tr>
+
+                                <td class="MerchantName">العمولات</td>
+                                <td class="Price" id="Commisions"> @Model.Commisions</td>
+                                <td><a class="btn btn-primary" asp-action="GetTodaysReceiptsCommission">تفاصيل</a></td>
+
+                            </tr>
+                            <tr>
+
+                                <td class="MerchantName">فواتير سافرت</td>
+                                <td class="Price" id="IsellerReceiptsTotal"> @Model.IsellerReceiptsTotal</td>
+                                <td><a class="btn btn-primary" asp-action="GetTodaysIsellerReceipts">تفاصيل</a></td>
+
+                            </tr>
+                            <tr>
+                                <td class="MerchantName">فواتير خارجية</td>
+                                <td class="Price" id="externalReceiptsTotal"> @Model.externalReceiptsTotal</td>
+                                <td><a class="btn btn-primary" asp-action="GetTodaysExternalReceiptsForSharedBoats">تفاصيل</a></td>
+                            </tr>
+                            <tr>
+
+                                <td class="MerchantName">ايراد مراكب شريكة</td>
+                                <td class="Price" id="SharedBoatsReceiptsTotal"> @Model.SharedBoatsReceiptsTotal</td>
+                                <td><a class="btn btn-primary" asp-action="GetTodaysSharedBoatsIncome">تفاصيل</a></td>
+
+                            </tr>
+                            <tr>
+
+                                <td class="MerchantName">المحصل</td>
+                                <td class="Price" id="collectorForUsTotal"> @Model.collectorForUsTotal</td>
+                                <td><a class="btn btn-primary" asp-controller="Collectings" asp-action="ProfileOfDay">تفاصيل</a></td>
+
+                            </tr>
+                            <tr>
+
+                                <td class="MerchantName">مدفوعات ريس مركب</td>
+                                <td class="Price" id="LeaderLoansPaybackTotal"> @Model.LeaderLoansPaybackTotal</td>
+                                <td><a class="btn btn-primary" asp-action="GetTodaysLeaderLoansPayBack">تفاصيل</a></td>
+
+                            </tr>
+                            <tr>
+
+                                <td class="MerchantName">مبيعات</td>
+                                <td class="Price" id="SalesTotal"> @Model.SalesTotal</td>
+                                <td><a class="btn btn-primary" asp-controller="TotalOfProfits" asp-action="SummationOfAday">تفاصيل</a></td>
+
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr id="totalOfPayment_tr">
+                                <td>
+                                    الاجمالى
+                                </td>
+                                <td id="totalIncome">
+                                </td>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+
+
+                </div>
+
+
+
+
+            </div>
+            @*<div class="d-flex justify-content-center mt-2">
+                    <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
+
+                </div>*@
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>مخرجات</h3>
+                <img src="~/assets/img/loader.gif" class="loaderFathallah" style="width:50px;height:50px;display:none" />
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>الاسم </th>
+                                <th>المبلغ</th>
+                                <th></th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody id="TBody2">
+
+                            <tr>
+
+                                <td class="MerchantName">احمد فتح الله</td>
+                                <td class="Price" id="FathallahTotal"> @Model.FathallahTotal</td>
+                                @*                                <td><a class="btn btn-primary" asp-action="FathAllahWorkOfDayDate" asp-controller="Collectings" asp-route-Date="@DateTime.Now">تفاصيل</a></td>*@
+
+                            </tr>
+                            <tr>
+
+                                <td class="MerchantName">فلوس للمحصل</td>
+                                <td class="Price" id="CollectorTotalFromUs"> @Model.CollectorTotalFromUs</td>
+                                @*<td><a class="btn btn-primary" asp-action="Profile" asp-controller="Collectings" asp-route-Date="@DateTime.Now">تفاصيل</a></td>*@
+
+                            </tr>
+                            <tr>
+
+                                <td class="MerchantName">مصروفات سفر</td>
+                                <td class="Price" id="BuyingTotal"> @Model.BuyingTotal</td>
+                                <td><a class="btn btn-primary" asp-controller="TotalOfProfits" asp-action="SummationOfAday">تفاصيل</a></td>
+
+                            </tr>
+                            <tr>
+
+                                <td class="MerchantName">مصروفات محصل</td>
+                                <td class="Price" id="CollectorTotalforMerchantsAndHalek"> @Model.CollectorTotalforMerchantsAndHalek</td>
+                                <td><a class="btn btn-primary" asp-action="ProfileOfDay" asp-controller="Collectings">تفاصيل</a></td>
+
+                            </tr>
+
+                        </tbody>
+
+                        <tfoot>
+                            <tr id="totalOfPayment_tr">
+                                <td>
+                                    الاجمالى
+                                </td>
+                                <td id="totalOutcome">
+                                </td>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+
+
+                </div>
+
+
+
+
+
+            </div>
+            @*<div class="d-flex justify-content-center mt-2">
+
+                    <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
+                </div>*@
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>الرصيد</h3>
+                <img src="~/assets/img/loader.gif" class="loaderFathallah" style="width:50px;height:50px;display:none" />
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+
+                        <tbody id="TBody3">
+                            <tr>
+                                <td> الاجمالي</td>
+                                <td id="FinalTotal">
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+
+                </div>
+            </div>
+            @*<div class="d-flex justify-content-center mt-2">
+
+                    <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
+                </div>*@
+        </div>
+
+    </div>
+
+
+
+
+</div>
+
+
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+            $("#btnConfirm").on('click', function () {
+                $(".loaderFathallah").show();
+                var Date = $("#Date").val()
+                $.ajax({
+                    url: "/Home/GetTodayOffice/",
+                    type: "GET",
+                    dataType: "json",
+                    data: {
+                        Date: Date,
+                    },
+                    success: function (result) {
+                        if (result.message == "success") {
+                            $('#credit').text(result.credit);
+                            $(".loaderFathallah").hide();
+                            $('#Commisions').text(result.commisions);
+                            $('#IsellerReceiptsTotal').text(result.isellerReceiptsTotal);
+                            $('#externalReceiptsTotal').text(result.externalReceiptsTotal);
+                            $('#SharedBoatsReceiptsTotal').text(result.sharedBoatsReceiptsTotal);
+                            $('#collectorForUsTotal').text(result.collectorForUsTotal);
+                            $('#LeaderLoansPaybackTotal').text(result.leaderLoansPaybackTotal);
+                            $('#SalesTotal').text(result.salesTotal);
+                            $('#FathallahTotal').text(result.fathallahTotal);
+                            $('#CollectorTotalFromUs').text(result.collectorTotalFromUs);
+                            $('#CollectorTotalforMerchantsAndHalek').text(result.collectorTotalforMerchantsAndHalek);
+                            $('#BuyingTotal').text(result.buyingTotal);
+                            $('#totalIncome').text(result.totalIncome);
+                            $('#totalOutcome').text(result.totalOutcome);
+                            $('#FinalTotal').text(result.finalTotal);
+
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'حدث خطأ',
+                                text: 'حاول مرة اخري',
+                            });
+
+                        }
+
+
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حاول مرة اخري',
+                        });
+
+                    }
+                });
+            })
+        });
+    </script>
+}
+
+
+
+
+

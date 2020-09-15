@@ -4,14 +4,16 @@ using FishBusiness;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FishBusiness.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200913210609_AddPersonId_TOPaidForMerchant")]
+    partial class AddPersonId_TOPaidForMerchant
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,9 +27,6 @@ namespace FishBusiness.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<int>("ID")
                         .HasColumnType("int");
@@ -154,9 +153,6 @@ namespace FishBusiness.Data.Migrations
                     b.Property<bool>("IsCalculated")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsCheckedOut")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsCollected")
                         .HasColumnType("bit");
 
@@ -198,32 +194,6 @@ namespace FishBusiness.Data.Migrations
                     b.HasKey("TypeID");
 
                     b.ToTable("BoatTypes");
-                });
-
-            modelBuilder.Entity("FishBusiness.Models.Checkout", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("BoatID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("PaidForBoatOwner")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("PaidForUs")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("BoatID");
-
-                    b.ToTable("Checkouts");
                 });
 
             modelBuilder.Entity("FishBusiness.Models.Cofig", b =>
@@ -334,9 +304,6 @@ namespace FishBusiness.Data.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsCheckedOut")
-                        .HasColumnType("bit");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -1215,15 +1182,6 @@ namespace FishBusiness.Data.Migrations
                     b.HasOne("FishBusiness.Models.Sarha", "Sarha")
                         .WithMany("BoatOwnerReciepts")
                         .HasForeignKey("SarhaID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("FishBusiness.Models.Checkout", b =>
-                {
-                    b.HasOne("FishBusiness.Models.Boat", "Boat")
-                        .WithMany("Checkouts")
-                        .HasForeignKey("BoatID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

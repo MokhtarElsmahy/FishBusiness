@@ -79,6 +79,13 @@ namespace FishBusiness.Controllers
                 {
                     FinalIncome = (Convert.ToDecimal(TotalAfterPaying) / 2) - IndividualSalary;
                     boat.IncomeOfSharedBoat += FinalIncome;
+                    IncomesOfSharedBoat i = new IncomesOfSharedBoat()
+                    {
+                        BoatID = boat.BoatID,
+                        Date = DateTime.Now,
+                        Income = FinalIncome
+                    };
+                    _context.IncomesOfSharedBoats.Add(i);
                 }
                 // for ordinary boats
                 else

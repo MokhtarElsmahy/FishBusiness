@@ -23,6 +23,10 @@
         </div>
         <div class="mt-4 ml-auto">
             <a asp-action="Edit" asp-controller="Boats" asp-route-id="@Model.BoatInfo.BoatID" class="btn btn-primary">تعديل بيانات المركب</a>
+            @if (Model.BoatInfo.TypeID == 5 && ViewBag.IsCheckedOut == false)
+            {
+            <a asp-action="CheckOut" asp-route-id="@Model.BoatInfo.BoatID" class="btn btn-primary">تصفية</a>
+            }
         </div>
     </div>
 
@@ -71,7 +75,7 @@
                                                                 <div class="card-body">
                                                                     <h5 class="card-text">ريس المركب</h5>
                                                                     <label style="font-size:larger;font-weight:bolder;color:black">@Model.BoatInfo.BoatLeader</label><br />
-                                                                   ديونه : <label style="font-size:larger;font-weight:bolder;color:black">@Model.BoatInfo.DebtsOfLeader</label>
+                                                                   ديونه : <label id="PaymentLeaderDebtsLabel" style="font-size:larger;font-weight:bolder;color:black">@Model.BoatInfo.DebtsOfLeader</label>
                                                                      
                                                                 </div>
                                                             </div>

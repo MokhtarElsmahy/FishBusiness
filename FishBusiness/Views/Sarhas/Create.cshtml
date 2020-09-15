@@ -41,7 +41,7 @@
                             </div>
                         </div>
                     </div>
-                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    <form >
                         <div class="widget-content widget-content-area">
                             <div id="circle-basic" class="">
                                 <h3>بيانات</h3>
@@ -49,24 +49,24 @@
                                 <section>
                                     <div class="form-group">
                                         <label asp-for="Sarha.Boat.BoatName"></label>
-                                        <select class="form-control" asp-for="Sarha.BoatID" asp-items="ViewBag.Boats as SelectList">
+                                        <select class="form-control" id="BoatDDL" asp-for="Sarha.BoatID" asp-items="ViewBag.Boats as SelectList">
                                             <option>اختر اسم المركب</option>
                                         </select>
                                         <span asp-validation-for="Sarha.Boat.BoatName" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
                                         <label asp-for="Sarha.NumberOfFishermen"></label>
-                                        <input asp-for="Sarha.NumberOfFishermen" type="text" class="form-control" id="exampleFormControlInput1">
+                                        <input asp-for="Sarha.NumberOfFishermen" type="text" class="form-control" id="NoFisherMen">
                                         <span asp-validation-for="Sarha.NumberOfFishermen" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
                                         <label asp-for="Sarha.NumberOfBoxes"></label>
-                                        <input asp-for="Sarha.NumberOfBoxes" type="text" class="form-control" id="exampleFormControlInput1">
+                                        <input asp-for="Sarha.NumberOfBoxes" type="text" class="form-control" id="NoBoxes">
                                         <span asp-validation-for="Sarha.NumberOfBoxes" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
                                         <label asp-for="Sarha.DateOfSarha"></label>
-                                        <input asp-for="Sarha.DateOfSarha" class="form-control" id="exampleFormControlInput1">
+                                        <input asp-for="Sarha.DateOfSarha" class="form-control" id="DateOfSarha">
                                         <span asp-validation-for="Sarha.DateOfSarha" class="text-danger"></span>
 
                                     </div>
@@ -95,7 +95,7 @@
 
                                         </div>
                                         <div class="col-sm-4">
-                                            <button type="submit" id="clickable" class="btn btn-primary mb-4 mr-2 btn-lg">اضغط لحفظ بيانات السرحة </button>
+                                            <button type="button" id="clickable" class="btn btn-primary mb-4 mr-2 btn-lg">اضغط لحفظ بيانات السرحة </button>
                                         </div>
                                         <div class="col-sm-4">
 
@@ -179,6 +179,7 @@ $("selector").steps({
                 }
             }
         }
+
         $(document).ready(function () {
             $("#clickable").click(function () {
 
@@ -186,17 +187,49 @@ $("selector").steps({
                 document.cookie = 'MyItemsPerson' + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
                 var list = new cookieList("MyItems"); // all items in the array.
                 $('.Halekprice').each(function () {
-                    if (!$(this).val('')) {
-
+                    if ($(this).val()!='') {
                         list.add($(this).val());
                     }
                 })
 
                 var listPerson = new cookieList("MyItemsPerson"); // all items in the array.
                 $('.personDDL').each(function () {
-                    if (!$(this).val('-1')) {
+                    if ($(this).val()!='-1') {
                         listPerson.add($(this).val());
                     }
+                })
+                var BoatID = parseInt($("#BoatDDL").val())
+                var NoFisherMen = parseInt($("#NoFisherMen").val())
+                var NoBoxes = parseInt($("#NoBoxes").val())
+                var DateOfSarha = $("#DateOfSarha").val()
+                //var personsCookie = listPerson.items()
+                //var pricesCookie = list.items()
+                 var settings = {
+                     BoatID: BoatID,
+                     NoFisherMen: NoFisherMen,
+                     NoBoxes: NoBoxes,
+                     DateOfSarha: DateOfSarha,
+                     //pricesCookie: pricesCookie,
+                     //personsCookie: personsCookie
+                };
+                //alert(list.items())
+                //alert(listPerson.items())
+                //alert(BoatID)
+                //alert(NoFisherMen)
+                //alert(NoBoxes)
+                //alert(DateOfSarha)
+                $.ajax({
+                    url: "/Sarhas/Create",
+                    type: "POST",
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify(settings),
+                    success: function (result) {
+                        if (result.message == "success") {
+                            window.location.href = "/Sarhas/Details/" + result.id;
+                        }
+                    }
+
                 })
             });
         })

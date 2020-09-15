@@ -91,18 +91,35 @@ namespace FishBusiness.Controllers
             for (int i = 0; i < MerchantNames.Length; i++)
             {
                 var merchant = _context.Merchants.FirstOrDefault(c => c.MerchantName == MerchantNames[i]);
-
-
-
-                PaidForMerchant m = new PaidForMerchant()
+                PaidForMerchant m;
+                if (merchant.IsOwner == true)
                 {
-                    IsPaidForUs = true,
-                    MerchantID = merchant.MerchantID,
-                    Payment = prices[i],
-                    PreviousDebtsForMerchant = merchant.PreviousDebts - prices[i],
-                    Date = DateTime.Now,
-                    IsCash = true
-                };
+                    m = new PaidForMerchant()
+                    {
+                        IsPaidForUs = true,
+                        MerchantID = merchant.MerchantID,
+                        Payment = prices[i],
+                        PreviousDebtsForMerchant = merchant.PreviousDebts - prices[i],
+                        Date = DateTime.Now,
+                        IsCash = true,
+                        PersonID = 1
+                    };
+                }
+                else
+                {
+                    m = new PaidForMerchant()
+                    {
+                        IsPaidForUs = true,
+                        MerchantID = merchant.MerchantID,
+                        Payment = prices[i],
+                        PreviousDebtsForMerchant = merchant.PreviousDebts - prices[i],
+                        Date = DateTime.Now,
+                        IsCash = true,
+                        PersonID=3
+                    };
+                }
+                Person pppp = _context.People.Find(3);
+                pppp.credit += prices[i];
                 merchant.PreviousDebts = merchant.PreviousDebts - prices[i];
                 _context.PaidForMerchant.Add(m);
                 _context.SaveChanges();
@@ -120,8 +137,11 @@ namespace FishBusiness.Controllers
                     Payment = Toprices[i],
                     PreviousDebtsForMerchant = merchant.PreviousDebtsForMerchant - Toprices[i],
                     Date = DateTime.Now,
-                    IsCash = true
+                    IsCash = true,
+                    PersonID = 3
                 };
+                Person person = _context.People.Find(3);
+                person.credit -= prices[i];
                 merchant.PreviousDebtsForMerchant = merchant.PreviousDebtsForMerchant - Toprices[i];
                 _context.PaidForMerchant.Add(m);
                 _context.SaveChanges();
@@ -148,7 +168,8 @@ namespace FishBusiness.Controllers
                     _context.SaveChanges();
 
                 }
-
+                Person person1 = _context.People.Find(3);
+                person1.credit -= HalekPrices[i];
 
                 _context.SaveChanges();
 
@@ -169,6 +190,8 @@ namespace FishBusiness.Controllers
             FathAllahGift g = new FathAllahGift() { charge = fathallah, CreditBefore = p.credit, CreditAfter = fathallah + p.credit, Date = DateTime.Now, PersonID = 3 };
             p.credit += fathallah;
             _context.Collectings.Add(collecting);
+            Person pp = _context.People.Find(3);
+            pp.credit -= fathallah;
             _context.FathAllahGifts.Add(g);
             _context.SaveChanges();
 
@@ -180,9 +203,12 @@ namespace FishBusiness.Controllers
                     Name = AddingNames[i],
                     Value = AddingPrices[i],
                     ID = collecting.ID,
+                    Date = DateTime.Now
                 };
 
                 _context.AdditionalPayments.Add(ad);
+                Person ppp = _context.People.Find(3);
+                ppp.credit -= AddingPrices[i];
                 _context.SaveChanges();
 
             }
@@ -192,7 +218,6 @@ namespace FishBusiness.Controllers
 
         public IActionResult ProfileOfDay()
         {
-
             return View();
         }
         public IActionResult ProfileOfDayData(DateTime Date)
@@ -313,6 +338,7 @@ namespace FishBusiness.Controllers
                 {
                     int DebtID = _context.Debts.Where(c => c.DebtName == PlaceHalekNames[i]).FirstOrDefault().DebtID;
                     _context.HalakaHaleks.Add(new HalakaHalek { Price = prices[i], DebtID = DebtID, Date = DateTime.Now });
+                    pp.credit -= prices[i];
 
                 }
                 _context.SaveChanges();
@@ -325,6 +351,7 @@ namespace FishBusiness.Controllers
                     var Boat = _context.Boats.Where(c => c.BoatLeader == ToLeaderNames[i]).FirstOrDefault();
                     _context.LeaderLoans.Add(new LeaderLoan { Price = Toprices[i], BoatID = Boat.BoatID, Date = DateTime.Now });
                     Boat.DebtsOfLeader += Toprices[i];
+                    pp.credit -= Toprices[i];
                     _context.SaveChanges();
                 }
 
@@ -337,7 +364,7 @@ namespace FishBusiness.Controllers
                 {
                     var boat = _context.Boats.FirstOrDefault(c => c.BoatName == BoatNames[i]);
 
-                    var lastSarhaID = _context.Sarhas.Where(c => c.BoatID == boat.BoatID &&c.IsFinished==false);
+                    var lastSarhaID = _context.Sarhas.Where(c => c.BoatID == boat.BoatID && c.IsFinished == false);
                     if (lastSarhaID != null)
                     {
 
@@ -353,11 +380,12 @@ namespace FishBusiness.Controllers
                         else
                         {
                             var debt = _context.Debts.Where(c => c.DebtName == HalekNames[i]).FirstOrDefault();
-                            Debts_Sarha ds = new Debts_Sarha() { Price = HalekPrices[i], DebtID = debt.DebtID, SarhaID = maxSarahaID, PersonID = 4, Date =DateTime.Now };
+                            Debts_Sarha ds = new Debts_Sarha() { Price = HalekPrices[i], DebtID = debt.DebtID, SarhaID = maxSarahaID, PersonID = 4, Date = DateTime.Now };
                             _context.Debts_Sarhas.Add(ds);
                             _context.SaveChanges();
 
                         }
+                        pp.credit -= HalekPrices[i];
                         _context.SaveChanges();
                     }
 
@@ -409,6 +437,7 @@ namespace FishBusiness.Controllers
 
             return Json(new { message = "success", halakaHaleks = halakaHaleks, sumOfhalakaHaleks = sumOfhalakaHaleks, sumOfLoans = sumOfLoans, sumOfHalek = sumOfHalek, loans = Loans, halek = Halek });
         }
+        // هتبقي تبع المكتب
         public IActionResult PayBackLoan(decimal price, int BoatID)
         {
             var Boat = _context.Boats.Find(BoatID);
@@ -429,7 +458,7 @@ namespace FishBusiness.Controllers
             _context.FathAllahGifts.Add(g);
             _context.SaveChanges();
             return Json(new { message = "success", newCredit = g.CreditAfter });
-        } 
+        }
         #endregion
     }
 }

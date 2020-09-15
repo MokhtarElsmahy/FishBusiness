@@ -90,9 +90,10 @@ namespace FishBusiness.Controllers
             iSellerReciept.PaidFromDebt = PaidFromDebt;
             iSellerReciept.TotalOfPrices = TotalOfPrices;
             iSellerReciept.DateOfMoneytization = DateTime.Now;
-            PaidForMerchant p = new PaidForMerchant() { Date = DateTime.Now, IsCash = true, MerchantID = iSellerReciept.MerchantID, Payment = (decimal)PaidFromDebt, IsPaidForUs = true , PreviousDebtsForMerchant = (decimal)(DebtsAfterCommisionAndPayment - PaidFromDebt) };
+            PaidForMerchant p = new PaidForMerchant() { Date = DateTime.Now, IsCash = true, MerchantID = iSellerReciept.MerchantID, Payment = (decimal)PaidFromDebt, IsPaidForUs = true , PreviousDebtsForMerchant = (decimal)(DebtsAfterCommisionAndPayment - PaidFromDebt) , PersonID=1 };
             _context.PaidForMerchant.Add(p);
-            
+            Person pp = _context.People.Find(1);
+            pp.credit += Convert.ToDecimal(PaidFromDebt);
             if (iSellerReciept == null)
             {
                 return NotFound();

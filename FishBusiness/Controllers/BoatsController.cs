@@ -245,7 +245,12 @@ namespace FishBusiness.Controllers
 
             profileVM.BoatExpenses = expenses;
 
-
+            var CheckOutrecs = db.BoatOwnerReciepts.Where(c => c.BoatID == id && c.IsCheckedOut == false).ToList();
+            var CheckOutexpenses = db.Expenses.Where(c => c.BoatID == id && c.IsCheckedOut == false).ToList();
+            if (CheckOutrecs.Count>0 || CheckOutexpenses.Count>0)
+                ViewBag.IsCheckedOut = false;
+            else
+                ViewBag.IsCheckedOut = true;
             return View(profileVM);
         }
 
@@ -376,7 +381,7 @@ namespace FishBusiness.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveRec(int? id, decimal individualSalary, decimal halek, decimal total, decimal expense, string flag, int NumberOfFisherMen)
+        public IActionResult SaveRec(int? id, decimal individualSalary, decimal halek, decimal total, decimal expense, string flag, int NumberOfFisherMen, decimal PaymentLeaderDebts)
         {
 
             var rec = db.BoatOwnerReciepts.Find(id);
@@ -404,7 +409,7 @@ namespace FishBusiness.Controllers
                     else
                     {
 
-                         LeaderSalary = finalIncome / 6;
+                        LeaderSalary = finalIncome / 6;
                     }
                     boat.IncomeOfSharedBoat += finalIncome - LeaderSalary;
                     IncomesOfSharedBoat inc = new IncomesOfSharedBoat() { BoatID = boat.BoatID, Date = DateTime.Now, Income = finalIncome - LeaderSalary };
@@ -475,17 +480,85 @@ namespace FishBusiness.Controllers
                 }
             }
 
-
+            if (PaymentLeaderDebts != 0.0m)
+            {
+                boat.DebtsOfLeader -= PaymentLeaderDebts;
+                LeaderPayback l = new LeaderPayback()
+                {
+                    BoatID = boat.BoatID,
+                    Date = DateTime.Now,
+                    Price = PaymentLeaderDebts
+                };
+                db.LeaderPaybacks.Add(l);
+                //هنزود الفلوس للحلقة هنااااااا
+            }
             db.SaveChanges();
-
-
-
-
-
-            return Json(new { message = "success", current = boat.DebtsOfHalek, income = boat.IncomeOfSharedBoat, cexpense = boat.TotalOfExpenses });
+            return Json(new { message = "success", current = boat.DebtsOfHalek, income = boat.IncomeOfSharedBoat, cexpense = boat.TotalOfExpenses, leaderdebts = boat.DebtsOfLeader });
         }
 
+        [HttpGet]
+        public IActionResult Checkout(int id)
+        {
+            CheckoutVM model = new CheckoutVM();
+            model.BoatOwnerReciepts = db.BoatOwnerReciepts.Include(c => c.Boat).Where(c => c.BoatID == id && c.IsCheckedOut==false).ToList();
+            model.Expenses = db.Expenses.Where(c => c.BoatID == id && c.IsCheckedOut == false).ToList();
+            ViewBag.BoatName = db.Boats.Find(id).BoatName;
+            ViewBag.BoatId = id;
+            return View(model);
+        }
+        [HttpPost]
+        public IActionResult FinalCheckout(decimal value, int id, decimal FinalCredit)
+        {
+            var recs = db.BoatOwnerReciepts.Where(c => c.BoatID == id && c.IsCheckedOut == false).ToList();
+            var expenses = db.Expenses.Where(c => c.BoatID == id && c.IsCheckedOut == false).ToList();
+            for (int i = 0; i < recs.Count; i++)
+            {
+                recs[i].IsCheckedOut = true;
+            }
+            for (int i = 0; i < expenses.Count; i++)
+            {
+                expenses[i].IsCheckedOut = true;
+            }
+            if (FinalCredit < 0)
+            {
 
+                Expense ex = new Expense()
+                {
+                    BoatID = id,
+                    Date = DateTime.Now,
+                    Price = FinalCredit * -1,
+                    Cause = "باقي تصفية"
+                };
+                db.Expenses.Add(ex);
+            }
+            if (value > 0)
+            {
+                Checkout ch = new Checkout()
+                {
+                    BoatID = id,
+                    Date = DateTime.Now,
+                    PaidForBoatOwner = FinalCredit - value,
+                    PaidForUs = value
+                };
+                db.Checkouts.Add(ch);
+                Person p = db.People.Find(1);
+                p.credit -= FinalCredit - value;
+            }
+            else
+            {
+                Checkout ch = new Checkout()
+                {
+                    BoatID = id,
+                    Date = DateTime.Now,
+                    PaidForBoatOwner = 0.0m,
+                    PaidForUs = 0.0m
+                };
+                db.Checkouts.Add(ch);
 
+            }
+            
+            db.SaveChanges();
+            return Json(new { message = "success" });
+        }
     }
 }

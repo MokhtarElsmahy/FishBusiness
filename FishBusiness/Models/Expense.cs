@@ -27,5 +27,7 @@ namespace FishBusiness.Models
         [Required(ErrorMessage = "برجاء ادخال التاريخ")]
         [Display(Name = "التاريخ")]
         public DateTime Date { get; set; }
+
+        public bool IsCheckedOut { get; set; }
     }
 }

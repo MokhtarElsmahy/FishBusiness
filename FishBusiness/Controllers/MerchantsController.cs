@@ -106,8 +106,10 @@ namespace FishBusiness.Controllers
             }
 
             merchant.PreviousDebtsForMerchant -= PaidValue;
-            PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = false, Payment = PaidValue, Date = DateTime.Now, MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebtsForMerchant) };
+            PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = false, Payment = PaidValue, Date = DateTime.Now, MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebtsForMerchant),PersonID=1 };
             _context.PaidForMerchant.Add(p);
+            Person pp = _context.People.Find(1);
+            pp.credit -= PaidValue;
             await _context.SaveChangesAsync();
 
             return Json(new { message="success", debtsForMerchant = merchant.PreviousDebtsForMerchant });
@@ -126,8 +128,10 @@ namespace FishBusiness.Controllers
             }
 
             merchant.PreviousDebts -= PaidValue;
-            PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = true, Payment = PaidValue, Date = DateTime.Now, MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebts) };
+            PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = true, Payment = PaidValue, Date = DateTime.Now, MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebts),PersonID = 1 };
             _context.PaidForMerchant.Add(p);
+            Person pp = _context.People.Find(1);
+            pp.credit += PaidValue;
             await _context.SaveChangesAsync();
 
             return Json(new { message = "success", debtsOnMerchant = merchant.PreviousDebts });

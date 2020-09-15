@@ -19,6 +19,7 @@ namespace FishBusiness.Models
 
         public virtual ICollection<Debts_Sarha> Debts_Sarhas { get; set; }
         public virtual ICollection<FathAllahGift> FathAllahGifts { get; set; }
+        public virtual ICollection<PaidForMerchant> PaidForMerchants { get; set; }
 
 
     }

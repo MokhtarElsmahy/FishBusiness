@@ -49,6 +49,7 @@ namespace FishBusiness.Models
 
         public bool IsCalculated { get; set; }
         public bool IsCollected { get; set; }
+        public bool IsCheckedOut { get; set; }
 
         public virtual ICollection<BoatOwnerItem> BoatOwnerItems { get; set; }
 

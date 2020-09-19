@@ -14,6 +14,7 @@ namespace FishBusiness.Models
         public decimal TotalHalek { get; set; }
         public decimal TotalForFahAllah { get; set; }
         public decimal TotalOfAdditionalPayment { get; set; }
+        public decimal TotalOfExpenses { get; set; }
 
         public DateTime Date { get; set; }
 

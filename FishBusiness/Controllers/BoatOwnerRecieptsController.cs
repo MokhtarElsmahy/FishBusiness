@@ -150,10 +150,6 @@ namespace FishBusiness.Controllers
                     merchantReciept.TotalOfReciept += model.TotalOfReciept;
                     merchantReciept.payment += model.payment;
                 }
-
-
-
-
                 for (int i = 0; i < Fishes.Length; i++)
                 {
                     var fish = _context.Fishes.Single(x => x.FishName == Fishes[i]);
@@ -210,6 +206,8 @@ namespace FishBusiness.Controllers
             boatOwnerReciept.IsCalculated = false;
             boatOwnerReciept.IsCollected = false;
             boatOwnerReciept.PaidFromDebts = Convert.ToDecimal(PaidFromDebtsCookie);
+            Person p = _context.People.Find(1);
+            p.credit+= Convert.ToDecimal(commisionCookie); ;
             // Subtracting Paid From Halek
             var boat = _context.Boats.Find(boatOwnerReciept.BoatID);
             boat.DebtsOfHalek -= Convert.ToDecimal(PaidFromDebtsCookie);
@@ -231,6 +229,7 @@ namespace FishBusiness.Controllers
                     Income = FinalIncome
                 };
                 _context.IncomesOfSharedBoats.Add(i);
+                p.credit += FinalIncome;
             }
             // for ordinary boats
             else

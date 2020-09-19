@@ -151,6 +151,44 @@
                 <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
             </div>
         </div>
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>مصروف مركب</h3>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>اسم المركب</th>
+                                <th>المبلغ</th>
+                                <th>سبب المصروف</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="TBodyExpenses">
+                            
+
+                        </tbody>
+                        <tfoot>
+                            <tr id="totalOfPayment_trExpenses">
+                                <td>
+                                    الاجمالى
+                                </td>
+                                <td id="totalExpenses">
+                                   0
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+
+                </div>
+            </div>
+            <div class="d-flex justify-content-center mt-2">
+
+                <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
+            </div>
+        </div>
 
     </div>
 
@@ -274,6 +312,48 @@
     </div>
 </div>
 
+<div id="MfadeleftModal5" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"> مصروف مركب</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="MyForm">
+
+                    <div class="form-group">
+                        <label class="control-label">اختر مركب</label>
+                        <select name="BoatID" id="BoatDDLExpenses" class="form-control" asp-items="ViewBag.Boats"></select>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">السبب</label>
+                        <input class="form-control" type="text" name="Cause" id="Cause" />
+
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">المبلغ</label>
+                        <input class="form-control" name="ExpensePrice" id="ExpensePrice" />
+                        <span class="text-danger"></span>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer md-button">
+                <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> اغلاق</button>
+                <button type="button" class="btn btn-primary" id="MNewRows5">حفظ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <input type="text" id="indexer" style="display:none" value="0" />
 <input type="text" id="totalPaidForMerchants" style="display:none" value="0" />
@@ -361,6 +441,29 @@
                 $('#credit').text(parseFloat($('#credit').text()) - parseFloat(Price));
             })
 
+            $("#MNewRows5").on('click', function () {
+
+                var BoatName = $('#BoatDDLExpenses option:selected').text()
+                var Cause = $('#Cause').val()
+                var ExpensePrice = $('#ExpensePrice').val()
+                var i = $('#indexer').val();
+
+                var addControls = "<tr id='row_" + i + "' data-price=" + ExpensePrice + ">"
+                addControls += "<td class='BoatNameExpenses'>" + BoatName + "</td>"
+                addControls += "<td class='ExpensePrice'>" + ExpensePrice + "</td>"
+                addControls += "<td class='Cause'>" + Cause + "</td>"
+
+                addControls += "<td> <a href='#' onclick=removeHalek('" + i + "')>" + "X</a> </td>"
+                addControls += "</tr>";
+
+                //$('#NoPaymentTo').text('');
+                $('#totalOfPayment_trExpenses').show();
+                $('#totalExpenses').text(parseFloat($('#totalExpenses').text()) + parseFloat(ExpensePrice));
+                $('#TBodyExpenses').append(addControls);
+                i++;
+                $('#indexer').val(i)
+            })
+
 
             $("#btnGiveFathAllah").on('click', function () {
                 $("#loaderFathallah").show();
@@ -415,37 +518,69 @@
 
                 var Place = new cookieList("Place"); //هالك الحلقه
                 $('.Place').each(function () {
-                    Place.add($(this).text());
+                    if ($(this).text() != '') {
+                        Place.add($(this).text());
+                    }
                 })
                 var Price = new cookieList("Price");
                 $('.Price').each(function () {
-                    Price.add($(this).text());
-                })
+                    if ($(this).text() != '') {
 
+                        Price.add($(this).text());
+                    }
+                })
+                //-----------------------------------------------
+                var BoatNameExpenses = new cookieList("BoatNameExpensesCookie"); // المصروف اللى دفعناه
+                $('.BoatNameExpenses').each(function () {
+                    BoatNameExpenses.add($(this).text());
+                })
+                var ExpensePrice = new cookieList("ExpensePriceCookie");
+                $('.ExpensePrice').each(function () {
+                    ExpensePrice.add($(this).text());
+                })
+                var Cause = new cookieList("CauseCookie");
+                $('.Cause').each(function () {
+                    Cause.add($(this).text());
+                })
                 //---------------------------------------------------------
 
 
                 var ToLeader = new cookieList("ToLeader"); // مسحوبات ريس
                 $('.ToLeaderName').each(function () {
-                    ToLeader.add($(this).text());
+                    if ($(this).text() != '') {
+
+                        ToLeader.add($(this).text());
+                    }
                 })
                 var ToPrice = new cookieList("ToPrice");
                 $('.ToPrice').each(function () {
-                    ToPrice.add($(this).text());
+                    if ($(this).text() != '') {
+
+                        ToPrice.add($(this).text());
+                    }
                 })
 
                 //---------------------------------------------------------
                 var BoatName = new cookieList("BoatName"); // هالك مراكب
                 $('.BoatName').each(function () {
-                    BoatName.add($(this).text());
+                    if ($(this).text() != '') {
+
+                        BoatName.add($(this).text());
+                    }
                 })
                 var HalekPrice = new cookieList("HalekPrice");
                 $('.HalekPrice').each(function () {
-                    HalekPrice.add($(this).text());
+                    if ($(this).text() != '') {
+
+                        HalekPrice.add($(this).text());
+                    }
                 })
                 var HalekName = new cookieList("HalekName");
                 $('.HalekName').each(function () {
-                    HalekName.add($(this).text());
+                    if ($(this).text() != '') {
+                        HalekName.add($(this).text());
+
+                    }
                 })
 
 

@@ -111,9 +111,9 @@
                                                             <td class="total text-info"> العمولة</td>
 
                                                             <td class="total" id="Commision_td">
-                                                            
-                                                              <input asp-for="ISellerReciept.Commision" id="Commision" style="width:100px;" class="form-control" />
-                                                            
+
+                                                                <input asp-for="ISellerReciept.Commision" id="Commision" style="width:100px;" class="form-control" />
+
                                                             </td>
 
                                                             <td><button type="button" class="btn btn-primary" style="margin-left:5px;" id="btnSub">خصم </button></td>
@@ -150,6 +150,18 @@
                                                             <td id="TotalDebts">
                                                             </td>
                                                             <td>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div class="text-info">صورة الفاتورة</div>
+                                                            </td>
+                                                            <td>
+                                                                <input id="files" name="files" type="file" size="1" onchange="loadFile(event);" />
+
+                                                            </td>
+                                                            <td>
+                                                                <img id="SelectedImage" class="img-thumbnail" style="width:100px;height:70px;" />
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -231,14 +243,19 @@
             }
         }
         $(document).ready(function () {
+
             //
              $("#btnSave").on("click", function (e) {
 
+                 //var input = document.getElementById("files");
+                 //var files = input.files;
+                 //var formData = new FormData();
+                 //formData.append("files", files);
 
                      $.ajax({
                            url: "/ISellerReciepts/MoneytizationSave/",
                            type: "POST",
-                           dataType: "json",
+                          dataType: "json",
                            //contentType: 'application/json', //دى احيانا بتخلى القيم تتبعت فاضيه
                            data: {
                                IsellerRecieptID: @Model.ISellerReciept.ISellerRecieptID,
@@ -247,7 +264,7 @@
                                TotalOfPricesAfterCommision: parseFloat($("#totalAfterCommision").text()),
                                PaidFromDebt: parseFloat($("#PaidFromDebt").val()),
                                DebtsAfterCommisionAndPayment: parseFloat($("#Debts").text()),
-                               Pricescookie: $("#pricescookie").val()
+                               Pricescookie: $("#pricescookie").val(),
 
                            },
                            traditional: true,
@@ -258,38 +275,60 @@
                            },
                            success: function (result) {
                                if (result.message == "success") {
+                                   var totaldepts = result.totalDebts
+                                   var input = document.getElementById("files");
+                                   var files = input.files;
+                                   var formData = new FormData();
 
-                                   $("#hiddenRow").show();
+                                   for (var i = 0; i != files.length; i++) {
+                                       formData.append("files", files[i]);
+                                   }
 
-                                   $("#btnSum").css("display", "none");
-                                   $("#btnSub").css("display", "none");
-                                   $("#btnSave").css("display", "none");
+                                   $.ajax(
+                                       {
+                                           url: "/ISellerReciepts/UploadImg?id="+result.id,
+                                           data: formData,
+                                           processData: false,
+                                           contentType: false,
+                                           type: "POST",
+                                           success: function (data) {
+                                               $("#hiddenRow").show();
 
-                                   $("#Commision_td").text($("#Commision").val())
-                                   $("#Commision").css("display", "none");
+                                               $("#btnSum").css("display", "none");
+                                               $("#btnSub").css("display", "none");
+                                               $("#btnSave").css("display", "none");
 
-                                   $("#PaidFromDebt_td").text($("#PaidFromDebt").val())
-                                   $("#PaidFromDebt").css("display", "none");
+                                               $("#Commision_td").text($("#Commision").val())
+                                               $("#Commision").css("display", "none");
 
-                                   $("#btnPrint").show()
-                                   $("#btnPrint1").show();
+                                               $("#PaidFromDebt_td").text($("#PaidFromDebt").val())
+                                               $("#PaidFromDebt").css("display", "none");
 
-                                
-                                   $('.prices').each(function () {
-                                      
-                                       $(this).prop('disabled', true)
-                                   })
+                                               $("#btnPrint").show()
+                                               $("#btnPrint1").show();
 
-                                   $("#TotalDebts").text(result.totalDebts);
-                                   Swal.fire({
-                                       position: 'top-end',
-                                       icon: 'success',
-                                       title: 'تم التسعير يمكنك الطباعه',
-                                       showConfirmButton: false,
-                                       timer: 3000
-                                   });
 
+                                               $('.prices').each(function () {
+
+                                                   $(this).prop('disabled', true)
+                                               })
+
+                                               $("#TotalDebts").text(totaldepts);
+                                               Swal.fire({
+                                                   position: 'top-end',
+                                                   icon: 'success',
+                                                   title: 'تم التسعير يمكنك الطباعه',
+                                                   showConfirmButton: false,
+                                                   timer: 3000
+                                               });
+
+                                           }
+                                       }
+
+                                   );
                                }
+
+
                                else {
                                    Swal.fire({
                                        icon: 'error',
@@ -325,6 +364,14 @@
 
         });
 
+        var loadFile = function (event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('SelectedImage');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        };
         $("#btnPrint").click(function () {
             //$('#hideInPrint').attr("d")
             $(".hideInPrint").css("display", "none");
@@ -366,7 +413,38 @@
 
         });
 
+        @*$("#imageUpload").change(function () {
+		var element = this;
 
+		var formData = new FormData();
+
+		var totalFiles = element.files.length;
+
+		for (var i = 0; i < totalFiles; i++) {
+			var file = element.files[i];
+			formData.append("Photo", file);
+		}
+
+		$.ajax({
+			type: 'POST',
+			url: '@Url.Action("UploadImage", "Shared")',
+			dataType: 'json',
+			data: formData,
+			contentType: false,
+			processData: false
+		})
+        .done(function (response) {
+
+        	if(response.Success)
+        	{
+                $("#ImageURL").val(response.ImageURL);
+                $("#productImage").attr("src", response.ImageURL);
+        	}
+        })
+        .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+        	alert("FAIL");
+        });
+	});*@
     </script>
 }
 

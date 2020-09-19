@@ -72,6 +72,7 @@ namespace FishBusiness.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(merchant);
+                
                 await _context.SaveChangesAsync();
                 return Json(new { message = "success" });
             }

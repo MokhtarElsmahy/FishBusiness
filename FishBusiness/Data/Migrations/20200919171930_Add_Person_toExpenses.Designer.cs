@@ -4,14 +4,16 @@ using FishBusiness;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FishBusiness.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200919171930_Add_Person_toExpenses")]
+    partial class Add_Person_toExpenses
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -263,9 +265,6 @@ namespace FishBusiness.Data.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalOfAdditionalPayment")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("TotalOfExpenses")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalPaidForMerchants")

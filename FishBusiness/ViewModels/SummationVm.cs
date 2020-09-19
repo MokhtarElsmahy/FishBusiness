@@ -10,5 +10,7 @@ namespace FishBusiness.ViewModels
     {
         public ICollection<IMerchantReciept> IMerchantReciepts { get; set; }
         public ICollection<ISellerReciept> ISellerReciepts { get; set; }
+        public decimal  Labour { get; set; }
+        public decimal Ice { get; set; }
     }
 }

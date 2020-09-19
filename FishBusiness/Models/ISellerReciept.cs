@@ -38,6 +38,10 @@ namespace FishBusiness.Models
         [Display(Name = "تاريخ التسعير")]
     
         public DateTime DateOfMoneytization { get; set; }
+        
+        [Display(Name = "صورة الفاتورة")]
+
+        public string ReceiptImage { get; set; }
 
         public virtual ICollection<ISellerRecieptItem> ISellerRecieptItems { get; set; }
 

@@ -4,14 +4,16 @@ using FishBusiness;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FishBusiness.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200917160640_ReceiptImage")]
+    partial class ReceiptImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -265,9 +267,6 @@ namespace FishBusiness.Data.Migrations
                     b.Property<decimal>("TotalOfAdditionalPayment")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("TotalOfExpenses")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<decimal>("TotalPaidForMerchants")
                         .HasColumnType("decimal(18,2)");
 
@@ -341,17 +340,12 @@ namespace FishBusiness.Data.Migrations
                     b.Property<bool>("IsCheckedOut")
                         .HasColumnType("bit");
 
-                    b.Property<int>("PersonID")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("ExpenseID");
 
                     b.HasIndex("BoatID");
-
-                    b.HasIndex("PersonID");
 
                     b.ToTable("Expenses");
                 });
@@ -1263,12 +1257,6 @@ namespace FishBusiness.Data.Migrations
                     b.HasOne("FishBusiness.Models.Boat", "Boat")
                         .WithMany("Expenses")
                         .HasForeignKey("BoatID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FishBusiness.Models.Person", "Person")
-                        .WithMany("Expenses")
-                        .HasForeignKey("PersonID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

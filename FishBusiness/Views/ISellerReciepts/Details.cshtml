@@ -23,6 +23,7 @@
             <div class="row">
                 <div class="company-info ml-2" style="margin-left:5px;">
                     <button class="btn btn-secondary ml-2" id="btnPrint">طباعة</button>
+                    <button class="btn btn-secondary ml-2" data-toggle="modal" data-target="#zoomupModal">عرض صورة الفاتورة</button>
                 </div>
 
             </div>
@@ -46,7 +47,13 @@
 
                                     <div class="col-sm-6 col-12">
                                         <h3 class="in-heading">فاتورة السفر</h3>
+
                                     </div>
+                                    @*<div class="col-sm-6 col-12 align-self-center text-sm-right">
+                                            <div class="company-info">
+                                                <img src="~/img/mosa-moseneke-WOP-W1Yg6cg-unsplash.jpg" class="img-thumbnail" />"
+                                            </div>
+                                        </div>*@
 
 
                                 </div>
@@ -65,6 +72,8 @@
 
 
                                         </div>
+
+
                                     </div>
 
                                     <div class="row inv--product-table-section">
@@ -108,12 +117,16 @@
                                                                 <td class="total text-info">اجمالي الفاتورة</td>
                                                                 <td>@Model.ISellerReciept.TotalOfPrices</td>
                                                                 <td></td>
+                                                                <td></td>
+                                                                <td></td>
 
                                                             </tr>
                                                             <tr class="total">
                                                                 <td class="total text-info"> العمولة</td>
 
                                                                 <td>@Model.ISellerReciept.Commision </td>
+                                                                <td></td>
+
 
 
                                                             </tr>
@@ -147,8 +160,8 @@
                                                                 </td>
                                                             </tr>
 
-                                                       </tfoot>
-                                                         }
+                                                        </tfoot>
+                                                    }
                                                 </table>
                                             </div>
                                         </div>
@@ -183,19 +196,47 @@
         </div>
     </div>
 </div>
+<div id="zoomupModal" class="modal animated zoomInUp custo-zoomInUp" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">صورة الفاتورة</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                @if (ViewBag.ImageExists)
+                {
+                 <img src="~/img/@Model.ISellerReciept.ReceiptImage" class="img-thumbnail"/>
+                }
+                else
+                {
+                    <p class="modal-text">لا توجد صورة لهذه الفاتورة</p>
+                }
+            </div>
+            <div class="modal-footer md-button">
+                <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> اغلاق</button>
+            </div>
+        </div>
+    </div>
+    </div>
 
-@section scripts{
-    @*   <script src="~/assets/js/print.min.js"></script>*@
-    <script src="~/assets/js/apps/invoice.js"></script>
-    <script>
-        $("#btnPrint").click(function () {
-            //$('#hideInPrint').attr("d")
-            $(".hideInPrint").css("display", "none");
-            window.print()
-        });
-        $("#btnPrint1").click(function () {
-            $(".hideInPrint").css("display", "none");
-            window.print()
-        });
-    </script>
+
+    @section scripts{
+        @*   <script src="~/assets/js/print.min.js"></script>*@
+        <script src="~/assets/js/apps/invoice.js"></script>
+        <script>
+
+            $("#btnPrint").click(function () {
+                //$('#hideInPrint').attr("d")
+                $(".hideInPrint").css("display", "none");
+                window.print()
+            });
+            $("#btnPrint1").click(function () {
+                $(".hideInPrint").css("display", "none");
+                window.print()
+            });
+        </script>
     }

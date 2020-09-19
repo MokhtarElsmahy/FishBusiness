@@ -28,6 +28,8 @@ namespace FishBusiness.Models
         [Display(Name = "التاريخ")]
         public DateTime Date { get; set; }
 
+        public int PersonID { get; set; }
+        public virtual Person Person { get; set; }
         public bool IsCheckedOut { get; set; }
     }
 }

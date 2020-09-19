@@ -100,8 +100,9 @@ namespace FishBusiness.Controllers
 
                         };
                         _context.Debts_Sarhas.Add(d_s);
-                        // المفروض نقلل من الكريدت بتاع الشخص اللي دفع
-                         _context.SaveChanges();
+                        Person pp = _context.People.Find(resultPerson[i]);
+                        pp.credit -= result[i];
+                        _context.SaveChanges();
                         i++;
                     }
                     var boat = _context.Boats.Find(sVM.BoatID);
@@ -174,7 +175,13 @@ namespace FishBusiness.Controllers
                     int i = 0;
                     foreach (var item in dept_sarha)
                     {
+                        var oldPrice = item.Price;
+                        Person p = _context.People.Find(item.PersonID);
                         item.Price = result[i];
+                        if (oldPrice > result[i])
+                            p.credit += oldPrice - result[i];
+                        else
+                            p.credit -= result[i] - oldPrice ;
                         i++;
                     }
                     Response.Cookies.Delete("MyItems");
@@ -218,6 +225,8 @@ namespace FishBusiness.Controllers
             var boat = _context.Boats.Find(sarha.BoatID);
             var Halek = _context.Debts_Sarhas.Where(x => x.SarhaID == id).Sum(x => x.Price);
             boat.DebtsOfHalek -= Halek;
+            Person p = _context.People.Find(1);
+            p.credit += Halek;
              _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }

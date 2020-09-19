@@ -130,6 +130,26 @@
                                     @Model.ISellerReciepts.Select(c => c.CarPrice).Sum()
                                 </td>
                             </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    ثلج
+                                </td>
+                                <td id="ice">
+                                    @Model.Ice
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    عمال
+                                </td>
+                                <td id="labour">
+                                    @Model.Labour
+                                </td>
+                            </tr>
                         </tfoot>
 
                     </table>
@@ -138,19 +158,22 @@
                 </div>
 
 
-                <div class="form-group">
+                @*<div class="form-group">
                     <label  class="control-label">تلج</label>
                     <input type="text" id="ice" class="form-control" />
                 </div>
                 <div class="form-group">
                     <label class="control-label">عمال</label>
                     <input type="text" id="labour" class="form-control" />
-                </div>
-                <input type="button" id="CalcProfit" class="btn btn-primary" style="margin-right:135px;;" value="حساب الارباح" />
+                </div>*@
+                @if (ViewBag.Profit == null)
+                {
+                <input type="button" id="CalcProfit" class="btn btn-primary" style="margin-right:135px;" value="حساب الارباح" />
+                }
                 
                 <div class="row mt-4" >
                     <h6>اجمالى الربح</h6>
-                    <label class="text-info" style="margin-right:100px;" id="totalOfProfits">0</label>
+                    <label class="text-info" style="margin-right:100px;" id="totalOfProfits">@ViewBag.Profit</label>
                 </div>
              
 
@@ -228,8 +251,8 @@
 
         $(document).ready(function () {
             $("#CalcProfit").on('click', function () {
-                var ice = parseFloat($('#ice').val());
-                var labour = parseFloat($('#labour').val());
+                var ice = parseFloat($('#ice').text());
+                var labour = parseFloat($('#labour').text());
 
                 var totalOfPurchases = parseFloat($('#totalOfPurchases').text());
                 var totalOfSales = parseFloat($('#totalOfSales').text());

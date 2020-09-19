@@ -62,7 +62,8 @@ namespace FishBusiness.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(expense);
-              
+                Person p = _context.People.Find(1);
+                p.credit -= expense.Price;
                 Boat boat = await _context.Boats.FindAsync(expense.BoatID);
                 boat.TotalOfExpenses += expense.Price;
 
@@ -122,7 +123,16 @@ namespace FishBusiness.Controllers
                     await _context.SaveChangesAsync();
 
                     _context.Update(expense);
-
+                    if(expense.Price != Oldexpense.Price)
+                    {
+                        Person p = _context.People.Find(1);
+                        if(expense.Price > Oldexpense.Price)
+                        {
+                            p.credit -= expense.Price - Oldexpense.Price;
+                        }
+                        else
+                            p.credit += Oldexpense.Price - expense.Price ;
+                    }
                     await _context.SaveChangesAsync();
 
                 }

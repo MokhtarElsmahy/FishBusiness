@@ -64,22 +64,29 @@ namespace FishBusiness.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
        // [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(SarhaViewModel sarhaViewModel)
+        public IActionResult Create([FromBody()]SarhaVM sVM)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(sarhaViewModel.Sarha);
-                await _context.SaveChangesAsync();
+                Sarha s = new Sarha()
+                {
+                    BoatID = sVM.BoatID,
+                    NumberOfFishermen = sVM.NoFisherMen,
+                    NumberOfBoxes = sVM. NoBoxes,
+                    DateOfSarha = sVM.DateOfSarha
+                };
+                _context.Sarhas.Add(s);
+                 _context.SaveChanges();
                 var latestSarha = _context.Sarhas.Max(x => x.SarhaID);
-                var deptPriceCookie = Request.Cookies["MyItems"];
-                var MyItemsPerson = Request.Cookies["MyItemsPerson"];
+                var pricesCookie = Request.Cookies["MyItems"];
+                var personsCookie = Request.Cookies["MyItemsPerson"];
 
-                if (deptPriceCookie != null && MyItemsPerson != null)
+                if (pricesCookie != null && personsCookie != null)
                 {
 
 
-                    decimal[] result = deptPriceCookie.Split(",".ToCharArray()).Select(c => Convert.ToDecimal(c)).ToArray();
-                    int[] resultPerson = MyItemsPerson.Split(",".ToCharArray()).Select(c => Convert.ToInt32(c)).ToArray();
+                    decimal[] result = pricesCookie.Split(",".ToCharArray()).Select(c => Convert.ToDecimal(c)).ToArray();
+                    int[] resultPerson = personsCookie.Split(",".ToCharArray()).Select(c => Convert.ToInt32(c)).ToArray();
                     int i = 0;
                     foreach (var item in _context.Debts.ToList())
                     {
@@ -93,19 +100,29 @@ namespace FishBusiness.Controllers
 
                         };
                         _context.Debts_Sarhas.Add(d_s);
-                        await _context.SaveChangesAsync();
+                        Person pp = _context.People.Find(resultPerson[i]);
+                        pp.credit -= result[i];
+                        _context.SaveChanges();
                         i++;
                     }
-                    var boat = _context.Boats.Find(sarhaViewModel.Sarha.BoatID);
+                    var boat = _context.Boats.Find(sVM.BoatID);
                     boat.DebtsOfHalek += result.Sum();
-                    await _context.SaveChangesAsync();
+                     _context.SaveChanges();
                     Response.Cookies.Delete("MyItems");
 
                 }
-                return RedirectToAction(nameof(Index));
+                return Json(new { message = "success", id = s.SarhaID });
             }
-            ViewBag.Boats = new SelectList(_context.Boats, "BoatID", "BoatName", sarhaViewModel.Sarha.BoatID);
-            return View(sarhaViewModel.Sarha);
+            ViewBag.Boats = new SelectList(_context.Boats, "BoatID", "BoatName", sVM.BoatID);
+            SarhaViewModel sarhaViewModel = new SarhaViewModel();
+            sarhaViewModel.Sarha = new Sarha()
+            {
+                BoatID = sVM.BoatID,
+                NumberOfFishermen = sVM.NoFisherMen,
+                NumberOfBoxes = sVM.NoBoxes,
+                DateOfSarha = sVM.DateOfSarha
+            };
+            return View(sarhaViewModel);
         }
 
         // GET: Sarhas/Edit/5
@@ -158,7 +175,13 @@ namespace FishBusiness.Controllers
                     int i = 0;
                     foreach (var item in dept_sarha)
                     {
+                        var oldPrice = item.Price;
+                        Person p = _context.People.Find(item.PersonID);
                         item.Price = result[i];
+                        if (oldPrice > result[i])
+                            p.credit += oldPrice - result[i];
+                        else
+                            p.credit -= result[i] - oldPrice ;
                         i++;
                     }
                     Response.Cookies.Delete("MyItems");
@@ -184,16 +207,16 @@ namespace FishBusiness.Controllers
         }
 
         // GET: Sarhas/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public  IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var sarha = await _context.Sarhas
+            var sarha =  _context.Sarhas
                 .Include(s => s.Boat)
-                .FirstOrDefaultAsync(m => m.SarhaID == id);
+                .FirstOrDefault(m => m.SarhaID == id);
             if (sarha == null)
             {
                 return NotFound();
@@ -202,7 +225,9 @@ namespace FishBusiness.Controllers
             var boat = _context.Boats.Find(sarha.BoatID);
             var Halek = _context.Debts_Sarhas.Where(x => x.SarhaID == id).Sum(x => x.Price);
             boat.DebtsOfHalek -= Halek;
-            await _context.SaveChangesAsync();
+            Person p = _context.People.Find(1);
+            p.credit += Halek;
+             _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 

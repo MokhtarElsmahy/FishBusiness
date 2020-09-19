@@ -26,6 +26,9 @@ namespace FishBusiness.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("ID")
                         .HasColumnType("int");
 
@@ -151,6 +154,9 @@ namespace FishBusiness.Data.Migrations
                     b.Property<bool>("IsCalculated")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsCheckedOut")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsCollected")
                         .HasColumnType("bit");
 
@@ -194,6 +200,32 @@ namespace FishBusiness.Data.Migrations
                     b.ToTable("BoatTypes");
                 });
 
+            modelBuilder.Entity("FishBusiness.Models.Checkout", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BoatID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("PaidForBoatOwner")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("PaidForUs")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("BoatID");
+
+                    b.ToTable("Checkouts");
+                });
+
             modelBuilder.Entity("FishBusiness.Models.Cofig", b =>
                 {
                     b.Property<int>("ID")
@@ -231,6 +263,9 @@ namespace FishBusiness.Data.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalOfAdditionalPayment")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalOfExpenses")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalPaidForMerchants")
@@ -303,12 +338,20 @@ namespace FishBusiness.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsCheckedOut")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PersonID")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("ExpenseID");
 
                     b.HasIndex("BoatID");
+
+                    b.HasIndex("PersonID");
 
                     b.ToTable("Expenses");
                 });
@@ -525,6 +568,9 @@ namespace FishBusiness.Data.Migrations
 
                     b.Property<double>("PaidFromDebt")
                         .HasColumnType("float");
+
+                    b.Property<string>("ReceiptImage")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("TotalOfPrices")
                         .HasColumnType("float");
@@ -765,12 +811,17 @@ namespace FishBusiness.Data.Migrations
                     b.Property<decimal>("Payment")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("PersonID")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("PreviousDebtsForMerchant")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("ID");
 
                     b.HasIndex("MerchantID");
+
+                    b.HasIndex("PersonID");
 
                     b.ToTable("PaidForMerchant");
                 });
@@ -1179,6 +1230,15 @@ namespace FishBusiness.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FishBusiness.Models.Checkout", b =>
+                {
+                    b.HasOne("FishBusiness.Models.Boat", "Boat")
+                        .WithMany("Checkouts")
+                        .HasForeignKey("BoatID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("FishBusiness.Models.Debts_Sarha", b =>
                 {
                     b.HasOne("FishBusiness.Models.Debt", "Debt")
@@ -1203,6 +1263,12 @@ namespace FishBusiness.Data.Migrations
                     b.HasOne("FishBusiness.Models.Boat", "Boat")
                         .WithMany("Expenses")
                         .HasForeignKey("BoatID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FishBusiness.Models.Person", "Person")
+                        .WithMany("Expenses")
+                        .HasForeignKey("PersonID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -1377,6 +1443,12 @@ namespace FishBusiness.Data.Migrations
                     b.HasOne("FishBusiness.Models.Merchant", "Merchant")
                         .WithMany("PaidForMerchants")
                         .HasForeignKey("MerchantID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FishBusiness.Models.Person", "Person")
+                        .WithMany("PaidForMerchants")
+                        .HasForeignKey("PersonID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

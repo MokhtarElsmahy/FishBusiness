@@ -70,6 +70,7 @@ namespace FishBusiness.Models
         public virtual ICollection<IncomesOfSharedBoat> IncomesOfSharedBoats { get; set; }
         public virtual ICollection<LeaderLoan> LeaderLoans { get; set; }
         public virtual ICollection<LeaderPayback> LeaderPaybacks { get; set; }
+        public virtual ICollection<Checkout> Checkouts { get; set; }
 
 
 

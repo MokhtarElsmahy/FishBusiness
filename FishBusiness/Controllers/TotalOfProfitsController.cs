@@ -42,6 +42,21 @@ namespace FishBusiness.Controllers
 
             var ISellerReciepts = _context.ISellerReciepts.Include(m => m.Merchant).ToList();
             model.ISellerReciepts = ISellerReciepts.Where(m => m.Date.ToShortDateString() == Datee).ToList();
+            // labour
+            var additionalLabour = _context.AdditionalPayments.ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString() && x.Name == "عمال").Sum(x => x.Value);
+            //var debtSarhaLabour = _context.Debts_Sarhas.Include(x=>x.Debt).ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString() && x.Debt.DebtName == "عمال").Sum(x => x.Price);
+            var HalakaHalekLabour = _context.HalakaHaleks.Include(x=>x.Debt).ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString() && x.Debt.DebtName == "عمال").Sum(x => x.Price);
+            model.Labour = additionalLabour + HalakaHalekLabour;
+            // ice
+            var additionalIce = _context.AdditionalPayments.ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString() && x.Name == "ثلج").Sum(x => x.Value);
+            //var debtSarhaIce = _context.Debts_Sarhas.Include(x => x.Debt).ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString() && x.Debt.DebtName == "ثلج").Sum(x => x.Price);
+            var HalakaHalekIce = _context.HalakaHaleks.Include(x => x.Debt).ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString() && x.Debt.DebtName == "ثلج").Sum(x => x.Price);
+            model.Ice = additionalIce + HalakaHalekIce;
+            var TodayProfit = _context.TotalOfProfits.ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString());
+            if (TodayProfit.Count() > 0)
+            {
+                ViewBag.Profit = TodayProfit.FirstOrDefault().Profit;
+            }
             return View(model);
         }
 
@@ -51,6 +66,8 @@ namespace FishBusiness.Controllers
             var profit = totalOfSales - (totalOfPurchases+totalOfCars+ice+labour);
             TotalOfProfit t = new TotalOfProfit() { Date = DateTime.Now, Ice = ice, Labour = labour, TotalOfPurchases = totalOfPurchases, TotalOfSales = totalOfSales, Profit = profit };
             _context.TotalOfProfits.Add(t);
+            Person p = _context.People.Find(1);
+            p.credit -= (decimal)(ice + labour);
             _context.SaveChanges();
          
             return Json(new {message="success" , profits = profit });

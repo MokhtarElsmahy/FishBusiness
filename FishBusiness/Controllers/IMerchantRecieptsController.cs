@@ -73,15 +73,13 @@ namespace FishBusiness.Controllers
         {
             if (data.MerchantID != 0)
             {
-
-
-
-
                 IMerchantReciept ImerchantReciept = new IMerchantReciept() { Date = data.Date, MerchantID = data.MerchantID, TotalOfReciept = data.TotalOfReciept };
                 _context.Add(ImerchantReciept);
-                PaidForMerchant p = new PaidForMerchant() { MerchantID = data.MerchantID, Date = data.Date, Payment = data.payment, PreviousDebtsForMerchant = data.CurrentDebt, IsCash = !data.IsCash };
+                PaidForMerchant p = new PaidForMerchant() { MerchantID = data.MerchantID, Date = data.Date, Payment = data.payment, PreviousDebtsForMerchant = data.CurrentDebt, IsCash = !data.IsCash , IsPaidForUs=false , PersonID=3 };
                 _context.Add(p);
 
+                var person = _context.People.Find(3);
+                person.credit -= data.payment;
                 Merchant merchant = _context.Merchants.Find(data.MerchantID);
                 merchant.PreviousDebtsForMerchant = data.CurrentDebt;
                 _context.SaveChanges();

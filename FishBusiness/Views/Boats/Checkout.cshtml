@@ -1,0 +1,264 @@
+﻿
+@model FishBusiness.ViewModels.CheckoutVM
+@section Styles {
+
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <link href="~/plugins/animate/animate.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/components/custom-modal.css" rel="stylesheet" type="text/css" />
+    <!--  END CUSTOM STYLE FILE  -->
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link href="~/assets/css/apps/scrumboard.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/forms/theme-checkbox-radio.css" rel="stylesheet" type="text/css">
+    <!-- END PAGE LEVEL STYLES -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+}
+
+<div class="layout-px-spacing">
+    <div class="container row">
+        <div class="page-header m-3">
+            <div class="page-title">
+                <h3>تصفية مركب @ViewBag.BoatName</h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <a asp-action="Profile" asp-route-id="@ViewBag.BoatId" class="btn btn-primary">البروفايل</a>
+            @*<a class="btn btn-primary" id="btnFinalSave" style="display:none;">حفظ</a>*@
+        </div>
+    </div>
+
+   
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>ايرادات</h3>
+
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>تاريخ الفاتورة</th>
+                                <th>الايراد</th>
+                                <th></th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="TBody">
+                            @if (Model.BoatOwnerReciepts.Any())
+                            {
+                                foreach (var item in Model.BoatOwnerReciepts)
+                                {
+                                    <tr>
+
+                                        <td class="MerchantName">@item.Date.ToShortDateString()</td>
+                                        <td class="Price"> @item.FinalIncome</td>
+                                        <td><a class="btn btn-primary" asp-action="Details" asp-controller="BoatOwnerReciepts" asp-route-id="@item.BoatOwnerRecieptID">تفاصيل</a></td>
+
+                                    </tr>
+                                }
+
+                            }
+
+                        </tbody>
+                        <tfoot id="tFoot1">
+                            <tr id="totalOfPayment_tr">
+                                <td>
+                                    الاجمالى
+                                </td>
+                                <td id="totalOfPayment">
+                                    @Model.BoatOwnerReciepts.Sum(c=>c.FinalIncome)
+                                </td>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+
+
+                </div>
+
+
+
+
+            </div>
+            @*<div class="d-flex justify-content-center mt-2">
+                    <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
+
+                </div>*@
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>مصروفات</h3>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>التاريخ </th>
+                                <th>السبب </th>
+                                <th>المبلغ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="TBody2">
+                            @if (Model.Expenses.Any())
+                            {
+                                @foreach (var item in Model.Expenses)
+                                {
+                                    <tr>
+                                        <td class="MerchantName">@item.Date.ToShortDateString()</td>
+                                        <td class="Price"> @item.Cause</td>
+                                        <td class="Price"> @item.Price</td>
+                                    </tr>
+                                }
+
+                            }
+                        </tbody>
+
+                        <tfoot id="tFoot2">
+                            <tr id="totalOfPayment_tr">
+                                <td>
+                                    الاجمالى
+                                </td>
+                                <td id="totalOfPayment">
+                                    @Model.Expenses.Sum(z=>z.Price)
+                                </td>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+
+
+                </div>
+
+
+
+
+
+            </div>
+            @*<div class="d-flex justify-content-center mt-2">
+
+                    <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
+                </div>*@
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>الرصيد</h3>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+
+                        <tbody id="TBody3">
+                            <tr>
+                                <td> الاجمالي</td>
+                                <td id="txtFinalCredit">
+                                    @(Model.BoatOwnerReciepts.Sum(c => c.FinalIncome)- Model.Expenses.Sum(z => z.Price))
+
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                        <tfoot id="tFoot3">
+                            <tr>
+                                <td colspan="2">
+                                    نصيب الحلقة
+                                </td>
+                                <td >
+                                    <input type="text" value="0" id="HalakaValue" class="form-control" />
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                <input type="button" class="btn btn-primary" value="تصفية" id="btnCheckout" />
+                                </td>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+
+
+                </div>
+            </div>
+            @*<div class="d-flex justify-content-center mt-2">
+
+                    <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
+                </div>*@
+        </div>
+
+    </div>
+
+
+
+
+</div>
+
+
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+            $("#btnCheckout").on('click', function () {
+                var value = parseFloat($("#HalakaValue").val())
+                var FinalCredit = parseFloat($("#txtFinalCredit").text()) 
+                
+                $.ajax({
+                    url: "/Boats/FinalCheckout/",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        value: value,
+                        id: @ViewBag.BoatId,
+                        FinalCredit: FinalCredit
+
+                    },
+                    success: function (result) {
+                        if (result.message == "success") {
+                            $('#txtFinalCredit').text('');
+                            $('#TBody').html('')
+                            $('#TBody2').html('')
+                            $('#tFoot1').html('')                            
+                            $('#tFoot2').html('')                            
+                            $('#tFoot3').html('')                            
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'تم التصفية بنجاح',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'حدث خطأ',
+                                text: 'حاول مرة اخري',
+                            });
+
+                        }
+
+
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حاول مرة اخري',
+                        });
+
+                    }
+                });
+            })
+        });
+    </script>
+}
+
+
+

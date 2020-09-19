@@ -83,6 +83,11 @@ namespace FishBusiness.Controllers
                     IsActive = true
                 };
                 db.Boats.Add(boat);
+                if (model.chkBoatStatus == true)
+                {
+                    Person p = db.People.Find(1);
+                    p.credit -= model.DebtsOfStartingWork;
+                }
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
@@ -185,6 +190,7 @@ namespace FishBusiness.Controllers
                     model.File.CopyTo(new FileStream(fullPath, FileMode.Create));
                     model.BoatImage = model.File.FileName;
                 }
+                var OldDebtsofStart = db.Boats.Find(model.BoatID).DebtsOfStartingWork;
 
                 Boat boat = new Boat()
                 {
@@ -200,6 +206,19 @@ namespace FishBusiness.Controllers
                     DebtsOfStartingWork = model.DebtsOfStartingWork
                 };
                 db.Entry(boat).State = EntityState.Modified;
+                if(boat.DebtsOfStartingWork != OldDebtsofStart)
+                {
+                    Person p = db.People.Find(1);
+                    if (boat.DebtsOfStartingWork > OldDebtsofStart)
+                    {
+                        p.credit -= boat.DebtsOfStartingWork - OldDebtsofStart;
+                    }
+                    else
+                    {
+                        p.credit += OldDebtsofStart - boat.DebtsOfStartingWork;
+                    }
+                   
+                }
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
@@ -245,15 +264,37 @@ namespace FishBusiness.Controllers
 
             profileVM.BoatExpenses = expenses;
 
+            var CheckOutrecs = db.BoatOwnerReciepts.Where(c => c.BoatID == id && c.IsCheckedOut == false).ToList();
+            var CheckOutexpenses = db.Expenses.Where(c => c.BoatID == id && c.IsCheckedOut == false).ToList();
+            if (CheckOutrecs.Count>0 || CheckOutexpenses.Count>0)
+                ViewBag.IsCheckedOut = false;
+            else
+                ViewBag.IsCheckedOut = true;
 
             return View(profileVM);
         }
 
-
+        [HttpPost]
+        public IActionResult GiveExpense(string cause , decimal expensePrice , int boatID)
+        {
+            Expense ex = new Expense()
+            {
+                BoatID = boatID,
+                Cause = cause,
+                Date = DateTime.Now,
+                PersonID = 1,
+                Price = expensePrice
+            };
+            db.Expenses.Add(ex);
+            Person p = db.People.Find(1);
+            p.credit -= expensePrice;
+            var boat = db.Boats.Find(boatID);
+            boat.TotalOfExpenses += expensePrice;
+            db.SaveChanges();
+            return Json(new { expensese = boat.TotalOfExpenses });
+        }
         public async Task<IActionResult> CalculateShow(int? id)
         {
-
-
             var rec = await db.BoatOwnerReciepts.FindAsync(id);
             bool flag = false;
             ViewBag.sameNum = false;
@@ -335,10 +376,6 @@ namespace FishBusiness.Controllers
             var sarhaID = rec.SarhaID;
             var sarha = db.Sarhas.Find(sarhaID);
             var IndividulaSalary = share / sarha.NumberOfFishermen;
-
-
-
-
             return Json(new { message = "success", salary = IndividulaSalary });
         }
 
@@ -376,7 +413,7 @@ namespace FishBusiness.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveRec(int? id, decimal individualSalary, decimal halek, decimal total, decimal expense, string flag, int NumberOfFisherMen)
+        public IActionResult SaveRec(int? id, decimal individualSalary, decimal halek, decimal total, decimal expense, string flag, int NumberOfFisherMen, decimal PaymentLeaderDebts)
         {
 
             var rec = db.BoatOwnerReciepts.Find(id);
@@ -404,7 +441,7 @@ namespace FishBusiness.Controllers
                     else
                     {
 
-                         LeaderSalary = finalIncome / 6;
+                        LeaderSalary = finalIncome / 6;
                     }
                     boat.IncomeOfSharedBoat += finalIncome - LeaderSalary;
                     IncomesOfSharedBoat inc = new IncomesOfSharedBoat() { BoatID = boat.BoatID, Date = DateTime.Now, Income = finalIncome - LeaderSalary };
@@ -475,17 +512,87 @@ namespace FishBusiness.Controllers
                 }
             }
 
-
+            Person p = db.People.Find(1);
+            p.credit += halek;
+            if (PaymentLeaderDebts != 0.0m)
+            {
+                boat.DebtsOfLeader -= PaymentLeaderDebts;
+                LeaderPayback l = new LeaderPayback()
+                {
+                    BoatID = boat.BoatID,
+                    Date = DateTime.Now,
+                    Price = PaymentLeaderDebts
+                };
+                db.LeaderPaybacks.Add(l);
+                p.credit += PaymentLeaderDebts;
+            }
             db.SaveChanges();
-
-
-
-
-
-            return Json(new { message = "success", current = boat.DebtsOfHalek, income = boat.IncomeOfSharedBoat, cexpense = boat.TotalOfExpenses });
+            return Json(new { message = "success", current = boat.DebtsOfHalek, income = boat.IncomeOfSharedBoat, cexpense = boat.TotalOfExpenses, leaderdebts = boat.DebtsOfLeader });
         }
 
+        [HttpGet]
+        public IActionResult Checkout(int id)
+        {
+            CheckoutVM model = new CheckoutVM();
+            model.BoatOwnerReciepts = db.BoatOwnerReciepts.Include(c => c.Boat).Where(c => c.BoatID == id && c.IsCheckedOut==false).ToList();
+            model.Expenses = db.Expenses.Where(c => c.BoatID == id && c.IsCheckedOut == false).ToList();
+            ViewBag.BoatName = db.Boats.Find(id).BoatName;
+            ViewBag.BoatId = id;
+            return View(model);
+        }
+        [HttpPost]
+        public IActionResult FinalCheckout(decimal value, int id, decimal FinalCredit)
+        {
+            var recs = db.BoatOwnerReciepts.Where(c => c.BoatID == id && c.IsCheckedOut == false).ToList();
+            var expenses = db.Expenses.Where(c => c.BoatID == id && c.IsCheckedOut == false).ToList();
+            for (int i = 0; i < recs.Count; i++)
+            {
+                recs[i].IsCheckedOut = true;
+            }
+            for (int i = 0; i < expenses.Count; i++)
+            {
+                expenses[i].IsCheckedOut = true;
+            }
+            if (FinalCredit < 0)
+            {
 
+                Expense ex = new Expense()
+                {
+                    BoatID = id,
+                    Date = DateTime.Now,
+                    Price = FinalCredit * -1,
+                    Cause = "باقي تصفية"
+                };
+                db.Expenses.Add(ex);
+            }
+            if (value > 0)
+            {
+                Checkout ch = new Checkout()
+                {
+                    BoatID = id,
+                    Date = DateTime.Now,
+                    PaidForBoatOwner = FinalCredit - value,
+                    PaidForUs = value
+                };
+                db.Checkouts.Add(ch);
+                Person p = db.People.Find(1);
+                p.credit -= FinalCredit - value;
+            }
+            else
+            {
+                Checkout ch = new Checkout()
+                {
+                    BoatID = id,
+                    Date = DateTime.Now,
+                    PaidForBoatOwner = 0.0m,
+                    PaidForUs = 0.0m
+                };
+                db.Checkouts.Add(ch);
 
+            }
+            
+            db.SaveChanges();
+            return Json(new { message = "success" });
+        }
     }
 }

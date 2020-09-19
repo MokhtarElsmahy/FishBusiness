@@ -40,7 +40,7 @@ namespace FishBusiness.ViewModels
         [Display(Name = " صورة المركب")]
         public string BoatImage { get; set; }
         public int TypeID { get; set; }
-
+        public bool chkBoatStatus { get; set; }
         public IFormFile File { get; set; }
     }
 }

@@ -72,7 +72,7 @@
 
 
             </div>
-         
+
         </div>
 
         <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
@@ -109,7 +109,7 @@
 
 
             </div>
-         
+
         </div>
 
         <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
@@ -140,8 +140,47 @@
 
                 </div>
             </div>
-         
+
         </div>
+
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>مصروف مركب</h3>
+                <img src="~/assets/img/loader.gif" class="loader" style="width:100px;height:100px;display:none" />
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+
+                                <th>اسم المركب</th>
+                                <th>المبلغ</th>
+                                <th>سبب المصروف</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="TBodyExpenses">
+                        </tbody>
+                        <tfoot>
+
+                            <tr id="totalOfPayment_trExpenses">
+                                <td>
+                                    الاجمالى
+                                </td>
+                                <td id="bodyExpensesTotal">
+                                    0
+                                </td>
+                            </tr>
+
+                        </tfoot>
+                    </table>
+
+
+                </div>
+            </div>
+
+        </div>
+
+
 
     </div>
 
@@ -165,7 +204,8 @@
                 body1 = $("#TBody");
                 body2 = $("#TBody2");
                 body3 = $("#TBody3");
-             
+                bodyExpenses = $("#TBodyExpenses");
+
 
                 $.ajax({
                     url: "/Collectings/FathAllahWorkOfDayDate",
@@ -217,6 +257,19 @@
 
                             //------------------------------------
                             $("#Tfoot3").text(result.sumOfHalek)
+                            //------------------------------------
+                            bodyExpenses.empty();
+
+                            $.each(result.expenses, function (i, item) {
+
+                                bodyExpenses.append("<tr>" +
+                                    "<td>" + item.boatName + "</td>" +
+                                    "<td>" + item.price + "</td>" +
+                                    "<td>" + item.cause + "</td>" +
+                                    "</tr>");
+                            });
+                            //----------------------
+                            $("#bodyExpensesTotal").text(result.totalExpenses)
                             //---------------------------------------------------
 
 

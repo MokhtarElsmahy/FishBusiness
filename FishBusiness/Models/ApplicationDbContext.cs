@@ -67,9 +67,9 @@ namespace FishBusiness
         public DbSet<FishBusiness.Models.LeaderLoan> LeaderLoans { get; set; }
         public DbSet<FishBusiness.Models.LeaderPayback> LeaderPaybacks { get; set; }
         public DbSet<FishBusiness.Models.FathAllahGift> FathAllahGifts { get; set; }
+        public DbSet<FishBusiness.Models.Checkout> Checkouts { get; set; }
 
 
-        //public DbSet<FishBusiness.Models.Manager> Managers { get; set; }
 
 
 

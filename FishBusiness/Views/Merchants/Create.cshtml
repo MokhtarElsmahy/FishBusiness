@@ -5,38 +5,40 @@
     Layout = "";
 }
 
-<form id="MyForm">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group">
-        <label asp-for="MerchantName" class="control-label"></label>
-        <input asp-for="MerchantName" class="form-control" />
-        <span asp-validation-for="MerchantName" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="PreviousDebts" class="control-label"></label>
-        <input asp-for="PreviousDebts" class="form-control" />
-        <span asp-validation-for="PreviousDebts" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Address" class="control-label"></label>
-        <input asp-for="Address" class="form-control" />
-        <span asp-validation-for="Address" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Phone" class="control-label"></label>
-        <input asp-for="Phone" class="form-control" />
-        <span asp-validation-for="Phone" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <div class="n-chk">
-            <label class="new-control new-checkbox checkbox-primary">
-                <input type="checkbox" asp-for="IsFromOutsideCity" class="new-control-input">
-                <span class="new-control-indicator"></span>تاجر من خارج البلد
-            </label>
+    <form id="MyForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="MerchantName" class="control-label"></label>
+            <input asp-for="MerchantName" class="form-control" />
+            <span asp-validation-for="MerchantName" class="text-danger"></span>
         </div>
-    </div>
-</form>
+        <div class="form-group">
+            <label asp-for="PreviousDebts" class="control-label"></label>
+            <input asp-for="PreviousDebts" class="form-control" />
+            <span asp-validation-for="PreviousDebts" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Address" class="control-label"></label>
+            <input asp-for="Address" class="form-control" />
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Phone" class="control-label"></label>
+            <input asp-for="Phone" class="form-control" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <div class="n-chk">
+                <label class="new-control new-checkbox checkbox-primary">
+                    <input type="checkbox" asp-for="IsFromOutsideCity" class="new-control-input">
+                    <span class="new-control-indicator"></span>تاجر من خارج البلد
+                </label>
+            </div>
+        </div>
+       
+
+    </form>
 
 
 <div class="modal-footer md-button">

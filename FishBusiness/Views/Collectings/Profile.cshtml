@@ -363,6 +363,7 @@
                                     الاجمالى
                                 </td>
                                 <td id="totalAhmed">
+                                    0
                                 </td>
                             </tr>
 
@@ -379,7 +380,85 @@
             </div>
         </div>
 
+        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h3>مصروف مركب</h3>
+                <div class="table-responsive mb-4 mt-4">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
 
+                                <th>اسم المركب</th>
+                                <th>المبلغ</th>
+                                <th>سبب المصروف</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="TBodyExpenses">
+                            @if (Model.Expenses.Any())
+                            {
+                                @foreach (var item in Model.Expenses)
+                                {
+                                    <tr>
+
+                                        <td class="BoatNameExpenses">@item.Boat.BoatName</td>
+                                        <td class="ExpensePrice">@item.Price</td>
+                                        <td class="Cause">@item.Cause</td>
+
+                                    </tr>
+                                }
+
+                            }
+                            else
+                            {
+                                <tr>
+
+                                    <td class="font-weight-bolder">............</td>
+
+
+                                </tr>
+                            }
+
+
+                        </tbody>
+                        <tfoot>
+                            @if (Model.Expenses.Any())
+                            {
+
+
+                                <tr id="totalOfPayment_trExpenses">
+                                    <td>
+                                        الاجمالى
+                                    </td>
+                                    <td id="totalExpenses">
+                                        @Model.Expenses.Sum(c => c.Price)
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr id="totalOfPayment_trExpenses">
+                                    <td>
+                                        الاجمالى
+                                    </td>
+                                    <td id="totalExpenses">
+                                        0
+                                    </td>
+                                </tr>
+                            }
+                        </tfoot>
+                    </table>
+
+
+                </div>
+            </div>
+            <div class="d-flex justify-content-center mt-2">
+
+                <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
+            </div>
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-sm-4"></div>
         <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
             <div class="widget-content widget-content-area br-6">
                 <h3>الاجمالى</h3>
@@ -559,6 +638,11 @@
                         <input class="form-control" name="NameAdditional" id="NameAdditional" />
                         <span class="text-danger"></span>
                     </div>
+                    <div class="form-group">
+                        <input type="radio" name="additinal" id="ice" style="margin-left:5px;" />ثلج
+                        <input type="radio" name="additinal" id="labour" style="margin-left:5px;" />عمال
+                        <span class="text-danger"></span>
+                    </div>
 
                     <div class="form-group">
                         <label class="control-label">المبلغ</label>
@@ -572,6 +656,47 @@
             <div class="modal-footer md-button">
                 <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> اغلاق</button>
                 <button type="button" class="btn btn-primary" id="MNewRows4">حفظ</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="MfadeleftModal5" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"> مصروف مركب</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="MyForm">
+
+                    <div class="form-group">
+                        <label class="control-label">اختر مركب</label>
+                        <select name="BoatID" id="BoatDDLExpenses" class="form-control" asp-items="ViewBag.Boats"></select>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">السبب</label>
+                        <input class="form-control" type="text" name="Cause" id="Cause" />
+
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">المبلغ</label>
+                        <input class="form-control" name="ExpensePrice" id="ExpensePrice" />
+                        <span class="text-danger"></span>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer md-button">
+                <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> اغلاق</button>
+                <button type="button" class="btn btn-primary" id="MNewRows5">حفظ</button>
             </div>
         </div>
     </div>
@@ -660,15 +785,22 @@
             })
 
             $("#MNewRows4").on('click', function () {
-
-
                 var NameAdditional = $('#NameAdditional').val()
                 var PriceAdditional = $('#PriceAdditional').val()
                 var i = $('#indexer').val();
 
                 var addControls = "<tr id='row_" + i + "' data-price=" + PriceAdditional + ">"
-
-                addControls += "<td class='Adding'>" + NameAdditional + "</td>"
+                if ($("#ice").is(":checked")) {
+                    addControls += "<td class='Adding'>ثلج</td>"
+                    $("#ice").prop("checked", false);
+                }
+                else if ($("#labour").is(":checked")) {
+                    addControls += "<td class='Adding'>عمال</td>"
+                    $("#labour").prop("checked", false);
+                }
+                else {
+                    addControls += "<td class='Adding'>" + NameAdditional + "</td>"
+                }
                 addControls += "<td class='AddingPrice'>" + PriceAdditional + "</td>"
 
 
@@ -679,6 +811,28 @@
                 $('#totalOfPayment_tr4').show();
                 $('#totalAdditional').text(parseFloat($('#totalAdditional').text()) + parseFloat(PriceAdditional));
                 $('#TBody4').append(addControls);
+                i++;
+                $('#indexer').val(i)
+            })
+            $("#MNewRows5").on('click', function () {
+
+                var BoatName = $('#BoatDDLExpenses option:selected').text()
+                var Cause = $('#Cause').val()
+                var ExpensePrice = $('#ExpensePrice').val()
+                var i = $('#indexer').val();
+
+                var addControls = "<tr id='row_" + i + "' data-price=" + ExpensePrice + ">"
+                addControls += "<td class='BoatNameExpenses'>" + BoatName + "</td>"
+                addControls += "<td class='ExpensePrice'>" + ExpensePrice + "</td>"
+                addControls += "<td class='Cause'>" + Cause + "</td>"
+
+                addControls += "<td> <a href='#' onclick=removeHalek('" + i + "')>" + "X</a> </td>"
+                addControls += "</tr>";
+
+                //$('#NoPaymentTo').text('');
+                $('#totalOfPayment_trExpenses').show();
+                $('#totalExpenses').text(parseFloat($('#totalExpenses').text()) + parseFloat(ExpensePrice));
+                $('#TBodyExpenses').append(addControls);
                 i++;
                 $('#indexer').val(i)
             })
@@ -696,12 +850,25 @@
 
 
                 var paidForUs = parseFloat($('#totalOfPayment').text());
+                if (paidForUs == "" || paidForUs == null)
+                    paidForUs = 0;
                 var paidForMerchants = parseFloat($('#totalOfPaymentTo').text());
+                if (paidForMerchants == "" || paidForMerchants == null)
+                    paidForMerchants = 0;
                 var paidForHalek = parseFloat($('#totalHalek').text());
+                if (paidForHalek == "" || paidForHalek == null)
+                    paidForHalek = 0;
                 var paidForAdditional = parseFloat($('#totalAdditional').text());
+                if (paidForAdditional == "" || paidForAdditional == null)
+                    paidForAdditional = 0;
                 var paidForFathAllah = parseFloat($('#totalAhmed').text());
+                if (paidForFathAllah == "" || paidForFathAllah == null)
+                    paidForFathAllah = 0;
+                var paidForExpenses = parseFloat($('#totalExpenses').text());
+                if (paidForExpenses == "" || paidForExpenses == null)
+                    paidForExpenses = 0;
 
-                var sum = paidForMerchants + paidForHalek + paidForAdditional + paidForFathAllah;
+                var sum = paidForMerchants + paidForHalek + paidForAdditional + paidForFathAllah + paidForExpenses;
                 $("#totalPaidForMerchants").val(sum)
 
                 var addControls = "<tr>"
@@ -721,7 +888,7 @@
                 $('#totalOfPayment_tr6').show();
                 $('#Calc').text(paidForUs - sum);
                 $('#btnFinalSave').show();
-         
+
 
 
             })
@@ -741,11 +908,13 @@
 
                 var MerchantName = new cookieList("MerchantName"); //المدفوع لينا
                 $('.MerchantName').each(function () {
-                    MerchantName.add($(this).text());
+                    if ($(this).text() != '')
+                        MerchantName.add($(this).text());
                 })
                 var Price = new cookieList("Price");
                 $('.Price').each(function () {
-                    Price.add($(this).text());
+                    if ($(this).text() != '')
+                        Price.add($(this).text());
                 })
 
                 //---------------------------------------------------------
@@ -753,42 +922,60 @@
 
                 var ToMerchantName = new cookieList("ToMerchantName"); // اللى دفعناه
                 $('.ToMerchantName').each(function () {
-                    ToMerchantName.add($(this).text());
+                    if ($(this).text() != '')
+                        ToMerchantName.add($(this).text());
                 })
                 var ToPrice = new cookieList("ToPrice");
                 $('.ToPrice').each(function () {
-                    ToPrice.add($(this).text());
+                    if ($(this).text() != '')
+                        ToPrice.add($(this).text());
                 })
 
                 //---------------------------------------------------------
                 var BoatName = new cookieList("BoatName"); // الهالك اللى دفعناه
                 $('.BoatName').each(function () {
-                    BoatName.add($(this).text());
+                    if ($(this).text() != '')
+                        BoatName.add($(this).text());
                 })
                 var HalekPrice = new cookieList("HalekPrice");
                 $('.HalekPrice').each(function () {
-                    HalekPrice.add($(this).text());
+                    if ($(this).text() != '')
+                        HalekPrice.add($(this).text());
                 })
                 var HalekName = new cookieList("HalekName");
                 $('.HalekName').each(function () {
-                    HalekName.add($(this).text());
+                    if ($(this).text() != '')
+                        HalekName.add($(this).text());
                 })
 
                 //------------------------------------------------AddingPrice
 
                 var Adding = new cookieList("Adding");
                 $('.Adding').each(function () {
-                    Adding.add($(this).text());
+                    if ($(this).text() != '')
+                        Adding.add($(this).text());
                 })
                 var AddingPrice = new cookieList("AddingPrice"); //المدفوع لينا
                 $('.AddingPrice').each(function () {
-                    AddingPrice.add($(this).text());
+                    if ($(this).text() != '')
+                        AddingPrice.add($(this).text());
                 })
                 //-----------------------------------------------------
 
                 var fathallah = parseFloat($('#totalAhmed').text());
                 //-----------------------------------------------
-
+                var BoatNameExpenses = new cookieList("BoatNameExpensesCookie"); // المصروف اللى دفعناه
+                $('.BoatNameExpenses').each(function () {
+                    BoatNameExpenses.add($(this).text());
+                })
+                var ExpensePrice = new cookieList("ExpensePriceCookie");
+                $('.ExpensePrice').each(function () {
+                    ExpensePrice.add($(this).text());
+                })
+                var Cause = new cookieList("CauseCookie");
+                $('.Cause').each(function () {
+                    Cause.add($(this).text());
+                })
                 //var totalPaidForUs = parseFloat($('#totalOfPayment').text());
                 //var totalPaidForMerchants = parseFloat($("#totalPaidForMerchants").val());
 

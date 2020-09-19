@@ -8,16 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using FishBusiness;
 using FishBusiness.Models;
 using FishBusiness.ViewModels;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http.Headers;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace FishBusiness.Controllers
 {
     public class ISellerRecieptsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private  IHostingEnvironment _hosting { get; set; }
 
-        public ISellerRecieptsController(ApplicationDbContext context)
+        public ISellerRecieptsController(ApplicationDbContext context,IHostingEnvironment hosting)
         {
             _context = context;
+            _hosting = hosting;
         }
 
         // GET: ISellerReciepts
@@ -48,6 +54,10 @@ namespace FishBusiness.Controllers
             model.ISellerReciept = iSellerReciept;
             model.ISellerRecieptItems = items;
             ViewBag.MerchantDebts = _context.Merchants.Where(c => c.MerchantID == iSellerReciept.MerchantID).FirstOrDefault().PreviousDebts;
+            if (iSellerReciept.ReceiptImage != null)
+                ViewBag.ImageExists = true;
+            else
+                ViewBag.ImageExists = false;
             return View(model);
         }
 
@@ -77,9 +87,6 @@ namespace FishBusiness.Controllers
         [HttpPost]
         public  IActionResult MoneytizationSave(int IsellerRecieptID, double TotalOfPrices, double Commision, double TotalOfPricesAfterCommision, double PaidFromDebt, double DebtsAfterCommisionAndPayment,string Pricescookie)
         {
-            
-            
-            
             decimal[] prices = Pricescookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
           
 
@@ -90,9 +97,10 @@ namespace FishBusiness.Controllers
             iSellerReciept.PaidFromDebt = PaidFromDebt;
             iSellerReciept.TotalOfPrices = TotalOfPrices;
             iSellerReciept.DateOfMoneytization = DateTime.Now;
-            PaidForMerchant p = new PaidForMerchant() { Date = DateTime.Now, IsCash = true, MerchantID = iSellerReciept.MerchantID, Payment = (decimal)PaidFromDebt, IsPaidForUs = true , PreviousDebtsForMerchant = (decimal)(DebtsAfterCommisionAndPayment - PaidFromDebt) };
+            PaidForMerchant p = new PaidForMerchant() { Date = DateTime.Now, IsCash = true, MerchantID = iSellerReciept.MerchantID, Payment = (decimal)PaidFromDebt, IsPaidForUs = true , PreviousDebtsForMerchant = (decimal)(DebtsAfterCommisionAndPayment - PaidFromDebt) , PersonID=1 };
             _context.PaidForMerchant.Add(p);
-            
+            Person pp = _context.People.Find(1);
+            pp.credit += Convert.ToDecimal(PaidFromDebt);
             if (iSellerReciept == null)
             {
                 return NotFound();
@@ -110,10 +118,29 @@ namespace FishBusiness.Controllers
             merchant.PreviousDebts = (decimal)debts;
             _context.SaveChanges();
 
-            return Json(new { message = "success", totalDebts = debts });
+            return Json(new { message = "success", totalDebts = debts , id = iSellerReciept.ISellerRecieptID });
            
         }
+        [HttpPost]
+        public async Task<IActionResult> UploadImg(int id,IList<IFormFile> files)
+        {
+            var rec = _context.ISellerReciepts.Find(id);
+            foreach (IFormFile source in files)
+            {
+                string filename = ContentDispositionHeaderValue.Parse(source.ContentDisposition).FileName.Trim('"');
+                string newFileName = Guid.NewGuid() + filename;
+                using (FileStream output = System.IO.File.Create(this.GetPathAndFilename(newFileName)))
+                    await source.CopyToAsync(output);
+                rec.ReceiptImage = newFileName;
+            }
 
+            _context.SaveChanges();
+            return Json(new { message = "success"});
+        }
+        private string GetPathAndFilename(string filename)
+        {
+            return this._hosting.WebRootPath + "\\img\\" + filename;
+        }
         public async Task<IActionResult> GetStockInfo(int StockID,string FishName)
         {
 
@@ -156,6 +183,8 @@ namespace FishBusiness.Controllers
                 sellerReciept.CarPrice = CarPrice;
                 sellerReciept.CarDistination = _context.Merchants.Find(MerchantID).Address;
                 _context.Add(sellerReciept);
+                Person p = _context.People.Find(1);
+                p.credit -= (decimal) CarPrice;
                  _context.SaveChanges();
 
 
@@ -170,7 +199,7 @@ namespace FishBusiness.Controllers
                 //decimal[] unitPrices = unitpricesCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
                 int[] NOfBoxes = NOfBoxesCookie.Split(",").Select(c => Convert.ToInt32(c)).ToArray();
 
-                var latestReceipt = _context.ISellerReciepts.Max(x => x.ISellerRecieptID);
+                //var latestReceipt = _context.ISellerReciepts.Max(x => x.ISellerRecieptID);
                 for (int i = 0; i < Fishes.Length; i++)
                 {
                     var fish = _context.Fishes.Single(x => x.FishName == Fishes[i]);
@@ -178,7 +207,7 @@ namespace FishBusiness.Controllers
 
                     ISellerRecieptItem ISellerRecieptItem = new ISellerRecieptItem()
                     {
-                        ISellerRecieptID = latestReceipt,
+                        ISellerRecieptID = sellerReciept.ISellerRecieptID,
                         FishID = fish.FishID,
                         ProductionTypeID = Produc.ProductionTypeID,
                         Qty = qtys[i],
@@ -201,7 +230,7 @@ namespace FishBusiness.Controllers
                     _context.SaveChanges();
                 }
             
-                return Json(new { message = "success" , id= latestReceipt});
+                return Json(new { message = "success" , id= sellerReciept.ISellerRecieptID});
               
             }
 

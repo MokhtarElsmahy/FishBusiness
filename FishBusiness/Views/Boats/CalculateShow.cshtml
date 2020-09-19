@@ -213,7 +213,11 @@ else
         var halek;
         var total;
         var expenses;
+        var PaymentLeaderDebts;
         var individualSalary = parseFloat($("#IndividualSalary").val());
+        if ($("#PaymentLeaderDebts").val()) {
+             PaymentLeaderDebts = parseFloat($("#PaymentLeaderDebts").val());
+        }
         if (!$("#newPaid").val()) {
             halek = parseFloat($("#PaidFromDebts").val())
             total = parseFloat($("#TotalBeforeHalek").val()) - halek;
@@ -236,7 +240,8 @@ else
                 total: total,
                 expense: expenses,
                 flag: "@ViewBag.sameNum",
-                NumberOfFisherMen: parseInt($("#NumberOfFisherMen").val())
+                NumberOfFisherMen: parseInt($("#NumberOfFisherMen").val()),
+                PaymentLeaderDebts: PaymentLeaderDebts
             },
 
             success: function (response) {
@@ -244,6 +249,7 @@ else
                     $("#income").text(response.income)
                     $("#BoatDebts").text(response.current)
                     $("#Expensese").text(response.cexpense)
+                    $("#PaymentLeaderDebtsLabel").text(response.leaderdebts)
                     $("#fadeleftModal").modal("hide");
                     Swal.fire({
                         position: 'top-end',

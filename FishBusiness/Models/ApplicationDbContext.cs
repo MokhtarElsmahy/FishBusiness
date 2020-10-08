@@ -19,7 +19,9 @@ namespace FishBusiness
             modelBuilder.Entity<Debts_Sarha>()
                 .HasKey(c => new { c.DebtID, c.SarhaID });
 
-           
+            modelBuilder.Entity<Debt_In_Sarha>()
+               .HasKey(c => new { c.DebtID, c.SarhaID ,c.PersonID});
+
             base.OnModelCreating(modelBuilder);
             //modelBuilder.Entity<Debt>()
             //    .HasMany(c => c.Debts_Sarhas)
@@ -53,6 +55,8 @@ namespace FishBusiness
         public virtual DbSet<IncomesOfSharedBoat> IncomesOfSharedBoats { get; set; }
         public DbSet<FishBusiness.Models.IMerchantReciept> IMerchantReciept { get; set; }
         public DbSet<FishBusiness.Models.IMerchantRecieptItem> IMerchantRecieptItem { get; set; }
+        public DbSet<FishBusiness.Models.PersonReciept> PersonReciepts { get; set; }
+        public DbSet<FishBusiness.Models.PersonRecieptItem> PersonRecieptItems { get; set; }
         public DbSet<FishBusiness.Models.PaidForMerchant> PaidForMerchant { get; set; }
         public DbSet<FishBusiness.Models.Stock> Stocks { get; set; }
 
@@ -68,7 +72,7 @@ namespace FishBusiness
         public DbSet<FishBusiness.Models.LeaderPayback> LeaderPaybacks { get; set; }
         public DbSet<FishBusiness.Models.FathAllahGift> FathAllahGifts { get; set; }
         public DbSet<FishBusiness.Models.Checkout> Checkouts { get; set; }
-
+        public virtual DbSet<Debt_In_Sarha> Debts_In_Sarhas { get; set; }
 
 
 

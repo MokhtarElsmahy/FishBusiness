@@ -14,6 +14,24 @@
     <!-- END PAGE LEVEL STYLES -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:400,500,600,700&amp;display=swap" rel="stylesheet">
+    <link href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/plugins.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/structure.css" rel="stylesheet" type="text/css" class="structure" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+
+    <link rel="stylesheet" type="text/css" href="~/plugins/jquery-step/jquery.steps.css">
+    <style>
+        #formValidate .wizard > .content {
+            min-height: 25em;
+        }
+
+        #example-vertical.wizard > .content {
+            min-height: 24.5em;
+        }
+    </style>
+
 }
 
 <div class="layout-px-spacing">
@@ -26,30 +44,203 @@
         <div class="mt-4 ml-auto">
             <a asp-action="FathAllahMainProfile" asp-controller="Collectings" class="btn btn-primary">البروفايل</a>
             <a class="btn btn-primary" id="btnFinalSave">حفظ</a>
+            <img src="~/assets/img/loader.gif" id="Bloader" style="width:50px;height:50px;display:none" />
         </div>
     </div>
-    <div class="container row">
 
-        <div class="form-group">
-            <label class="control-label" style="margin-right:12px;">رصيد باقى</label>
-            <label id="credit" class="control-label" style="color:black">@ViewBag.Credit</label>
-            <span class="text-danger"></span>
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
+        <div class="widget widget-five">
+            <div class="widget-content">
+
+                <div class="header">
+
+                </div>
+                <div class="w-content">
+                    <div class="">
+                        <div class="container row">
+
+                            <div class="form-group">
+                                <label class="control-label" style="margin-right:12px;">رصيد باقى</label>
+                                <label id="credit" class="control-label" style="color:black">@ViewBag.Credit</label>
+                                <span class="text-danger"></span>
+                            </div>
+
+                        </div>
+                        <div class="container row">
+                            <label class="control-label" style="margin-right:12px;padding-top:7px">اضافة رصيد</label>
+                            <input class="form-control col-2" name="Price" style="margin-right:5px;" id="FathallahPrice" />
+                            <select name="PersonID" id="PersonDDL" style="margin-right:5px;" class="form-control col-3" asp-items="ViewBag.People"></select>
+
+                            <button type="button" class="btn btn-primary col-3 " style="margin-right:5px;" id="btnGiveFathAllah">اضافة</button>
+                            <img src="~/assets/img/loader.gif" id="loaderFathallah" style="width:50px;height:50px;display:none" />
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
-    <div class="container row">
-        <label class="control-label" style="margin-right:12px;padding-top:7px">اضافة رصيد</label>
-        <input class="form-control col-2" name="Price" style="margin-right:5px;" id="FathallahPrice" />
-        <select name="PersonID" id="PersonDDL" style="margin-right:5px;" class="form-control col-2" asp-items="ViewBag.People"></select>
 
-        <button type="button" class="btn btn-primary" style="margin-right:5px;" id="btnGiveFathAllah">اضافة</button>
-        <img src="~/assets/img/loader.gif" id="loaderFathallah" style="width:50px;height:50px;display:none" />
+    <div class="col-lg-12  layout-spacing">
+        <div class="statbox widget box box-shadow">
+            <div class="widget-header">
+                @*<div class="row">
+                    <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                        <h4>Vertical</h4>
+                    </div>
+                </div>*@
+            </div>
+            <div class="widget-content widget-content-area">
+                <div id="pill-vertical">
+                    <h3>هالك الحلقه</h3>
+                    <section>
+                        <div class="widget-content widget-content-area br-6">
+                            <h3>هالك الحلقه</h3>
 
+                            <div class="table-responsive mb-4 mt-4">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+
+                                            <th>الاسم </th>
+                                            <th>القيمه</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="TBody">
+                                    </tbody>
+                                    <tfoot>
+
+                                    </tfoot>
+
+                                </table>
+
+
+                            </div>
+
+
+
+
+                        </div>
+                        <div class="d-flex justify-content-center mt-2">
+                            <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
+
+                        </div>
+                    </section>
+                    <h3>مسحوبات ريس مركب</h3>
+                    <section>
+                        <div class="widget-content widget-content-area br-6">
+                            <h3>مسحوبات ريس مركب</h3>
+                            <div class="table-responsive mb-4 mt-4">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+
+                                            <th>اسم</th>
+                                            <th>المبلغ</th>
+
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="TBody2">
+                                    </tbody>
+
+                                    <tfoot>
+
+                                    </tfoot>
+
+                                </table>
+
+
+                            </div>
+
+
+
+                        </div>
+                        <div class="d-flex justify-content-center mt-2">
+
+                            <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
+                        </div>
+                    </section>
+                    <h3>هالك مراكب</h3>
+                    <section>
+                        <div class="widget-content widget-content-area br-6">
+                            <h3>هالك مراكب</h3>
+                            <div class="table-responsive mb-4 mt-4">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+
+                                            <th>اسم المركب</th>
+                                            <th>المبلغ</th>
+                                            <th>نوع الهالك</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="TBody3">
+                                    </tbody>
+                                    <tfoot>
+
+                                    </tfoot>
+                                </table>
+
+
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center mt-2">
+
+                            <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
+                        </div>
+                    </section>
+                    <h3>مصروف مركب شريك</h3>
+                    <section>
+                        <div class="widget-content widget-content-area br-6">
+                            <h3>مصروف مركب شريك</h3>
+                            <div class="table-responsive mb-4 mt-4">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+
+                                            <th>اسم المركب</th>
+                                            <th>المبلغ</th>
+                                            <th>سبب المصروف</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="TBodyExpenses">
+                                    </tbody>
+                                    <tfoot>
+                                        <tr id="totalOfPayment_trExpenses">
+                                            <td>
+                                                الاجمالى
+                                            </td>
+                                            <td id="totalExpenses">
+                                                0
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+
+
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center mt-2">
+
+                            <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
+                        </div>
+                    </section>
+                </div>
+
+
+            </div>
+        </div>
     </div>
 
 
-
-    <div class="row layout-top-spacing" id="cancel-row">
+    @*<div class="row layout-top-spacing" id="cancel-row">
 
         <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
             <div class="widget-content widget-content-area br-6">
@@ -151,9 +342,10 @@
                 <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
             </div>
         </div>
+      
         <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
             <div class="widget-content widget-content-area br-6">
-                <h3>مصروف مركب</h3>
+                <h3>مصروف مركب شريك</h3>
                 <div class="table-responsive mb-4 mt-4">
                     <table class="table table-hover">
                         <thead>
@@ -166,8 +358,6 @@
                             </tr>
                         </thead>
                         <tbody id="TBodyExpenses">
-                            
-
                         </tbody>
                         <tfoot>
                             <tr id="totalOfPayment_trExpenses">
@@ -175,7 +365,7 @@
                                     الاجمالى
                                 </td>
                                 <td id="totalExpenses">
-                                   0
+                                    0
                                 </td>
                             </tr>
                         </tfoot>
@@ -190,7 +380,7 @@
             </div>
         </div>
 
-    </div>
+    </div>*@
 
 
 
@@ -212,7 +402,7 @@
                 <form id="MyForm">
 
                     <div class="form-group" style="margin-top:10px">
-                        <label class="control-label">اختر تاجر</label>
+                        <label class="control-label">الهالك</label>
                         <select name="MerchantID" id="MerchantDDL" class="form-control" asp-items="ViewBag.Halek"></select>
 
                     </div>
@@ -317,7 +507,7 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"> مصروف مركب</h5>
+                <h5 class="modal-title"> مصروف مراكب شريكه</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 </button>
@@ -327,7 +517,7 @@
 
                     <div class="form-group">
                         <label class="control-label">اختر مركب</label>
-                        <select name="BoatID" id="BoatDDLExpenses" class="form-control" asp-items="ViewBag.Boats"></select>
+                        <select name="BoatID" id="BoatDDLExpenses" class="form-control" asp-items="ViewBag.SharedBoats"></select>
 
                     </div>
 
@@ -361,22 +551,88 @@
 @section scripts{
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+    <script src="~/assets/js/libs/jquery-3.1.1.min.js"></script>
+    <script src="~/bootstrap/js/popper.min.js"></script>
+    <script src="~/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="~/assets/js/app.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            App.init();
+        });
+    </script>
+    <script src="~/plugins/highlight/highlight.pack.js"></script>
+    <script src="~/assets/js/custom.js"></script>
+    <!-- END GLOBAL MANDATORY SCRIPTS -->
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <script src="~/assets/js/scrollspyNav.js"></script>
+    <script src="~/plugins/jquery-step/jquery.steps.min.js"></script>
+    <script src="~/plugins/jquery-step/custom-jquery.steps.js"></script>
+
     <script>
 
         $(document).ready(function () {
 
+            $('#Price').keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    $('#MNewRows').trigger('click');
+                    return false;
+                }
+                //Stop the event from propogation to other handlers
+                //If this line will be removed, then keypress event handler attached
+                //at document level will also be triggered
+
+                event.stopPropagation();
+
+            });
+
+            $('#PriceTo').keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    $('#MNewRows2').trigger('click');
+                    return false;
+                }
+                //Stop the event from propogation to other handlers
+                //If this line will be removed, then keypress event handler attached
+                //at document level will also be triggered
+
+                event.stopPropagation();
+
+            });
+
+            $('#PriceHalek').keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    $('#MNewRows3').trigger('click');
+                    return false;
+                }
+                //Stop the event from propogation to other handlers
+                //If this line will be removed, then keypress event handler attached
+                //at document level will also be triggered
+
+                event.stopPropagation();
+
+            });
+
+            $('#ExpensePrice').keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    $('#MNewRows5').trigger('click');
+                    return false;
+                }
+                //Stop the event from propogation to other handlers
+                //If this line will be removed, then keypress event handler attached
+                //at document level will also be triggered
+
+                event.stopPropagation();
+
+            });
 
             $("#MNewRows").on('click', function () {
-                //var ice = parseFloat($('#ice').val());
-                //var labour = parseFloat($('#labour').val());
 
-                //var totalOfPurchases = parseFloat($('#totalOfPurchases').text());
-                //var totalOfSales = parseFloat($('#totalOfSales').text());
-                //var totalOfCars = parseFloat($('#totalOfCars').text());
-
-                //if ($("#chkMagdy").is(":checked")) {
-                //    MerchantName = "الحج مجدى"
-                //} else {
                 var MerchantName = $('#MerchantDDL option:selected').text()
 
 
@@ -462,8 +718,23 @@
                 $('#TBodyExpenses').append(addControls);
                 i++;
                 $('#indexer').val(i)
+                $('#credit').text(parseFloat($('#credit').text()) - parseFloat(ExpensePrice));
             })
 
+
+            $('#FathallahPrice').keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    $('#btnGiveFathAllah').trigger('click');
+                    return false;
+                }
+                //Stop the event from propogation to other handlers
+                //If this line will be removed, then keypress event handler attached
+                //at document level will also be triggered
+
+                event.stopPropagation();
+
+            });
 
             $("#btnGiveFathAllah").on('click', function () {
                 $("#loaderFathallah").show();
@@ -515,93 +786,184 @@
 
             $("#btnFinalSave").on('click', function () {
 
+                $("#Bloader").show()
+                //var Place = new cookieList("Place"); //هالك الحلقه
+                //$('.Place').each(function () {
+                //    if ($(this).text() != '') {
+                //        Place.add($(this).text());
+                //    }
+                //})
+                //var Price = new cookieList("Price");
+                //$('.Price').each(function () {
+                //    if ($(this).text() != '') {
 
-                var Place = new cookieList("Place"); //هالك الحلقه
+                //        Price.add($(this).text());
+                //    }
+                //})
+
+                var Place = ""
                 $('.Place').each(function () {
                     if ($(this).text() != '') {
-                        Place.add($(this).text());
+                        Place += $(this).text();
+                        Place += ',';
                     }
+
                 })
-                var Price = new cookieList("Price");
+                var Price = ""
                 $('.Price').each(function () {
                     if ($(this).text() != '') {
-
-                        Price.add($(this).text());
+                        Price += $(this).text();
+                        Price += ',';
                     }
+
                 })
+
                 //-----------------------------------------------
-                var BoatNameExpenses = new cookieList("BoatNameExpensesCookie"); // المصروف اللى دفعناه
+                //var BoatNameExpenses = new cookieList("BoatNameExpensesCookie"); // المصروف اللى دفعناه
+                //$('.BoatNameExpenses').each(function () {
+                //    BoatNameExpenses.add($(this).text());
+                //})
+                //var ExpensePrice = new cookieList("ExpensePriceCookie");
+                //$('.ExpensePrice').each(function () {
+                //    ExpensePrice.add($(this).text());
+                //})
+                //var Cause = new cookieList("CauseCookie");
+                //$('.Cause').each(function () {
+                //    Cause.add($(this).text());
+                //})
+
+
+                var BoatNameExpenses = ""
                 $('.BoatNameExpenses').each(function () {
-                    BoatNameExpenses.add($(this).text());
+                    if ($(this).text() != '') {
+                        BoatNameExpenses += $(this).text();
+                        BoatNameExpenses += ',';
+                    }
+
                 })
-                var ExpensePrice = new cookieList("ExpensePriceCookie");
+                var ExpensePrice = ""
                 $('.ExpensePrice').each(function () {
-                    ExpensePrice.add($(this).text());
+                    if ($(this).text() != '') {
+                        ExpensePrice += $(this).text();
+                        ExpensePrice += ',';
+                    }
+
                 })
-                var Cause = new cookieList("CauseCookie");
+                var Cause = ""
                 $('.Cause').each(function () {
-                    Cause.add($(this).text());
+                    if ($(this).text() != '') {
+                        Cause += $(this).text();
+                        Cause += ',';
+                    }
+
                 })
                 //---------------------------------------------------------
 
 
-                var ToLeader = new cookieList("ToLeader"); // مسحوبات ريس
+                //var ToLeader = new cookieList("ToLeader"); // مسحوبات ريس
+                //$('.ToLeaderName').each(function () {
+                //    if ($(this).text() != '') {
+
+                //        ToLeader.add($(this).text());
+                //    }
+                //})
+                //var ToPrice = new cookieList("ToPrice");
+                //$('.ToPrice').each(function () {
+                //    if ($(this).text() != '') {
+
+                //        ToPrice.add($(this).text());
+                //    }
+                //})
+
+
+                var ToLeader = ""
                 $('.ToLeaderName').each(function () {
                     if ($(this).text() != '') {
-
-                        ToLeader.add($(this).text());
+                        ToLeader += $(this).text();
+                        ToLeader += ',';
                     }
+
                 })
-                var ToPrice = new cookieList("ToPrice");
+                var ToPrice = ""
                 $('.ToPrice').each(function () {
                     if ($(this).text() != '') {
-
-                        ToPrice.add($(this).text());
+                        ToPrice += $(this).text();
+                        ToPrice += ',';
                     }
+
                 })
 
                 //---------------------------------------------------------
-                var BoatName = new cookieList("BoatName"); // هالك مراكب
+                //var BoatName = new cookieList("BoatName"); // هالك مراكب
+                //$('.BoatName').each(function () {
+                //    if ($(this).text() != '') {
+
+                //        BoatName.add($(this).text());
+                //    }
+                //})
+                //var HalekPrice = new cookieList("HalekPrice");
+                //$('.HalekPrice').each(function () {
+                //    if ($(this).text() != '') {
+
+                //        HalekPrice.add($(this).text());
+                //    }
+                //})
+                //var HalekName = new cookieList("HalekName");
+                //$('.HalekName').each(function () {
+                //    if ($(this).text() != '') {
+                //        HalekName.add($(this).text());
+
+                //    }
+                //})
+
+                var BoatName = ""
                 $('.BoatName').each(function () {
                     if ($(this).text() != '') {
-
-                        BoatName.add($(this).text());
+                        BoatName += $(this).text();
+                        BoatName += ',';
                     }
+
                 })
-                var HalekPrice = new cookieList("HalekPrice");
+                var HalekPrice = ""
                 $('.HalekPrice').each(function () {
                     if ($(this).text() != '') {
-
-                        HalekPrice.add($(this).text());
+                        HalekPrice += $(this).text();
+                        HalekPrice += ',';
                     }
+
                 })
-                var HalekName = new cookieList("HalekName");
+                var HalekName = ""
                 $('.HalekName').each(function () {
                     if ($(this).text() != '') {
-                        HalekName.add($(this).text());
-
+                        HalekName += $(this).text();
+                        HalekName += ',';
                     }
+
                 })
 
-
-
                 var fathallahFinalCredit = parseFloat($('#credit').text());
-                //-----------------------------------------------
-
-                //var totalPaidForUs = parseFloat($('#totalOfPayment').text());
-                //var totalPaidForMerchants = parseFloat($("#totalPaidForMerchants").val());
 
                 $.ajax({
                     url: "/Collectings/FathAllahCalc/",
                     type: "POST",
                     dataType: "json",
                     data: {
-                        fathallahFinalCredit: fathallahFinalCredit
+                        fathallahFinalCredit: fathallahFinalCredit,
+                        Place: Place,
+                        Price: Price,
+                        BoatNameExpenses: BoatNameExpenses,
+                        ExpensePricee: ExpensePrice,
+                        Cause: Cause,
+                        BoatName: BoatName,
+                        HalekPrice: HalekPrice,
+                        HalekName: HalekName,
+                        ToLeader: ToLeader,
+                        ToPrice: ToPrice
 
                     },
                     success: function (result) {
                         if (result.message == "success") {
-
+                            $("#Bloader").hide();
                             Swal.fire({
                                 position: 'top-end',
                                 icon: 'success',
@@ -631,8 +993,12 @@
                     }
                 });
 
+
             })
         })
+
+
+
         var remove = function (id) {
             var price = $("#row_" + id).attr('data-price');
 

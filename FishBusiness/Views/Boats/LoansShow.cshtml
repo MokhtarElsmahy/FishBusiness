@@ -1,0 +1,29 @@
+﻿@model IEnumerable<FishBusiness.Models.LeaderLoan>
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+               التاريخ
+            </th>
+            <th>
+               المبلغ
+            </th>
+           
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+          
+        </tr>
+}
+    </tbody>
+</table>

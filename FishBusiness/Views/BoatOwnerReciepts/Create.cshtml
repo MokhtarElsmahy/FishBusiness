@@ -28,7 +28,8 @@
             </div>
         </div>
         <div class="mt-4 ml-auto">
-            <a asp-action="Index" class="btn btn-primary">قائمة الفواتير</a>
+            <a asp-action="Index" id="btnIndex" class="btn btn-primary">قائمة الفواتير</a>
+            <img src="~/assets/img/loader.gif" id="Bloader" style="width:50px;height:50px;display:none" />
         </div>
     </div>
 
@@ -106,7 +107,7 @@
         <div class="col-xl-8 col-lg-8 col-sm-8  layout-spacing">
             <div class="widget-content widget-content-area br-6">
                 <div class="table-responsive mb-4 ">
-                    <table class="table table-hover" style="width:100%">
+                    <table id="BoatOwner" class="table table-hover" style="width:100%">
                         <thead>
                             <tr>
                                 <th>
@@ -134,7 +135,7 @@
                             <tr>
                                 <td class="total text-info">اجمالي الفاتورة</td>
                                 <td class="total" id="TotalBeforePayment">0</td>
-                              
+
                             </tr>
                             <tr class="total">
                                 <td class="total text-info"> العمولة</td>
@@ -148,28 +149,28 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <button class="btn btn-secondary" id="btnPercentage">حساب العموله</button>
+                                    <button class="btn btn-primary" id="btnPercentage">حساب العموله</button>
                                 </td>
                             </tr>
                             @*<tr class="total">
-                                <td>المدفوع من الهالك</td>
-                                <td colspan="2">
-                                    <div class="form-group">
-                                        <input asp-for="BoatOwnerReciept.PaidFromDebts" class="form-control" />
-                                        <span asp-validation-for="BoatOwnerReciept.PaidFromDebts" class="text-danger"></span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <button class="btn btn-secondary" id="btnCalc">تأكيد</button>
-                                </td>
-                            </tr>*@
+                                    <td>المدفوع من الهالك</td>
+                                    <td colspan="2">
+                                        <div class="form-group">
+                                            <input asp-for="BoatOwnerReciept.PaidFromDebts" class="form-control" />
+                                            <span asp-validation-for="BoatOwnerReciept.PaidFromDebts" class="text-danger"></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-secondary" id="btnCalc">تأكيد</button>
+                                    </td>
+                                </tr>*@
 
                             <tr class="total">
                                 <td class="text-info">صافي انتاج المركب</td>
                                 <td id=""><input id="TotalProduction" style="width:100px;" class="form-control" /></td>
                                 <td></td>
                                 <td>
-                                    <button type="button" class="btn btn-success" style="margin-left:5px;" id="btnSave">حفظ الفاتورة</button>
+                                    <button type="button" class="btn btn-primary" style="margin-left:5px;" id="btnSave">حفظ الفاتورة</button>
                                     @*<div >
 
                                         </div>*@
@@ -306,26 +307,27 @@
                                     <td class="total" id="commision">0</td>*@
 
                             </tr>
-                            <tr class="total" style="display:none;">
-                                <td>المدفوع من الديون</td>
-                                <td colspan="2">
-                                    <div class="form-group">
-                                        <input class="form-control" id="MpayFromDebt" value="0" />
-                                        <span class="text-danger"></span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <button class="btn btn-secondary" id="MbtnCalc">خصم</button>
-                                </td>
-                            </tr>
+                            @*<tr class="total" style="display:none;">
+                                    <td>المدفوع من الديون</td>
+                                    <td colspan="2">
+                                        <div class="form-group">
+                                            <input class="form-control" id="MpayFromDebt" value="0" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" id="MbtnCalc">خصم</button>
+                                    </td>
+                                </tr>*@
                             <tr class="total">
                                 <td class="text-info">باقى ديون</td>
                                 <td id="MPreviousDebts"></td>
                                 <td id="MPreviousDebts2"></td>
                                 <td></td>
                                 <td>
-                                    <button type="button" class="btn btn-success" id="MbtnSave">حفظ الفاتورة</button>
+                                    <button type="button" class="btn btn-primary" id="MbtnSave">حفظ الفاتورة</button>
                                     <input type="hidden" id="RecID" />
+                                    <img src="~/assets/img/loader.gif" id="MSloader" style="width:50px;height:50px;display:none" />
                                 </td>
                             </tr>
                         </tfoot>
@@ -352,10 +354,16 @@
             </div>
             <div class="modal-body">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="BoatOwnerItem.ProductionType.ProductionName" class="control-label">بيعه</label>
+                    <input type="checkbox" id="ChBoxAmount" />
+                </div>
                 <div class="form-group">
                     <label asp-for="BoatOwnerItem.Fish.FishName" class="control-label"></label>
                     <select asp-for="BoatOwnerItem.FishID" class="form-control" asp-items="ViewBag.FishID"></select>
                 </div>
+
                 <div class="form-group">
                     <label asp-for="BoatOwnerItem.ProductionType.ProductionName" class="control-label">نوع الانتاج</label>
                     <select asp-for="BoatOwnerItem.ProductionTypeID" class="form-control" asp-items="ViewBag.ProductionTypeID"></select>
@@ -382,6 +390,11 @@
 @*----------------------------------------------------------------------------------*@
 
 <input type="hidden" id="RecieptIDD" />
+<input type="hidden" id="originalQty" />
+<input type="hidden" id="ChBoxAmountVar" value="0" />
+<input type="hidden" id="trId" value="0" />
+
+
 
 <div id="MfadeleftModal" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
     <div class="modal-dialog">
@@ -389,9 +402,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">التفاصيل الخاصة بالاسماك</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
+                <img src="~/assets/img/loader.gif" id="Mloader" style="width:50px;height:50px;display:none" />
             </div>
             <div class="modal-body">
                 <form id="MyForm">
@@ -401,12 +412,12 @@
 
                                 <option>اختر مركب </option>
                             </select>*@
+                        <input type="hidden" name="BoatOwnerRecID" id="BoatOwnerRecID" />
                         <input class="form-control" type="hidden" id="MBoatID" name="BoatID" />
                     </div>
                     <div class="form-group">
                         <label class="control-label">نوع السمك</label>
                         <select class="form-control" id="boatItemsDDL" name="FishID">
-                          
                         </select>
                     </div>
                     <div class="form-group">
@@ -420,7 +431,7 @@
                     </div>
                     <div class="form-group">
                         <label class="control-label">سعر الوحده</label>
-                        <input class="form-control" id="UnitPrice" name="UnitPrice"/>
+                        <input class="form-control" id="UnitPrice" name="UnitPrice" />
                         <span class="text-danger"></span>
                     </div>
                 </form>
@@ -440,6 +451,46 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script>
         $(document).ready(function () {
+            $('#BoatOwnerItem_UnitPrice').keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    $('#NewRows').trigger('click');
+                    return false;
+                }
+                //Stop the event from propogation to other handlers
+                //If this line will be removed, then keypress event handler attached
+                //at document level will also be triggered
+
+                event.stopPropagation();
+
+            });
+            $('#UnitPrice').keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    $('#MNewRows').trigger('click');
+                    return false;
+                }
+                //Stop the event from propogation to other handlers
+                //If this line will be removed, then keypress event handler attached
+                //at document level will also be triggeredUnitPrice
+
+                event.stopPropagation();
+
+            });
+            $('#MQty').keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    $('#MNewRows').trigger('click');
+                    return false;
+                }
+                //Stop the event from propogation to other handlers MQty
+                //If this line will be removed, then keypress event handler attached
+                //at document level will also be triggeredUnitPrice
+
+                event.stopPropagation();
+
+            });
+
             $('#btnSave').hide();
             $('.total').hide();
             $('#BoatOwnerReciept_PaidFromDebts').val('0')
@@ -469,6 +520,7 @@
 
             });
             $("#MerDDL").on("change", function () {
+                $("#MSloader").show();
                 var Date = $("#BoatOwnerReciept_Date").val();
                 var id = $("#MerDDL").val()
 
@@ -483,7 +535,12 @@
                         date: Date
                     }, //id of the state which is used to extract cities
                     success: function (result) {
-                        $('#MPreviousDebts').text(result.debts)
+                        if (result.owner=="no") {
+                            $('#MPreviousDebts').text(result.debts)
+                        } else {
+                            $('#MPreviousDebts').text('0')
+                        }
+                        $("#MSloader").hide();
                         $('#MPreviousDebts2').text(result.recId)
                         $('#RecID').val(result.recID)
                     },
@@ -498,6 +555,7 @@
             });
 
             $("#boatItemsDDL").on("change", function () {
+                $('#Mloader').show();
                 var fishId = $("#boatItemsDDL").val();
                 var RecieptID = $("#RecieptIDD").val();
 
@@ -514,6 +572,7 @@
                     success: function (result) {
 
                         $("#UnitPrice").val(result.unitPrice)
+                        $('#Mloader').hide();
                     },
                     error: function () {
                         alert("خطا ..هذا المركب ليس له انتاج حاليا");
@@ -527,6 +586,7 @@
             //var RecId = 0;
             $("#MNewRows").on("click", function () {
                 var fd = $("#MyForm").serialize();
+                $('#Mloader').show();
                 var body = $("#TBody");
                 var TotalBeforPayment = $("#MTotalBeforePayment");
                 $.ajax({
@@ -535,20 +595,34 @@
                     dataType: "json",
                     data: fd,
                     success: function (result) {
-                        i = i + 1;
-                        body.append("<tr id='row_" + result.fishName + i + "' data-price=" + result.total + ">" +
+                        if (result.message != "moreqty") {
 
-                            "<td class='Mfishes'>" + result.fishName + "</td>" +
-                            "<td class='Mproductions'>" + result.productionName + "</td>" +
-                            "<td class='Mboats'>" + result.boatName + "</td>" +
-                            "<td class='Mqtys'>" + result.qty + "</td>" +
-                            "<td class='Munitprices'>" + result.unitPrice + "</td>" +
-                            "<td>" + result.total + "</td>" +
-                            "<td> <a href='#' onclick=remove('" + result.fishName + i + "')>" + "X</a> </td>" +
-                            + "</tr>");
 
-                        $('#MTotalBeforePayment').text(parseFloat($('#MTotalBeforePayment').text()) + result.total);
-                        $("#MbtnSave").show()
+                             i = i + 1;
+                             body.append("<tr id='row_" + result.fishName + i + "' data-price=" + result.total + ">" +
+
+                                 "<td class='Mfishes'>" + result.fishName + "</td>" +
+                                 "<td class='Mproductions'>" + result.productionName + "</td>" +
+                                 "<td class='Mboats'>" + result.boatName + "</td>" +
+                                 "<td class='Mqtys'>" + result.qty + "</td>" +
+                                 "<td class='Munitprices'>" + result.unitPrice + "</td>" +
+                                 "<td>" + result.total + "</td>" +
+                                 "<td> <a href='#' onclick=remove('" + result.fishName + i + "')>" + "X</a> </td>" +
+                                 + "</tr>");
+
+                             $('#MTotalBeforePayment').text(parseFloat($('#MTotalBeforePayment').text()) + result.total);
+                             $("#MbtnSave").show()
+                             $('#Mloader').hide();
+                            $("#MerDDL").attr('disabled', 'disabled');
+                            $("#originalQty").val(result.original)
+
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'حدث خطأ',
+                                text: 'الكميه المدخله اكبر من الكميه الاساسيه',
+                            });
+                        }
 
                     },
                     error: function () {
@@ -559,10 +633,11 @@
                         });
                     }
                 });
+
             });
 
             $("#MbtnSave").on("click", function () {
-
+                $('#MSloader').show();
                 var RecID = parseInt($('#RecID').val());
 
                 var CurrentDebt = parseFloat($('#MPreviousDebts').text());
@@ -570,26 +645,44 @@
                 var MpayFromDebt = parseFloat($('#MpayFromDebt').val());
                 var MerchantID = $("#MerDDL").val();
                 var MerRecDate = $("#MerRecDate").val();
-                var FishNames = new cookieList("MFishNames"); // all items in the array.
+
+
+                var FishNames = ""
                 $('.Mfishes').each(function () {
-                    FishNames.add($(this).text());
-                });
-                var ProductionTypes = new cookieList("MProductionTypes"); // all items in the array.
-                $('.Mproductions').each(function () {
-                    ProductionTypes.add($(this).text());
-                });
-                var qtys = new cookieList("Mqtys"); // all items in the array.
-                $('.Mqtys').each(function () {
-                    qtys.add($(this).text());
-                });
-                var unitprices = new cookieList("Munitprices"); // all items in the array.
-                $('.Munitprices').each(function () {
-                    unitprices.add($(this).text());
+                    FishNames += $(this).text();
+                    FishNames += ',';
+
                 })
-                var boats = new cookieList("Mboats"); // all items in the array.
+                var ProductionTypes = ""
+                $('.Mproductions').each(function () {
+                    ProductionTypes += $(this).text();
+                    ProductionTypes += ',';
+
+                })
+                var qtys = ""
+                $('.Mqtys').each(function () {
+                    qtys += $(this).text();
+                    qtys += ',';
+
+                })
+
+                var unitprices = ""
+                $('.Munitprices').each(function () {
+                    unitprices += $(this).text();
+                    unitprices += ',';
+
+                })
+
+                var boats = ""
                 $('.Mboats').each(function () {
-                    boats.add($(this).text());
-                });
+                    boats += $(this).text();
+                    boats += ',';
+
+                })
+
+
+
+
                 var body = $("#TBody");
                 var Date = $("#BoatOwnerReciept_Date").val();
                 $.ajax({
@@ -602,7 +695,13 @@
                         TotalOfReciept: MTotalBeforePayment,
                         payment: MpayFromDebt,
                         CurrentDebt: CurrentDebt,
-                        RecID: RecID
+                        RecID: RecID,
+                        FishNames: FishNames,
+                        ProductionTypes: ProductionTypes,
+                        qtys: qtys,
+                        unitprices: unitprices,
+                        boats: boats
+
 
                     },
                     success: function (result) {
@@ -619,7 +718,7 @@
                             $('#MpayFromDebt').val('0')
                             $('#MPreviousDebts').text('0')
                             $("#MbtnSave").hide()
-                          
+
 
                             $('#MerDDL option[value=-1]').prop('selected', true);
                             $('#boatItemsDDL option[value=-1]').prop('selected', true);
@@ -627,10 +726,13 @@
                             $('#UnitPrice').val('0')
 
                             body.html("");
+                            $('#MSloader').hide();
+                            $('#MerDDL').removeAttr('disabled');
                         } else {
                             alert("خطا !!!!! تاكد من ادخل التاريخ")
                             body.html("");
                             $('#MTotalBeforePayment').text("0")
+
                         }
                     },
                     error: function () {
@@ -639,6 +741,7 @@
                             title: 'حدث خطأ',
                             text: 'حاول مرة اخري',
                         });
+
 
                     }
                 });
@@ -666,29 +769,93 @@
                 }
                 //$('#MpayFromDebt').val('0')
             });
+
+
         })
         $("#NewRows").click(function () {
+
+            var id = $("#trId").val();
+
             var BoatOwnerItem_FishID = $('#BoatOwnerItem_FishID option:selected').text()
+            var fishID = $('#BoatOwnerItem_FishID option:selected').val();
             var BoatOwnerItem_ProductionTypeID = $('#BoatOwnerItem_ProductionTypeID option:selected').text()
             var BoatOwnerItem_Qty = $('#BoatOwnerItem_Qty').val()
             var BoatOwnerItem_UnitPrice = $('#BoatOwnerItem_UnitPrice').val()
-            var addControls = "<tr>"
-            addControls += "<td class='fishes'>" + BoatOwnerItem_FishID + "</td>"
-            addControls += "<td class='productions'>" + BoatOwnerItem_ProductionTypeID + "</td>"
-            addControls += "<td class='qtys'>" + BoatOwnerItem_Qty + "</td>"
-            addControls += "<td class='unitprices'>" + BoatOwnerItem_UnitPrice + "</td>"
-            addControls += "<td class='prices'>" + BoatOwnerItem_UnitPrice * BoatOwnerItem_Qty + "</td>"
-            addControls += "</tr>";
-            $('#TotalBeforePayment').text(parseFloat($('#TotalBeforePayment').text()) + BoatOwnerItem_UnitPrice * BoatOwnerItem_Qty);
-            $('#commision').val(parseFloat($('#BoatOwnerReciept_PercentageCommission').val()) * parseFloat($('#TotalBeforePayment').text()) / 100)
-            $('#TotalProduction').val(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').val()))
 
-            $('#btnSave').show();
-            $('.total').show();
-            $('#BoatOwnerItem_Qty').val('');
-            $('#BoatOwnerItem_UnitPrice').val('');
-            $('#BoatBody').append(addControls);
+            if ($("#ChBoxAmountVar").val() ==1 ) {
+                if (!$("#ChBoxAmount").is(":checked"))
+                    $("#ChBoxAmountVar").val(0);
+            }
 
+            if ($("#ChBoxAmountVar").val() == "1") {
+
+                var $tr = $('Tbody  tr:last')
+                var originalFish = $tr.find("td:eq(0)").text()
+                var originalQty = $tr.find("td:eq(2)").text()
+                var originalPrice = $tr.find("td:eq(4)").text()
+                $tr.find("td:eq(0)").text(originalFish + "/"+BoatOwnerItem_FishID)
+                $tr.find("td:eq(2)").text(originalQty + "/" + BoatOwnerItem_Qty)
+                if (BoatOwnerItem_UnitPrice !="" ) {
+                    $tr.find("td:eq(4)").text(BoatOwnerItem_UnitPrice)
+                } else {
+                    $tr.find("td:eq(4)").text(originalPrice)
+                }
+
+
+
+            } else {
+
+
+                var addControls = "";
+                if ($("#ChBoxAmount").is(":checked")) {
+                     addControls = "<tr id=row_" + id + " data-price=" + BoatOwnerItem_UnitPrice+" >"
+                } else {
+
+                     addControls = "<tr id=row_" + id + " data-price=" + BoatOwnerItem_UnitPrice * BoatOwnerItem_Qty + " >"
+                }
+
+
+               addControls += "<td class='fishes'>" + BoatOwnerItem_FishID + "</td>"
+               addControls += "<td class='productions'>" + BoatOwnerItem_ProductionTypeID + "</td>"
+               addControls += "<td class='qtys'>" + BoatOwnerItem_Qty + "</td>"
+                addControls += "<td class='unitprices'>" + BoatOwnerItem_UnitPrice + "</td>"
+                if ($("#ChBoxAmount").is(":checked")) {
+                    addControls += "<td class='prices'>" + BoatOwnerItem_UnitPrice + "</td>"
+                } else {
+
+                   addControls += "<td class='prices'>" + BoatOwnerItem_UnitPrice * BoatOwnerItem_Qty + "</td>"
+                }
+                addControls += "<td> <a href='#' onclick=removee('" + id + "')>" + "X</a> </td>"
+                addControls += "</tr>";
+
+
+                if ($("#ChBoxAmount").is(":checked")) {
+                    $('#TotalBeforePayment').text(parseFloat($('#TotalBeforePayment').text()) + parseFloat(BoatOwnerItem_UnitPrice));
+                } else {
+
+                    $('#TotalBeforePayment').text(parseFloat($('#TotalBeforePayment').text()) + BoatOwnerItem_UnitPrice * BoatOwnerItem_Qty);
+                }
+              
+
+               $('#commision').val(parseFloat($('#BoatOwnerReciept_PercentageCommission').val()) * parseFloat($('#TotalBeforePayment').text()) / 100)
+               $('#TotalProduction').val(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').val()))
+
+               $('#btnSave').show();
+               $('.total').show();
+               $('#BoatOwnerItem_Qty').val('');
+               $('#BoatOwnerItem_UnitPrice').val('');
+               $('#BoatBody').append(addControls);
+
+            }
+            //$("#ChBoxAmountVar").val($("#ChBoxAmount").val());
+            if ($("#ChBoxAmount").is(":checked")) {
+
+                $("#ChBoxAmountVar").val(1)
+            } else {
+                $("#ChBoxAmountVar").val(0)
+
+            }
+            $("#trId").val(parseInt(id) + 1)
         });
         //$("#btnCalc").click(function () {
         //    if (!$('#BoatOwnerReciept_PaidFromDebts').val()) {
@@ -749,6 +916,7 @@
             else {
                  PercentageCommission = parseFloat($('#BoatOwnerReciept_PercentageCommission').val());
             }
+            $('#Bloader').show();
             var TotalBeforePayment = parseFloat($('#TotalBeforePayment').text());
             var Date = $("#BoatOwnerReciept_Date").val();
             var commision = parseFloat($('#commision').val());
@@ -792,41 +960,9 @@
                 },
                 success: function (result) {
                     if (result.message == "success") {
-                        //window.location.href = "/MerchantReciepts/Details/" + result.id;
-
-                        Swal.fire({
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'تم حفظ الفاتورة بنجاح',
-                            showConfirmButton: false,
-                            timer: 3000
-                        });
-                        $("#RecieptIDD").val(result.reciept);
-                        
-                        $list = $("#boatItemsDDL");
-                        $.ajax({
-                            url: "/BoatOwnerReciepts/GetBoatItems/",
-                            type: "GET",
-                            contentType: "json",
-                            data: { id: result.id },
-                            traditional: true,
-                            success: function (result) {
-                                $list.empty();
-                                $list.append('<option value="-1"> اختر نوع سمك </option>');
-                                $.each(result, function (i, item) {
-                                    $list.append('<option value="' + item.fishId + '"> ' + item.fishName + ' </option>');
-                                });
+                        window.location.href = "/BoatOwnerReciepts/Distribute/" + result.id;
 
 
-                            },
-                            error: function () {
-                                alert("خطا ..هذا المركب ليس له انتاج حاليا");
-                            }
-                        });
-
-                        $("#redirectPrint").append("<a  class='btn btn-info' href='/BoatOwnerReciepts/Details/" + result.reciept + "' >عرض فاتورة المركب</a>")
-                        $(".MerchantArea").show();
-                        $("#btnSave").hide();
                     } else {
                         Swal.fire({
                             icon: 'error',
@@ -861,6 +997,22 @@
             }
         }
 
+        var removee = function (id) {
+
+            var price = $("#row_" + id).attr('data-price');
+            if (price) {
+                var tbp = parseFloat($('#TotalBeforePayment').text());
+                var p = parseFloat(price);
+                $('#TotalBeforePayment').text(tbp - p)
+
+                $('#commision').val(parseFloat($('#BoatOwnerReciept_PercentageCommission').val()) * parseFloat($('#TotalBeforePayment').text()) / 100)
+                $('#TotalProduction').val(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').val()))
+
+
+                $("#row_" + id).remove();
+            }
+        }
+
         $("#btnPercentage").click(function () {
             if (!$('#BoatOwnerReciept_PercentageCommission').val()) {
                 $('#commision').val(@ViewBag.Commission.Value * parseFloat($('#TotalBeforePayment').text()) / 100)
@@ -872,6 +1024,16 @@
 
             //$('#BoatOwnerReciept_PaidFromDebts').val('')
         });
+
+        $("#btnIndex").click(function (e) {
+
+            e.preventDefault();
+            var url = $(this).attr('href');
+            window.open(url, '_blank');
+            //$('#BoatOwnerReciept_PaidFromDebts').val('')
+        });
+
+
 
     </script>
 

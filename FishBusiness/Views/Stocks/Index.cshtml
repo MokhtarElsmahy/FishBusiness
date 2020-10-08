@@ -16,10 +16,11 @@
             </div>
         </div>
         <div class="mt-4 ml-auto">
-            <a asp-action="Create" asp-controller="IMerchantReciepts" class="btn btn-primary">اضافة فاتورة</a>
+          
         </div>
         <div class="mt-4 ml-auto">
             <a asp-action="CreateReport" class="btn btn-primary">تقرير</a>
+            <a asp-action="Create" asp-controller="IMerchantReciepts" class="btn btn-primary">اضافة فاتورة</a>
         </div>
     </div>
 
@@ -104,7 +105,7 @@
 
                 <button type="button" class="btn btn-default" id="Refresh">اغلاق</button>
                 <button type="button" id="btnSave" class="btn btn-primary">حفظ</button>
-
+                <img src="~/assets/img/loader.gif" id="Bloader" style="width:50px;height:50px;display:none;" />
             </div>
         </div>
     </div>
@@ -128,6 +129,7 @@
 
             $("#btnSave").on("click", function (e) {
 
+                $("#Bloader").show();
                 var Qty = parseFloat($("#Qty").val());
                 var ProdID = parseInt($("#ProdDDL").val());
                 var StockID = parseInt($("#OldStockID").val());
@@ -164,10 +166,11 @@
                             Swal.fire({
                                 position: 'top-end',
                                 icon: 'success',
-                                title: 'تم الفرز',
+                                title: 'تم بنجاح',
                                 showConfirmButton: false,
                                 timer: 3000
                             });
+                            $("#Bloader").hide();
                             $("#OldtotalWeight").val(result.newTotalWeight)
 
                         },
@@ -208,11 +211,11 @@
                         },
                         success: function (result) {
                             $("#IsCalssify").prop("checked", false);
-
+                            $("#Bloader").hide();
                             Swal.fire({
                                 position: 'top-end',
                                 icon: 'success',
-                                title: 'تم الفرز',
+                                title: 'تم بنجاح  ',
                                 showConfirmButton: false,
                                 timer: 3000
                             });

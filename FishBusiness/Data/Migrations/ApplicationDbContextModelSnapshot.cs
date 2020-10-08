@@ -106,6 +106,9 @@ namespace FishBusiness.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<Guid?>("AmountId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("BoatOwnerRecieptID")
                         .HasColumnType("int");
 
@@ -293,6 +296,32 @@ namespace FishBusiness.Data.Migrations
                     b.HasKey("DebtID");
 
                     b.ToTable("Debts");
+                });
+
+            modelBuilder.Entity("FishBusiness.Models.Debt_In_Sarha", b =>
+                {
+                    b.Property<int>("DebtID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SarhaID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PersonID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("DebtID", "SarhaID", "PersonID");
+
+                    b.HasIndex("PersonID");
+
+                    b.HasIndex("SarhaID");
+
+                    b.ToTable("Debts_In_Sarhas");
                 });
 
             modelBuilder.Entity("FishBusiness.Models.Debts_Sarha", b =>
@@ -844,6 +873,66 @@ namespace FishBusiness.Data.Migrations
                     b.ToTable("People");
                 });
 
+            modelBuilder.Entity("FishBusiness.Models.PersonReciept", b =>
+                {
+                    b.Property<int>("PersonRecieptID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PersonName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("PersonRecieptID");
+
+                    b.ToTable("PersonReciepts");
+                });
+
+            modelBuilder.Entity("FishBusiness.Models.PersonRecieptItem", b =>
+                {
+                    b.Property<int>("PersonRecieptItemID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BoatID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FishID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PersonRecieptID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductionTypeID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Qty")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("PersonRecieptItemID");
+
+                    b.HasIndex("BoatID");
+
+                    b.HasIndex("FishID");
+
+                    b.HasIndex("PersonRecieptID");
+
+                    b.HasIndex("ProductionTypeID");
+
+                    b.ToTable("PersonRecieptItems");
+                });
+
             modelBuilder.Entity("FishBusiness.Models.ProductionType", b =>
                 {
                     b.Property<int>("ProductionTypeID")
@@ -1239,6 +1328,27 @@ namespace FishBusiness.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FishBusiness.Models.Debt_In_Sarha", b =>
+                {
+                    b.HasOne("FishBusiness.Models.Debt", "Debt")
+                        .WithMany()
+                        .HasForeignKey("DebtID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FishBusiness.Models.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FishBusiness.Models.Sarha", "Sarha")
+                        .WithMany()
+                        .HasForeignKey("SarhaID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("FishBusiness.Models.Debts_Sarha", b =>
                 {
                     b.HasOne("FishBusiness.Models.Debt", "Debt")
@@ -1449,6 +1559,33 @@ namespace FishBusiness.Data.Migrations
                     b.HasOne("FishBusiness.Models.Person", "Person")
                         .WithMany("PaidForMerchants")
                         .HasForeignKey("PersonID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FishBusiness.Models.PersonRecieptItem", b =>
+                {
+                    b.HasOne("FishBusiness.Models.Boat", "Boat")
+                        .WithMany("PersonRecieptItems")
+                        .HasForeignKey("BoatID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FishBusiness.Models.Fish", "Fish")
+                        .WithMany("PersonRecieptItems")
+                        .HasForeignKey("FishID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FishBusiness.Models.PersonReciept", "PersonReciept")
+                        .WithMany("PersonRecieptItem")
+                        .HasForeignKey("PersonRecieptID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FishBusiness.Models.ProductionType", "ProductionType")
+                        .WithMany("PersonRecieptItems")
+                        .HasForeignKey("ProductionTypeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

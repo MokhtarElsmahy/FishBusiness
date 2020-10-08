@@ -20,7 +20,7 @@
     </div>
 
     <div class="row layout-top-spacing">
-        <div class="col-xl-5 col-lg-12 col-md-6 col-sm-12 col-12 layout-spacing">
+        <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
             <div class="widget widget-table-one">
                 <div class="widget-heading">
                     <h5 class="">بيانات السرحة</h5>
@@ -28,6 +28,7 @@
 
                 <div class="widget-content">
                     <div class="transactions-list">
+                        <img src="~/assets/img/loader.gif" class="loader" style="width:100px;height:100px;display:none" />
                         <div class="t-item">
                             <div class="t-company-name">
                                 <div class="t-icon">
@@ -46,7 +47,8 @@
                                 <p>
                                     <span>
                                         @Html.DisplayFor(model => model.SarhaID)
-                                    </span> </p>
+                                    </span>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -69,7 +71,8 @@
                                 <p>
                                     <span>
                                         @Html.DisplayFor(model => model.Boat.BoatName)
-                                    </span> </p>
+                                    </span>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -85,14 +88,16 @@
                                     <h4>
                                         @Html.DisplayNameFor(model => model.NumberOfFishermen)
                                     </h4>
+
                                 </div>
 
                             </div>
                             <div class="t-rate rate-dec">
                                 <p>
-                                    <span>
+                                    @*<span>
                                         @Html.DisplayFor(model => model.NumberOfFishermen)
-                                    </span> 
+                                    </span>*@
+                                    <input class="form-control" style="width:100px;text-align:left;color:red;" id="Fishermen" value="@Model.NumberOfFishermen" />
                                 </p>
                             </div>
                         </div>
@@ -116,7 +121,8 @@
                                 <p>
                                     <span>
                                         @Html.DisplayFor(model => model.NumberOfBoxes)
-                                    </span> </p>
+                                    </span>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -125,7 +131,8 @@
                             <div class="t-company-name">
                                 <div class="t-icon">
                                     <div class="icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>                                    </div>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                    </div>
                                 </div>
                                 <div class="t-name">
                                     <h4>
@@ -138,14 +145,21 @@
                                 <p>
                                     <span>
                                         @Html.DisplayFor(model => model.DateOfSarha)
-                                    </span> </p>
+                                    </span>
+                                </p>
                             </div>
                         </div>
                     </div>
 
                 </div>
             </div>
+            <div class="d-flex justify-content-center">
+                <input type="button" value="تحديث" id="Click" class="btn btn-primary" style="margin-top:10px;" />
+
+            </div>
         </div>
+
+
 
 
         <div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 col-12 layout-spacing">
@@ -153,7 +167,47 @@
             <div class="widget widget-account-invoice-one">
 
                 <div class="widget-heading">
-                    <h5 class="">تفاصيل الهالك</h5>
+                    <h5 class="">تفاصيل الهالك المسحوب من المكتب</h5>
+                </div>
+
+                <div class="widget-content">
+                    <div class="invoice-box">
+
+                        <div class="acc-total-info">
+                            <h5>الاجمالي</h5>
+                            <p class="acc-amount">@ViewBag.TotalOfHalaka جنيه مصري</p>
+                        </div>
+
+                        <div class="inv-detail">
+                            <table class="table table-striped table-hover">
+
+                                @foreach (var item in ViewBag.deptsOfHalaka as IEnumerable<FishBusiness.Models.Debts_Sarha>)
+                                {
+                                    <tr>
+                                        <td>@item.Debt.DebtName</td>
+                                        <td>@item.Price</td>
+
+                                        @*<td>@item.Person.Name</td>*@
+                                        <td>@item.Date.ToShortDateString()</td>
+                                    </tr>
+                                }
+                            </table>
+
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-6 col-md-12 col-sm-12 col-12 layout-spacing">
+
+            <div class="widget widget-account-invoice-one">
+
+                <div class="widget-heading">
+                    <h5 class="">تفاصيل الهالك من المحصل و فتح الله</h5>
                 </div>
 
                 <div class="widget-content">
@@ -167,33 +221,62 @@
                         <div class="inv-detail">
                             <table class="table table-striped table-hover">
 
-                                @foreach (var item in ViewBag.depts as IEnumerable<FishBusiness.Models.Debts_Sarha>)
+                                @foreach (var item in ViewBag.depts as IEnumerable<FishBusiness.Models.Debt_In_Sarha>)
                                 {
                                     <tr>
                                         <td>@item.Debt.DebtName</td>
                                         <td>@item.Price</td>
-                                       
+
                                         <td>@item.Person.Name</td>
                                         <td>@item.Date.ToShortDateString()</td>
                                     </tr>
                                 }
                             </table>
-                   
+
 
                         </div>
 
-                        
+
                     </div>
                 </div>
 
             </div>
         </div>
-
-
-
     </div>
 
 </div>
 
+@section scripts{
 
+    <script>
+
+
+
+        $(document).ready(function () {
+            $("#Click").click(function () {
+                $(".loader").show();
+                var Fishermen = $("#Fishermen").val()
+                var id = @Model.SarhaID
+
+                    $.ajax({
+                        url: "/Sarhas/UpdateFishermen",
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            Fishermen: Fishermen,
+                            id:id
+                        },
+                    success: function (result) {
+                        if (result.message == "success") {
+                            $(".loader").hide();
+                            window.location.href = "/Boats/Profile/" + result.boatId;
+                        }
+                    }
+
+                })
+            });
+        })
+    </script>
+
+}
 

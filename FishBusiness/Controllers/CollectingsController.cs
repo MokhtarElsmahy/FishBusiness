@@ -19,7 +19,14 @@ namespace FishBusiness.Controllers
         {
             _context = context;
         }
-
+        public DateTime TimeNow()
+        {
+            TimeZone localZone = TimeZone.CurrentTimeZone;
+            DateTime currentDate = DateTime.Now;
+            DateTime currentUTC =
+           localZone.ToUniversalTime(currentDate);
+            return currentUTC.AddHours(2);
+        }
         #region المحصل
         // GET: Collectings
         //public async Task<IActionResult> Index()
@@ -36,65 +43,30 @@ namespace FishBusiness.Controllers
             var halek = _context.Debts_Sarhas.Include(c => c.Sarha).Include(c => c.Debt).Include(c => c.Sarha.Boat).ToList().Where(c => c.Sarha.DateOfSarha.ToShortDateString() == Date.ToShortDateString() && c.PersonID == 3).ToList();
             var expenses = _context.Expenses.Include(c => c.Boat).ToList().Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == 3).ToList();
 
-            ViewBag.Merchant = new SelectList(_context.Merchants.ToList(), "MerchantID", "MerchantName");
+            ViewBag.Merchant = new SelectList(_context.Merchants.Where(c=>c.IsFromOutsideCity==false).ToList(), "MerchantID", "MerchantName");
+            ViewBag.PayForMerchant = new SelectList(_context.Merchants.Where(c=>c.IsOwner==false && c.IsFromOutsideCity == false).ToList(), "MerchantID", "MerchantName");
             ViewBag.Halek = new SelectList(_context.Debts.ToList(), "DebtID", "DebtName");
-            ViewBag.Boats = new SelectList(_context.Boats.ToList(), "BoatID", "BoatName");
+            var UnfinishedSarhas = _context.Sarhas.Where(x => x.IsFinished == false).Select(x => x.BoatID);
+            ViewBag.Boats = new SelectList(_context.Boats.Where(b => b.IsActive == true).Where(b => UnfinishedSarhas.Contains(b.BoatID)).ToList(), "BoatID", "BoatName");
+            ViewBag.SharedBoats = new SelectList(_context.Boats.Where(b => b.IsActive == true && b.TypeID == 2).Where(b => UnfinishedSarhas.Contains(b.BoatID)).ToList(), "BoatID", "BoatName");
 
-            CollectorVm model = new CollectorVm() { Debts_Sarha = halek, PaidForMerchant = paid_for_merchant, PaidForUs = paid_for_Us , Expenses= expenses };
+            CollectorVm model = new CollectorVm() { Debts_Sarha = halek, PaidForMerchant = paid_for_merchant, PaidForUs = paid_for_Us, Expenses = expenses };
             return View(model);
         }
 
-        public async Task<IActionResult> FinalCalc(decimal fathallah)
+        public async Task<IActionResult> FinalCalc(decimal fathallah, string MerchantName, string Price, string ToMerchantName, string ToPrice, string BoatName, string HalekPrice,
+            string HalekName, string Adding, string AddingPrice, string BoatNameExpenses, string ExpensePricee, string Cause)
         {
-
-
-            //-----------------------------paid for us----------------------------------------------
-            var MerchantNameCookie = Request.Cookies["MerchantName"];
-
-
-            var PriceCookie = Request.Cookies["Price"];
-
-            //--------------------------------------------paid for merchants-------------------------
-
-            var ToMerchantNameCookie = Request.Cookies["ToMerchantName"];
-
-            var ToPriceCookie = Request.Cookies["ToPrice"];
-
-            //-----------------------------------------------paid for halek
-
-            var BoatNameCookie = Request.Cookies["BoatName"];
-
-
-            var HalekPriceCookie = Request.Cookies["HalekPrice"];
-
-            var HalekNameCookie = Request.Cookies["HalekName"];
-
-
-            //-------------------------------paid addings
-
-            var AddingCookie = Request.Cookies["Adding"];
-
-
-            var AddingPriceCookie = Request.Cookies["AddingPrice"];
-
-            //-----------------------------------------------paid for Expenses
-
-            var BoatNameExpensesCookie = Request.Cookies["BoatNameExpensesCookie"];
-
-
-            var ExpensePriceCookie = Request.Cookies["ExpensePriceCookie"];
-
-            var CauseCookie = Request.Cookies["CauseCookie"];
-
-            //----------------------------------------------------------------------------------------------------------
 
             Collecting c = new Collecting()
             {
-                Date = DateTime.Now,
+                Date = TimeNow(),
                 TotalForFahAllah = fathallah
             };
-            if (MerchantNameCookie != null && PriceCookie !=null)
+            if (MerchantName != null && Price != null)
             {
+                var MerchantNameCookie = MerchantName.TrimEnd(MerchantName[MerchantName.Length - 1]);
+                var PriceCookie = Price.TrimEnd(Price[Price.Length - 1]);
                 string[] MerchantNames = MerchantNameCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 decimal[] prices = PriceCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
 
@@ -110,7 +82,7 @@ namespace FishBusiness.Controllers
                             MerchantID = merchant.MerchantID,
                             Payment = prices[i],
                             PreviousDebtsForMerchant = merchant.PreviousDebts - prices[i],
-                            Date = DateTime.Now,
+                            Date = TimeNow(),
                             IsCash = true,
                             PersonID = 1
                         };
@@ -123,7 +95,7 @@ namespace FishBusiness.Controllers
                             MerchantID = merchant.MerchantID,
                             Payment = prices[i],
                             PreviousDebtsForMerchant = merchant.PreviousDebts - prices[i],
-                            Date = DateTime.Now,
+                            Date = TimeNow(),
                             IsCash = true,
                             PersonID = 3
                         };
@@ -137,39 +109,44 @@ namespace FishBusiness.Controllers
                 }
 
             }
-            
-            if (ToMerchantNameCookie != null && ToPriceCookie!=null)
+
+            if (ToMerchantName != null && ToPrice != null)
             {
+                var ToMerchantNameCookie = ToMerchantName.TrimEnd(ToMerchantName[ToMerchantName.Length - 1]);
+                var ToPriceCookie = ToPrice.TrimEnd(ToPrice[ToPrice.Length - 1]);
                 string[] ToMerchantNames = ToMerchantNameCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 decimal[] Toprices = ToPriceCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
 
 
                 for (int i = 0; i < ToMerchantNames.Length; i++)
-              {
-                var merchant = _context.Merchants.FirstOrDefault(c => c.MerchantName == ToMerchantNames[i]);
-
-                PaidForMerchant m = new PaidForMerchant()
                 {
-                    IsPaidForUs = false,
-                    MerchantID = merchant.MerchantID,
-                    Payment = Toprices[i],
-                    PreviousDebtsForMerchant = merchant.PreviousDebtsForMerchant - Toprices[i],
-                    Date = DateTime.Now,
-                    IsCash = true,
-                    PersonID = 3
-                };
-                Person person = _context.People.Find(3);
-                person.credit -= Toprices[i];
-                merchant.PreviousDebtsForMerchant = merchant.PreviousDebtsForMerchant - Toprices[i];
-                _context.PaidForMerchant.Add(m);
-                _context.SaveChanges();
+                    var merchant = _context.Merchants.FirstOrDefault(c => c.MerchantName == ToMerchantNames[i]);
 
-            }
+                    PaidForMerchant m = new PaidForMerchant()
+                    {
+                        IsPaidForUs = false,
+                        MerchantID = merchant.MerchantID,
+                        Payment = Toprices[i],
+                        PreviousDebtsForMerchant = merchant.PreviousDebtsForMerchant - Toprices[i],
+                        Date = TimeNow(),
+                        IsCash = true,
+                        PersonID = 3
+                    };
+                    Person person = _context.People.Find(3);
+                    person.credit -= Toprices[i];
+                    merchant.PreviousDebtsForMerchant = merchant.PreviousDebtsForMerchant - Toprices[i];
+                    _context.PaidForMerchant.Add(m);
+                    _context.SaveChanges();
+
+                }
                 c.TotalPaidForMerchants = Toprices.Sum();
             }
-            
-            if (HalekNameCookie != null)
+
+            if (HalekName!= null)
             {
+                var BoatNameCookie = BoatName.TrimEnd(BoatName[BoatName.Length - 1]);
+                var HalekPriceCookie = HalekPrice.TrimEnd(HalekPrice[HalekPrice.Length - 1]);
+                var HalekNameCookie = HalekName.TrimEnd(HalekName[HalekName.Length - 1]);
                 string[] BoatNames = BoatNameCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 decimal[] HalekPrices = HalekPriceCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
                 string[] HalekNames = HalekNameCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
@@ -177,10 +154,10 @@ namespace FishBusiness.Controllers
                 for (int i = 0; i < HalekNames.Length; i++)
                 {
                     var boat = _context.Boats.FirstOrDefault(c => c.BoatName == BoatNames[i]);
-                    var lastSarhaID = _context.Sarhas.Where(c => c.BoatID == boat.BoatID && c.IsFinished == false).Max(c => c.SarhaID);
+                    var lastSarhaID = _context.Sarhas.Where(c => c.BoatID == boat.BoatID && c.IsFinished == false).FirstOrDefault().SarhaID;
                     var lastSarha = _context.Sarhas.Find(lastSarhaID);
 
-                    var debt_sarha = _context.Debts_Sarhas.Include(c => c.Debt).Where(c => c.SarhaID == lastSarhaID && c.Debt.DebtName == HalekNames[i]).FirstOrDefault();
+                    var debt_sarha = _context.Debts_In_Sarhas.Include(c => c.Debt).Where(c => c.SarhaID == lastSarhaID && c.Debt.DebtName == HalekNames[i]&&c.PersonID==3).FirstOrDefault();
                     boat.DebtsOfHalek += HalekPrices[i];
                     if (debt_sarha != null)
                     {
@@ -189,8 +166,8 @@ namespace FishBusiness.Controllers
                     else
                     {
                         var debt = _context.Debts.Where(c => c.DebtName == HalekNames[i]).FirstOrDefault();
-                        Debts_Sarha ds = new Debts_Sarha() { Price = HalekPrices[i], DebtID = debt.DebtID, SarhaID = lastSarhaID, PersonID = 3, Date = DateTime.Now };
-                        _context.Debts_Sarhas.Add(ds);
+                        Debt_In_Sarha ds = new Debt_In_Sarha() { Price = HalekPrices[i], DebtID = debt.DebtID, SarhaID = lastSarhaID, PersonID = 3, Date = TimeNow() };
+                        _context.Debts_In_Sarhas.Add(ds);
                         _context.SaveChanges();
 
                     }
@@ -202,9 +179,12 @@ namespace FishBusiness.Controllers
                 }
                 c.TotalHalek = HalekPrices.Sum();
             }
-            
-            if (BoatNameExpensesCookie != null)
+
+            if (BoatNameExpenses != null)
             {
+                var BoatNameExpensesCookie = BoatNameExpenses.TrimEnd(BoatNameExpenses[BoatNameExpenses.Length - 1]);
+                var ExpensePriceCookie = ExpensePricee.TrimEnd(ExpensePricee[ExpensePricee.Length - 1]);
+                var CauseCookie = Cause.TrimEnd(Cause[Cause.Length - 1]);
                 string[] BoatNamesExpenses = BoatNameExpensesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 decimal[] ExpensePrice = ExpensePriceCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
                 string[] Causes = CauseCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
@@ -215,35 +195,37 @@ namespace FishBusiness.Controllers
                     {
                         BoatID = boat.BoatID,
                         Cause = Causes[i],
-                        Date = DateTime.Now,
+                        Date = TimeNow(),
                         PersonID = 3,
                         Price = ExpensePrice[i]
                     };
                     _context.Expenses.Add(ex);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
 
                     Person person1 = _context.People.Find(3);
                     person1.credit -= ExpensePrice[i];
 
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
 
                 }
                 c.TotalOfExpenses = ExpensePrice.Sum();
             }
 
             var p = _context.People.Find(4);
-            FathAllahGift g = new FathAllahGift() { charge = fathallah, CreditBefore = p.credit, CreditAfter = fathallah + p.credit, Date = DateTime.Now, PersonID = 3 };
+            FathAllahGift g = new FathAllahGift() { charge = fathallah, CreditBefore = p.credit, CreditAfter = fathallah + p.credit, Date = TimeNow(), PersonID = 3 };
             p.credit += fathallah;
             Person pp = _context.People.Find(3);
             pp.credit -= fathallah;
             _context.FathAllahGifts.Add(g);
             _context.Collectings.Add(c);
-            _context.SaveChanges();
-            if (AddingCookie != null)
+            await _context.SaveChangesAsync();
+            if (Adding != null)
             {
+                var AddingCookie = Adding.TrimEnd(Adding[Adding.Length - 1]);
+                var AddingPriceCookie = AddingPrice.TrimEnd(AddingPrice[AddingPrice.Length - 1]);
                 string[] AddingNames = AddingCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 decimal[] AddingPrices = AddingPriceCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
-                var collecting = _context.Collectings.ToList().Where(x => x.Date.ToShortDateString() == DateTime.Now.ToShortDateString()).FirstOrDefault();
+                var collecting = _context.Collectings.ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString()).FirstOrDefault();
                 collecting.TotalOfAdditionalPayment = AddingPrices.Sum();
 
                 for (int i = 0; i < AddingNames.Length; i++)
@@ -253,7 +235,7 @@ namespace FishBusiness.Controllers
                         Name = AddingNames[i],
                         Value = AddingPrices[i],
                         ID = collecting.ID,
-                        Date = DateTime.Now
+                        Date = TimeNow()
                     };
 
                     _context.AdditionalPayments.Add(ad);
@@ -263,12 +245,12 @@ namespace FishBusiness.Controllers
 
                 }
             }
-        
+
             var FinalCredit = c.TotalPaidFromMerchants - (c.TotalPaidForMerchants + c.TotalHalek + c.TotalOfAdditionalPayment + fathallah + c.TotalOfExpenses);
             Person halaka = _context.People.Find(1);
             halaka.credit += FinalCredit;
             pp.credit = 0.0m;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Json(new { message = "success" });
         }
 
@@ -289,11 +271,19 @@ namespace FishBusiness.Controllers
                 .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.IsPaidForUs == true).ToList()
                 .Select(c => new { merchantName = c.Merchant.MerchantName, Payment = c.Payment, Date = c.Date, IsPaidForUs = c.IsPaidForUs }).ToList();
 
-            var Halek = _context.Debts_Sarhas.Include(c => c.Sarha)
-                .Include(c => c.Debt).Include(c => c.Sarha.Boat)
-                .ToList().Select(c => new { PersonID = c.PersonID, Date = c.Sarha.DateOfSarha, BoatName = c.Sarha.Boat.BoatName, Price = c.Price, DebtName = c.Debt.DebtName })
-                .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == 3)
-                .ToList();
+            //var Halek = _context.Debts_Sarhas.Include(c => c.Sarha)
+            //                                 .Include(c => c.Debt)
+            //                                 .Include(c => c.Sarha.Boat)
+            //    .ToList().Select(c => new { PersonID = c.PersonID, Date = c.Sarha.DateOfSarha, BoatName = c.Sarha.Boat.BoatName, Price = c.Price, DebtName = c.Debt.DebtName })
+            //    .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == 3)
+            //    .ToList();
+
+            var Halek = _context.Debts_In_Sarhas.Include(c => c.Sarha)
+                .Include(c => c.Sarha.Boat)
+                .Include(c => c.Debt).ToList()
+                .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == 3).OrderBy(c=>c.Sarha.BoatID)
+                .Select(c => new { PersonID = c.PersonID, Date = c.Sarha.DateOfSarha, BoatName = c.Sarha.Boat.BoatName, Price = c.Price, DebtName = c.Debt.DebtName }).ToList();
+
 
             var Expenses = _context.Expenses.Include(c => c.Boat)
                .ToList().Select(c => new { PersonID = c.PersonID, Date = c.Date, BoatName = c.Boat.BoatName, price = c.Price, cause = c.Cause })
@@ -308,8 +298,8 @@ namespace FishBusiness.Controllers
                 return Json(new { message = "Fail" });
             }
             var AdditionalItems = _context.AdditionalPayments.ToList().Where(c => c.ID == collectingItem.ID).Select(c => new { Name = c.Name, Value = c.Value }).ToList();
-            var AhmedFathAllah = collectingItem.TotalForFahAllah;
-            var TotalPaidFromUs = paid_for_merchant.Sum(c => c.Payment) + Halek.Sum(c => c.Price) + AdditionalItems.Sum(c => c.Value) + AhmedFathAllah;
+            var AhmedFathAllah = collecting.Sum(c => c.TotalForFahAllah);
+            var TotalPaidFromUs = paid_for_merchant.Sum(c => c.Payment) + Halek.Sum(c => c.Price) + AdditionalItems.Sum(c => c.Value) + AhmedFathAllah+ Expenses.Sum(c => c.price);
             var x = paid_for_Us.Sum(c => c.Payment);
             var y = Halek.Sum(c => c.Price);
             var z = AdditionalItems.Sum(c => c.Value);
@@ -351,10 +341,12 @@ namespace FishBusiness.Controllers
 
         public IActionResult FathAllahProfile()
         {
-            ViewBag.Leaders = new SelectList(_context.Boats, "BoatID", "BoatLeader");
+            ViewBag.Leaders = new SelectList(_context.Boats.Where(b => b.IsActive == true).ToList(), "BoatID", "BoatLeader");
             ViewBag.Halek = new SelectList(_context.Debts.ToList(), "DebtID", "DebtName");
-            ViewBag.Boats = new SelectList(_context.Boats.ToList(), "BoatID", "BoatName");
-            ViewBag.People = new SelectList(_context.People.Where(c => c.PersonID != 4), "PersonID", "Name");
+            var UnfinishedSarhas = _context.Sarhas.Where(x => x.IsFinished == false).Select(x => x.BoatID);
+            ViewBag.Boats = new SelectList(_context.Boats.Where(b => b.IsActive == true).Where(b => UnfinishedSarhas.Contains(b.BoatID)).ToList(), "BoatID", "BoatName");
+            ViewBag.SharedBoats = new SelectList(_context.Boats.Where(b => b.IsActive == true && b.TypeID == 2).Where(b => UnfinishedSarhas.Contains(b.BoatID)).ToList(), "BoatID", "BoatName");
+            ViewBag.People = new SelectList(_context.People.Where(c => c.PersonID != 4 &&c.PersonID!=2), "PersonID", "Name");
             var pp = _context.People.Find(4);
             ViewBag.Credit = pp.credit;
             return View();
@@ -364,65 +356,74 @@ namespace FishBusiness.Controllers
             var boat = _context.Boats.Find(BoatID);
             return Json(new { leaderDebts = boat.DebtsOfLeader });
         }
-        public IActionResult FathAllahCalc(decimal fathallahFinalCredit)
+        public IActionResult FathAllahCalc(decimal fathallahFinalCredit, string Place, string Price , string ToLeader, string ToPrice, string BoatName, string HalekPrice,
+            string HalekName, string BoatNameExpenses, string ExpensePricee, string Cause)
         {
+            #region cookies
             //-----------------------------paid for الحلقه----------------------------------------------
-            var PlaceCookie = Request.Cookies["Place"];
+            //var PlaceCookie = Request.Cookies["Place"];
 
 
-            var PriceCookie = Request.Cookies["Price"];
+            //var PriceCookie = Request.Cookies["Price"];
 
             //--------------------------------------------paid for Leader-------------------------
 
-            var ToLeaderCookie = Request.Cookies["ToLeader"];
+            //var ToLeaderCookie = Request.Cookies["ToLeader"];
 
-            var ToPriceCookie = Request.Cookies["ToPrice"];
+            //var ToPriceCookie = Request.Cookies["ToPrice"];
 
             //-----------------------------------------------paid for halek
 
-            var BoatNameCookie = Request.Cookies["BoatName"];
+            //var BoatNameCookie = Request.Cookies["BoatName"];
 
 
-            var HalekPriceCookie = Request.Cookies["HalekPrice"];
+            //var HalekPriceCookie = Request.Cookies["HalekPrice"];
 
-            var HalekNameCookie = Request.Cookies["HalekName"];
+            //var HalekNameCookie = Request.Cookies["HalekName"];
             //-----------------------------------------------paid for Expenses
 
-            var BoatNameExpensesCookie = Request.Cookies["BoatNameExpensesCookie"];
+            //var BoatNameExpensesCookie = Request.Cookies["BoatNameExpensesCookie"];
 
 
-            var ExpensePriceCookie = Request.Cookies["ExpensePriceCookie"];
+            //var ExpensePriceCookie = Request.Cookies["ExpensePriceCookie"];
 
-            var CauseCookie = Request.Cookies["CauseCookie"];
+            //var CauseCookie = Request.Cookies["CauseCookie"]; 
+            #endregion
 
             //-----------------------------------------------------------------------------------------
             var pp = _context.People.Find(4);
-            pp.credit = fathallahFinalCredit;
+            //pp.credit = fathallahFinalCredit;
 
-            if (PlaceCookie !=null && PriceCookie != null)
+            if (Place != null && Price != null)
             {
+                var PlaceCookie = Place.TrimEnd(Place[Place.Length - 1]);
+                var PriceCookie = Price.TrimEnd(Price[Price.Length - 1]);
+
                 string[] PlaceHalekNames = PlaceCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 decimal[] prices = PriceCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
 
                 for (int i = 0; i < PlaceHalekNames.Length; i++)
                 {
                     int DebtID = _context.Debts.Where(c => c.DebtName == PlaceHalekNames[i]).FirstOrDefault().DebtID;
-                    _context.HalakaHaleks.Add(new HalakaHalek { Price = prices[i], DebtID = DebtID, Date = DateTime.Now });
+                    _context.HalakaHaleks.Add(new HalakaHalek { Price = prices[i], DebtID = DebtID, Date = TimeNow() });
                     pp.credit -= prices[i];
 
                 }
                 _context.SaveChanges();
             }
 
-            if (ToLeaderCookie != null && ToPriceCookie != null)
+            if (ToLeader != null && ToPrice != null)
             {
+                var ToLeaderCookie = ToLeader.TrimEnd(ToLeader[ToLeader.Length - 1]);
+                var ToPriceCookie = ToPrice.TrimEnd(ToPrice[ToPrice.Length - 1]);
+
                 string[] ToLeaderNames = ToLeaderCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 decimal[] Toprices = ToPriceCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
 
                 for (int i = 0; i < ToLeaderNames.Length; i++)
                 {
                     var Boat = _context.Boats.Where(c => c.BoatLeader == ToLeaderNames[i]).FirstOrDefault();
-                    _context.LeaderLoans.Add(new LeaderLoan { Price = Toprices[i], BoatID = Boat.BoatID, Date = DateTime.Now });
+                    _context.LeaderLoans.Add(new LeaderLoan { Price = Toprices[i], BoatID = Boat.BoatID, Date = TimeNow() });
                     Boat.DebtsOfLeader += Toprices[i];
                     pp.credit -= Toprices[i];
                     _context.SaveChanges();
@@ -431,8 +432,11 @@ namespace FishBusiness.Controllers
             }
 
 
-            if (BoatNameCookie !=null && HalekPriceCookie !=null && HalekNameCookie!=null)
+            if (BoatName != null && HalekPrice != null && HalekName != null)
             {
+                var BoatNameCookie = BoatName.TrimEnd(BoatName[BoatName.Length - 1]);
+                var HalekPriceCookie = HalekPrice.TrimEnd(HalekPrice[HalekPrice.Length - 1]);
+                var HalekNameCookie = HalekName.TrimEnd(HalekName[HalekName.Length - 1]);
                 string[] BoatNames = BoatNameCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 decimal[] HalekPrices = HalekPriceCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
                 string[] HalekNames = HalekNameCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
@@ -441,14 +445,14 @@ namespace FishBusiness.Controllers
                 {
                     var boat = _context.Boats.FirstOrDefault(c => c.BoatName == BoatNames[i]);
 
-                    var lastSarhaID = _context.Sarhas.Where(c => c.BoatID == boat.BoatID && c.IsFinished == false);
+                    var lastSarhaID = _context.Sarhas.ToList().Where(c => c.BoatID == boat.BoatID && c.IsFinished == false).ToList();
                     if (lastSarhaID != null)
                     {
 
-                        int maxSarahaID = lastSarhaID.Max(c => c.SarhaID);
+                        int maxSarahaID = lastSarhaID.FirstOrDefault().SarhaID;
                         var lastSarha = _context.Sarhas.Find(maxSarahaID);
 
-                        var debt_sarha = _context.Debts_Sarhas.Include(c => c.Debt).Where(c => c.SarhaID == maxSarahaID && c.Debt.DebtName == HalekNames[i]).FirstOrDefault();
+                        var debt_sarha = _context.Debts_In_Sarhas.Include(c => c.Debt).Where(c => c.SarhaID == maxSarahaID && c.Debt.DebtName == HalekNames[i]&&c.PersonID==4).FirstOrDefault();
                         boat.DebtsOfHalek += HalekPrices[i];
                         if (debt_sarha != null)
                         {
@@ -457,8 +461,8 @@ namespace FishBusiness.Controllers
                         else
                         {
                             var debt = _context.Debts.Where(c => c.DebtName == HalekNames[i]).FirstOrDefault();
-                            Debts_Sarha ds = new Debts_Sarha() { Price = HalekPrices[i], DebtID = debt.DebtID, SarhaID = maxSarahaID, PersonID = 4, Date = DateTime.Now };
-                            _context.Debts_Sarhas.Add(ds);
+                            Debt_In_Sarha ds = new Debt_In_Sarha() { Price = HalekPrices[i], DebtID = debt.DebtID, SarhaID = maxSarahaID, PersonID = 4, Date = TimeNow() };
+                            _context.Debts_In_Sarhas.Add(ds);
                             _context.SaveChanges();
 
                         }
@@ -471,8 +475,12 @@ namespace FishBusiness.Controllers
                 }
             }
 
-            if (BoatNameExpensesCookie != null)
+            if (BoatNameExpenses != null)
             {
+                var BoatNameExpensesCookie = BoatNameExpenses.TrimEnd(BoatNameExpenses[BoatNameExpenses.Length - 1]);
+                var ExpensePriceCookie = ExpensePricee.TrimEnd(ExpensePricee[ExpensePricee.Length - 1]);
+                var CauseCookie = Cause.TrimEnd(Cause[Cause.Length - 1]);
+
                 string[] BoatNamesExpenses = BoatNameExpensesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 decimal[] ExpensePrice = ExpensePriceCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
                 string[] Causes = CauseCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
@@ -483,20 +491,20 @@ namespace FishBusiness.Controllers
                     {
                         BoatID = boat.BoatID,
                         Cause = Causes[i],
-                        Date = DateTime.Now,
+                        Date = TimeNow(),
                         PersonID = 4,
                         Price = ExpensePrice[i]
                     };
                     _context.Expenses.Add(ex);
                     _context.SaveChanges();
 
-                    Person person1 = _context.People.Find(4);
-                    person1.credit -= ExpensePrice[i];
+                    
+                    pp.credit -= ExpensePrice[i];
 
                     _context.SaveChanges();
 
                 }
-                
+
             }
             _context.SaveChanges();
 
@@ -525,16 +533,23 @@ namespace FishBusiness.Controllers
             }
 
 
-            var Halek = _context.Debts_Sarhas.Include(c => c.Sarha)
-               .Include(c => c.Debt).Include(c => c.Sarha.Boat)
-               .ToList().Select(c => new { PersonID = c.PersonID, Date = c.Sarha.DateOfSarha, BoatName = c.Sarha.Boat.BoatName, price = c.Price, DebtName = c.Debt.DebtName })
-               .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == 4)
-               .ToList();
+            //var Halek = _context.Debts_Sarhas.Include(c => c.Sarha)
+            //   .Include(c => c.Debt).Include(c => c.Sarha.Boat)
+            //   .ToList().Select(c => new { PersonID = c.PersonID, Date = c.Sarha.DateOfSarha, BoatName = c.Sarha.Boat.BoatName, price = c.Price, DebtName = c.Debt.DebtName })
+            //   .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == 4)
+            //   .ToList();
+
+            var Halek = _context.Debts_In_Sarhas.Include(c => c.Sarha)
+               .Include(c => c.Sarha.Boat)
+               .Include(c => c.Debt).ToList()
+               .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == 4).OrderBy(c => c.Sarha.BoatID)
+               .Select(c => new { PersonID = c.PersonID, Date = c.Sarha.DateOfSarha, BoatName = c.Sarha.Boat.BoatName, Price = c.Price, DebtName = c.Debt.DebtName }).ToList();
+
 
             decimal sumOfHalek = 0;
             if (halakaHaleks != null)
             {
-                sumOfHalek = Halek.Sum(c => c.price);
+                sumOfHalek = Halek.Sum(c => c.Price);
             }
 
             var Expenses = _context.Expenses.Include(c => c.Boat)
@@ -548,14 +563,14 @@ namespace FishBusiness.Controllers
                 sumOfExpenses = Expenses.Sum(c => c.price);
             }
 
-            return Json(new { message = "success", halakaHaleks = halakaHaleks, sumOfhalakaHaleks = sumOfhalakaHaleks, sumOfLoans = sumOfLoans, sumOfHalek = sumOfHalek, loans = Loans, halek = Halek , sumExpenses= sumOfExpenses , expenses = Expenses });
+            return Json(new { message = "success", halakaHaleks = halakaHaleks, sumOfhalakaHaleks = sumOfhalakaHaleks, sumOfLoans = sumOfLoans, sumOfHalek = sumOfHalek, loans = Loans, halek = Halek, sumExpenses = sumOfExpenses, expenses = Expenses });
         }
         // هتبقي تبع المكتب
         public IActionResult PayBackLoan(decimal price, int BoatID)
         {
             var Boat = _context.Boats.Find(BoatID);
             Boat.DebtsOfLeader -= price;
-            LeaderPayback p = new LeaderPayback() { BoatID = BoatID, Date = DateTime.Now, Price = price };
+            LeaderPayback p = new LeaderPayback() { BoatID = BoatID, Date = TimeNow(), Price = price };
             _context.LeaderPaybacks.Add(p);
             Person pp = _context.People.Find(4);
             pp.credit += price;
@@ -568,7 +583,7 @@ namespace FishBusiness.Controllers
         {
             System.Threading.Thread.Sleep(1000);
             Person p = _context.People.Find(4);
-            FathAllahGift g = new FathAllahGift() { PersonID = personID, Date = DateTime.Now, CreditBefore = p.credit, charge = price, CreditAfter = price + p.credit };
+            FathAllahGift g = new FathAllahGift() { PersonID = personID, Date = TimeNow(), CreditBefore = p.credit, charge = price, CreditAfter = price + p.credit };
             p.credit += price;
             Person pp = _context.People.Find(personID);
             pp.credit -= price;

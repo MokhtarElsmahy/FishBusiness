@@ -22,7 +22,7 @@
     <div class="container row mb-0">
         <div class="page-header m-3 ">
             <div class="page-title">
-                <h3>اضافة فاتورة جديدة</h3>
+                <h3>مشتريات تاجر</h3>
             </div>
         </div>
         <div class="mt-4 ml-auto">
@@ -37,13 +37,13 @@
     <div class="row scrumboard" id="cancel-row">
 
         <div class="col-lg-4 layout-spacing">
-            <form asp-action="Create" id="Addform">
+            <form>
                 <div class="task-list-section">
 
                     <div data-section="s-new" class="task-list-container" data-connect="sorting">
                         <div class="connect-sorting">
                             <div class="task-container-header">
-                                <h6 class="s-heading" data-listTitle="In Progress">اضافة تفاصيل الفاتورة</h6>
+                                <h6 class="s-heading" data-listTitle="In Progress">ادخل التاريخ اولا</h6>
                                 <div class="dropdown">
                                     <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
@@ -58,22 +58,6 @@
 
                             <div class="connect-sorting-content" data-sortable="true">
 
-
-                                <div data-draggable="true" class="card simple-title-task" style="">
-                                    <div class="card-body">
-
-                                        <div class="task-header">
-                                            <div class="form-group">
-                                                <label class="control-label"> اسم التاجر</label>
-                                                <select class="form-control" asp-for="merchantReciept.MerchantID" id="MerDDL" asp-items="ViewBag.MerchantID as SelectList">
-                                                   
-                                                    <option>اختر تاجر </option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
                                 <div data-draggable="true" class="card simple-title-task" style="">
                                     <div class="card-body">
 
@@ -86,6 +70,22 @@
 
                                     </div>
                                 </div>
+                                <div data-draggable="true" class="card simple-title-task" style="">
+                                    <div class="card-body">
+
+                                        <div class="task-header">
+                                            <div class="form-group">
+                                                <label class="control-label"> اسم التاجر</label>
+                                                <select class="form-control" asp-for="merchantReciept.MerchantID" id="MerDDL" asp-items="ViewBag.MerchantID as SelectList">
+
+                                                    <option>اختر تاجر </option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
 
 
                             </div>
@@ -139,7 +139,7 @@
                                 <td class="total" id="TotalBeforePayment">0</td>
                                 @*<td class="total text-info"> العمولة</td>
                                     <td class="total" id="commision">0</td>*@
-
+                            <td> <img src="~/assets/img/loader.gif" id="Dloader" style="width:50px;height:50px;display:none" /></td>
                             </tr>
                             <tr class="total" style="display:none">
                                 <td>المدفوع من الديون</td>
@@ -150,7 +150,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <button class="btn btn-secondary" id="btnCalc">خصم</button>
+                                    <button class="btn btn-primary" id="btnCalc">خصم</button>
                                 </td>
                             </tr>
                             <tr class="total">
@@ -158,7 +158,8 @@
                                 <td id="PreviousDebts"></td>
                                 <td></td>
                                 <td>
-                                    <button type="submit" form="Addform" class="btn btn-success" id="btnSave">حفظ الفاتورة</button>
+                                    <button type="button" class="btn btn-primary" id="btnSave">حفظ الفاتورة</button>
+                                    <input type="hidden" id="RecID" />
                                 </td>
                             </tr>
                         </tfoot>
@@ -178,9 +179,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">التفاصيل الخاصة بالاسماك</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
+                <img src="~/assets/img/loader.gif" id="Mloader" style="width:50px;height:50px;display:none" />
             </div>
             <div class="modal-body">
                 <form id="MyForm">
@@ -222,9 +221,7 @@
 <hr />
 
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 
 @section scripts{
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
@@ -236,7 +233,7 @@
 
 
             $("#boatDDL").on("change", function () {
-
+                $('#Mloader').show();
                 $list = $("#boatItemsDDL");
                 $.ajax({
                     url: "/MerchantReciepts/GetBoatItems/",
@@ -250,6 +247,7 @@
                         $.each(result, function (i, item) {
                             $list.append('<option value="' + item.fishId + '"> ' + item.fishName + ' </option>');
                         });
+                        $('#Mloader').hide();
                     },
                     error: function () {
                         alert("خطا ..هذا المركب ليس له انتاج حاليا");
@@ -258,6 +256,7 @@
             });
 
             $("#MerDDL").on("change", function () {
+                $("#Dloader").show();
                 var Date = $("#MerRecDate").val();
                 var id = $("#MerDDL").val()
                 $.ajax({
@@ -270,7 +269,14 @@
                     }, //id of the state which is used to extract cities
                     traditional: true,
                     success: function (result) {
-                        $('#PreviousDebts').text(result.debts)
+                        if (result.owner == "no") {
+                            $('#PreviousDebts').text(result.debts)
+                        } else {
+                           $('#PreviousDebts').text('0')
+
+                        }
+                        $('#RecID').val(result.rec)
+                        $("#Dloader").hide()
                     },
                     error: function () {
                         alert("Something went wrong call the police");
@@ -304,6 +310,7 @@
             });
             var i = 0;
             $("#NewRows").on("click", function () {
+                $('#Mloader').show();
                 var fd = $("#MyForm").serialize();
                 var body = $("#TBody");
                 var TotalBeforPayment = $("#TotalBeforePayment");
@@ -326,7 +333,7 @@
                             + "</tr>");
 
                         $('#TotalBeforePayment').text(parseFloat($('#TotalBeforePayment').text()) + result.total);
-
+                        $('#Mloader').hide();
                   
                     },
                     error: function () {
@@ -337,34 +344,71 @@
 
             $("#btnSave").on("click", function () {
 
-
+                var RecID = parseInt($('#RecID').val());
 
                 var CurrentDebt = parseFloat($('#PreviousDebts').text());
                 var TotalBeforePayment = parseFloat($('#TotalBeforePayment').text());
                 var payFromDebt = parseFloat($('#payFromDebt').val());
                 var MerchantID = $("#MerDDL").val();
                 var MerRecDate = $("#MerRecDate").val();
-                var FishNames = new cookieList("FishNames"); // all items in the array.
+
+
+                var FishNames = ""
                 $('.fishes').each(function () {
-                    FishNames.add($(this).text());
-                });
-                var ProductionTypes = new cookieList("ProductionTypes"); // all items in the array.
-                $('.productions').each(function () {
-                    ProductionTypes.add($(this).text());
-                });
-                var qtys = new cookieList("qtys"); // all items in the array.
-                $('.qtys').each(function () {
-                    qtys.add($(this).text());
-                });
-                var unitprices = new cookieList("unitprices"); // all items in the array.
-                $('.unitprices').each(function () {
-                    unitprices.add($(this).text());
+                    FishNames += $(this).text();
+                    FishNames += ',';
+
                 })
-                var boats = new cookieList("boats"); // all items in the array.
+                var ProductionTypes = ""
+                $('.productions').each(function () {
+                    ProductionTypes += $(this).text();
+                    ProductionTypes += ',';
+
+                })
+                var qtys = ""
+                $('.qtys').each(function () {
+                    qtys += $(this).text();
+                    qtys += ',';
+
+                })
+
+                var unitprices = ""
+                $('.unitprices').each(function () {
+                    unitprices += $(this).text();
+                    unitprices += ',';
+
+                })
+
+                var boats = ""
                 $('.boats').each(function () {
-                    boats.add($(this).text());
-                });
+                    boats += $(this).text();
+                    boats += ',';
+
+                })
+
                 var body = $("#TBody");
+
+              
+                //$.ajax({
+                //    url: "/MerchantReciepts/Create/",
+                //    type: "POST",
+                //    dataType: "json",
+                //    contentType: "application/json",
+                //    data: JSON.stringify(settings),
+                //    success: function (result) {
+                //        if (result.message == "success") {
+                //            window.location.href = "/MerchantReciepts/Details/" + result.id;
+                //        } else {
+                //            alert("خطا !!!!! تاكد من ادخل التاريخ")
+                //            body.html("");
+                //            $('#TotalBeforePayment').text("0")
+                //        }
+                //    },
+                //    error: function () {
+                //        alert("Something went wrong call the police");
+                      
+                //    }
+                //});
 
                 $.ajax({
                     url: "/MerchantReciepts/Create/",
@@ -376,23 +420,43 @@
                         TotalOfReciept: TotalBeforePayment,
                         payment: payFromDebt,
                         CurrentDebt: CurrentDebt,
-                        RecID:0
+                        RecID: RecID,
+                        FishNames: FishNames,
+                        ProductionTypes: ProductionTypes,
+                        qtys: qtys,
+                        unitprices: unitprices,
+                        boats: boats
+
+
                     },
                     success: function (result) {
                         if (result.message == "success") {
-                            window.location.href = "/MerchantReciepts/Details/" + result.id;
+
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'تم حفظ الفاتورة بنجاح',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                           
                         } else {
                             alert("خطا !!!!! تاكد من ادخل التاريخ")
                             body.html("");
-                            $('#TotalBeforePayment').text("0")
+                            $('#MTotalBeforePayment').text("0")
+
                         }
                     },
                     error: function () {
-                        alert("Something went wrong call the police");
-                      
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حاول مرة اخري',
+                        });
+
+
                     }
                 });
-
 
 
             });

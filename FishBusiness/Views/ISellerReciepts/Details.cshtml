@@ -33,7 +33,7 @@
 
     <div class="row invoice layout-top-spacing">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-            <div class="doc-container">
+            <div class="doc-container" style="height:2000px;">
 
 
                 <div class="invoice-container">
@@ -50,10 +50,10 @@
 
                                     </div>
                                     @*<div class="col-sm-6 col-12 align-self-center text-sm-right">
-                                            <div class="company-info">
-                                                <img src="~/img/mosa-moseneke-WOP-W1Yg6cg-unsplash.jpg" class="img-thumbnail" />"
-                                            </div>
-                                        </div>*@
+                                        <div class="company-info">
+                                            <img src="~/img/mosa-moseneke-WOP-W1Yg6cg-unsplash.jpg" class="img-thumbnail" />"
+                                        </div>
+                                    </div>*@
 
 
                                 </div>
@@ -177,21 +177,16 @@
 
 
 
-                    <div class="inv--thankYou">
-                        <div class="row">
-                            <div class="col-sm-12 col-12">
-                                <p class="">Thank you for doing Business with us.</p>
-                            </div>
-                        </div>
-                    </div>
+                  
 
                 </div>
 
             </div>
-            <div class="col-sm-6 col-12 align-self-center text-sm-right mb-2 ml-auto">
-                <div class="company-info">
-                    <button class="btn btn-secondary" id="btnPrint1">طباعة</button>
-                </div>
+
+        </div>
+        <div class="col-sm-6 col-12 align-self-center text-sm-right mb-2 ml-auto">
+            <div class="company-info">
+                <button class="btn btn-secondary" id="btnPrint1">طباعة</button>
             </div>
         </div>
     </div>
@@ -207,9 +202,9 @@
                 </button>
             </div>
             <div class="modal-body">
-                @if (ViewBag.ImageExists)
+                @if (ViewBag.ImageExists==true)
                 {
-                 <img src="~/img/@Model.ISellerReciept.ReceiptImage" class="img-thumbnail"/>
+                 <img src="@Model.ISellerReciept.ReceiptImage" class="img-thumbnail"/>
                 }
                 else
                 {

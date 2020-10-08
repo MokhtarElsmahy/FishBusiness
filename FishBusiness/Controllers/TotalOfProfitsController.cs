@@ -19,7 +19,14 @@ namespace FishBusiness.Controllers
         {
             _context = context;
         }
-
+        public DateTime TimeNow()
+        {
+            TimeZone localZone = TimeZone.CurrentTimeZone;
+            DateTime currentDate = DateTime.Now;
+            DateTime currentUTC =
+           localZone.ToUniversalTime(currentDate);
+            return currentUTC.AddHours(2);
+        }
         // GET: TotalOfProfits
         public async Task<IActionResult> Index()
         {
@@ -64,7 +71,7 @@ namespace FishBusiness.Controllers
         public IActionResult CalcProfits(double ice , double labour , double totalOfPurchases, double totalOfSales, double totalOfCars)
         {
             var profit = totalOfSales - (totalOfPurchases+totalOfCars+ice+labour);
-            TotalOfProfit t = new TotalOfProfit() { Date = DateTime.Now, Ice = ice, Labour = labour, TotalOfPurchases = totalOfPurchases, TotalOfSales = totalOfSales, Profit = profit };
+            TotalOfProfit t = new TotalOfProfit() { Date = TimeNow(), Ice = ice, Labour = labour, TotalOfPurchases = totalOfPurchases, TotalOfSales = totalOfSales, Profit = profit };
             _context.TotalOfProfits.Add(t);
             Person p = _context.People.Find(1);
             p.credit -= (decimal)(ice + labour);
@@ -78,7 +85,7 @@ namespace FishBusiness.Controllers
         {
 
             SummationVm model = new SummationVm();
-            string Datee = DateTime.Now.AddDays(10).ToShortDateString();
+            string Datee = TimeNow().AddDays(10).ToShortDateString();
 
             var IMerchantReciepts = _context.IMerchantReciept.Include(m => m.Merchant).ToList();
             model.IMerchantReciepts = IMerchantReciepts.Where(m => m.Date.ToShortDateString() == Datee).ToList();
@@ -103,8 +110,17 @@ namespace FishBusiness.Controllers
             var TotalOfSales = ISellerRecieptss.Select(c => (c.totalOfPrices - c.commision)).Sum();
 
             var ice_labour_profit = _context.TotalOfProfits.ToList().Where(c=>c.Date.ToShortDateString()==Date.ToShortDateString()).FirstOrDefault();
+            double ice = 0.0;
+            double labour = 0.0;
+            double profit = 0.0;
+            if (ice_labour_profit != null)
+            {
+                ice = ice_labour_profit.Ice;
+                labour = ice_labour_profit.Labour;
+                profit = ice_labour_profit.Profit;
+            }
 
-            return Json(new { purchases = IMerchantRecieptss , totalOfReciepts= TotalOfPurchases , sales = ISellerRecieptss , totalOfSales= TotalOfSales ,ice= ice_labour_profit.Ice, labour= ice_labour_profit.Labour ,profit= ice_labour_profit.Profit });
+            return Json(new { purchases = IMerchantRecieptss , totalOfReciepts= TotalOfPurchases , sales = ISellerRecieptss , totalOfSales= TotalOfSales ,ice= ice, labour= labour ,profit= profit });
         }
 
     }

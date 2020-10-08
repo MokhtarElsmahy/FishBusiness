@@ -25,7 +25,14 @@ namespace FishBusiness.Controllers
             var applicationDbContext = _context.ExternalReceipts.Include(e => e.Boat).Include(e => e.Sarha);
             return View(await applicationDbContext.ToListAsync());
         }
-
+        public DateTime TimeNow()
+        {
+            TimeZone localZone = TimeZone.CurrentTimeZone;
+            DateTime currentDate = DateTime.Now;
+            DateTime currentUTC =
+           localZone.ToUniversalTime(currentDate);
+            return currentUTC.AddHours(2);
+        }
         // GET: ExternalReceipts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -84,7 +91,7 @@ namespace FishBusiness.Controllers
                 IncomesOfSharedBoat i = new IncomesOfSharedBoat()
                 {
                     BoatID = boat.BoatID,
-                    Date = DateTime.Now,
+                    Date = TimeNow(),
                     Income = FinalIncome
                 };
                 _context.IncomesOfSharedBoats.Add(i);

@@ -13,6 +13,7 @@ namespace FishBusiness.ViewModels
         public IEnumerable<BoatOwnerReciept> NotCalculatedRec { get; set; }
         public IEnumerable<ExternalReceipt> ExternalRecs { get; set; }
         public IEnumerable<Expense> BoatExpenses { get; set; }
+        public IEnumerable<Sarha> Haleks { get; set; }
 
        
 

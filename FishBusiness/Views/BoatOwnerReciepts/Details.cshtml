@@ -32,7 +32,7 @@
 
     <div class="row invoice layout-top-spacing">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-            <div class="doc-container">
+            <div class="doc-container" style="height:2000px;">
 
 
                 <div class="invoice-container">
@@ -119,55 +119,49 @@
                                                     <div class="col-sm-4 col-5">
                                                         <p class="">@Html.DisplayFor(model => model.Commission)</p>
                                                     </div>
-                                                    
-                                                        <div class="col-sm-8 col-7 hideInPrint">
-                                                            <p class=" discount-rate">ما تم دفعه من الهالك </p>
-                                                        </div>
-                                                        <div class="col-sm-4 col-5 hideInPrint">
-                                                            <p class="">@Html.DisplayFor(model => model.PaidFromDebts)</p>
-                                                        </div>
-                                                        <div class="col-sm-8 col-7 hideInPrint">
-                                                            <p class=" discount-rate">باقي الهالك علي المركب </p>
-                                                        </div>
-                                                        <div class="col-sm-4 col-5 hideInPrint">
-                                                            <p class="">@Html.DisplayFor(model => model.Boat.DebtsOfHalek)</p>
-                                                        </div>
-                                                        <div class="col-sm-8 col-7 grand-total-title hideInPrint ">
-                                                            <h4 class="text-info">صافي انتاج المركب </h4>
-                                                        </div>
-                                                        <div class="col-sm-4 col-5 grand-total-amount hideInPrint">
-                                                            <h4 class="text-info">@Html.DisplayFor(model => model.TotalAfterPaying)</h4>
-                                                        </div>
-                                                   
+
+                                                    <div class="col-sm-8 col-7 hideInPrint">
+                                                        <p class=" discount-rate">ما تم دفعه من الهالك </p>
+                                                    </div>
+                                                    <div class="col-sm-4 col-5 hideInPrint">
+                                                        <p class="">@Html.DisplayFor(model => model.PaidFromDebts)</p>
+                                                    </div>
+                                                    <div class="col-sm-8 col-7 hideInPrint">
+                                                        <p class=" discount-rate">باقي الهالك علي المركب </p>
+                                                    </div>
+                                                    <div class="col-sm-4 col-5 hideInPrint">
+                                                        <p class="">@Html.DisplayFor(model => model.Boat.DebtsOfHalek)</p>
+                                                    </div>
+                                                    <div class="col-sm-8 col-7 grand-total-title hideInPrint ">
+                                                        <h4 class="text-info">صافي انتاج المركب </h4>
+                                                    </div>
+                                                    <div class="col-sm-4 col-5 grand-total-amount hideInPrint">
+                                                        <h4 class="text-info">@Html.DisplayFor(model => model.TotalAfterPaying)</h4>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
 
                     </div>
 
 
-                    <div class="col-sm-6 col-12 align-self-center text-sm-right mb-2 ml-auto">
-                        <div class="company-info">
-                            <button class="btn btn-secondary" id="btnPrint1">طباعة</button>
-                        </div>
-                    </div>
-                    <div class="inv--thankYou">
-                        <div class="row">
-                            <div class="col-sm-12 col-12">
-                                <p class="">Thank you for doing Business with us.</p>
-                            </div>
-                        </div>
-                    </div>
 
                 </div>
 
             </div>
 
+        </div>
+        <div class="col-sm-6 col-12 align-self-center text-sm-right mb-2 ml-auto">
+            <div class="company-info">
+                <button class="btn btn-secondary" id="btnPrint1">طباعة</button>
+            </div>
         </div>
     </div>
 </div>

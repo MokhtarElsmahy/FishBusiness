@@ -9,7 +9,7 @@ namespace FishBusiness.Data.Migrations
             migrationBuilder.AddColumn<int>(
                 name: "PersonID",
                 table: "PaidForMerchant",
-                nullable: false,
+                nullable: true,
                 defaultValue: 0);
 
             migrationBuilder.CreateIndex(

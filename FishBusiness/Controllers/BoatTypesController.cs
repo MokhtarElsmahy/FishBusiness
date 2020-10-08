@@ -25,7 +25,7 @@ namespace FishBusiness.Controllers
             return View(await _context.BoatTypes.ToListAsync());
         }
 
-        
+       
 
         // GET: BoatTypes/Create
         public IActionResult Create()

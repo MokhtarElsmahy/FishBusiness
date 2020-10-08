@@ -49,7 +49,7 @@
                                         <td>@boat.BoatLeader</td>
                                         <td>@boat.BoatType.TypeName</td>
                                         <td>
-                                            <a asp-action="Edit" asp-route-id="@boat.BoatID" class="btn btn-success mb-2">تعديل</a>
+                                            @*<a asp-action="Edit" asp-route-id="@boat.BoatID" class="btn btn-success mb-2">تعديل</a>*@
                                             <a href="#" onclick="Details(@boat.BoatID)" class="btn btn-info mb-2">تفاصيل</a>
                                             <a asp-action="Profile" asp-route-id="@boat.BoatID" class="btn btn-info mb-2">بروفايل</a>
                                             <a asp-action="Restore" asp-route-id="@boat.BoatID" class="btn btn-warning mb-2">استعاده</a>

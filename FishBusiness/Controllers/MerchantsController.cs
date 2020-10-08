@@ -23,9 +23,16 @@ namespace FishBusiness.Controllers
         // GET: Merchants
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Merchants.ToListAsync());
+            return View(await _context.Merchants.Where(m=>m.IsOwner==false).ToListAsync());
         }
-
+        public DateTime TimeNow()
+        {
+            TimeZone localZone = TimeZone.CurrentTimeZone;
+            DateTime currentDate = DateTime.Now;
+            DateTime currentUTC =
+           localZone.ToUniversalTime(currentDate);
+            return currentUTC.AddHours(2);
+        }
         // GET: Merchants/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -45,7 +52,7 @@ namespace FishBusiness.Controllers
             model.IMerchantReciepts = await _context.IMerchantReciept.Include(x => x.Merchant).Where(x => x.MerchantID == id).ToListAsync();
             model.ISellerReciepts = await _context.ISellerReciepts.Include(x => x.Merchant).Where(x => x.MerchantID == id && x.TotalOfPrices == 0).ToListAsync();
             model.ISellerRecieptsMoneytized = await _context.ISellerReciepts.Include(x => x.Merchant).Where(x => x.MerchantID == id && x.TotalOfPrices > 0).ToListAsync();
-            model.PaidForMerchantsFromUs = await _context.PaidForMerchant.Where(c => c.IsPaidForUs == false).ToListAsync();
+            model.PaidForMerchantsFromUs = await _context.PaidForMerchant.Include(c=>c.Person).Where(c => c.IsPaidForUs == false).ToListAsync();
             model.PaidForUs = await _context.PaidForMerchant.Where(c => c.IsPaidForUs == true).ToListAsync();
             return View(model);
         }
@@ -67,7 +74,7 @@ namespace FishBusiness.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateC([Bind("MerchantID,MerchantName,PreviousDebts,Phone,Address,IsFromOutsideCity")] Merchant merchant)
+        public async Task<IActionResult> CreateC([Bind("MerchantID,MerchantName,PreviousDebts,Phone,Address,IsFromOutsideCity,PreviousDebtsForMerchant")] Merchant merchant)
         {
             if (ModelState.IsValid)
             {
@@ -107,7 +114,7 @@ namespace FishBusiness.Controllers
             }
 
             merchant.PreviousDebtsForMerchant -= PaidValue;
-            PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = false, Payment = PaidValue, Date = DateTime.Now, MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebtsForMerchant),PersonID=1 };
+            PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = false, Payment = PaidValue, Date = TimeNow(), MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebtsForMerchant),PersonID=1 };
             _context.PaidForMerchant.Add(p);
             Person pp = _context.People.Find(1);
             pp.credit -= PaidValue;
@@ -129,7 +136,7 @@ namespace FishBusiness.Controllers
             }
 
             merchant.PreviousDebts -= PaidValue;
-            PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = true, Payment = PaidValue, Date = DateTime.Now, MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebts),PersonID = 1 };
+            PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = true, Payment = PaidValue, Date = TimeNow(), MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebts),PersonID = 1 };
             _context.PaidForMerchant.Add(p);
             Person pp = _context.People.Find(1);
             pp.credit += PaidValue;

@@ -44,13 +44,13 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="TotalBeforePaying">انتاج السرحة قبل العمولة</label>
-                    <input asp-for="TotalBeforePaying" type="text" class="form-control">
+                    <input asp-for="TotalBeforePaying" type="text" value="0" class="form-control">
                     <span asp-validation-for="TotalBeforePaying" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label asp-for="Commission"></label>
-                    <input asp-for="Commission" type="text"  class="form-control">
+                    <input asp-for="Commission" type="text" value="0" class="form-control">
                     <span asp-validation-for="Commission" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -58,7 +58,7 @@
                     <input asp-for="PaidFromDebts" type="text" value="0" class="form-control">
                     <span asp-validation-for="PaidFromDebts" class="text-danger"></span>
                 </div>
-                <div class="d-flex justify-content-end" >
+                <div class="d-flex justify-content-center" >
                 <button type="submit" class="btn btn-lg btn-primary  mt-3 ">حفظ</button>
                 </div>
             </form>

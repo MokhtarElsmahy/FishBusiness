@@ -26,7 +26,7 @@
             <label class="control-label">نصيب الفرد</label>
             <div class="form-group row" style="margin-right:1px;">
                 <input id="IndividualSalary" class="form-control col-7" />
-                <button class="btn btn-sm btn-info col-3" style="margin-right:59px;" onclick="ChangeSalary(@Model.BoatOwnerRecieptID)">تغيير</button>
+                <button class="btn btn-sm btn-info col-3" style="margin-right:59px;" onclick="ChangeSalary(@Model.BoatOwnerRecieptID)">تاكيد</button>
 
             </div>
         </div>
@@ -75,7 +75,7 @@
 else
 {
     <div class="form-group">
-        <h7>يبدو ان السرحات لها نفس عدد الانفار</h7><br />
+        <h7>هذه السرحه لها نفس عدد انفار سرحه اخرى</h7><br />
         <label class="control-label">اجمالى الفواتير</label>
         <input class="form-control" value="@ViewBag.TotalOfRecs" id="TotalOfRecs" disabled>
     </div>

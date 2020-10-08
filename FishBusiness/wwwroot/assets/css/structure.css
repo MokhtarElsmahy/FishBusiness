@@ -886,7 +886,7 @@ code { color: #e7515a; }
     height: calc(100vh - 79px);
     top: 80px;
     background: rgb(240, 234, 250);
-    width: 225px;
+    width: 270px;
     padding: 20px;
     transition: .3s ease all;
     z-index: 1030;
@@ -1168,7 +1168,7 @@ code { color: #e7515a; }
     .sidebar-wrapper #compact_submenuSidebar.show { right: 120px; }
     .sidebar-wrapper #compactSidebar { width: 120px; right: -150px; }
     .sbar-open.sidebar-closed #compactSidebar { right: -150px!important; }
-    .sidebar-wrapper #compact_submenuSidebar { width: 200px; }
+    .sidebar-wrapper #compact_submenuSidebar { width: 250px; }
     body.alt-menu .sidebar-closed > .sidebar-wrapper { width: 0; right: -52px; }
     .main-container { padding: 0;  }
     #sidebar ul.menu-categories.ps {

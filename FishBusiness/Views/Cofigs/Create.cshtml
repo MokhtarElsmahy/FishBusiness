@@ -12,7 +12,7 @@
 <div class="container mt-3 col-6">
     <form asp-action="Create">
         <div class="form-group mb-3">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly"  class="text-danger"></div>
             <label asp-for="Name" class="text-black font-weight-bold "> اسم العموله</label>
             <input asp-for="Name" class="form-control" aria-describedby="emailHelp1" placeholder=" اسم العموله">
             <span asp-validation-for="Name" class="text-danger"></span>
@@ -23,7 +23,7 @@
             <input asp-for="Value" class="form-control" aria-describedby="emailHelp1" placeholder="قيمة العموله">
             <span asp-validation-for="Value" class="text-danger"></span>
         </div>
-
+       
         <button type="submit" class="btn btn-primary mt-3 ml-auto">حفظ</button>
         <a asp-action="Index" class="btn btn-secondary mt-3">عوده الي القائمة</a>
     </form>

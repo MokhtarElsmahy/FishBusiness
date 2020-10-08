@@ -243,7 +243,7 @@ namespace FishBusiness.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Debts_Sarhas", x => new { x.DebtID, x.SarhaID });
+                    table.PrimaryKey("PK_Debts_Sarhas", x => new { x.DebtID, x.SarhaID});
                     table.ForeignKey(
                         name: "FK_Debts_Sarhas_Debts_DebtID",
                         column: x => x.DebtID,

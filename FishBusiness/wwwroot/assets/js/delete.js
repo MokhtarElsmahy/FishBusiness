@@ -8,8 +8,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">عملية حذف</h4>
+                   <h6 id="deleteText" style="display:none">جارى الحذف برجاء الانتظار</h6>
                 </div>
                 <div class="modal-body delete-modal-body">
                     
@@ -25,7 +24,7 @@
     //Delete Action
     $(".delete").on('click', (e) => {
         e.preventDefault();
-
+        
         target = e.target;
         var Id = $(target).data('id');
         var controller = $(target).data('controller');
@@ -39,8 +38,10 @@
     });
 
     $("#confirm-delete").on('click', () => {
+        $("#deleteText").show()
         $.get(url)
             .done((result) => {
+                $("#deleteText").hide()
                 Swal.fire({
                     position: 'top-end',
                     icon: 'success',
@@ -52,6 +53,7 @@
                 if (!redirectUrl) {
                     return $(target).parent().parent().hide("slow");
                 }
+             
                 window.location.href = redirectUrl;
             })
             .fail((error) => {

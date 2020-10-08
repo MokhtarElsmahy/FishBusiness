@@ -19,5 +19,18 @@ namespace FishBusiness.ViewModels
 
         public decimal payment { get; set; }
         public decimal CurrentDebt { get; set; }
+
+        public string FishNames { get; set; }
+        public string ProductionTypes { get; set; }
+        public string qtys { get; set; }
+        public string unitprices { get; set; }
+        public string boats { get; set; }
+       
+
+        //FishNames: FishNames,
+        //                ProductionTypes: ProductionTypes,
+        //                qtys: qtys,
+        //                unitprices: unitprices,
+        //                boats: boats
     }
 }

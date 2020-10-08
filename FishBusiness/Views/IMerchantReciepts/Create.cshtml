@@ -42,13 +42,26 @@
                     <div data-section="s-new" class="task-list-container" data-connect="sorting">
                         <div class="connect-sorting">
                             <div class="task-container-header">
-                                <h6 class="s-heading" data-listTitle="In Progress">اضافة تفاصيل الفاتورة</h6>
+                                <h6 class="s-heading" data-listTitle="In Progress">اختر التاريخ اولا</h6>
 
                             </div>
 
                             <div class="connect-sorting-content" data-sortable="true">
 
 
+
+                                <div data-draggable="true" class="card simple-title-task" style="">
+                                    <div class="card-body">
+
+                                        <div class="task-header">
+                                            <div class="form-group">
+                                                <label class="control-label">تاريخ الفاتوره</label>
+                                                <input asp-for="ImerchantReciept.Date" id="MerRecDate" class="form-control" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
                                 <div data-draggable="true" class="card simple-title-task" style="">
                                     <div class="card-body">
 
@@ -64,19 +77,6 @@
 
                                     </div>
                                 </div>
-                                <div data-draggable="true" class="card simple-title-task" style="">
-                                    <div class="card-body">
-
-                                        <div class="task-header">
-                                            <div class="form-group">
-                                                <label class="control-label">تاريخ الفاتوره</label>
-                                                <input asp-for="ImerchantReciept.Date" id="MerRecDate" class="form-control" />
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-
 
                             </div>
 
@@ -125,10 +125,11 @@
                             <tr>
                                 <td class="total text-info">اجمالي الفاتورة</td>
                                 <td class="total" id="TotalBeforePayment">0</td>
-
+                                <td><img src="~/assets/img/loader.gif" id="MerchantLoader" style="width:70px;height:70px;display:none;" /></td>
 
                             </tr>
-                            <tr class="total">
+                            <tr style="display:none;">
+                                @*class="total"*@
                                 <td>المدفوع من الديون</td>
                                 <td colspan="2">
                                     <div class="form-group">
@@ -138,10 +139,11 @@
                                 </td>
 
                                 <td>
-                                    <button class="btn btn-secondary" id="btnCalc">خصم</button>
+                                    <button class="btn btn-primary" id="btnCalc">خصم</button>
                                 </td>
                             </tr>
-                            <tr class="total">
+                            <tr style="display:none;">
+                                @*class="total"*@
                                 <td></td>
                                 <td>
                                     <div class="n-chk">
@@ -157,7 +159,8 @@
                                 <td id="PreviousDebts"></td>
                                 <td></td>
                                 <td>
-                                    <button type="submit" form="Addform" class="btn btn-success" id="btnSave">حفظ الفاتورة</button>
+                                    <button type="submit" form="Addform" class="btn btn-primary" id="btnSave">حفظ الفاتورة</button>
+                                    <input type="hidden" id="RecID" />
                                 </td>
                             </tr>
                         </tfoot>
@@ -177,9 +180,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">التفاصيل الخاصة بالاسماك</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
+                <img src="~/assets/img/loader.gif" id="addLoader" style="width:70px;height:70px;display:none;" />
             </div>
             <div class="modal-body">
                 <form id="MyForm">
@@ -215,9 +216,9 @@
 <hr />
 
 
-<div>
+@*<div>
     <a asp-action="Index">Back to List</a>
-</div>
+</div>*@
 
 @section scripts{
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
@@ -228,18 +229,22 @@
 
 
             $("#MerDDL").on("change", function () {
-
+                $("#MerchantLoader").show();
                 var id = $("#MerDDL").val()
+                var Date = $("#MerRecDate").val()
                 $.ajax({
-                    url: "/IMerchantReciepts/GetMerchant/",
+                    url: "/IMerchantReciepts/GetMerchantt/",
                     type: "GET",
                     contentType: "json",
                     data: {
-                        id: id
+                        id: id,
+                        Date:Date
                     },
                     traditional: true,
                     success: function (result) {
                         $('#PreviousDebts').text(result.debts)
+                        $('#RecID').val(result.recID)
+                        $("#MerchantLoader").hide();
                     },
                     error: function () {
                         alert("Something went wrong call the police");
@@ -252,6 +257,7 @@
             $("#NewRows").on("click", function () {
                 var fd = $("#MyForm").serialize();
                 var body = $("#TBody");
+                $("#addLoader").show();
                 var TotalBeforPayment = $("#TotalBeforePayment");
                 $.ajax({
                     url: "/IMerchantReciepts/SaveItems/",
@@ -273,7 +279,7 @@
 
                         $('#TotalBeforePayment').text(parseFloat($('#TotalBeforePayment').text()) + result.total);
 
-
+                        $("#addLoader").hide();
                     },
                     error: function () {
                         alert("Something went wrong call the police");
@@ -283,29 +289,57 @@
 
             $("#btnSave").on("click", function (e) {
 
-
-
+                $("#MerchantLoader").show();
+                var RecID = parseInt($('#RecID').val());
                 var CurrentDebt = parseFloat($('#PreviousDebts').text());
                 var TotalBeforePayment = parseFloat($('#TotalBeforePayment').text());
                 var payFromDebt = parseFloat($('#payFromDebt').val());
                 var MerchantID = parseInt($("#MerDDL").val());
                 var MerRecDate = $("#MerRecDate").val();
                 var IsCash = $('#IsCash').is(":checked")
-                var FishNames = new cookieList("FishNames"); // all items in the array.
+
+
+                //var FishNames = new cookieList("FishNames"); // all items in the array.
+                //$('.fishes').each(function () {
+                //    FishNames.add($(this).text());
+                //});
+                //var ProductionTypes = new cookieList("ProductionTypes"); // all items in the array.
+                //$('.productions').each(function () {
+                //    ProductionTypes.add($(this).text());
+                //});
+                //var qtys = new cookieList("qtys"); // all items in the array.
+                //$('.qtys').each(function () {
+                //    qtys.add($(this).text());
+                //});
+                //var unitprices = new cookieList("unitprices"); // all items in the array.
+                //$('.unitprices').each(function () {
+                //    unitprices.add($(this).text());
+                //})
+
+                var FishNames = ""
                 $('.fishes').each(function () {
-                    FishNames.add($(this).text());
-                });
-                var ProductionTypes = new cookieList("ProductionTypes"); // all items in the array.
+                    FishNames += $(this).text();
+                    FishNames += ',';
+
+                })
+                var ProductionTypes = ""
                 $('.productions').each(function () {
-                    ProductionTypes.add($(this).text());
-                });
-                var qtys = new cookieList("qtys"); // all items in the array.
+                    ProductionTypes += $(this).text();
+                    ProductionTypes += ',';
+
+                })
+                var qtys = ""
                 $('.qtys').each(function () {
-                    qtys.add($(this).text());
-                });
-                var unitprices = new cookieList("unitprices"); // all items in the array.
+                    qtys += $(this).text();
+                    qtys += ',';
+
+                })
+
+                var unitprices = ""
                 $('.unitprices').each(function () {
-                    unitprices.add($(this).text());
+                    unitprices += $(this).text();
+                    unitprices += ',';
+
                 })
 
                 var body = $("#TBody");
@@ -315,7 +349,8 @@
                     TotalOfReciept: TotalBeforePayment,
                     payment: payFromDebt,
                     CurrentDebt: CurrentDebt,
-                    IsCash: IsCash
+                    IsCash: IsCash,
+                   
                 };
 
                 $.ajax({
@@ -330,7 +365,12 @@
                         TotalOfReciept: TotalBeforePayment,
                         payment: payFromDebt,
                         CurrentDebt: CurrentDebt,
-                        IsCash: IsCash
+                        IsCash: IsCash,
+                        RecID: RecID,
+                        FishNames: FishNames,
+                        ProductionTypes: ProductionTypes,
+                        qtys: qtys,
+                        unitprices: unitprices
                     },
                     traditional: true,
                     statusCode: {
@@ -340,7 +380,15 @@
                     },
                     success: function (result) {
                         if (result.message == "success") {
-                            window.location.href = "/IMerchantReciepts/Details/" + result.id;
+                            // window.location.href = "/IMerchantReciepts/Details/" + result.id;
+                            $("#MerchantLoader").hide();
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'تم حفظ الفاتورة بنجاح',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
                         } else {
                             alert("خطا !!!!! تاكد من ادخل التاريخ")
                             body.html("");

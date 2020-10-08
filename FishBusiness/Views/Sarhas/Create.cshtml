@@ -25,7 +25,7 @@
 
         <div class="page-header">
             <div class="page-title">
-                <h3>انشاء سرحة جديدة</h3>
+                <h3>صرف هوالك جديده لمركب هيسرح</h3>
             </div>
         </div>
 
@@ -64,12 +64,12 @@
                                         <input asp-for="Sarha.NumberOfBoxes" type="text" class="form-control" id="NoBoxes">
                                         <span asp-validation-for="Sarha.NumberOfBoxes" class="text-danger"></span>
                                     </div>
-                                    <div class="form-group">
-                                        <label asp-for="Sarha.DateOfSarha"></label>
-                                        <input asp-for="Sarha.DateOfSarha" class="form-control" id="DateOfSarha">
-                                        <span asp-validation-for="Sarha.DateOfSarha" class="text-danger"></span>
+                                    @*<div class="form-group">
+                <label asp-for="Sarha.DateOfSarha"></label>
+                <input asp-for="Sarha.DateOfSarha"  class="form-control" id="DateOfSarha">
+                <span asp-validation-for="Sarha.DateOfSarha" class="text-danger"></span>
 
-                                    </div>
+            </div>*@
                                 </section>
                                 <h3>بيانات الهالك</h3>
                                 <section>
@@ -77,16 +77,32 @@
                                     {
                                         <label> @Html.DisplayFor(modelItem => item.DebtName)</label>
                                         <div class="row">
-                                            <div class="col-6"> <input name="price" class="form-control Halekprice" id="exampleFormControlInput1"></div>
-                                            <div class="col-6">
-                                                <select class="form-control personDDL" name="PersonID" asp-items="ViewBag.People as SelectList">
-                                                    <option value="-1">اختر شخص</option>
-                                                </select>
-                                            </div>
+                                            <div class="col-12"> <input name="price" class="form-control Halekprice" id="exampleFormControlInput1"></div>
+                                            @*<div class="col-6">
+                        <select class="form-control personDDL" name="PersonID" asp-items="ViewBag.People as SelectList">
+                            <option value="-1">اختر شخص</option>
+                        </select>
+                    </div>*@
                                         </div>
 
 
                                     }
+                                </section>
+                                <h3>انهاء</h3>
+                                <section>
+                                    <div class="row mt-5">
+                                        <div class="col-sm-4">
+
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <button type="button" id="clickable" class="btn btn-primary mb-4 mr-2 btn-lg">اضغط لحفظ بيانات السرحة </button>
+                                        </div>
+                                        <div class="col-sm-4">
+
+                                        </div>
+
+                                    </div>
+
                                 </section>
                                 <h3>انهاء</h3>
                                 <section>
@@ -189,35 +205,24 @@ $("selector").steps({
                 $('.Halekprice').each(function () {
                     if ($(this).val()!='') {
                         list.add($(this).val());
+                    } else {
+                        list.add('0');
                     }
                 })
 
-                var listPerson = new cookieList("MyItemsPerson"); // all items in the array.
-                $('.personDDL').each(function () {
-                    if ($(this).val()!='-1') {
-                        listPerson.add($(this).val());
-                    }
-                })
                 var BoatID = parseInt($("#BoatDDL").val())
                 var NoFisherMen = parseInt($("#NoFisherMen").val())
                 var NoBoxes = parseInt($("#NoBoxes").val())
                 var DateOfSarha = $("#DateOfSarha").val()
-                //var personsCookie = listPerson.items()
-                //var pricesCookie = list.items()
+               
                  var settings = {
                      BoatID: BoatID,
                      NoFisherMen: NoFisherMen,
                      NoBoxes: NoBoxes,
                      DateOfSarha: DateOfSarha,
-                     //pricesCookie: pricesCookie,
-                     //personsCookie: personsCookie
+                   
                 };
-                //alert(list.items())
-                //alert(listPerson.items())
-                //alert(BoatID)
-                //alert(NoFisherMen)
-                //alert(NoBoxes)
-                //alert(DateOfSarha)
+              
                 $.ajax({
                     url: "/Sarhas/Create",
                     type: "POST",
@@ -226,7 +231,7 @@ $("selector").steps({
                     data: JSON.stringify(settings),
                     success: function (result) {
                         if (result.message == "success") {
-                            window.location.href = "/Sarhas/Details/" + result.id;
+                            window.location.href = "/Boats/Profile/" + result.id;
                         }
                     }
 

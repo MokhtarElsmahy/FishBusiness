@@ -24,7 +24,7 @@
 
         <div class="page-header">
             <div class="page-title">
-                <h3>تعديل بيانات السرحة</h3>
+                <h3>تعديل او اضافة بيانات هالك</h3>
             </div>
         </div>
 
@@ -36,11 +36,11 @@
                     <div class="widget-header">
                         <div class="row">
                             <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                                <h4> بيانات السرحة</h4>
+                                <h4> بيانات هالك</h4>
                             </div>
                         </div>
                     </div>
-                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                    <form>
                         <input type="hidden" asp-for="Sarha.SarhaID" />
                         <div class="widget-content widget-content-area">
                             <div id="circle-basic" class="">
@@ -49,34 +49,58 @@
                                 <section>
                                     <div class="form-group">
                                         <label asp-for="Sarha.Boat.BoatName"></label>
-                                        <select class="form-control" asp-for="Sarha.BoatID" asp-items="ViewBag.Boats as SelectList">
+                                        <select class="form-control" asp-for="Sarha.BoatID" id="BoatDDL" asp-items="ViewBag.Boats as SelectList">
                                             <option>اختر اسم المركب</option>
                                         </select>
                                         <span asp-validation-for="Sarha.Boat.BoatName" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
                                         <label asp-for="Sarha.NumberOfFishermen"></label>
-                                        <input asp-for="Sarha.NumberOfFishermen" type="text" class="form-control" id="exampleFormControlInput1">
+                                        <input asp-for="Sarha.NumberOfFishermen" type="text" class="form-control" id="NoFisherMen">
                                         <span asp-validation-for="Sarha.NumberOfFishermen" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
                                         <label asp-for="Sarha.NumberOfBoxes"></label>
-                                        <input asp-for="Sarha.NumberOfBoxes" type="text" class="form-control" id="exampleFormControlInput1">
+                                        <input asp-for="Sarha.NumberOfBoxes" type="text" class="form-control" id="NoBoxes">
                                         <span asp-validation-for="Sarha.NumberOfBoxes" class="text-danger"></span>
                                     </div>
                                     <div class="form-group">
                                         <label asp-for="Sarha.DateOfSarha"></label>
-                                        <input asp-for="Sarha.DateOfSarha" class="form-control" id="exampleFormControlInput1">
+                                        <input asp-for="Sarha.DateOfSarha" class="form-control" id="DateOfSarha">
                                         <span asp-validation-for="Sarha.DateOfSarha" class="text-danger"></span>
 
                                     </div>
                                 </section>
                                 <h3>بيانات الهالك</h3>
                                 <section>
-                                    @foreach (var item in Model.Debts_Sarha)
+                                    @foreach (var item in Model.Debts_Sarhas)
                                     {
                                         <label> @Html.DisplayFor(modelItem => item.Debt.DebtName)</label>
-                                        <input asp-for="@item.Price" class="form-control Halekprice" id="exampleFormControlInput1">
+                                        @*<input asp-for="@item.Price" class="form-control Halekprice" id="exampleFormControlInput1">*@
+
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <input asp-for="@item.Price" class="form-control Halekprice" id="exampleFormControlInput1">
+                                            </div>
+                                            @*<div class="col-6">
+                                                <select class="form-control" name="PersonID" asp-items="ViewBag.People as SelectList" disabled>
+                                                    <option value="@item.Person.PersonID">@item.Person.Name</option>
+                                                </select>
+                                            </div>*@
+                                        </div>
+                                    }
+                                    @foreach (var item in Model.OtherDebts)
+                                    {
+
+                                        <label> @Html.DisplayFor(modelItem => item.DebtName)</label>
+                                      
+
+                                        <div class="row">
+
+                                            <div class="col-12">
+                                                <input type="text" class="form-control NHalekprice" id="exampleFormControlInput1">
+                                            </div>
+                                        </div>
                                     }
                                 </section>
                                 <h3>انهاء</h3>
@@ -86,7 +110,7 @@
 
                                         </div>
                                         <div class="col-sm-4">
-                                            <button type="submit" id="clickable" class="btn btn-primary mb-4 mr-2 btn-lg">اضغط لحفظ بيانات السرحة </button>
+                                            <button type="button" id="clickable" class="btn btn-primary mb-4 mr-2 btn-lg">اضغط لحفظ بيانات السرحة </button>
                                         </div>
                                         <div class="col-sm-4">
 
@@ -116,7 +140,7 @@ $("selector").steps({
 
 
         </div>
-
+        <input type="hidden" value="@Model.Sarha.SarhaID"  id="sarhaID"/>
     </div>
 </div>
 
@@ -150,7 +174,7 @@ $("selector").steps({
                     //Save the items to a cookie.
                     //EDIT: Modified from linked answer by Nick see
                     //      http://stackoverflow.com/questions/3387251/how-to-store-array-in-jquery-cookie
-                    $.cookie(cookieName, items.join(','),{ expires: date });
+                    $.cookie(cookieName, items.join(','), { expires: date });
                 },
                 "remove": function (val) {
                     //EDIT: Thx to Assef and luke for remove.
@@ -169,15 +193,76 @@ $("selector").steps({
                 }
             }
         }
-        $("#clickable").click(function () {
-            document.cookie = 'MyItems' + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-            //cookieList("MyItems").clear()
-            var list = new cookieList("MyItems"); // all items in the array.
-            $('.Halekprice').each(function () {
-                list.add($(this).val());
-            })
-        });
+      
+        //$("#clickable").click(function () {
+        //    document.cookie = 'MyItems' + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+        //    //cookieList("MyItems").clear()
+        //    var list = new cookieList("MyItems"); // all items in the array.
+        //    $('.Halekprice').each(function () {
+        //        list.add($(this).val());
+        //    })
+        //});
+        $(document).ready(function () {
 
+            $("#clickable").on('click', function () {
+                 
+                       var list = "" 
+                       $('.Halekprice').each(function () {
+                           list += $(this).val();
+                           list += ',';
+                          
+                       })
+
+
+                    
+                       var Nlist = "";
+                       $('.NHalekprice').each(function () {
+                           if ($(this).val() != '') {
+                            
+                               Nlist += $(this).val()
+                               Nlist += ',';
+                             
+                           } else {
+                               Nlist += '0'
+                               Nlist += ',';
+                           }
+                       })
+
+                      
+                      
+                       var BoatID = parseInt($("#BoatDDL").val())
+                       var NoFisherMen = parseInt($("#NoFisherMen").val())
+                       var NoBoxes = parseInt($("#NoBoxes").val())
+                       var DateOfSarha = $("#DateOfSarha").val()
+                       var id = $("#sarhaID").val()
+                            
+                       $.ajax({
+                              url: "/Sarhas/Editing",
+                              type: "POST",
+                        
+                              dataType: "json",
+                              data: {
+                                  BoatID: BoatID,
+                                  NoFisherMen: NoFisherMen,
+                                  NoBoxes: NoBoxes,
+                                  DateOfSarha: DateOfSarha,
+                                  id: id,
+                                  OldHalekPrices: list,
+                                  NHalekPrices: Nlist,
+                              },
+                              success: function (result) {
+                                  if (result.message == "success") {
+                                      window.location.href = "/Boats/Profile/" + result.id;
+                                  }
+                              }
+                           
+                        })
+
+             
+                   
+            })
+                  
+        })
     </script>
 
 }

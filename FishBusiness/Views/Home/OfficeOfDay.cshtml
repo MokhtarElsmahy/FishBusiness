@@ -30,7 +30,9 @@
         </div>
     </div>
 
-    <div class="container row">
+ 
+
+    @*<div class="container row">
 
         <div class="form-group">
             <label class="control-label" style="margin-right:12px;">رصيد باقى</label>
@@ -38,14 +40,14 @@
             <span class="text-danger"></span>
         </div>
 
-    </div>
+    </div>*@
     <div class="container row">
 
 
         <label class="control-label" style="margin-right:12px;padding-top: 7px;">اختر تاريخ</label>
         <input class="form-control col-2" type="date" style="margin-right:5px;" id="Date" />
         <button type="button" class="btn btn-primary" style="margin-right:5px;" id="btnConfirm">تأكيد</button>
-      
+
 
     </div>
     <div class="row layout-top-spacing" id="cancel-row">
@@ -71,47 +73,56 @@
 
                                 <td class="MerchantName">العمولات</td>
                                 <td class="Price" id="Commisions"> @Model.Commisions</td>
-                                <td><a class="btn btn-primary" asp-action="GetTodaysReceiptsCommission">تفاصيل</a></td>
+                                @*<td><a class="btn btn-primary" asp-action="GetTodaysReceiptsCommission">تفاصيل</a></td>*@
 
                             </tr>
                             <tr>
 
                                 <td class="MerchantName">فواتير سافرت</td>
                                 <td class="Price" id="IsellerReceiptsTotal"> @Model.IsellerReceiptsTotal</td>
-                                <td><a class="btn btn-primary" asp-action="GetTodaysIsellerReceipts">تفاصيل</a></td>
+                                @*<td><a class="btn btn-primary" asp-action="GetTodaysIsellerReceipts">تفاصيل</a></td>*@
 
                             </tr>
                             <tr>
                                 <td class="MerchantName">فواتير خارجية</td>
                                 <td class="Price" id="externalReceiptsTotal"> @Model.externalReceiptsTotal</td>
-                                <td><a class="btn btn-primary" asp-action="GetTodaysExternalReceiptsForSharedBoats">تفاصيل</a></td>
+                                @*<td><a class="btn btn-primary" asp-action="GetTodaysExternalReceiptsForSharedBoats">تفاصيل</a></td>*@
                             </tr>
                             <tr>
 
                                 <td class="MerchantName">ايراد مراكب شريكة</td>
                                 <td class="Price" id="SharedBoatsReceiptsTotal"> @Model.SharedBoatsReceiptsTotal</td>
-                                <td><a class="btn btn-primary" asp-action="GetTodaysSharedBoatsIncome">تفاصيل</a></td>
+                                @*<td><a class="btn btn-primary" asp-action="GetTodaysSharedBoatsIncome">تفاصيل</a></td>*@
 
                             </tr>
+
+                            <tr>
+
+                                <td class="MerchantName">تصفيه مراكب شريكه</td>
+                                <td class="Price"> @Model.CheckoutsOfSharedBoats</td>
+                                @*<td><a class="btn btn-primary" asp-action="CheckoutsOfSharedBoats">تفاصيل</a></td>*@
+
+                            </tr>
+
                             <tr>
 
                                 <td class="MerchantName">المحصل</td>
                                 <td class="Price" id="collectorForUsTotal"> @Model.collectorForUsTotal</td>
-                                <td><a class="btn btn-primary" asp-controller="Collectings" asp-action="ProfileOfDay">تفاصيل</a></td>
+                                @*<td><a class="btn btn-primary" asp-controller="Collectings" asp-action="ProfileOfDay">تفاصيل</a></td>*@
 
                             </tr>
                             <tr>
 
                                 <td class="MerchantName">مدفوعات ريس مركب</td>
                                 <td class="Price" id="LeaderLoansPaybackTotal"> @Model.LeaderLoansPaybackTotal</td>
-                                <td><a class="btn btn-primary" asp-action="GetTodaysLeaderLoansPayBack">تفاصيل</a></td>
+                                @*<td><a class="btn btn-primary" asp-action="GetTodaysLeaderLoansPayBack">تفاصيل</a></td>*@
 
                             </tr>
                             <tr>
 
                                 <td class="MerchantName">مبيعات</td>
                                 <td class="Price" id="SalesTotal"> @Model.SalesTotal</td>
-                                <td><a class="btn btn-primary" asp-controller="TotalOfProfits" asp-action="SummationOfAday">تفاصيل</a></td>
+                                @*<td><a class="btn btn-primary" asp-controller="TotalOfProfits" asp-action="SummationOfAday">تفاصيل</a></td>*@
 
                             </tr>
                         </tbody>
@@ -176,14 +187,14 @@
 
                                 <td class="MerchantName">مصروفات سفر</td>
                                 <td class="Price" id="BuyingTotal"> @Model.BuyingTotal</td>
-                                <td><a class="btn btn-primary" asp-controller="TotalOfProfits" asp-action="SummationOfAday">تفاصيل</a></td>
+                                @*<td><a class="btn btn-primary" asp-controller="TotalOfProfits" asp-action="SummationOfAday">تفاصيل</a></td>*@
 
                             </tr>
                             <tr>
 
                                 <td class="MerchantName">مصروفات محصل</td>
                                 <td class="Price" id="CollectorTotalforMerchantsAndHalek"> @Model.CollectorTotalforMerchantsAndHalek</td>
-                                <td><a class="btn btn-primary" asp-action="ProfileOfDay" asp-controller="Collectings">تفاصيل</a></td>
+                                @*<td><a class="btn btn-primary" asp-action="ProfileOfDay" asp-controller="Collectings">تفاصيل</a></td>*@
 
                             </tr>
 

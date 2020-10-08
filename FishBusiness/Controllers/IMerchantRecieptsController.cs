@@ -20,7 +20,14 @@ namespace FishBusiness.Controllers
         {
             _context = context;
         }
-
+        public DateTime TimeNow()
+        {
+            TimeZone localZone = TimeZone.CurrentTimeZone;
+            DateTime currentDate = DateTime.Now;
+            DateTime currentUTC =
+           localZone.ToUniversalTime(currentDate);
+            return currentUTC.AddHours(2);
+        }
         // GET: IMerchantReciepts
         public async Task<IActionResult> Index()
         {
@@ -57,7 +64,7 @@ namespace FishBusiness.Controllers
         // GET: IMerchantReciepts/Create
         public IActionResult Create()
         {
-            ViewData["MerchantID"] = new SelectList(_context.Merchants, "MerchantID", "MerchantName");
+            ViewData["MerchantID"] = new SelectList(_context.Merchants.Where(c=>c.IsOwner==false && c.IsFromOutsideCity==false), "MerchantID", "MerchantName");
             ViewData["FishID"] = new SelectList(_context.Fishes, "FishID", "FishName");
 
 
@@ -73,43 +80,87 @@ namespace FishBusiness.Controllers
         {
             if (data.MerchantID != 0)
             {
-                IMerchantReciept ImerchantReciept = new IMerchantReciept() { Date = data.Date, MerchantID = data.MerchantID, TotalOfReciept = data.TotalOfReciept };
-                _context.Add(ImerchantReciept);
-                PaidForMerchant p = new PaidForMerchant() { MerchantID = data.MerchantID, Date = data.Date, Payment = data.payment, PreviousDebtsForMerchant = data.CurrentDebt, IsCash = !data.IsCash , IsPaidForUs=false , PersonID=3 };
-                _context.Add(p);
+                //IMerchantReciept ImerchantReciept = new IMerchantReciept() { Date = data.Date, MerchantID = data.MerchantID, TotalOfReciept = data.TotalOfReciept };
+                //_context.Add(ImerchantReciept);
+                //PaidForMerchant p = new PaidForMerchant() { MerchantID = data.MerchantID, Date = data.Date, Payment = data.payment, PreviousDebtsForMerchant = data.CurrentDebt, IsCash = !data.IsCash , IsPaidForUs=false , PersonID=3 };
+                //_context.Add(p);
 
-                var person = _context.People.Find(3);
-                person.credit -= data.payment;
+                //var person = _context.People.Find(3);
+                //person.credit -= data.payment;
                 Merchant merchant = _context.Merchants.Find(data.MerchantID);
                 merchant.PreviousDebtsForMerchant = data.CurrentDebt;
                 _context.SaveChanges();
 
 
-                var FishesCookie = Request.Cookies["FishNames"];
-                var ProductionTypesCookie = Request.Cookies["ProductionTypes"];
-                var qtysCookie = Request.Cookies["qtys"];
-                var unitpricesCookie = Request.Cookies["unitprices"];
+                var FishesCookie = data.FishNames.TrimEnd(data.FishNames[data.FishNames.Length - 1]);
+                var ProductionTypesCookie = data.ProductionTypes.TrimEnd(data.ProductionTypes[data.ProductionTypes.Length - 1]);
+                var qtysCookie = data.qtys.TrimEnd(data.qtys[data.qtys.Length - 1]);
+                var unitpricesCookie = data.unitprices.TrimEnd(data.unitprices[data.unitprices.Length - 1]);
 
                 string[] Fishes = FishesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 string[] Productions = ProductionTypesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
 
                 int[] qtys = qtysCookie.Split(",").Select(c => Convert.ToInt32(c)).ToArray();
                 decimal[] unitPrices = unitpricesCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
+
+                IMerchantReciept imerchantReciept;
+                Merchant m;
+                if (data.RecID == 0)
+                {
+                    imerchantReciept = new IMerchantReciept() { Date = data.Date, MerchantID = data.MerchantID, TotalOfReciept = data.TotalOfReciept };
+                    _context.Add(imerchantReciept);
+                     _context.SaveChanges();
+                }
+                else
+                {
+                    imerchantReciept = _context.IMerchantReciept.Find(data.RecID);
+                    m = _context.Merchants.Find(data.MerchantID);
+                    imerchantReciept.TotalOfReciept += data.TotalOfReciept;
+                   
+                }
+
                 for (int i = 0; i < Fishes.Length; i++)
                 {
                     var fish = _context.Fishes.Single(x => x.FishName == Fishes[i]);
                     var Produc = _context.ProductionTypes.Single(x => x.ProductionName == Productions[i]);
 
-                    IMerchantRecieptItem IMerchantRecieptItems = new IMerchantRecieptItem()
+                    var TodaysIMerchantRecItems = _context.IMerchantRecieptItem.Include(c => c.IMerchantReciept).ToList().Where(c => c.IMerchantReciept.Date.ToShortDateString() == TimeNow().ToShortDateString() && c.IMerchantRecieptID == imerchantReciept.IMerchantRecieptID).ToList();
+                    var IMerchantRecieptItems = TodaysIMerchantRecItems.Where(c => c.FishID == fish.FishID && c.UnitPrice == unitPrices[i]).FirstOrDefault();
+                    if (IMerchantRecieptItems != null)
                     {
-                        IMerchantRecieptID = ImerchantReciept.IMerchantRecieptID,
-                        FishID = fish.FishID,
-                        ProductionTypeID = Produc.ProductionTypeID,
-                        Qty = qtys[i],
-                        UnitPrice = unitPrices[i],
+                        if (IMerchantRecieptItems.ProductionTypeID == Produc.ProductionTypeID)
+                        {
+                            IMerchantRecieptItems.Qty += qtys[i];
+                        }
+                        else
+                        {
+                            IMerchantRecieptItem NewIMerchantRecieptItems = new IMerchantRecieptItem()
+                            {
+                                IMerchantRecieptID = imerchantReciept.IMerchantRecieptID,
+                                FishID = fish.FishID,
+                                ProductionTypeID = Produc.ProductionTypeID,
+                                Qty = qtys[i],
+                                UnitPrice = unitPrices[i],
 
-                    };
-                    var s = _context.Stocks.Where(c => c.FishID == IMerchantRecieptItems.FishID).FirstOrDefault();
+                            }; _context.IMerchantRecieptItem.Add(NewIMerchantRecieptItems);
+                        }
+
+                    }
+                    else
+                    {
+                        IMerchantRecieptItem NewIMerchantRecieptItems = new IMerchantRecieptItem()
+                        {
+                            IMerchantRecieptID = imerchantReciept.IMerchantRecieptID,
+                            FishID = fish.FishID,
+                            ProductionTypeID = Produc.ProductionTypeID,
+                            Qty = qtys[i],
+                            UnitPrice = unitPrices[i],
+
+                        }; _context.IMerchantRecieptItem.Add(NewIMerchantRecieptItems);
+                    }
+                    _context.SaveChanges();
+                   
+                    var s = _context.Stocks.Where(c => c.FishID == fish.FishID).FirstOrDefault();
                     if (s != null)
                     {
                         if (s.ProductionTypeID == Produc.ProductionTypeID)
@@ -119,18 +170,20 @@ namespace FishBusiness.Controllers
                         }
                         else
                         {
+                            
                             Stock stoc = new Stock()
                             {
                                 FishID = fish.FishID,
                                 ProductionTypeID = Produc.ProductionTypeID,
                                 Qty = qtys[i],
-                                Date = ImerchantReciept.Date
+                                Date = imerchantReciept.Date
                             };
                             _context.Stocks.Add(stoc);
                         }
                     }
                     else
                     {
+                     
                         Stock stock = new Stock()
                         {
                             FishID = fish.FishID,
@@ -141,7 +194,7 @@ namespace FishBusiness.Controllers
                     }
 
 
-                    _context.IMerchantRecieptItem.Add(IMerchantRecieptItems);
+                    //_context.IMerchantRecieptItem.Add(IMerchantRecieptItems);
                     _context.SaveChanges();
 
 
@@ -161,7 +214,7 @@ namespace FishBusiness.Controllers
                 }
 
                 _context.SaveChanges();
-                return Json(new { message = "success", id = ImerchantReciept.IMerchantRecieptID });
+                return Json(new { message = "success", id = imerchantReciept.IMerchantRecieptID });
                 //return RedirectToAction(nameof(Details),new { id= ImerchantReciept.IMerchantRecieptID });
             }
             //  ViewData["MerchantID"] = new SelectList(_context.Merchants, "MerchantID", "MerchantName", model.MerchantID);
@@ -176,6 +229,30 @@ namespace FishBusiness.Controllers
                 return Json(new { debts = m.PreviousDebtsForMerchant });
             }
             return Json(new { debts = 0 });
+
+        }
+
+        public IActionResult GetMerchantt(int? id, DateTime date)
+        {
+                Merchant m = _context.Merchants.Find(id);
+           
+                var rowsOfRec = _context.IMerchantReciept.Where(i => i.MerchantID == id);
+                int recID = 0;
+                if (rowsOfRec.Any())
+                {
+                    recID = rowsOfRec.Max(i => i.IMerchantRecieptID);
+                }
+                var rec = _context.IMerchantReciept.Find(recID);
+                if (rec != null)
+                {
+                    if (rec.Date.ToShortDateString() == date.ToShortDateString())
+                    {
+                        return Json(new { RecID = recID, debts = m.PreviousDebtsForMerchant });
+                    }
+                    return Json(new { RecID = 0, debts = m.PreviousDebtsForMerchant });
+                }
+
+                return Json(new { RecID = 0, debts = m.PreviousDebtsForMerchant });
 
         }
 

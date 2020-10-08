@@ -26,6 +26,9 @@ namespace FishBusiness.Models
         [Required(ErrorMessage ="برجاء ادخال سعر الوحدة")]
         public decimal UnitPrice { get; set; }
 
+        public Guid? AmountId { get; set; }
+
+
         [Display(Name = "الكمية")]
         [Required(ErrorMessage = "برجاء ادخال الكمية")]
         public double Qty { get; set; }

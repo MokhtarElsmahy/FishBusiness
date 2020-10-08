@@ -56,14 +56,16 @@ namespace FishBusiness.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
+       // [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ExpenseID,BoatID,Price,Cause,Date")] Expense expense)
         {
             if (ModelState.IsValid)
             {
+                expense.PersonID = 1;
                 _context.Add(expense);
                 Person p = _context.People.Find(1);
                 p.credit -= expense.Price;
+
                 Boat boat = await _context.Boats.FindAsync(expense.BoatID);
                 boat.TotalOfExpenses += expense.Price;
 

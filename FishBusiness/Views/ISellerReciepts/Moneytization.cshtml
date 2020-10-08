@@ -152,13 +152,13 @@
                                                             <td>
                                                             </td>
                                                         </tr>
-                                                        <tr>
+                                                        <tr id="fileUploadSection">
                                                             <td>
                                                                 <div class="text-info">صورة الفاتورة</div>
                                                             </td>
                                                             <td>
-                                                                <input id="files" name="files" type="file" size="1" onchange="loadFile(event);" />
-
+                                                                <input id="files" name="files" type="file" size="1" />
+                                                                @*onchange="loadFile(event);"*@
                                                             </td>
                                                             <td>
                                                                 <img id="SelectedImage" class="img-thumbnail" style="width:100px;height:70px;" />
@@ -192,10 +192,12 @@
             <div class="col-sm-6 col-12 align-self-center text-sm-right mb-2 ml-auto">
                 <div class="company-info">
                     <button class="btn btn-secondary" style="display:none" id="btnPrint1">طباعة</button>
+
                 </div>
             </div>
         </div>
         <input type="hidden" id="pricescookie" />
+        <input id="ImageUrl" type="hidden"  />
     </div>
 </div>
 
@@ -265,6 +267,7 @@
                                PaidFromDebt: parseFloat($("#PaidFromDebt").val()),
                                DebtsAfterCommisionAndPayment: parseFloat($("#Debts").text()),
                                Pricescookie: $("#pricescookie").val(),
+                               ImageUrl: $("#ImageUrl").val()
 
                            },
                            traditional: true,
@@ -275,60 +278,58 @@
                            },
                            success: function (result) {
                                if (result.message == "success") {
-                                   var totaldepts = result.totalDebts
-                                   var input = document.getElementById("files");
-                                   var files = input.files;
-                                   var formData = new FormData();
+                                   //var totaldepts = result.totalDebts
+                                   //var input = document.getElementById("files");
+                                   //var files = input.files;
+                                   //var formData = new FormData();
 
-                                   for (var i = 0; i != files.length; i++) {
-                                       formData.append("files", files[i]);
-                                   }
+                                   //for (var i = 0; i != files.length; i++) {
+                                   //    formData.append("files", files[i]);
+                                   //}
 
-                                   $.ajax(
-                                       {
-                                           url: "/ISellerReciepts/UploadImg?id="+result.id,
-                                           data: formData,
-                                           processData: false,
-                                           contentType: false,
-                                           type: "POST",
-                                           success: function (data) {
-                                               $("#hiddenRow").show();
+                                   //$.ajax( {
+                                   //        url: "/ISellerReciepts/UploadImg?id="+result.id,
+                                   //        data: formData,
+                                   //        processData: false,
+                                   //        contentType: false,
+                                   //        type: "POST",
+                                   //        success: function (data) {
+                                   //            $("#hiddenRow").show();
 
-                                               $("#btnSum").css("display", "none");
-                                               $("#btnSub").css("display", "none");
-                                               $("#btnSave").css("display", "none");
+                                   //            $("#btnSum").css("display", "none");
+                                   //            $("#btnSub").css("display", "none");
+                                   //            $("#btnSave").css("display", "none");
 
-                                               $("#Commision_td").text($("#Commision").val())
-                                               $("#Commision").css("display", "none");
+                                   //            $("#Commision_td").text($("#Commision").val())
+                                   //            $("#Commision").css("display", "none");
 
-                                               $("#PaidFromDebt_td").text($("#PaidFromDebt").val())
-                                               $("#PaidFromDebt").css("display", "none");
+                                   //            $("#PaidFromDebt_td").text($("#PaidFromDebt").val())
+                                   //            $("#PaidFromDebt").css("display", "none");
 
-                                               $("#btnPrint").show()
-                                               $("#btnPrint1").show();
+                                   //            $("#btnPrint").show()
+                                   //            $("#btnPrint1").show();
 
 
-                                               $('.prices').each(function () {
+                                   //            $('.prices').each(function () {
 
-                                                   $(this).prop('disabled', true)
-                                               })
+                                   //                $(this).prop('disabled', true)
+                                   //            })
 
-                                               $("#TotalDebts").text(totaldepts);
-                                               Swal.fire({
-                                                   position: 'top-end',
-                                                   icon: 'success',
-                                                   title: 'تم التسعير يمكنك الطباعه',
-                                                   showConfirmButton: false,
-                                                   timer: 3000
-                                               });
+                                   //            $("#TotalDebts").text(totaldepts);
+                                   //            Swal.fire({
+                                   //                position: 'top-end',
+                                   //                icon: 'success',
+                                   //                title: 'تم التسعير يمكنك الطباعه',
+                                   //                showConfirmButton: false,
+                                   //                timer: 3000
+                                   //            });
 
-                                           }
-                                       }
 
-                                   );
+                                   //         }
+
+                                   //});
+                                   window.location.href = "/ISellerReciepts/Details/" + result.id;
                                }
-
-
                                else {
                                    Swal.fire({
                                        icon: 'error',
@@ -364,21 +365,23 @@
 
         });
 
-        var loadFile = function (event) {
-            var reader = new FileReader();
-            reader.onload = function () {
-                var output = document.getElementById('SelectedImage');
-                output.src = reader.result;
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        };
+        //var loadFile = function (event) {
+        //    var reader = new FileReader();
+        //    reader.onload = function () {
+        //        var output = document.getElementById('SelectedImage');
+        //        output.src = reader.result;
+        //    };
+        //    reader.readAsDataURL(event.target.files[0]);
+        //};
         $("#btnPrint").click(function () {
             //$('#hideInPrint').attr("d")
             $(".hideInPrint").css("display", "none");
+            $(".fileUploadSection").css("display", "none");
             window.print()
         });
         $("#btnPrint1").click(function () {
             $(".hideInPrint").css("display", "none");
+            $(".fileUploadSection").css("display", "none");
             window.print()
         });
 
@@ -413,38 +416,44 @@
 
         });
 
-        @*$("#imageUpload").change(function () {
-		var element = this;
+        $("#files").change(function () {
+		      var element = this;
+              
+		      var formData = new FormData();
+              
+		      var totalFiles = element.files.length;
+              
+		      for (var i = 0; i < totalFiles; i++) {
+		      	var file = element.files[i];
+		      	formData.append("Photo", file);
+		      }
 
-		var formData = new FormData();
+		        $.ajax({
+		        	type: 'POST',
+		        	url: '@Url.Action("UploadImage", "ISellerReciepts")',
+		        	dataType: 'json',
+		        	data: formData,
+		        	contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        $("#ImageUrl").val(response.image);
+                       $("#SelectedImage").attr("src", response.image);
+                    },
+                    error: function () {
+                        alert("FAIL");
+                    }
+		        })
+                //.done(function (response) {
 
-		var totalFiles = element.files.length;
-
-		for (var i = 0; i < totalFiles; i++) {
-			var file = element.files[i];
-			formData.append("Photo", file);
-		}
-
-		$.ajax({
-			type: 'POST',
-			url: '@Url.Action("UploadImage", "Shared")',
-			dataType: 'json',
-			data: formData,
-			contentType: false,
-			processData: false
-		})
-        .done(function (response) {
-
-        	if(response.Success)
-        	{
-                $("#ImageURL").val(response.ImageURL);
-                $("#productImage").attr("src", response.ImageURL);
-        	}
-        })
-        .fail(function (XMLHttpRequest, textStatus, errorThrown) {
-        	alert("FAIL");
-        });
-	});*@
+                //        alert(response.ImageURL)
+                //       // $("#ImageUrl").val(response.ImageURL);
+                //      //  $("#SelectedImage").attr("src", response.ImageURL);
+        	       
+                // })
+                //.fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                //    	alert("FAIL");
+                //});
+	    });
     </script>
 }
 

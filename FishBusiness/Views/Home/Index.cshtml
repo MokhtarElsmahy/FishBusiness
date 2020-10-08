@@ -1,16 +1,22 @@
 ﻿
 @{
     ViewData["Title"] = "Index";
+
+    TimeZone localZone = TimeZone.CurrentTimeZone;
+    DateTime currentDate = DateTime.Now;
+    DateTime currentUTC =
+    localZone.ToUniversalTime(currentDate);
+    var TimeNow = currentUTC.AddHours(2);
 }
 
     <div class="layout-px-spacing">
 
         <div class="page-header m-3">
             <div class="page-title">
-                <h3>الرئيسية </h3>
+                <h3>المكتب</h3>
             </div>
             <div class="mt-4 ml-auto">
-                <a asp-action="Office" class="btn btn-primary">المكتب</a>
+                <a asp-action="Office" class="btn btn-primary">اجمالى تفاصيل اليوم</a>
             </div>
         </div>
 
@@ -27,9 +33,9 @@
                         <div class="header">
                             <div class="header-body">
                                 <h6 class="text-info">فواتير المراكب </h6>
-                                <p class="meta-date" style="margin-top:5px">
-                                    @DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
-                                    , @DateTime.Now.ToShortDateString()
+                                <p class="meta-date mt-10" style="margin-top:5px">
+                                    @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                    , @TimeNow.ToShortDateString()
                                 </p>
                             </div>
 
@@ -54,8 +60,8 @@
                             <div class="header-body">
                                 <h6 class="text-info">الفواتير الخارجية للمراكب  </h6>
                                 <p class="meta-date" style="margin-top:5px">
-                                    @DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
-                                    , @DateTime.Now.ToShortDateString()
+                                    @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                    , @TimeNow.ToShortDateString()
                                 </p>
                             </div>
 
@@ -80,8 +86,8 @@
                             <div class="header-body">
                                 <h6 class="text-info">فواتير التجار </h6>
                                 <p class="meta-date mt-10" style="margin-top:5px">
-                                    @DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
-                                    , @DateTime.Now.ToShortDateString()
+                                    @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                    , @TimeNow.ToShortDateString()
                                 </p>
                             </div>
 
@@ -107,8 +113,8 @@
                             <div class="header-body">
                                 <h6 class="text-info">المخزن </h6>
                                 <p class="meta-date mt-10" style="margin-top:5px">
-                                    @DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
-                                    , @DateTime.Now.ToShortDateString()
+                                    @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                    , @TimeNow.ToShortDateString()
                                 </p>
                             </div>
 
@@ -135,8 +141,8 @@
                             <div class="header-body">
                                 <h6 class="text-info">مكاسب اليوم </h6>
                                 <p class="meta-date mt-10" style="margin-top:5px">
-                                    @DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
-                                    , @DateTime.Now.ToShortDateString()
+                                    @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                    , @TimeNow.ToShortDateString()
                                 </p>
                             </div>
 
@@ -149,7 +155,7 @@
                                     <p class="task-left">@ViewBag.ProfitOfDay</p>
                                 }
 
-                                <p class="task-completed"><span><a asp-action="Summation" asp-controller="TotalOfProfits" asp-route-Date="@DateTime.Now" class="btn btn-warning">تجميع</a></span></p>
+                                <p class="task-completed"><span><a asp-action="Summation" asp-controller="TotalOfProfits" asp-route-Date="@TimeNow" class="btn btn-warning">تجميع</a></span></p>
                             </div>
                         </div>
                     </div>

@@ -22,6 +22,7 @@ namespace FishBusiness.ViewModels
         public decimal LeaderLoansPaybackTotal { get; set; }
         // اجمالي مبيعات
         public decimal SalesTotal { get; set; }
+        public decimal CheckoutsOfSharedBoats { get; set; }
         #endregion
 
         #region outcome

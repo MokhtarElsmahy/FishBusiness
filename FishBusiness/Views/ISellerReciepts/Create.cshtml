@@ -144,6 +144,7 @@
 
                     </table>
                     <button type="button" class="btn btn-primary" style="margin-left:5px;display:none" id="btnSave">حفظ الفاتورة</button>
+                    <img src="~/assets/img/loader.gif" id="IsellerSave" style="width:50px;height:50px;display:none" />
                 </div>
 
             </div>
@@ -157,9 +158,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">توزيع الاسماك بالمخزن</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                    </button>
+                    <img src="~/assets/img/loader.gif" id="IsellerNewRow" style="width:50px;height:50px;display:none" />
                 </div>
                 <div class="modal-body">
                     <form id="MyForm">
@@ -167,6 +166,7 @@
                         <div class="form-group">
                             <label class="control-label">نوع السمك</label>
                             <select class="form-control" id="FishIDDDL" name="StockID">
+                                <option value="-1">اختر</option>
                                 @foreach (var item in Model.Stocks)
                                 {
                                     <option value="@item.StockID">@item.Fish.FishName</option>
@@ -216,7 +216,7 @@
                 
                 var StockID = $("#FishIDDDL").val()
                 var FishName = $('#FishIDDDL option:selected').text()
-
+                $("#IsellerNewRow").show();
                 $.ajax({
                     url: "/ISellerReciepts/GetStockInfo/",
                     type: "GET",
@@ -236,7 +236,7 @@
                         //});
                         $("#OldtotalWeight").val(result.totalWeight)
                         $("#ProductionTypeID").val(result.productionTypeId)
-
+                        $("#IsellerNewRow").hide();
                     },
                     error: function () {
                         Swal.fire({
@@ -250,33 +250,58 @@
             $("#btnSave").on("click", function (e) {
 
 
+                $("#IsellerSave").show();
 
-                var FishNames = new cookieList("FishNames"); // all items in the array.
-                $('.fishes').each(function () {
-                    FishNames.add($(this).text());
-                })
-                var ProductionTypes = new cookieList("ProductionTypes"); // all items in the array.
-                $('.productions').each(function () {
-                    ProductionTypes.add($(this).text());
-                })
-                var qtys = new cookieList("qtys"); // all items in the array.
-                $('.qtys').each(function () {
-                    qtys.add($(this).text());
-                })
+                //var FishNames = new cookieList("FishNames"); // all items in the array.
+                //$('.fishes').each(function () {
+                //    FishNames.add($(this).text());
+                //})
+                //var ProductionTypes = new cookieList("ProductionTypes"); // all items in the array.
+                //$('.productions').each(function () {
+                //    ProductionTypes.add($(this).text());
+                //})
+                //var qtys = new cookieList("qtys"); // all items in the array.
+                //$('.qtys').each(function () {
+                //    qtys.add($(this).text());
+                //})
            
-                var NOfBoxes = new cookieList("NOfBoxes"); // all items in the array.
-                $('.NOfBoxes').each(function () {
-                    NOfBoxes.add($(this).text());
+                //var NOfBoxes = new cookieList("NOfBoxes"); // all items in the array.
+                //$('.NOfBoxes').each(function () {
+                //    NOfBoxes.add($(this).text());
+                //})
+
+                var FishNames = ""
+                $('.fishes').each(function () {
+                    FishNames += $(this).text();
+                    FishNames += ',';
+
                 })
+                var ProductionTypes = ""
+                $('.productions').each(function () {
+                    ProductionTypes += $(this).text();
+                    ProductionTypes += ',';
+
+                })
+
+                var qtys = ""
+                $('.qtys').each(function () {
+                    qtys += $(this).text();
+                    qtys += ',';
+
+                })
+
+                var NOfBoxes = ""
+                $('.NOfBoxes').each(function () {
+                    NOfBoxes += $(this).text();
+                    NOfBoxes += ',';
+
+                })
+
 
                 var MerchantID = $("#MerDDL").val()
                 var Date = $("#Date").val();
                 var CarPrice = parseFloat($("#CarPrice").val());
 
-                //var settings = {
-                //    Date: Date,
-                //    MerchantID: MerchantID
-                //};
 
                 $.ajax({
                     url: "/ISellerReciepts/Create/",
@@ -286,7 +311,11 @@
                     data: {
                         Date: Date,
                         MerchantID: MerchantID,
-                        CarPrice: CarPrice
+                        CarPrice: CarPrice,
+                        FishNames: FishNames,
+                        ProductionTypes: ProductionTypes,
+                        qtyss: qtys,
+                        NOfBoxess: NOfBoxes
                     },
                     traditional: true,
                     statusCode: {
@@ -302,7 +331,8 @@
                             title: 'تم التوزيع',
                             showConfirmButton: false,
                             timer: 3000
-                        });
+                             });
+                            $("#IsellerSave").hide();
                             window.location.href = "/ISellerReciepts/Details/" + result.id;
                         }
                         else {
@@ -382,6 +412,7 @@
             var Qty = $('#Qty').val()
             var NOfBoxes = $('#NOfBoxes').val()
             var total = parseFloat(Qty) * parseFloat(NOfBoxes);
+           
             if (total <= $("#OldtotalWeight").val()) {
 
 

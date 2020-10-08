@@ -32,7 +32,7 @@
 
     <div class="row invoice layout-top-spacing">
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-            <div class="doc-container">
+            <div class="doc-container" style="height:2000px;">
 
 
                 <div class="invoice-container">
@@ -45,7 +45,7 @@
                                 <div class="row inv--head-section">
 
                                     <div class="col-sm-6 col-12">
-                                        <h3 class="in-heading">فاتورة مشتريات</h3>
+                                        <h3 class="in-heading">فاتورة مشتريات الحلقه</h3>
                                     </div>
 
 
@@ -58,13 +58,14 @@
                                         <div class="col-sm-7 align-self-center">
 
                                             <p class="inv-street-addr">تاريخ الفاتوره :@Model.ImerchantReciept.Date.ToShortDateString()</p>
+                                            <h6> من : @Model.ImerchantReciept.Merchant.MerchantName</h6>
                                         </div>
                                     </div>
 
                                     <div class="row inv--product-table-section">
                                         <div class="col-12">
                                             <div class="table-responsive">
-                                                <h6>@Model.ImerchantReciept.Merchant.MerchantName</h6>
+
                                                 <table class="table">
                                                     <thead class="">
                                                         <tr>
@@ -107,21 +108,14 @@
 
 
 
-                    <div class="inv--thankYou">
-                        <div class="row">
-                            <div class="col-sm-12 col-12">
-                                <p class="">Thank you for doing Business with us.</p>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
 
             </div>
-            <div class="col-sm-6 col-12 align-self-center text-sm-right mb-2 ml-auto">
-                <div class="company-info">
-                    <button class="btn btn-secondary" id="btnPrint1">طباعة</button>
-                </div>
+
+        </div>
+        <div class="col-sm-6 col-12 align-self-center text-sm-right mb-2 ml-auto">
+            <div class="company-info">
+                <button class="btn btn-secondary" id="btnPrint1">طباعة</button>
             </div>
         </div>
     </div>

@@ -19,12 +19,19 @@ namespace FishBusiness.Controllers
         {
             _context = context;
         }
-
+        public DateTime TimeNow()
+        {
+            TimeZone localZone = TimeZone.CurrentTimeZone;
+            DateTime currentDate = DateTime.Now;
+            DateTime currentUTC =
+           localZone.ToUniversalTime(currentDate);
+            return currentUTC.AddHours(2);
+        }
         // GET: Stocks
         public  IActionResult Index()
         {
             var applicationDbContext =  _context.Stocks.Include(s => s.Fish).Include(s => s.ProductionType).ToList();
-            //return View( applicationDbContext.Where(s=>s.Date.ToShortDateString()==DateTime.Now.ToShortDateString()).ToList());
+            //return View( applicationDbContext.Where(s=>s.Date.ToShortDateString()==TimeNow().ToShortDateString()).ToList());
             return View( applicationDbContext.ToList());
         }
 
@@ -189,7 +196,7 @@ namespace FishBusiness.Controllers
         {
             
             var applicationDbContext = _context.Stocks.Include(s => s.Fish).Include(s => s.ProductionType).ToList();
-            //return View(applicationDbContext.Where(s => s.Date.ToShortDateString() == DateTime.Now.ToShortDateString()).ToList());
+            //return View(applicationDbContext.Where(s => s.Date.ToShortDateString() == TimeNow().ToShortDateString()).ToList());
             return View(applicationDbContext.ToList());
            // return v()
         }

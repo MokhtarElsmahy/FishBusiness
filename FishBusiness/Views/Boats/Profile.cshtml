@@ -12,6 +12,7 @@
     <link href="~/plugins/animate/animate.css" rel="stylesheet" type="text/css" />
     <link href="~/assets/css/components/custom-modal.css" rel="stylesheet" type="text/css" />
 }
+
 <!--  BEGIN CONTENT AREA  -->
 
 <div class="layout-px-spacing">
@@ -23,11 +24,16 @@
         </div>
         <div class="mt-4 ml-auto">
             <a asp-action="Edit" asp-controller="Boats" asp-route-id="@Model.BoatInfo.BoatID" class="btn btn-primary">تعديل بيانات المركب</a>
-            @if (Model.BoatInfo.TypeID == 5 && ViewBag.IsCheckedOut == false)
+            @if (Model.BoatInfo.TypeID == 2 && ViewBag.IsCheckedOut == false)
             {
-                <a asp-action="CheckOut" asp-route-id="@Model.BoatInfo.BoatID" class="btn btn-primary">تصفية</a>
+                <a asp-action="CheckOut" asp-route-id="@Model.BoatInfo.BoatID" class="btn btn-primary">تصفيه سنويه/نصف سنويه</a>
             }
-            <a class="btn btn-primary" data-toggle="modal" data-target="#MfadeleftModal5">اعطاء مصروف</a>
+            @if (Model.BoatInfo.TypeID == 2)
+            {
+                <a asp-action="CheckoutsOfSharedBoat" asp-controller="Home" asp-route-id="@Model.BoatInfo.BoatID" class="btn btn-primary">سجل تصفيات</a>
+
+            }
+            @*<a class="btn btn-primary" data-toggle="modal" data-target="#MfadeleftModal5">اعطاء مصروف</a>*@
             <button class="btn btn-primary ml-2" data-toggle="modal" data-target="#zoomupModal">عرض صورة المركب</button>
 
         </div>
@@ -52,7 +58,13 @@
                             <div class="">
 
                                 @*<p class="task-left"></p>*@
-                                <label style="font-size:larger;font-weight:bolder;color:black">@Model.BoatInfo.Type</label>
+                                <label style="font-size:larger;font-weight:bolder;color:black">@Model.BoatInfo.Type</label><br />
+
+                                @if (Model.BoatInfo.TypeID == 2)
+                                {
+                                    <label style="font-size:larger;font-weight:bolder;color:black">الايراد</label>
+                                    <label style="font-size:larger;font-weight:bolder;color:black" id="income">@Model.BoatInfo.IncomeOfSharedBoat $</label>
+                                }
                             </div>
                         </div>
                     </div>
@@ -60,31 +72,7 @@
 
             </div>
 
-            @if (Model.BoatInfo.TypeID == 2)//مركب شؤيك
-            {
-                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
-                    <div class="widget widget-five">
-                        <div class="widget-content">
-
-                            <div class="header">
-                                <div class="header-body">
-                                    <h6 class="text-info">ايراد المركب</h6>
-                                </div>
-
-                            </div>
-
-                            <div class="w-content">
-                                <div class="">
-
-                                    @*<p class="task-left"></p>*@
-                                    <label style="font-size:larger;font-weight:bolder;color:black" id="income">@Model.BoatInfo.IncomeOfSharedBoat $</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            }
+     
 
             <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
                 <div class="widget widget-five">
@@ -102,7 +90,7 @@
                             <div class="">
 
                                 <label style="font-size:larger;font-weight:bolder;color:black">@Model.BoatInfo.BoatLeader</label><br />
-                                ديونه : <label id="PaymentLeaderDebtsLabel" style="font-size:larger;font-weight:bolder;color:black">@Model.BoatInfo.DebtsOfLeader</label>
+                                <a href="#"  onclick="LoansShow(@Model.BoatInfo.BoatID)" data-toggle="modal" data-target="#fadeleftModalLoans">ديونه</a> : <label id="PaymentLeaderDebtsLabel" style="font-size:larger;font-weight:bolder;color:black">@Model.BoatInfo.DebtsOfLeader</label>
                             </div>
                         </div>
                     </div>
@@ -152,7 +140,14 @@
                             <div class="">
 
 
-                                <label style="font-size:larger;font-weight:bolder;color:black" id="BoatDebts">@Model.BoatInfo.DebtsOfHalek $</label>
+                                <label style="font-size:larger;font-weight:bolder;color:black" id="BoatDebts">@Model.BoatInfo.DebtsOfHalek $</label><br />
+                                @if (ViewBag.LastSarhaID != 0)
+                                {
+
+                                    <a asp-action="Edit" asp-controller="Sarhas" asp-route-id="@ViewBag.LastSarhaID" class="btn btn-primary">اضافة هالك</a>
+                                    <a asp-action="Details" asp-controller="Sarhas" asp-route-id="@ViewBag.LastSarhaID" class="btn btn-primary">تفاصيل الهالك</a>
+                                }
+
                             </div>
                         </div>
                     </div>
@@ -179,7 +174,8 @@
                             <div class="">
 
 
-                                <label style="font-size:larger;font-weight:bolder;color:black" id="Expensese">@Model.BoatInfo.TotalOfExpenses $</label>
+                                <label style="font-size:larger;font-weight:bolder;color:black" id="Expensese">@Model.BoatInfo.TotalOfExpenses $</label><br />
+                                <a class="btn btn-primary" data-toggle="modal" data-target="#MfadeleftModal5">اضافة مصروف</a>
                             </div>
                         </div>
                     </div>
@@ -219,14 +215,15 @@
                 <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
                     <form id="about" class="section about">
                         <div class="info">
-                            <h5 class="">فواتير لم يتم المحاسبة عليها</h5>
+                            <h5 class="">فواتير لم يتم الحاسبه عليها</h5>
 
                             <div class="row layout-top-spacing" id="cancel-row">
 
                                 <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                                     <div class="widget-content widget-content-area br-6">
+
                                         <div class="table-responsive mb-4 mt-4">
-                                            <table id="zero-config4" class="table table-hover" style="width:100%">
+                                            <table id="zero-config8" class="table table-hover" style="width:100%">
                                                 <thead>
                                                     <tr>
                                                         <th>اجمالى الفاتوره</th>
@@ -250,8 +247,8 @@
                                                                 <td>@rec.PaidFromDebts</td>
                                                                 <td>@rec.TotalAfterPaying</td>
                                                                 <td>
-                                                                    <a asp-action="Details" asp-controller="BoatOwnerReciepts" asp-route-id="@rec.BoatOwnerRecieptID" class="btn btn-info mb-2">عرض الفاتوره</a>|
-                                                                    <a asp-action="Details" asp-controller="Sarhas" asp-route-id="@rec.SarhaID" class="btn btn-info mb-2">السرحه</a>|
+                                                                    <a asp-action="Details" asp-controller="BoatOwnerReciepts" asp-route-id="@rec.BoatOwnerRecieptID" class="btn btn-info mb-2">عرض</a>|
+                                                                    <a asp-action="Details" asp-controller="Sarhas" asp-route-id="@rec.SarhaID" class="btn btn-info mb-2">الهالك</a>|
                                                                     <a href="#" data-toggle="modal" data-target="#fadeleftModal" onclick="CalculateShow(@rec.BoatOwnerRecieptID)" class="btn btn-info mb-2">محاسبة</a>|
 
                                                                 </td>
@@ -324,7 +321,7 @@
                                                                 <td>@rec.TotalAfterPaying</td>
                                                                 <td>
                                                                     <a asp-action="Details" asp-controller="BoatOwnerReciepts" asp-route-id="@rec.BoatOwnerRecieptID" class="btn btn-info mb-2">تفاصيل الفاتوره</a>|
-                                                                    <a asp-action="Details" asp-controller="Sarhas" asp-route-id="@rec.SarhaID" class="btn btn-info mb-2">تفاصيل السرحه</a>|
+                                                                    <a asp-action="Details" asp-controller="Sarhas" asp-route-id="@rec.SarhaID" class="btn btn-info mb-2">تفاصيل الهالك</a>|
 
                                                                 </td>
 
@@ -348,64 +345,73 @@
                     </form>
                 </div>
 
-                <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
-                    <form id="about" class="section about">
-                        <div class="info">
-                            <h5 class="">فواتير خارجيه</h5>
+                @if (Model.BoatInfo.TypeID == 2)
+                {
+                    <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
+                        <form id="about" class="section about">
+                            <div class="info">
+                                <div class="container row">
+                                    <h3 class="">فواتير خارجيه</h3>
+                                    <div class="ml-auto" style="">
+                                        <a asp-action="Create" asp-controller="ExternalReceipts" class="btn btn-primary">اضافة جديد</a>
+                                    </div>
+                                </div>
 
-                            <div class="row layout-top-spacing" id="cancel-row">
+                                <div class="row layout-top-spacing" id="cancel-row">
 
-                                <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                                    <div class="widget-content widget-content-area br-6">
-                                        <div class="table-responsive mb-4 mt-4">
-                                            <table id="zero-config2" class="table table-hover" style="width:100%">
-                                                <thead>
-                                                    <tr>
-                                                        <th>اجمالى الفاتوره</th>
-                                                        <th>العموله</th>
-                                                        <th>التاريخ</th>
-                                                        <th>المدفوع من الهالك</th>
-                                                        <th>الاجمالى بعد العموله والهالك</th>
-                                                        <th></th>
+                                    <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                                        <div class="widget-content widget-content-area br-6">
+                                            <div class="table-responsive mb-4 mt-4">
+                                                <table id="zero-config2" class="table table-hover" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>اجمالى الفاتوره</th>
+                                                            <th>العموله</th>
+                                                            <th>التاريخ</th>
+                                                            <th>المدفوع من الهالك</th>
+                                                            <th>الاجمالى بعد العموله والهالك</th>
+                                                            <th></th>
 
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @if (Model.ExternalRecs.Any())
-                                                    {
-                                                        foreach (var rec in Model.ExternalRecs)
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (Model.ExternalRecs.Any())
                                                         {
-                                                            <tr>
-                                                                <td>@rec.TotalBeforePaying</td>
-                                                                <td>@rec.Commission</td>
-                                                                <td>@rec.Date</td>
-                                                                <td>@rec.PaidFromDebts</td>
-                                                                <td>@rec.TotalAfterPaying</td>
-                                                                <td>
-                                                                    <a asp-action="Details" asp-controller="ExternalReceipts" asp-route-id="@rec.ExternalReceiptID" class="btn btn-info mb-2">تفاصيل الفاتوره</a>|
-                                                                    <a asp-action="Details" asp-controller="Sarhas" asp-route-id="@rec.SarhaID" class="btn btn-info mb-2">تفاصيل السرحه</a>|
+                                                            foreach (var rec in Model.ExternalRecs)
+                                                            {
+                                                                <tr>
+                                                                    <td>@rec.TotalBeforePaying</td>
+                                                                    <td>@rec.Commission</td>
+                                                                    <td>@rec.Date</td>
+                                                                    <td>@rec.PaidFromDebts</td>
+                                                                    <td>@rec.TotalAfterPaying</td>
+                                                                    <td>
+                                                                        <a asp-action="Details" asp-controller="ExternalReceipts" asp-route-id="@rec.ExternalReceiptID" class="btn btn-info mb-2">تفاصيل الفاتوره</a>|
+                                                                        <a asp-action="Details" asp-controller="Sarhas" asp-route-id="@rec.SarhaID" class="btn btn-info mb-2">تفاصيل السرحه</a>|
 
-                                                                </td>
+                                                                    </td>
 
-                                                            </tr>
+                                                                </tr>
+                                                            }
+
                                                         }
 
-                                                    }
 
 
+                                                    </tbody>
 
-                                                </tbody>
-
-                                            </table>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
+
                                 </div>
 
                             </div>
+                        </form>
+                    </div>
+                }
 
-                        </div>
-                    </form>
-                </div>
 
                 <div class="col-xl-12 col-lg-12 col-md-12 layout-spacing">
                     <form id="work-platforms" class="section work-platforms">
@@ -482,9 +488,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">محاسبة المركب</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
+                <img src="~/assets/img/loader.gif" id="Bloader" style="width:100px;height:100px;display:none;" />
             </div>
             <div class="modal-body" id="ModalBody">
 
@@ -500,9 +504,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title"> مصروف مركب</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
+                <img src="~/assets/img/loader.gif" id="expenseLoader" style="width:100px;height:100px;display:none;" />
             </div>
             <div class="modal-body">
                 <form id="MyForm">
@@ -540,7 +542,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                @if (Model.BoatInfo.BoatImage!=null)
+                @if (Model.BoatInfo.BoatImage != null)
                 {
                     <img src="~/img/@Model.BoatInfo.BoatImage" class="img-thumbnail" />
                 }
@@ -556,6 +558,22 @@
     </div>
 </div>
 
+<div id="fadeleftModalLoans" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">قائمة ديون</h5>
+                <img src="~/assets/img/loader.gif" id="LoanLoader" style="width:100px;height:100px;display:none;" />
+            </div>
+            <div class="modal-body" id="ModalBodyLoans">
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
 <!--  END CONTENT AREA  -->
 
 @section scripts{
@@ -565,19 +583,39 @@
     <script src="~/plugins/blockui/jquery.blockUI.min.js"></script>
     <!-- <script src="plugins/tagInput/tags-input.js"></script> SubExpense-->
     <script src="~/assets/js/users/account-settings.js"></script>
-
+    <script>
+        $('#zero-config9').DataTable({
+            "oLanguage": {
+                "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' },
+                "sInfo": "Showing page _PAGE_ of _PAGES_",
+                "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                "sSearchPlaceholder": "Search...",
+                "sLengthMenu": "Results :  _MENU_",
+            },
+            "stripeClasses": [],
+            "lengthMenu": [7, 10, 20, 50],
+            "pageLength": 7
+        });
+        $('#zero-config8').DataTable({
+            "oLanguage": {
+                "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' },
+                "sInfo": "Showing page _PAGE_ of _PAGES_",
+                "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                "sSearchPlaceholder": "Search...",
+                "sLengthMenu": "Results :  _MENU_",
+            },
+            "stripeClasses": [],
+            "lengthMenu": [7, 10, 20, 50],
+            "pageLength": 7
+        });
+    </script>
     <script>
         $(document).ready(function () {
 
-            //$("chkLeaderDebts").on('change', function () {
 
-            //})
-
-            @* <input type="checkbox" id="chkMagdy" />  الحاج مجدى *@
-              //if ($("#chkMagdy").is(":checked")) {
-                //    MerchantName = "الحج مجدى"
-                //} else {
             $("#MNewRows5").on('click', function () {
+
+                $("#expenseLoader").show();
                 var cause = $('#Cause').val()
                 var expensePrice = parseFloat($('#ExpensePrice').val())
                 var id = @Model.BoatInfo.BoatID
@@ -592,6 +630,7 @@
                         boatID: id
                     }, //id of the state which is used to extract cities
                     success: function (result) {
+                        $("#expenseLoader").hide();
                         Swal.fire({
                             position: 'top-end',
                             icon: 'success',
@@ -614,42 +653,6 @@
             })
 
 
-            @*$("#SubExpense").on('click', function () {
-                var PaidValue = parseFloat($('#SubExpenseValue').val());
-                var id = @Model.BoatInfo.BoatID
-                $.ajax({
-                    url: "/Boats/CalcExpenses/",
-                    type: "Post",
-                    dataType: "json",
-                    traditional: true,
-                    data: {
-                        PaidValue: PaidValue,
-                        BoatID: id
-                    }, //id of the state which is used to extract cities
-                    success: function (result) {
-                        Swal.fire({
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'تم الخصم بنجاح',
-                            showConfirmButton: false,
-                            timer: 3000
-                        });
-                        $('#SubExpenseValue').val('')
-                        $('#Expensese').text(result.expenses+" $")
-
-
-                    },
-                    error: function () {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'حدث خطأ',
-                            text: 'حاول مرة اخري',
-                        });
-                    }
-                });
-            })*@
-
-
         })
 
         var EditShow = function (id) {
@@ -669,7 +672,7 @@
         var fun = function () {
 
             var myform = $("#MyForm").serialize();
-
+            
             $.ajax({
                 type: "POST",
                 url: "/Merchants/cEdit",
@@ -678,6 +681,7 @@
 
                 success: function (response) {
                     if (response.message == "success") {
+                       
                         $("#fadeleftModal").modal("hide");
                         location.reload();
                     }
@@ -692,6 +696,7 @@
         }
 
         var CalculateShow = function (id) {
+            $("#Bloader").show();
             $.ajax({
                 url: "/Boats/CalculateShow",
                 type: "GET",
@@ -699,12 +704,28 @@
                 success: function (response) {
                     $("#fadeleftModal").modal("show");
                     $("#ModalBody").html(response);
+                    $("#Bloader").hide();
 
                 }
 
             })
         }
 
+        var LoansShow = function (id) {
+            $("#LoanLoader").show();
+            $.ajax({
+                url: "/Boats/LoansShow",
+                type: "GET",
+                data: { id: id },
+                success: function (response) {
+                    $("#fadeleftModalLoans").modal("show");
+                    $("#LoanLoader").hide();
+                    $("#ModalBodyLoans").html(response);
+
+                }
+
+            })
+        }
 
 
     </script>

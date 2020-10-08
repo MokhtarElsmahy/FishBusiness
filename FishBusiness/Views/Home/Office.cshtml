@@ -26,12 +26,51 @@
         </div>
         <div class="mt-4 ml-auto">
             <a asp-action="Index" asp-controller="Home" class="btn btn-primary">الرئيسية</a>
-            <a asp-action="OfficeOfDay" class="btn btn-primary">السجل</a>
+            <a asp-action="OfficeOfDay" class="btn btn-primary">سجل تفاصيل الايام</a>
             @*<a class="btn btn-primary" id="btnFinalSave" style="display:none;">حفظ</a>*@
         </div>
     </div>
 
-    <div class="container row">
+
+    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
+        <div class="widget widget-five">
+            <div class="widget-content">
+
+                <div class="header">
+                    <div class="header-body">
+                        <h6 class="text-info">رصيد المكتب</h6>
+
+                    </div>
+
+                </div>
+                <div class="w-content">
+                    <div class="">
+
+                        <div class="container row">
+
+                            <div class="form-group">
+                                <label class="control-label" style="margin-right:12px;">رصيد باقى</label>
+                                <label id="credit" class="control-label" style="color:black">@ViewBag.Credit</label>
+                                <span class="text-danger"></span>
+                            </div>
+
+                        </div>
+                        <div class="container row">
+
+
+                            <label class="control-label" style="margin-right:12px;padding-top: 7px;">اضافة رصيد</label>
+                            <input class="form-control col-4" name="Price" style="margin-right:5px;" id="Charge" />
+                            <button type="button" class="btn btn-primary" style="margin-right:5px;" id="btnCharge">اضافة</button>
+                            <img src="~/assets/img/loader.gif" id="loaderFathallah" style="width:50px;height:50px;display:none" />
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    @*<div class="container row">
 
         <div class="form-group">
             <label class="control-label" style="margin-right:12px;">رصيد باقى</label>
@@ -39,16 +78,8 @@
             <span class="text-danger"></span>
         </div>
 
-    </div>
-    <div class="container row">
-
-
-        <label class="control-label" style="margin-right:12px;padding-top: 7px;">اضافة رصيد</label>
-        <input class="form-control col-2" name="Price" style="margin-right:5px;" id="Charge" />
-        <button type="button" class="btn btn-primary" style="margin-right:5px;" id="btnCharge">اضافة</button>
-        <img src="~/assets/img/loader.gif" id="loaderFathallah" style="width:50px;height:50px;display:none" />
-
-    </div>
+    </div>*@
+   
     <div class="row layout-top-spacing" id="cancel-row">
 
         <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
@@ -96,9 +127,16 @@
                             </tr>
                             <tr>
 
+                                <td class="MerchantName">تصفيه مراكب شريكه</td>
+                                <td class="Price"> @Model.CheckoutsOfSharedBoats</td>
+                                <td><a class="btn btn-primary" asp-action="CheckoutsOfSharedBoats">تفاصيل</a></td>
+
+                            </tr>
+                            <tr>
+
                                 <td class="MerchantName">المحصل</td>
                                 <td class="Price"> @Model.collectorForUsTotal</td>
-                                <td><a class="btn btn-primary" asp-controller="Collectings" asp-action="ProfileOfDay"  >تفاصيل</a></td>
+                                <td><a class="btn btn-primary" asp-controller="Collectings" asp-action="ProfileOfDay">تفاصيل</a></td>
 
                             </tr>
                             <tr>
@@ -112,7 +150,7 @@
 
                                 <td class="MerchantName">مبيعات</td>
                                 <td class="Price"> @Model.SalesTotal</td>
-                                <td><a class="btn btn-primary" asp-controller="TotalOfProfits" asp-action="SummationOfAday" >تفاصيل</a></td>
+                                <td><a class="btn btn-primary" asp-controller="TotalOfProfits" asp-action="SummationOfAday">تفاصيل</a></td>
 
                             </tr>
                         </tbody>
@@ -122,7 +160,7 @@
                                     الاجمالى
                                 </td>
                                 <td id="totalOfPayment">
-                                    @(Model.Commisions + Model.IsellerReceiptsTotal + Model.externalReceiptsTotal + Model.SharedBoatsReceiptsTotal + Model.collectorForUsTotal + Model.LeaderLoansPaybackTotal + Model.SalesTotal)
+                                    @(Model.Commisions + Model.IsellerReceiptsTotal + Model.externalReceiptsTotal + Model.SharedBoatsReceiptsTotal + Model.collectorForUsTotal + Model.LeaderLoansPaybackTotal + Model.SalesTotal+ Model.CheckoutsOfSharedBoats)
                                 </td>
                             </tr>
                         </tfoot>
@@ -163,7 +201,7 @@
 
                                 <td class="MerchantName">احمد فتح الله</td>
                                 <td class="Price"> @Model.FathallahTotal</td>
-@*                                <td><a class="btn btn-primary" asp-action="FathAllahWorkOfDayDate" asp-controller="Collectings" asp-route-Date="@DateTime.Now">تفاصيل</a></td>*@
+                                @*                                <td><a class="btn btn-primary" asp-action="FathAllahWorkOfDayDate" asp-controller="Collectings" asp-route-Date="@DateTime.Now">تفاصيل</a></td>*@
 
                             </tr>
                             <tr>
@@ -177,14 +215,14 @@
 
                                 <td class="MerchantName">مصروفات سفر</td>
                                 <td class="Price"> @Model.BuyingTotal</td>
-                                <td><a class="btn btn-primary" asp-controller="TotalOfProfits" asp-action="SummationOfAday" >تفاصيل</a></td>
+                                <td><a class="btn btn-primary" asp-controller="TotalOfProfits" asp-action="SummationOfAday">تفاصيل</a></td>
 
                             </tr>
                             <tr>
 
                                 <td class="MerchantName">مصروفات محصل</td>
                                 <td class="Price"> @Model.CollectorTotalforMerchantsAndHalek</td>
-                                <td><a class="btn btn-primary" asp-action="ProfileOfDay" asp-controller="Collectings" >تفاصيل</a></td>
+                                <td><a class="btn btn-primary" asp-action="ProfileOfDay" asp-controller="Collectings">تفاصيل</a></td>
 
                             </tr>
 
@@ -222,7 +260,7 @@
                 <h3>الرصيد</h3>
                 <div class="table-responsive mb-4 mt-4">
                     <table class="table table-hover">
-                       
+
                         <tbody id="TBody3">
                             <tr>
                                 <td> الاجمالي</td>
@@ -277,7 +315,7 @@
                                 showConfirmButton: false,
                                 timer: 3000
                             });
-
+                            $("#Charge").val('')
                         } else {
                             Swal.fire({
                                 icon: 'error',

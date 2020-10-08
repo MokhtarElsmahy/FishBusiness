@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Details";
+    int i = 1;
 }
 @section Styles{
     <link href="~/plugins/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" type="text/css" />
@@ -85,29 +86,28 @@
                                                         @foreach (var item in Model.NormalboatOwnerItems)
                                                         {
 
-                                                            <tr>
-
-
+                                                            <tr id="tr_@i">
                                                                 <td>@item.Fish.FishName</td>
                                                                 <td class="text-right">@item.ProductionType.ProductionName</td>
                                                                 <td class="text-right">@item.Qty</td>
                                                                 <td class="text-right">@item.UnitPrice</td>
 
                                                                 <td class="text-right">
-                                                                    <select class="form-control" asp-items="ViewBag.Merchants" name="MerchantID"></select>
+                                                                    <select class="form-control" asp-items="ViewBag.Merchants" name="MerchantID" disabled="disabled"></select>
                                                                 </td>
                                                                 <td class="text-right">
-                                                                    <input class="form-control" style="width:100px;" />
+                                                                    <input class="form-control" style="width:100px;" disabled="disabled" />
                                                                 </td>
 
-                                                                <td class="text-right"><input class="form-control" style="width:100px;"  /></td>
+                                                                <td class="text-right"><input class="form-control" style="width:100px;" disabled="disabled" /></td>
 
 
 
-                                                                <td class="text-right"><input class="form-control" style="width:100px;" asp-for="@item.UnitPrice" /></td>
-                                                                <td class="text-right"><input class="btn btn-primary" type="button" value="تاكيد" /></td>
+                                                                <td class="text-right"><input class="form-control" style="width:100px;" asp-for="@item.UnitPrice" disabled="disabled" /></td>
+                                                                <td class="text-right"><input class="btn btn-primary btnConfirm" type="button" value="تاكيد" disabled="disabled" /></td>
 
                                                             </tr>
+                                                            i++;
                                                         }
                                                         @foreach (var Amount in Model.Amounts)
                                                         {
@@ -125,7 +125,7 @@
                                                                 Qts += item + "/";
                                                             }
 
-                                                            <tr>
+                                                            <tr data-check="trAmount" id="tr_@i">
                                                                 <td>@fishes</td>
                                                                 @{
 
@@ -138,22 +138,22 @@
                                                                 <td class="text-right"> @info.UnitPrice </td>
 
                                                                 <td class="text-right">
-                                                                    <select class="form-control" asp-items="ViewBag.Merchants" name="MerchantID"></select>
+                                                                    <select class="form-control" asp-items="ViewBag.Merchants" name="MerchantID" disabled="disabled"></select>
                                                                 </td>
                                                                 <td class="text-right">
-                                                                    <input class="form-control" style="width:100px;" />
+                                                                    <input class="form-control" style="width:100px;" disabled="disabled" />
                                                                 </td>
 
-                                                                <td class="text-right"><input class="form-control" style="width:100px;"  /></td>
+                                                                <td class="text-right"><input class="form-control" style="width:100px;" disabled="disabled" value="@Qts" /> </td>
 
 
 
-                                                                <td class="text-right"><input class="form-control" style="width:100px;" value="@info.UnitPrice" /></td>
-                                                                <td class="text-right"><input class="btn btn-primary" type="button" value="تاكيد" /></td>
+                                                                <td class="text-right"><input class="form-control" style="width:100px;" value="@info.UnitPrice" disabled="disabled" /></td>
+                                                                <td class="text-right"><input class="btn btn-primary btnConfirm" type="button" value="تاكيد" disabled="disabled" /></td>
                                                             </tr>
 
-
-                                                        }
+                                                                        i++;
+                                                                    }
 
                                                     </tbody>
                                                     <tfoot>
@@ -164,6 +164,38 @@
                                         </div>
                                     </div>
 
+                                    <div class="row inv--product-table-section">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+
+                                                <table class="table" id="tableMerchants" style="display:none">
+                                                    <thead class="">
+                                                        <tr>
+                                                            <th scope="col">التاجر</th>
+                                                            <th  scope="col">نوع السمك</th>
+                                                            <th  scope="col">نوع الانتاج</th>
+                                                            <th  scope="col">الكمية</th>
+                                                            <th  scope="col">السعر</th>
+                                                            <th  scope="col"></th>
+                                                        </tr>
+
+                                                    </thead>
+                                                    <tbody id="tbodyMerchants">
+                                                       
+
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td><input type="button" value="حفظ" class="btn btn-primary" id="btnSave" /></td>
+                                                            <td><img src="~/assets/img/loader.gif" id="MSloader" style="width:50px;height:50px;display:none" /></td>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                 </div>
                             </div>
@@ -187,6 +219,8 @@
         </div>
         <input type="hidden" id="pricescookie" />
         <input id="ImageUrl" type="hidden" />
+        <input id="trId" type="hidden" value="1"/>
+        <input id="ParentId" type="hidden" value="1"/>
     </div>
 </div>
 
@@ -234,166 +268,193 @@
             }
         }
         $(document).ready(function () {
+            var $tr = $('Tbody  tr:first')
+            $tr.find("td input:text,td select,td input:button").each(function () {
+                $(this).prop('disabled', false); 
+            });
+            
+            $(".btnConfirm").on("click", function (e) {
+                
+                var $tr = $(this).closest('tr');
+                var MerchantName = $tr.find('td:nth-child(5) select option:selected').text()
+                var FishName = $tr.find("td:eq(0)").text()
+                var ProductionType = $tr.find("td:eq(1)").text()
+                var Cash = $tr.find('td:nth-child(6) input').val()
+                var Price = $tr.find('td:nth-child(8) input').val()
+                var Qty = $tr.find('td:nth-child(7) input').val()
+                var OldQty
+                var dataCheck = $tr.attr('data-check')
+                if (dataCheck == "trAmount") {
+                }
+                else {
+                    OldQty = $tr.find("td:eq(2)").text()
+                }
+               
+               
+                var id = $("#trId").val();
+                var addControls = "";
+                addControls = "<tr id=row_" + id + " data-qty=" + Qty + " data-childid=" + $tr.attr('id') + " >"
+                if (Cash == '') {
+                    addControls += "<td class='merchants'>" + MerchantName + "</td>"
+                }
+                else {
+                    addControls += "<td class='merchants'>" + Cash + "</td>"
+                }
+                addControls += "<td class='Fishes'>" + FishName + "</td>"
+                addControls += "<td class='ProductionTypes'>" + ProductionType + "</td>"
+                addControls += "<td class='Qtys'>" + Qty + "</td>"
+                addControls += "<td class='Prices'>" + Price + "</td>"
+                addControls += "<td> <a href='#' onclick=removee('" + id + "')>" + "X</a> </td>"
+                addControls += "</tr>";
+                if (dataCheck != "trAmount") {
+                    if (parseFloat(Qty) <= parseFloat(OldQty)) {
+                        $tr.find("td:eq(2)").text(parseFloat(OldQty) - parseFloat(Qty))
+                        $('#tbodyMerchants').append(addControls);
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'الكمية المطلوبة اكبر من المتاحة',
+                        });
+                    }
 
-            //
-             $("#btnSave").on("click", function (e) {
+                    if ($tr.find("td:eq(2)").text() <= 0) {
 
-                 //var input = document.getElementById("files");
-                 //var files = input.files;
-                 //var formData = new FormData();
-                 //formData.append("files", files);
+                        $tr.find("td input:text,td select,td input:button").each(function () {
+                            $(this).prop('disabled', true);
+                        });
+                        var $nextTr = $tr.next('tr')
+                        $nextTr.find("td input:text,td select,td input:button").each(function () {
+                            $(this).prop('disabled', false);
+                        });
+                    }
+                }
+                else {
+                    $('#tbodyMerchants').append(addControls);
+                    $tr.find("td input:text,td select,td input:button").each(function () {
+                        $(this).prop('disabled', true);
+                    });
+                    var $nextTr = $tr.next('tr')
+                    $nextTr.find("td input:text,td select,td input:button").each(function () {
+                        $(this).prop('disabled', false);
+                    });
+                }
+                $('#tableMerchants').show()
+                $tr.find('td:nth-child(6) input').val('')
+                $("#trId").val(parseInt(id)+1);
+               
+                
+            });
+            $("#btnSave").on("click", function () {
+                $('#MSloader').show();
+                //var RecID = parseInt($('#RecID').val());
 
-                     $.ajax({
-                           url: "/ISellerReciepts/MoneytizationSave/",
-                           type: "POST",
-                          dataType: "json",
-                           //contentType: 'application/json', //دى احيانا بتخلى القيم تتبعت فاضيه
-                           data: {
-                             //  IsellerRecieptID: @*@Model.ISellerReciept.ISellerRecieptID,*@
-                               TotalOfPrices: parseFloat($("#TotalBeforeCommisionOrPayment").text()),
-                               Commision: parseFloat($("#Commision").val()),
-                               TotalOfPricesAfterCommision: parseFloat($("#totalAfterCommision").text()),
-                               PaidFromDebt: parseFloat($("#PaidFromDebt").val()),
-                               DebtsAfterCommisionAndPayment: parseFloat($("#Debts").text()),
-                               Pricescookie: $("#pricescookie").val(),
-                               ImageUrl: $("#ImageUrl").val()
+                //var CurrentDebt = parseFloat($('#MPreviousDebts').text());
+                //var MTotalBeforePayment = parseFloat($('#MTotalBeforePayment').text());
+                //var MpayFromDebt = parseFloat($('#MpayFromDebt').val());
+                //var MerchantID = $("#MerDDL").val();
+                //var MerRecDate = $("#MerRecDate").val();
 
-                           },
-                           traditional: true,
-                           statusCode: {
-                               415: function () {
-                                   Response.redirect("/ISellerReciepts/Index/");
-                               }
-                           },
-                           success: function (result) {
-                               if (result.message == "success") {
+                var MerchantNames = ""
+                $('.merchants').each(function () {
+                    MerchantNames += $(this).text();
+                    MerchantNames += ',';
 
-                                   window.location.href = "/ISellerReciepts/Details/" + result.id;
-                               }
-                               else {
-                                   Swal.fire({
-                                       icon: 'error',
-                                       title: 'حدث خطأ',
-                                       text: 'حاول مره اخرى',
-                                   });
+                })
+                var FishNames = ""
+                $('.Fishes').each(function () {
+                    FishNames += $(this).text();
+                    FishNames += ',';
 
-                               }
-                           },
-                           error: function (xhr, textStatus, errorThrown) {
-                               if (xhr.status == 401) {
-                                   Swal.fire({
-                                       icon: 'error',
-                                       title: 'حدث خطأ',
-                                       text: 'حاول مره اخرى',
-                                   });
+                })
+                var ProductionTypes = ""
+                $('.ProductionTypes').each(function () {
+                    ProductionTypes += $(this).text();
+                    ProductionTypes += ',';
 
-                               }
-                               else {
-                                   Swal.fire({
-                                       icon: 'error',
-                                       title: 'حدث خطأ',
-                                       text: 'حاول مره اخرى',
-                                   });
-                               }
-                           }
+                })
+                var qtys = ""
+                $('.Qtys').each(function () {
+                    qtys += $(this).text();
+                    qtys += ',';
 
-                      });
-                    e.preventDefault();
+                })
 
+                var unitprices = ""
+                $('.Prices').each(function () {
+                    unitprices += $(this).text();
+                    unitprices += ',';
 
-             });
+                })
+                $.ajax({
+                    url: "/BoatOwnerReciepts/MCreate/",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        RecID: @Model.BoatOwnerReciept.BoatOwnerRecieptID,
+                        MerchantNames: MerchantNames,
+                        FishNames: FishNames,
+                        ProductionTypes: ProductionTypes,
+                        qtys: qtys,
+                        unitprices: unitprices,
+                    },
+                    success: function (result) {
+                        if (result.message == "success") {
 
-        });
-
-        //var loadFile = function (event) {
-        //    var reader = new FileReader();
-        //    reader.onload = function () {
-        //        var output = document.getElementById('SelectedImage');
-        //        output.src = reader.result;
-        //    };
-        //    reader.readAsDataURL(event.target.files[0]);
-        //};
-        $("#btnPrint").click(function () {
-            //$('#hideInPrint').attr("d")
-            $(".hideInPrint").css("display", "none");
-            $(".fileUploadSection").css("display", "none");
-            window.print()
-        });
-        $("#btnPrint1").click(function () {
-            $(".hideInPrint").css("display", "none");
-            $(".fileUploadSection").css("display", "none");
-            window.print()
-        });
-
-        $("#btnSum").click(function () {
-            var sum = 0
-            $('.prices').each(function () {
-                //unitprices.add($(this).text());
-                sum += parseFloat($(this).val())
-
-            })
-
-            var prices = new cookieList("Myprices");
-            $('.prices').each(function () {
-                prices.add($(this).val());
-            })
-
-            $("#pricescookie").val(prices.items());
-
-            $("#TotalBeforeCommisionOrPayment").text(sum);
-            $("#totalAfterCommision").text(sum);
-            $("#Debts").text(@ViewBag.PreviousDebts+parseFloat(sum));
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'تم حفظ الفاتورة بنجاح',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                           
+                            $("#btnSave").hide()
 
 
-        });
-
-        $("#btnSub").click(function () {
-            var x = parseFloat($("#TotalBeforeCommisionOrPayment").text());
-            var y = parseFloat($("#Commision").val());
-            var z = x - y;
-            $("#totalAfterCommision").text(z);
-             $("#Debts").text(@ViewBag.PreviousDebts+parseFloat(z));
-
-        });
-
-        $("#files").change(function () {
-		      var element = this;
-
-		      var formData = new FormData();
-
-		      var totalFiles = element.files.length;
-
-		      for (var i = 0; i < totalFiles; i++) {
-		      	var file = element.files[i];
-		      	formData.append("Photo", file);
-		      }
-
-		        $.ajax({
-		        	type: 'POST',
-		        	url: '@Url.Action("UploadImage", "ISellerReciepts")',
-		        	dataType: 'json',
-		        	data: formData,
-		        	contentType: false,
-                    processData: false,
-                    success: function (response) {
-                        $("#ImageUrl").val(response.image);
-                       $("#SelectedImage").attr("src", response.image);
+                           
+                            $('#MSloader').hide();
+                           
+                        }
                     },
                     error: function () {
-                        alert("FAIL");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حاول مرة اخري',
+                        });
+
+
                     }
-		        })
-                //.done(function (response) {
+                });
 
-                //        alert(response.ImageURL)
-                //       // $("#ImageUrl").val(response.ImageURL);
-                //      //  $("#SelectedImage").attr("src", response.ImageURL);
 
-                // })
-                //.fail(function (XMLHttpRequest, textStatus, errorThrown) {
-                //    	alert("FAIL");
-                //});
-	    });
+            });
+        });
+
+     
+      
+       
+        var removee = function (id) {
+            //var $tr = $(this).closest('tr');
+            var $tr = $("#row_"+id);
+            var qty = $tr.attr('data-qty');
+            
+            var childid = $tr.attr('data-childid');
+            var $Parenttr = $("#"+childid);
+            var OldQty = $Parenttr.find("td:eq(2)").text()
+            $Parenttr.find("td:eq(2)").text(parseFloat(OldQty) + parseFloat(qty))              
+            $("#row_" + id).remove();
+            $Parenttr.find("td input:text,td select,td input:button").each(function () {
+                $(this).prop('disabled', false);
+            });
+        }
+
+
+      
+
+      
     </script>
 }
 

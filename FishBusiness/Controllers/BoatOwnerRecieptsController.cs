@@ -578,7 +578,7 @@ namespace FishBusiness.Controllers
             _context.SaveChanges();
             //return RedirectToAction(nameof(Index));
             //return RedirectToAction("Details",new { id= latestReceipt });
-            return Json(new { message = "success", id = boatOwnerReciept.BoatID, reciept = boatOwnerReciept.BoatOwnerRecieptID });
+            return Json(new { message = "success", id = boatOwnerReciept.BoatOwnerRecieptID, reciept = boatOwnerReciept.BoatOwnerRecieptID });
 
         }
         public static Guid ToGuid(int value)

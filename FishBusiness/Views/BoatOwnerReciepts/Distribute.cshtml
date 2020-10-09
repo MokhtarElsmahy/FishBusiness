@@ -37,7 +37,7 @@
             <div class="doc-container">
 
 
-                <div class="invoice-container" style="height:2000px;">
+                <div class="invoice-container" style="height:4000px;">
 
                     <div id="ct" class="">
 
@@ -60,6 +60,7 @@
                                         <div class="col-sm-7 align-self-center">
 
                                             <p class="inv-street-addr">تاريخ الفاتوره :@Model.BoatOwnerReciept.Date.ToShortDateString()</p>
+                                            <p class="inv-street-addr">سرحة مركب :@Model.BoatOwnerReciept.Boat.BoatName</p>
                                         </div>
                                     </div>
 
@@ -74,11 +75,11 @@
                                                             <th class="text-right" scope="col">الانتاج</th>
                                                             <th class="text-right" scope="col">الكمية</th>
                                                             <th class="text-right" scope="col">السعر</th>
-                                                            <th class="text-right" scope="col">التاجر</th>
-                                                            <th class="text-right" scope="col">نقدى؟</th>
-                                                            <th class="text-right" scope="col">كميه</th>
-                                                            <th class="text-right" scope="col">السعر</th>
-                                                            <th class="text-right" scope="col"></th>
+                                                            <th style="text-align:center">التاجر</th>
+                                                            <th style="text-align:center">نقدى؟</th>
+                                                            <th style="text-align:center">كميه</th>
+                                                            <th style="text-align:center">السعر</th>
+                                                            <th style="text-align:center"></th>
                                                         </tr>
 
                                                     </thead>
@@ -132,7 +133,7 @@
                                                                     var info = Model.AmountboatOwnerItems.FirstOrDefault(c => c.BoatOwnerItemID == Amount.items.ElementAt(0));
 
                                                                 }
-                                                                <td class="text-right"> @info.ProductionType.ProductionName </td>
+                                                                <td class="text-right">@info.ProductionType.ProductionName</td>
 
                                                                 <td class="text-right">@Qts</td>
                                                                 <td class="text-right"> @info.UnitPrice </td>

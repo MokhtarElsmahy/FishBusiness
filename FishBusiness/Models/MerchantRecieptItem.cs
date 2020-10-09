@@ -20,6 +20,8 @@ namespace FishBusiness.Models
         [Required(ErrorMessage = "برجاء ادخال سعر الوحدة")]
         public decimal UnitPrice { get; set; }
 
+        public Guid? AmountId { get; set; }
+
         [ForeignKey("ProductionType")]
         public int ProductionTypeID { get; set; }
         public virtual ProductionType ProductionType { get; set; }

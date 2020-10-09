@@ -45,6 +45,23 @@ namespace FishBusiness.Controllers
                 return NotFound();
             }
             ViewBag.Items = _context.MerchantRecieptItems.Where(i => i.MerchantRecieptID == id).Include(x => x.Fish).Include(x => x.ProductionType).Include(x => x.Boat);
+
+            MerchantRecDetailsVm model = new MerchantRecDetailsVm();
+            model.MerchantReciept = merchantReciept;
+            model.NormalMerchantItems = _context.MerchantRecieptItems.Include(c => c.Fish).Include(c => c.Boat).Include(c => c.ProductionType).Where(c => c.MerchantRecieptID == merchantReciept.MerchantRecieptID && c.AmountId == null).ToList();
+            model.AmountMerchantItems = _context.MerchantRecieptItems.Include(c => c.Fish).Include(c => c.Boat).Include(c => c.ProductionType).Where(c => c.MerchantRecieptID == merchantReciept.MerchantRecieptID && c.AmountId != null).ToList();
+
+            var results = from p in model.AmountMerchantItems
+                          group p.MerchantRecieptItemID by p.AmountId into g
+                          select new AmountVm { AmountId = g.Key, items = g };
+
+            model.Amounts = results;
+
+
+
+            return View(model);
+
+
             return View(merchantReciept);
         }
 

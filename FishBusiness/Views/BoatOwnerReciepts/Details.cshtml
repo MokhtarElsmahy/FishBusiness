@@ -1,4 +1,4 @@
-﻿@model FishBusiness.Models.BoatOwnerReciept
+﻿@model FishBusiness.ViewModels.DistributionVm
 
 @{
     ViewData["Title"] = "Details";
@@ -56,11 +56,11 @@
 
 
                                         <div class="col-sm-7 align-self-center">
-                                            <p class="inv-customer-name"> @Html.DisplayNameFor(model => model.Boat.BoatName) : @Html.DisplayFor(model => model.Boat.BoatName)</p>
-                                            <p class="inv-street-addr">رقم الفاتورة : @Html.DisplayFor(model => model.BoatOwnerRecieptID)</p>
-                                            <p class="inv-street-addr">رقم السرحة : @Html.DisplayFor(model => model.SarhaID)</p>
-                                            <p class="inv-street-addr">تاريخ السرحة : @Html.DisplayFor(model => model.Sarha.DateOfSarha)</p>
-                                            <p class="inv-email-address">@Html.DisplayNameFor(model => model.Date) : @Html.DisplayFor(model => model.Date)</p>
+                                            <p class="inv-customer-name"> @Html.DisplayNameFor(model => model.BoatOwnerReciept.Boat.BoatName) : @Html.DisplayFor(model => model.BoatOwnerReciept.Boat.BoatName)</p>
+                                            <p class="inv-street-addr">رقم الفاتورة : @Html.DisplayFor(model => model.BoatOwnerReciept.BoatOwnerRecieptID)</p>
+                                            <p class="inv-street-addr">رقم السرحة : @Html.DisplayFor(model => model.BoatOwnerReciept.SarhaID)</p>
+                                            <p class="inv-street-addr">تاريخ السرحة : @Html.DisplayFor(model => model.BoatOwnerReciept.Sarha.DateOfSarha)</p>
+                                            <p class="inv-email-address">@Html.DisplayNameFor(model => model.BoatOwnerReciept.Date) : @Html.DisplayFor(model => model.BoatOwnerReciept.Date)</p>
                                         </div>
                                     </div>
 
@@ -78,7 +78,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach (var item in ViewBag.Items)
+                                                        @foreach (var item in Model.NormalboatOwnerItems)
                                                         {
                                                             <tr>
                                                                 <td>@item.Fish.FishName</td>
@@ -87,6 +87,41 @@
                                                                 <td class="text-right">@item.UnitPrice</td>
                                                                 <td class="text-right">@Convert.ToDecimal(item.Qty * Convert.ToDouble(item.UnitPrice))</td>
                                                             </tr>
+                                                        }
+
+                                                        @foreach (var Amount in Model.Amounts)
+                                                        {
+
+                                                            var Fisheslist = Model.AmountboatOwnerItems.Where(c => c.AmountId == Amount.AmountId).Select(c => c.Fish.FishName);
+                                                            string fishes = "";
+                                                            string Qts = "";
+                                                            foreach (var item in Fisheslist)
+                                                            {
+                                                                fishes += item + "/";
+                                                            }
+                                                            var Qtylist = Model.AmountboatOwnerItems.Where(c => c.AmountId == Amount.AmountId).Select(c => c.Qty);
+                                                            foreach (var item in Qtylist)
+                                                            {
+                                                                Qts += item + "/";
+                                                            }
+
+                                                            <tr data-check="trAmount">
+                                                                <td>@fishes</td>
+                                                                @{
+
+                                                                    var info = Model.AmountboatOwnerItems.FirstOrDefault(c => c.BoatOwnerItemID == Amount.items.ElementAt(0));
+
+                                                                }
+                                                                <td class="text-right">@info.ProductionType.ProductionName</td>
+
+                                                                <td class="text-right">@Qts</td>
+                                                                <td class="text-right"> @info.UnitPrice </td>
+
+                                                                <td class="text-right">@info.UnitPrice</td>
+                                                              
+                                                            </tr>
+
+                                                           
                                                         }
 
                                                     </tbody>
@@ -105,38 +140,38 @@
                                                         <p class="">الاجمالي قبل العمولة </p>
                                                     </div>
                                                     <div class="col-sm-4 col-5">
-                                                        <p class="">@Html.DisplayFor(model => model.TotalBeforePaying)</p>
+                                                        <p class="">@Html.DisplayFor(model => model.BoatOwnerReciept.TotalBeforePaying)</p>
                                                     </div>
-                                                    <div class="col-sm-8 col-7">
+                                                    <div class="col-sm-8 col-7 hideInPrint">
                                                         <p class=""> نسبة العمولة </p>
                                                     </div>
-                                                    <div class="col-sm-4 col-5">
-                                                        <p class="">@Html.DisplayFor(model => model.PercentageCommission) %</p>
+                                                    <div class="col-sm-4 col-5 hideInPrint">
+                                                        <p class="">@Html.DisplayFor(model => model.BoatOwnerReciept.PercentageCommission) %</p>
                                                     </div>
                                                     <div class="col-sm-8 col-7">
                                                         <p class="">قيمة العمولة </p>
                                                     </div>
                                                     <div class="col-sm-4 col-5">
-                                                        <p class="">@Html.DisplayFor(model => model.Commission)</p>
+                                                        <p class="">@Html.DisplayFor(model => model.BoatOwnerReciept.Commission)</p>
                                                     </div>
 
                                                     <div class="col-sm-8 col-7 hideInPrint">
                                                         <p class=" discount-rate">ما تم دفعه من الهالك </p>
                                                     </div>
                                                     <div class="col-sm-4 col-5 hideInPrint">
-                                                        <p class="">@Html.DisplayFor(model => model.PaidFromDebts)</p>
+                                                        <p class="">@Html.DisplayFor(model => model.BoatOwnerReciept.PaidFromDebts)</p>
                                                     </div>
                                                     <div class="col-sm-8 col-7 hideInPrint">
                                                         <p class=" discount-rate">باقي الهالك علي المركب </p>
                                                     </div>
                                                     <div class="col-sm-4 col-5 hideInPrint">
-                                                        <p class="">@Html.DisplayFor(model => model.Boat.DebtsOfHalek)</p>
+                                                        <p class="">@Html.DisplayFor(model => model.BoatOwnerReciept.Boat.DebtsOfHalek)</p>
                                                     </div>
-                                                    <div class="col-sm-8 col-7 grand-total-title hideInPrint ">
+                                                    <div class="col-sm-8 col-7 grand-total-title">
                                                         <h4 class="text-info">صافي انتاج المركب </h4>
                                                     </div>
-                                                    <div class="col-sm-4 col-5 grand-total-amount hideInPrint">
-                                                        <h4 class="text-info">@Html.DisplayFor(model => model.TotalAfterPaying)</h4>
+                                                    <div class="col-sm-4 col-5 grand-total-amount">
+                                                        <h4 class="text-info">@Html.DisplayFor(model => model.BoatOwnerReciept.TotalAfterPaying)</h4>
                                                     </div>
 
                                                 </div>

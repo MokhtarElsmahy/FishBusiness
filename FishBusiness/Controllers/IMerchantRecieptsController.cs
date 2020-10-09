@@ -48,15 +48,24 @@ namespace FishBusiness.Controllers
                 .FirstOrDefaultAsync(m => m.IMerchantRecieptID == id);
 
 
-            var items = _context.IMerchantRecieptItem.Include(i=>i.Fish).Include(i=>i.ProductionType).Where(i => i.IMerchantRecieptID == iMerchantReciept.IMerchantRecieptID).ToList();
-
-            ImerchRecDetailsVm model = new ImerchRecDetailsVm();
-            model.ImerchantReciept = iMerchantReciept;
-            model.ImerchantRecieptItems = items;
             if (iMerchantReciept == null)
             {
                 return NotFound();
             }
+
+            ImerchRecDetailsVm model = new ImerchRecDetailsVm();
+            model.ImerchantReciept = iMerchantReciept;
+
+            model.NormalIMerchantItems = _context.IMerchantRecieptItem.Include(c => c.Fish).Include(c => c.ProductionType).Where(c => c.IMerchantRecieptID == iMerchantReciept.IMerchantRecieptID && c.AmountId == null).ToList();
+            model.AmountIMerchantItems = _context.IMerchantRecieptItem.Include(c => c.Fish).Include(c => c.ProductionType).Where(c => c.IMerchantRecieptID == iMerchantReciept.IMerchantRecieptID && c.AmountId != null).ToList();
+           
+
+            var results = from p in model.AmountIMerchantItems
+                          group p.IMerchantRecieptItemID by p.AmountId into g
+                          select new AmountVm { AmountId = g.Key, items = g };
+
+            model.Amounts = results;
+          
 
             return View(model);
         }
@@ -70,6 +79,8 @@ namespace FishBusiness.Controllers
 
             ViewData["ProductionTypeID"] = new SelectList(_context.ProductionTypes, "ProductionTypeID", "ProductionName");
             IMerchantRecVM model = new IMerchantRecVM();
+
+
 
             return View(model);
         }

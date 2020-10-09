@@ -15,6 +15,8 @@ namespace FishBusiness.Models
         [Required(ErrorMessage = "برجاء ادخال الكمية")]
         public int Qty { get; set; }
 
+        public Guid? AmountId { get; set; }
+
         [ForeignKey("Fish")]
         public int FishID { get; set; }
         public virtual Fish Fish { get; set; }

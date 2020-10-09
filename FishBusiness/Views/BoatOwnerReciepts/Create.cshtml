@@ -356,8 +356,9 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <div class="form-group">
-                    <label asp-for="BoatOwnerItem.ProductionType.ProductionName" class="control-label">بيعه</label>
-                    <input type="checkbox" id="ChBoxAmount" />
+                    <label asp-for="BoatOwnerItem.ProductionType.ProductionName" class="control-label">*</label>
+                    <input type="checkbox" id="ChBoxAmount" onclick="ChangeCheck()" />
+                    <span>حدد مع اول عناصر البيعه و أزل التحديد مع اخر عناصرها</span>
                 </div>
                 <div class="form-group">
                     <label asp-for="BoatOwnerItem.Fish.FishName" class="control-label"></label>
@@ -772,6 +773,15 @@
 
 
         })
+
+        var ChangeCheck = function () {
+            if ($("#chkLeaderDebts").is(":checked")) {
+
+                $("#ChBoxAmountVar").val('1')
+            } else {
+                $("#ChBoxAmountVar").val('0')
+            }
+        }
         $("#NewRows").click(function () {
 
             var id = $("#trId").val();
@@ -803,7 +813,8 @@
 
 
 
-            } else {
+            }
+            else {
 
 
                 var addControls = "";
@@ -847,7 +858,7 @@
                $('#BoatBody').append(addControls);
 
             }
-            //$("#ChBoxAmountVar").val($("#ChBoxAmount").val());
+          
             if ($("#ChBoxAmount").is(":checked")) {
 
                 $("#ChBoxAmountVar").val(1)

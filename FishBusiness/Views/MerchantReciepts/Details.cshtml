@@ -1,4 +1,4 @@
-﻿@model FishBusiness.Models.MerchantReciept
+﻿@model FishBusiness.ViewModels.MerchantRecDetailsVm
 
 @{
     ViewData["Title"] = "Details";
@@ -61,10 +61,10 @@
 
 
                                         <div class="col-sm-7 align-self-center">
-                                            <p class="inv-customer-name"> @Html.DisplayNameFor(model => model.Merchant.MerchantName) : @Html.DisplayFor(model => model.Merchant.MerchantName)</p>
-                                            <p class="inv-street-addr">رقم الفاتورة : @Html.DisplayFor(model => model.MerchantRecieptID)</p>
+                                            <p class="inv-customer-name"> @Html.DisplayNameFor(model => model.MerchantReciept.Merchant.MerchantName) : @Html.DisplayFor(model => model.MerchantReciept.Merchant.MerchantName)</p>
+                                            <p class="inv-street-addr">رقم الفاتورة : @Html.DisplayFor(model => model.MerchantReciept.MerchantRecieptID)</p>
 
-                                            <p class="inv-street-addr">تاريخ  : @Html.DisplayFor(model => model.Date)</p>
+                                            <p class="inv-street-addr">تاريخ  : @Html.DisplayFor(model => model.MerchantReciept.Date)</p>
 
                                         </div>
                                     </div>
@@ -84,7 +84,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach (var item in ViewBag.Items)
+                                                        @foreach (var item in Model.NormalMerchantItems)
                                                         {
                                                             <tr>
                                                                 <td>@item.Boat.BoatName</td>
@@ -95,7 +95,41 @@
                                                                 <td class="text-right">@Convert.ToDecimal(item.Qty * Convert.ToDouble(item.UnitPrice))</td>
                                                             </tr>
                                                         }
+                                                        @foreach (var Amount in Model.Amounts)
+                                                        {
 
+                                                            var Fisheslist = Model.AmountMerchantItems.Where(c => c.AmountId == Amount.AmountId).Select(c => c.Fish.FishName);
+                                                            string fishes = "";
+                                                            string Qts = "";
+                                                            foreach (var item in Fisheslist)
+                                                            {
+                                                                fishes += item + "/";
+                                                            }
+                                                            var Qtylist = Model.AmountMerchantItems.Where(c => c.AmountId == Amount.AmountId).Select(c => c.Qty);
+                                                            foreach (var item in Qtylist)
+                                                            {
+                                                                Qts += item + "/";
+                                                            }
+
+                                                            <tr data-check="trAmount">
+                                                                @{
+
+                                                                    var info = Model.AmountMerchantItems.FirstOrDefault(c => c.MerchantRecieptItemID == Amount.items.ElementAt(0));
+
+                                                                }
+                                                                <td>@info.Boat.BoatName</td>
+                                                                <td>@fishes  "بيعه"</td>
+                                                                <td class="text-right">@info.ProductionType.ProductionName</td>
+
+                                                                <td class="text-right">@Qts</td>
+                                                                <td class="text-right"> @info.UnitPrice </td>
+
+                                                                <td class="text-right">@info.UnitPrice</td>
+
+                                                            </tr>
+
+
+                                                        }
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -112,7 +146,7 @@
                                                         <p class="">اجمالى الفاتوره  </p>
                                                     </div>
                                                     <div class="col-sm-4 col-5">
-                                                        <p class="">@Html.DisplayFor(model => model.TotalOfReciept) </p>
+                                                        <p class="">@Html.DisplayFor(model => model.MerchantReciept.TotalOfReciept) </p>
                                                     </div>
                                                     @*<div class="col-sm-8 col-7">
                                                         <p class="">المبلغ المدفوع </p>
@@ -124,14 +158,14 @@
                                                         <p class=" discount-rate text-info">الديون حتى هذه الفاتوره</p>
                                                     </div>
                                                     <div class="col-sm-4 col-5">
-                                                        <p class="text-info">@Html.DisplayFor(model => model.CurrentDebt)</p>
+                                                        <p class="text-info">@Html.DisplayFor(model => model.MerchantReciept.CurrentDebt)</p>
                                                     </div>
                                                     <hr />
                                                     <div class="col-sm-8 col-7">
                                                         <p class=" discount-rate text-info">الديون الان </p>
                                                     </div>
                                                     <div class="col-sm-4 col-5">
-                                                        <p class="text-info">@Html.DisplayFor(model => model.Merchant.PreviousDebts)</p>
+                                                        <p class="text-info">@Html.DisplayFor(model => model.MerchantReciept.Merchant.PreviousDebts)</p>
                                                     </div>
 
                                                 </div>

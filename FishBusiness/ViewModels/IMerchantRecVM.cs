@@ -8,8 +8,11 @@ namespace FishBusiness.ViewModels
 {
     public class IMerchantRecVM
     {
-        public IMerchantReciept ImerchantReciept { get; set; }
       
         public IMerchantRecieptItem IMerRecItem { get; set; }
+
+       
+        public IMerchantReciept ImerchantReciept { get; set; }
+       
     }
 }

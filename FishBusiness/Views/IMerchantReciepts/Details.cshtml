@@ -58,7 +58,7 @@
                                         <div class="col-sm-7 align-self-center">
 
                                             <p class="inv-street-addr">تاريخ الفاتوره :@Model.ImerchantReciept.Date.ToShortDateString()</p>
-                                            <h6> من : @Model.ImerchantReciept.Merchant.MerchantName</h6>
+                                            @*<h6> من : @Model.ImerchantReciept.Merchant.MerchantName</h6>*@
                                         </div>
                                     </div>
 
@@ -78,7 +78,7 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        @foreach (var item in Model.ImerchantRecieptItems)
+                                                        @foreach (var item in Model.NormalIMerchantItems)
                                                         {
                                                             <tr>
 
@@ -91,7 +91,40 @@
                                                                 <td class="text-right">@(item.UnitPrice*item.Qty)</td>
                                                             </tr>
                                                         }
+                                                        @foreach (var Amount in Model.Amounts)
+                                                        {
 
+                                                            var Fisheslist = Model.AmountIMerchantItems.Where(c => c.AmountId == Amount.AmountId).Select(c => c.Fish.FishName);
+                                                            string fishes = "";
+                                                            string Qts = "";
+                                                            foreach (var item in Fisheslist)
+                                                            {
+                                                                fishes += item + "/";
+                                                            }
+                                                            var Qtylist = Model.AmountIMerchantItems.Where(c => c.AmountId == Amount.AmountId).Select(c => c.Qty);
+                                                            foreach (var item in Qtylist)
+                                                            {
+                                                                Qts += item + "/";
+                                                            }
+
+                                                            <tr data-check="trAmount">
+                                                                <td>@fishes  "بيعه"</td>
+                                                                @{
+
+                                                                    var info = Model.AmountIMerchantItems.FirstOrDefault(c => c.IMerchantRecieptItemID == Amount.items.ElementAt(0));
+
+                                                                }
+                                                                <td class="text-right">@info.ProductionType.ProductionName</td>
+
+                                                                <td class="text-right">@Qts</td>
+                                                                <td class="text-right"> @info.UnitPrice </td>
+
+                                                                <td class="text-right">@info.UnitPrice</td>
+
+                                                            </tr>
+
+
+                                                        }
                                                     </tbody>
                                                 </table>
                                             </div>

@@ -230,7 +230,7 @@
                         </div>
                     </div>
                 </section>
-                <h3>رصيد احمد فتح الل</h3>
+                <h3>رصيد احمد فتح الله</h3>
                 <section>
                     <div class="widget-content widget-content-area br-6">
                         <h3>رصيد احمد فتح الله </h3>
@@ -247,6 +247,33 @@
                                     <tr>
                                         <td>المبلغ</td>
                                         <td id="totalAhmed">0</td>
+                                    </tr>
+                                </tbody>
+
+
+                            </table>
+
+
+                        </div>
+                    </div>
+                </section>
+                <h3>اجمالي نقدي</h3>
+                <section>
+                    <div class="widget-content widget-content-area br-6">
+                        <h3>اجمالي نقدي </h3>
+                        <img src="~/assets/img/loader.gif" class="loader" style="width:100px;height:100px;display:none" />
+                        <div class="table-responsive mb-4 mt-4">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        @*<th></th>*@
+                                    </tr>
+
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>المبلغ</td>
+                                        <td id="totalCash">0</td>
                                     </tr>
                                 </tbody>
 
@@ -336,318 +363,9 @@
         </div>
     </div>
 </div>
-<!--<div class="layout-px-spacing">
-    <div class="container row">
-        <div class="page-header m-3">
-            <div class="page-title">
-                <h3>التحصيل عن يوم</h3>
 
-            </div>
-            <input type="date" id="date" class="form-control col-4" />
-            <a id="btnconfirm" class="btn btn-primary" as style="margin-right:10px;">تاكيد</a>
 
-        </div>
-        <div class="mt-4 ml-auto">
-            <a asp-action="Index" asp-controller="Home" class="btn btn-primary">الرئيسية</a>
-            <a asp-action="Profile" asp-controller="Collectings" class="btn btn-primary">صفحة العمل</a>
-
-        </div>
-    </div>
-
-
-    <div class="row layout-top-spacing" id="cancel-row">
-
-        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
-            <div class="widget-content widget-content-area br-6">
-                <h3>مدفوعات للحلقة</h3>
-                <img src="~/assets/img/loader.gif" class="loader" style="width:100px;height:100px;display:none" />
-                <div class="table-responsive mb-4 mt-4">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-
-                                <th>اسم التاجر</th>
-                                <th>المدفوع</th>
-
-                            </tr>
-                        </thead>
-                        <tbody id="TBody1">
-                        </tbody>
-                        <tfoot>
-
-                            <tr id="totalOfPayment_tr4">
-                                <td>
-                                    الاجمالى
-                                </td>
-                                <td id="TBody1Total">
-                                    0
-                                </td>
-                            </tr>
-
-                        </tfoot>
-
-                    </table>
-
-
-                </div>
-
-
-
-
-            </div>
-
-        </div>
-
-        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
-            <div class="widget-content widget-content-area br-6">
-                <h3>مدفوعات للتاجر</h3>
-                <img src="~/assets/img/loader.gif" class="loader" style="width:100px;height:100px;display:none" />
-                <div class="table-responsive mb-4 mt-4">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-
-                                <th>اسم التاجر</th>
-                                <th>المبلغ</th>
-
-
-
-                            </tr>
-                        </thead>
-                        <tbody id="TBody2">
-                        </tbody>
-
-                        <tfoot>
-
-                            <tr id="totalOfPayment_tr4">
-                                <td>
-                                    الاجمالى
-                                </td>
-                                <td id="body2Total">
-                                    0
-                                </td>
-                            </tr>
-
-                        </tfoot>
-
-                    </table>
-
-
-                </div>-->
-
-
-                @*<div class="form-group">
-                        <label class="control-label">تلج</label>
-                        <input type="text" id="ice" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">عمال</label>
-                        <input type="text" id="labour" class="form-control" />
-                    </div>
-                    <input type="button" id="CalcProfit" class="btn btn-primary" style="margin-right:135px;;" value="حساب الارباح" />
-
-                    <div class="row mt-4">
-                        <h6>اجمالى الربح</h6>
-                        <label class="text-info" style="margin-right:100px;" id="totalOfProfits">0</label>
-                    </div>*@
-
-
-            <!--</div>-->
-            @*<div class="d-flex justify-content-center mt-2">
-
-                    <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
-                </div>*@
-        <!--</div>
-
-        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
-            <div class="widget-content widget-content-area br-6">
-                <h3>هالك</h3>
-                <img src="~/assets/img/loader.gif" class="loader" style="width:100px;height:100px;display:none" />
-                <div class="table-responsive mb-4 mt-4">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-
-                                <th>اسم المركب</th>
-                                <th>المبلغ</th>
-                                <th>نوع الهالك</th>
-
-                            </tr>
-                        </thead>
-                        <tbody id="TBody3">
-                        </tbody>
-                        <tfoot>
-
-                            <tr id="totalOfPayment_tr4">
-                                <td>
-                                    الاجمالى
-                                </td>
-                                <td id="body3Total">
-                                    0
-                                </td>
-                            </tr>
-
-                        </tfoot>
-                    </table>
-
-
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-    <div class="row layout-top-spacing">
-        <hr />
-    </div>
-    <div class="row layout-top-spacing" id="cancel-row">
-
-        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
-            <div class="widget-content widget-content-area br-6">
-                <h3>نثريات</h3>
-                <img src="~/assets/img/loader.gif" class="loader" style="width:100px;height:100px;display:none" />
-                <div class="table-responsive mb-4 mt-4">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-
-                                <th>الاسم</th>
-                                <th>المبلغ</th>
-
-
-                            </tr>
-                        </thead>
-                        <tbody id="TBody4">
-                        </tbody>
-                        <tfoot>
-
-                            <tr id="totalOfPayment_tr4">
-                                <td>
-                                    الاجمالى
-                                </td>
-                                <td id="TBody4Total">
-                                    0
-                                </td>
-                            </tr>
-
-                        </tfoot>
-                    </table>
-
-
-                </div>
-            </div>
-
-        </div>
-
-        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
-            <div class="widget-content widget-content-area br-6">
-                <h3>رصيد احمد فتح الله </h3>
-                <img src="~/assets/img/loader.gif" class="loader" style="width:100px;height:100px;display:none" />
-                <div class="table-responsive mb-4 mt-4">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>-->
-                                @*<th></th>*@
-                            <!--</tr>
-
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>المبلغ</td>
-                                <td id="totalAhmed">0</td>
-                            </tr>
-                        </tbody>
-
-
-                    </table>
-
-
-                </div>
-            </div>
-
-        </div>
-
-        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
-            <div class="widget-content widget-content-area br-6">
-                <h3>مصروف مركب</h3>
-                <img src="~/assets/img/loader.gif" class="loader" style="width:100px;height:100px;display:none" />
-                <div class="table-responsive mb-4 mt-4">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-
-                                <th>اسم المركب</th>
-                                <th>المبلغ</th>
-                                <th>سبب المصروف</th>
-
-                            </tr>
-                        </thead>
-                        <tbody id="TBodyExpenses">
-                        </tbody>
-                        <tfoot>
-
-                            <tr id="totalOfPayment_trExpenses">
-                                <td>
-                                    الاجمالى
-                                </td>
-                                <td id="bodyExpensesTotal">
-                                    0
-                                </td>
-                            </tr>
-
-                        </tfoot>
-                    </table>
-
-
-                </div>
-            </div>
-
-        </div>
-
-        <div class="col-xl-4 col-lg-4 col-sm-4"></div>
-        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
-            <div class="widget-content widget-content-area br-6">
-                <h3>الاجمالى</h3>
-                <img src="~/assets/img/loader.gif" class="loader" style="width:100px;height:100px;display:none" />
-                <div class="table-responsive mb-4 mt-4">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-
-                                <th>القيمه</th>
-                                <th>المبلغ</th>
-
-
-                            </tr>
-                        </thead>
-                        <tbody id="TBody5">
-                        </tbody>
-                        <tfoot>
-
-                            <tr id="totalOfPayment_tr6">
-                                <td>
-                                    المتبقى
-                                </td>
-                                <td id="body5Total">
-                                    0
-                                </td>
-                            </tr>
-
-                        </tfoot>
-                    </table>
-
-
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-
-
-
-</div>-->
-
+               
 
 <input type="text" id="indexer" style="display:none" value="0" />
 <input type="text" id="totalPaidForMerchants" style="display:none" value="0" />
@@ -771,6 +489,7 @@
                             //----------------------------------------------
 
                             $("#totalAhmed").text(result.ahmedFathAllah);
+                            $("#totalCash").text(result.cash);
 
                             //--------------------------------
 

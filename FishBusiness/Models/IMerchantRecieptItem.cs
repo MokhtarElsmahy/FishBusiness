@@ -13,7 +13,7 @@ namespace FishBusiness.Models
 
         [Display(Name = "الكمية")]
         [Required(ErrorMessage = "برجاء ادخال الكمية")]
-        public int Qty { get; set; }
+        public double Qty { get; set; }
 
         public Guid? AmountId { get; set; }
 

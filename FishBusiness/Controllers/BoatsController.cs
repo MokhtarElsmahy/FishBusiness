@@ -467,7 +467,7 @@ namespace FishBusiness.Controllers
                 var recs = db.BoatOwnerReciepts.Where(c => c.BoatID == boat.BoatID && c.IsCollected == false && c.IsCalculated == false).ToList();
                 var sumOfTotalAfterPayment = total;
                 var finalIncome = 0.0m;
-                if (boat.TypeID == 2) //shared boat
+                if (boat.TypeID == 5) //shared boat
                 {
 
                     finalIncome = sumOfTotalAfterPayment / 2;
@@ -514,7 +514,7 @@ namespace FishBusiness.Controllers
                     var recs = db.BoatOwnerReciepts.Where(c => c.BoatID == boat.BoatID && c.IsCollected == false && c.IsCalculated == true).ToList();
                     var sumOfTotalAfterPayment = recs.Sum(c => c.TotalAfterPaying);
                     var finalIncome = 0.0m;
-                    if (boat.TypeID == 2)
+                    if (boat.TypeID == 5)
                     {
 
                         finalIncome = sumOfTotalAfterPayment / 2;
@@ -531,7 +531,6 @@ namespace FishBusiness.Controllers
                         boat.IncomeOfSharedBoat += finalIncome - LeaderSalary;
                         IncomesOfSharedBoat inc = new IncomesOfSharedBoat() { BoatID = boat.BoatID, Date = TimeNow(), Income = finalIncome - LeaderSalary };
                         db.IncomesOfSharedBoats.Add(inc);
-
                     }
                     else
                     {
@@ -572,7 +571,7 @@ namespace FishBusiness.Controllers
         public IActionResult Checkout(int id)
         {
             CheckoutVM model = new CheckoutVM();
-            model.BoatOwnerReciepts = db.BoatOwnerReciepts.Include(c => c.Boat).Where(c => c.BoatID == id && c.IsCheckedOut == false).ToList();
+            model.incomesOfSharedBoats = db.IncomesOfSharedBoats.Include(c => c.Boat).Where(c => c.BoatID == id && c.IsCheckedOut == false).ToList();
             model.Expenses = db.Expenses.Where(c => c.BoatID == id && c.IsCheckedOut == false).ToList();
             ViewBag.BoatName = db.Boats.Find(id).BoatName;
             ViewBag.BoatId = id;
@@ -581,7 +580,7 @@ namespace FishBusiness.Controllers
         [HttpPost]
         public IActionResult FinalCheckout(decimal value, int id, decimal FinalCredit)
         {
-            var recs = db.BoatOwnerReciepts.Where(c => c.BoatID == id && c.IsCheckedOut == false).ToList();
+            var recs = db.IncomesOfSharedBoats.Where(c => c.BoatID == id && c.IsCheckedOut == false).ToList();
             var expenses = db.Expenses.Where(c => c.BoatID == id && c.IsCheckedOut == false).ToList();
             for (int i = 0; i < recs.Count; i++)
             {

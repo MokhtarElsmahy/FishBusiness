@@ -62,7 +62,6 @@ namespace FishBusiness.Controllers
             return View(model);
 
 
-            return View(merchantReciept);
         }
 
         public DateTime TimeNow()
@@ -162,7 +161,7 @@ namespace FishBusiness.Controllers
             Fish fish = _context.Fishes.Find(item.FishID);
             Boat boat = _context.Boats.Find(item.BoatID);
             ProductionType production = _context.ProductionTypes.Find(item.ProductionTypeID);
-            var res = new { boatName = boat.BoatName, productionName = production.ProductionName, fishName = fish.FishName, qty = item.Qty, unitPrice = item.UnitPrice, total = item.Qty * item.UnitPrice };
+            var res = new { boatName = boat.BoatName, productionName = production.ProductionName, fishName = fish.FishName, qty = item.Qty, unitPrice = item.UnitPrice, total = (decimal) item.Qty * item.UnitPrice };
 
             return Json(res);
 
@@ -197,7 +196,7 @@ namespace FishBusiness.Controllers
                 string[] Fishes = FishesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 string[] Productions = ProductionTypesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 string[] boats = boatsCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
-                int[] qtys = qtysCookie.Split(",").Select(c => Convert.ToInt32(c)).ToArray();
+                double[] qtys = qtysCookie.Split(",").Select(c => Convert.ToDouble(c)).ToArray();
                 decimal[] unitPrices = unitpricesCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
 
 
@@ -496,7 +495,7 @@ namespace FishBusiness.Controllers
                 string[] Fishes = FishesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 string[] Productions = ProductionTypesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 string[] boats = boatsCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
-                int[] qtys = qtysCookie.Split(",").Select(c => Convert.ToInt32(c)).ToArray();
+                double[] qtys = qtysCookie.Split(",").Select(c => Convert.ToDouble(c)).ToArray();
                 decimal[] unitPrices = unitpricesCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
                 #endregion
 
@@ -545,7 +544,7 @@ namespace FishBusiness.Controllers
             Fish fish = _context.Fishes.Find(item.FishID);
             Boat boat = _context.Boats.Find(item.BoatID);
             ProductionType production = _context.ProductionTypes.Find(item.ProductionTypeID);
-            var res = new { boatName = boat.BoatName, productionName = production.ProductionName, fishName = fish.FishName, qty = item.Qty, unitPrice = item.UnitPrice, total = item.Qty * item.UnitPrice };
+            var res = new { boatName = boat.BoatName, productionName = production.ProductionName, fishName = fish.FishName, qty = item.Qty, unitPrice = item.UnitPrice, total = (decimal)item.Qty * item.UnitPrice };
 
             return Json(res);
 

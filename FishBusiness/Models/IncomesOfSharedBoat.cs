@@ -16,6 +16,7 @@ namespace FishBusiness.Models
 
         [Display(Name = "الايراد")]
         public decimal Income { get; set; }
+        public bool IsCheckedOut { get; set; }
 
         public int BoatID { get; set; }
 

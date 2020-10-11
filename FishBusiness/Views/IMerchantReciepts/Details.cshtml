@@ -88,7 +88,7 @@
                                                                 <td class="text-right">@item.Qty</td>
 
                                                                 <td class="text-right">@item.UnitPrice</td>
-                                                                <td class="text-right">@(item.UnitPrice*item.Qty)</td>
+                                                                <td class="text-right">@(item.UnitPrice*(decimal)item.Qty)</td>
                                                             </tr>
                                                         }
                                                         @foreach (var Amount in Model.Amounts)

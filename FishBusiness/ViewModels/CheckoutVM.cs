@@ -8,7 +8,7 @@ namespace FishBusiness.ViewModels
 {
     public class CheckoutVM
     {
-        public IEnumerable<BoatOwnerReciept> BoatOwnerReciepts { get; set; }
+        public IEnumerable<IncomesOfSharedBoat> incomesOfSharedBoats { get; set; }
         public IEnumerable<Expense> Expenses { get; set; }
     }
 }

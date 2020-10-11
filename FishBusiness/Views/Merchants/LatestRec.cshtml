@@ -1,0 +1,84 @@
+﻿@model FishBusiness.ViewModels.MerchantRecDetailsVm
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<div class="row">
+    <div class="col-sm-7 align-self-center">
+        @*<p> @Html.DisplayNameFor(model => model.MerchantReciept.Merchant.MerchantName) : @Html.DisplayFor(model => model.MerchantReciept.Merchant.MerchantName)</p>*@
+        <p>رقم الفاتورة : @Html.DisplayFor(model => model.MerchantReciept.MerchantRecieptID)</p>
+
+        <p>تاريخ  : @Html.DisplayFor(model => model.MerchantReciept.Date)</p>
+
+    </div>
+</div>
+<div class="table-responsive">
+    <table class="table">
+        <thead class="">
+            <tr>
+                <th scope="col">مركب</th>
+                <th scope="col">النوع</th>
+                <th class="text-right" scope="col">الانتاج</th>
+                <th class="text-right" scope="col">الكمية</th>
+                <th class="text-right" scope="col">سعر الوحدة</th>
+                <th class="text-right" scope="col">الاجمالي</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.NormalMerchantItems)
+            {
+                <tr>
+                    <td>@item.Boat.BoatName</td>
+                    <td>@item.Fish.FishName</td>
+                    <td class="text-right">@item.ProductionType.ProductionName</td>
+                    <td class="text-right">@item.Qty</td>
+                    <td class="text-right">@item.UnitPrice</td>
+                    <td class="text-right">@Convert.ToDecimal(item.Qty * Convert.ToDouble(item.UnitPrice))</td>
+                </tr>
+            }
+            @foreach (var Amount in Model.Amounts)
+            {
+
+                var Fisheslist = Model.AmountMerchantItems.Where(c => c.AmountId == Amount.AmountId).Select(c => c.Fish.FishName);
+                string fishes = "";
+                string Qts = "";
+                foreach (var item in Fisheslist)
+                {
+                    fishes += item + "/";
+                }
+                var Qtylist = Model.AmountMerchantItems.Where(c => c.AmountId == Amount.AmountId).Select(c => c.Qty);
+                foreach (var item in Qtylist)
+                {
+                    Qts += item + "/";
+                }
+
+                <tr data-check="trAmount">
+                    @{
+
+                        var info = Model.AmountMerchantItems.FirstOrDefault(c => c.MerchantRecieptItemID == Amount.items.ElementAt(0));
+
+                    }
+                    <td>@info.Boat.BoatName</td>
+                    <td>@fishes  "بيعه"</td>
+                    <td class="text-right">@info.ProductionType.ProductionName</td>
+
+                    <td class="text-right">@Qts</td>
+                    <td class="text-right"> @info.UnitPrice </td>
+
+                    <td class="text-right">@info.UnitPrice</td>
+
+                </tr>
+
+
+            }
+        </tbody>
+
+    </table>
+</div>
+<div class="row">
+    <div class="col-sm-8 col-7">
+        <p class="">اجمالى الفاتوره  </p>
+    </div>
+    <div class="col-sm-4 col-5">
+        <p class="">@Html.DisplayFor(model => model.MerchantReciept.TotalOfReciept) </p>
+    </div>
+</div>

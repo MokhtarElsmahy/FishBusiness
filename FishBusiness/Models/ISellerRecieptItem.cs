@@ -16,7 +16,7 @@ namespace FishBusiness.Models
         public int ISellerRecieptID { get; set; }
 
         [Display(Name = "الكميه بالكجم")]
-        public int Qty { get; set; }
+        public double Qty { get; set; }
 
         [Display(Name = "بوكسات/طوايل")]
         [Required(ErrorMessage = "برجاء ادخال عدد بوكسات/طوايل")]

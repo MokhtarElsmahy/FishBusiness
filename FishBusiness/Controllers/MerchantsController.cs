@@ -57,6 +57,44 @@ namespace FishBusiness.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public IActionResult LatestRec(int? id)
+        {
+           
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var merchantReceipts = _context.MerchantReciepts.Include(b => b.Merchant).Where(x => x.MerchantID == id);
+            int merchantReceiptID;
+            MerchantReciept mRec;
+            if (merchantReceipts.Count()==0)
+                return NotFound();
+            else
+            {
+                merchantReceiptID = merchantReceipts.Max(x => x.MerchantRecieptID);
+                mRec = _context.MerchantReciepts.Find(merchantReceiptID);
+            }
+            if (mRec == null)
+            {
+                return NotFound();
+            }
+
+            MerchantRecDetailsVm model = new MerchantRecDetailsVm();
+            model.MerchantReciept = mRec;
+            model.NormalMerchantItems = _context.MerchantRecieptItems.Include(c => c.Fish).Include(c => c.Boat).Include(c => c.ProductionType).Where(c => c.MerchantRecieptID == mRec.MerchantRecieptID && c.AmountId == null).ToList();
+            model.AmountMerchantItems = _context.MerchantRecieptItems.Include(c => c.Fish).Include(c => c.Boat).Include(c => c.ProductionType).Where(c => c.MerchantRecieptID == mRec.MerchantRecieptID && c.AmountId != null).ToList();
+
+            var results = from p in model.AmountMerchantItems
+                          group p.MerchantRecieptItemID by p.AmountId into g
+                          select new AmountVm { AmountId = g.Key, items = g };
+
+            model.Amounts = results;
+
+            return PartialView(model);
+        }
+
         public IActionResult TableItems()
         {
             return PartialView(_context.Merchants.ToList());

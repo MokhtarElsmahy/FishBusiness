@@ -49,15 +49,15 @@
                             </tr>
                         </thead>
                         <tbody id="TBody">
-                            @if (Model.BoatOwnerReciepts.Any())
+                            @if (Model.incomesOfSharedBoats.Any())
                             {
-                                foreach (var item in Model.BoatOwnerReciepts)
+                                foreach (var item in Model.incomesOfSharedBoats)
                                 {
                                     <tr>
 
                                         <td class="MerchantName">@item.Date.ToShortDateString()</td>
-                                        <td class="Price"> @item.FinalIncome</td>
-                                        <td><a class="btn btn-primary" asp-action="Details" asp-controller="BoatOwnerReciepts" asp-route-id="@item.BoatOwnerRecieptID">تفاصيل</a></td>
+                                        <td class="Price"> @item.Income</td>
+                                        @*<td><a class="btn btn-primary" asp-action="Details" asp-controller="BoatOwnerReciepts" asp-route-id="@item.BoatOwnerRecieptID">تفاصيل</a></td>*@
 
                                     </tr>
                                 }
@@ -71,7 +71,7 @@
                                     الاجمالى
                                 </td>
                                 <td id="totalOfPayment">
-                                    @Model.BoatOwnerReciepts.Sum(c=>c.FinalIncome)
+                                    @Model.incomesOfSharedBoats.Sum(c=>c.Income)
                                 </td>
                             </tr>
                         </tfoot>
@@ -156,7 +156,7 @@
                             <tr>
                                 <td> الاجمالي</td>
                                 <td id="txtFinalCredit">
-                                    @(Model.BoatOwnerReciepts.Sum(c => c.FinalIncome)- Model.Expenses.Sum(z => z.Price))
+                                    @(Model.incomesOfSharedBoats.Sum(c => c.Income)- Model.Expenses.Sum(z => z.Price))
 
                                 </td>
                                 <td></td>

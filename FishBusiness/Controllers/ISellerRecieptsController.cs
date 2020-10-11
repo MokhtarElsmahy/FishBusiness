@@ -212,7 +212,7 @@ namespace FishBusiness.Controllers
 
                 string[] Fishes = FishesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 string[] Productions = ProductionTypesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
-                int[] qtys = qtysCookie.Split(",").Select(c => Convert.ToInt32(c)).ToArray();
+                double[] qtys = qtysCookie.Split(",").Select(c => Convert.ToDouble(c)).ToArray();
                 //decimal[] unitPrices = unitpricesCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
                 int[] NOfBoxes = NOfBoxesCookie.Split(",").Select(c => Convert.ToInt32(c)).ToArray();
 

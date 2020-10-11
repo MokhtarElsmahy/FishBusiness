@@ -135,7 +135,7 @@ namespace FishBusiness.Controllers
             model.Commisions = _context.BoatOwnerReciepts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.Commission);
             model.IsellerReceiptsTotal =(decimal) _context.ISellerReciepts.ToList().Where(x => x.Date.ToShortDateString() ==date).Sum(x => x.PaidFromDebt);
             model.externalReceiptsTotal = _context.ExternalReceipts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.FinalIncome);
-            model.SharedBoatsReceiptsTotal = _context.BoatOwnerReciepts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.FinalIncome);
+            model.SharedBoatsReceiptsTotal = _context.IncomesOfSharedBoats.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.Income);
             model.collectorForUsTotal = _context.PaidForMerchant.ToList().Where(x => x.Date.ToShortDateString() == date && x.PersonID==3 && x.IsPaidForUs==true).Sum(x => x.Payment);
             model.LeaderLoansPaybackTotal = _context.LeaderPaybacks.ToList().Where(x => x.Date.ToShortDateString() == date ).Sum(x => x.Price);
             model.SalesTotal =(decimal) _context.ISellerReciepts.ToList().Where(x => x.Date.ToShortDateString() == date ).Sum(x => x.PaidFromDebt);

@@ -70,7 +70,7 @@
 
                                                 <a href="#" onclick="EditShow(@merchant.MerchantID)" class="btn btn-success mb-2">تعديل</a>
                                                 <a asp-action="Details" asp-route-id="@merchant.MerchantID" class="btn btn-info mb-2">بروفايل</a>
-
+                                                <a href="#" onclick="Details(@merchant.MerchantID)" class="btn btn-info mb-2">اخر فاتورة</a>
                                                 <a class="btn btn-danger mb-2 delete"
                                                    data-id="@merchant.MerchantID"
                                                    data-controller="Merchants"
@@ -104,7 +104,29 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @*<div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    ddddddddddddddddd
+                </div>*@
+            <div class="modal-body" id="ModalBodyDiv2">
 
+                <hr>
+                <center>
+
+                </center>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">اغلاق</button>
+
+            </div>
+        </div>
+    </div>
+</div>
 
 <div id="fadeleftModal" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
     <div class="modal-dialog">
@@ -119,7 +141,7 @@
 
 
             <div class="modal-body" id="ModalBodyDiv">
-               
+
             </div>
 
         </div>
@@ -173,7 +195,14 @@
                 $("#fadeleftModal").modal("show");
             })
         }
+        var Details = function (id) {
+            var url = "/Merchants/LatestRec?id=" + id;
+            $("#ModalBodyDiv2").load(url, function () {
+                $("#myModal").modal("show");
+            })
 
+
+        }
 
 
 
@@ -207,9 +236,9 @@
                 type: "GET",
                 data: { id: id },
                 success: function (response) {
-                        $("#fadeleftModal").modal("show");
-                        $("#ModalBodyDiv").html(response);
-                   
+                    $("#fadeleftModal").modal("show");
+                    $("#ModalBodyDiv").html(response);
+
                 }
 
 

@@ -73,6 +73,9 @@ namespace FishBusiness
         public DbSet<FishBusiness.Models.FathAllahGift> FathAllahGifts { get; set; }
         public DbSet<FishBusiness.Models.Checkout> Checkouts { get; set; }
         public virtual DbSet<Debt_In_Sarha> Debts_In_Sarhas { get; set; }
+        public virtual DbSet<Operator> Operators { get; set; }
+        public virtual DbSet<PaidForOperator> PaidForOperators { get; set; }
+        public virtual DbSet<BranchOffice> BranchOffices { get; set; }
 
 
 

@@ -48,13 +48,6 @@
         </div>
     </div>
     <div class="statbox widget box box-shadow ml-3 mr-3">
-        @*<div class="widget-header">
-                <div class="row">
-                    <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                        <h4></h4>
-                    </div>
-                </div>
-            </div>*@
         <div class="widget-content widget-content-area">
             <div id="pill-vertical">
                 <h3>تحصيل من التجار</h3>
@@ -219,23 +212,7 @@
                             </div>
 
 
-                            @*<div class="form-group">
-                                    <label class="control-label">تلج</label>
-                                    <input type="text" id="ice" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label">عمال</label>
-                                    <input type="text" id="labour" class="form-control" />
-                                </div>
-                                <input type="button" id="CalcProfit" class="btn btn-primary" style="margin-right:135px;;" value="حساب الارباح" />
-
-                                <div class="row mt-4">
-                                    <h6>اجمالى الربح</h6>
-                                    <label class="text-info" style="margin-right:100px;" id="totalOfProfits">0</label>
-                                </div>*@
-
-
-                        </div>
+                                 </div>
                         <div class="d-flex justify-content-center mt-2">
 
                             <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
@@ -487,6 +464,51 @@
                         </div>
                     </div>
                 </section>
+                <h3>اجمالي نقدي</h3>
+                <section>
+                    <div>
+                        <div class="widget-content widget-content-area br-6">
+                            <h3>اجمالي نقدي</h3>
+                            <div class="table-responsive mb-4 mt-4">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                        </tr>
+
+                                    </thead>
+                                    <tbody id="TBodyCash">
+                                        <tr>
+                                            <td>المبلغ</td>
+                                            <td><input type="text" class="form-control" id="txtCash"  /></td>
+                                        </tr>
+
+
+                                    </tbody>
+                                    <tfoot>
+
+                                        <tr id="totalOfCash_trCash" style="display:none;">
+                                            <td>
+                                                الاجمالى
+                                            </td>
+                                            <td id="totalCash">
+                                                @ViewBag.TotalOfCashes
+                                            </td>
+                                        </tr>
+
+                                    </tfoot>
+
+                                </table>
+
+
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center mt-2">
+
+                            <a class="btn btn-primary" id="btnCash"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
+                        </div>
+                    </div>
+                </section>
                 <h3>الاجمالى</h3>
                 <section>
                     <div>
@@ -540,491 +562,7 @@
     
 </div>
 
-<!--<div class="layout-px-spacing">
-    <div class="container row">
-        <div class="page-header m-3">
-            <div class="page-title">
-                <h3>التحصيل اليومى</h3>
-            </div>
-        </div>
-        <div class="mt-4 ml-auto">
-            <a asp-action="Index" asp-controller="Home" class="btn btn-primary">الرئيسية</a>
-            <a asp-action="ProfileOfDay" asp-controller="Collectings" class="btn btn-primary">السجل</a>
-            <a class="btn btn-primary" id="btnFinalSave" style="display:none;">حفظ</a>
-            <img src="~/assets/img/loader.gif" id="Bloader" style="width:50px;height:50px;display:none" />
-        </div>
-    </div>
 
-
-    <div class="row layout-top-spacing" id="cancel-row">
-
-        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
-            <div class="widget-content widget-content-area br-6">
-                <h3>تحصيل من التجار</h3>
-
-                <div class="table-responsive mb-4 mt-4">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-
-                                <th>اسم التاجر</th>
-                                <th>المدفوع</th>
-
-                            </tr>
-                        </thead>
-                        <tbody id="TBody">
-                            @if (Model.PaidForUs.Any())
-                            {
-                                @foreach (var item in Model.PaidForUs)
-                                {
-                                    <tr>
-
-                                        <td class="MerchantName">@item.Merchant.MerchantName</td>
-                                        <td class="Price"> @item.Payment</td>
-
-                                    </tr>
-                                }
-
-                            }
-                            else
-                            {
-                                <tr id="NoPayment">
-
-                                    <td class="font-weight-bolder">لا توجد مدفوعات</td>
-
-
-                                </tr>
-                            }
-
-
-                        </tbody>
-                        <tfoot>
-                            @if (Model.PaidForUs.Any())
-                            {
-
-
-                                <tr id="totalOfPayment_tr">
-                                    <td>
-                                        الاجمالى
-                                    </td>
-                                    <td id="totalOfPayment">
-                                        @Model.PaidForUs.Sum(c => c.Payment)
-                                    </td>
-                                </tr>
-                            }
-                            else
-                            {
-                                <tr id="totalOfPayment_tr">
-                                    <td>
-                                        الاجمالى
-                                    </td>
-                                    <td id="totalOfPayment">
-                                        0
-                                    </td>
-                                </tr>
-                            }
-                        </tfoot>
-
-                    </table>
-
-
-                </div>
-
-
-
-
-            </div>
-            <div class="d-flex justify-content-center mt-2">
-                <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
-
-            </div>
-        </div>
-
-        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
-            <div class="widget-content widget-content-area br-6">
-                <h3>مدفوعات للتجار</h3>
-                <div class="table-responsive mb-4 mt-4">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-
-                                <th>اسم التاجر</th>
-                                <th>المبلغ</th>
-
-
-
-                            </tr>
-                        </thead>
-                        <tbody id="TBody2">
-                            @if (Model.PaidForMerchant.Any())
-                            {
-                                @foreach (var item in Model.PaidForMerchant)
-                                {
-                                    <tr>
-
-                                        <td class="ToMerchantName">@item.Merchant.MerchantName</td>
-                                        <td class="ToPrice">@item.Payment</td>
-
-
-                                    </tr>
-                                }
-
-                            }
-                            else
-                            {
-                                <tr id="NoPaymentTo">
-
-                                    <td class="font-weight-bolder">-----------</td>
-
-
-                                </tr>
-                            }
-
-
-                        </tbody>
-
-                        <tfoot>
-                            @if (Model.PaidForMerchant.Any())
-                            {
-
-
-                                <tr id="totalOfPayment_tr2">
-                                    <td>
-                                        الاجمالى
-                                    </td>
-                                    <td id="totalOfPaymentTo">
-                                        @Model.PaidForMerchant.Sum(c => c.Payment)
-                                    </td>
-                                </tr>
-                            }
-                            else
-                            {
-                                <tr id="totalOfPayment_tr2">
-                                    <td>
-                                        الاجمالى
-                                    </td>
-                                    <td id="totalOfPaymentTo">
-                                        0
-                                    </td>
-                                </tr>
-                            }
-                        </tfoot>
-
-                    </table>
-
-
-                </div>-->
-
-
-                @*<div class="form-group">
-                        <label class="control-label">تلج</label>
-                        <input type="text" id="ice" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">عمال</label>
-                        <input type="text" id="labour" class="form-control" />
-                    </div>
-                    <input type="button" id="CalcProfit" class="btn btn-primary" style="margin-right:135px;;" value="حساب الارباح" />
-
-                    <div class="row mt-4">
-                        <h6>اجمالى الربح</h6>
-                        <label class="text-info" style="margin-right:100px;" id="totalOfProfits">0</label>
-                    </div>*@
-
-
-            <!--</div>
-            <div class="d-flex justify-content-center mt-2">
-
-                <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
-            </div>
-        </div>
-
-        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
-            <div class="widget-content widget-content-area br-6">
-                <h3>هالك مراكب</h3>
-                <div class="table-responsive mb-4 mt-4">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-
-                                <th>اسم المركب</th>
-                                <th>المبلغ</th>
-                                <th>نوع الهالك</th>
-
-                            </tr>
-                        </thead>
-                        <tbody id="TBody3">
-                            @if (Model.Debts_Sarha.Any())
-                            {
-                                @foreach (var item in Model.Debts_Sarha)
-                                {
-                                    <tr>
-
-                                        <td class="BoatName">@item.Sarha.Boat.BoatName</td>
-                                        <td class="HalekPrice">@item.Price</td>
-                                        <td class="HalekName">@item.Debt.DebtName</td>
-
-                                    </tr>
-                                }
-
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            }
-
-
-                        </tbody>
-                        <tfoot>
-                            @if (Model.Debts_Sarha.Any())
-                            {
-
-
-                                <tr id="totalOfPayment_tr3">
-                                    <td>
-                                        الاجمالى
-                                    </td>
-                                    <td id="totalHalek">
-                                        @Model.Debts_Sarha.Sum(c => c.Price)
-                                    </td>
-                                </tr>
-                            }
-                            else
-                            {
-                                <tr id="totalOfPayment_tr3">
-                                    <td>
-                                        الاجمالى
-                                    </td>
-                                    <td id="totalHalek">
-                                        0
-                                    </td>
-                                </tr>
-                            }
-                        </tfoot>
-                    </table>
-
-
-                </div>
-            </div>
-            <div class="d-flex justify-content-center mt-2">
-
-                <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="row layout-top-spacing" id="cancel-row">
-
-        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
-            <div class="widget-content widget-content-area br-6">
-                <h3>نثريات</h3>
-                <div class="table-responsive mb-4 mt-4">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-
-                                <th>الاسم</th>
-                                <th>المبلغ</th>
-
-
-                            </tr>
-                        </thead>
-                        <tbody id="TBody4">
-                        </tbody>
-                        <tfoot>
-
-                            <tr id="totalOfPayment_tr4">
-                                <td>
-                                    الاجمالى
-                                </td>
-                                <td id="totalAdditional">
-                                    0
-                                </td>
-                            </tr>
-
-                        </tfoot>
-                    </table>
-
-
-                </div>
-            </div>
-            <div class="d-flex justify-content-center mt-2">
-
-                <a class="btn btn-primary" data-toggle="modal" data-target="#MfadeleftModal4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>اضافة نثريات</a>
-            </div>
-        </div>
-
-
-        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
-            <div class="widget-content widget-content-area br-6">
-                <h3>تمويل فتح الله</h3>
-                <div class="table-responsive mb-4 mt-4">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th></th>
-                            </tr>
-
-                        </thead>
-                        <tbody id="TBody5">
-                            <tr>
-                                <td>المبلغ</td>
-                                <td><input type="text" class="form-control" id="txtFathAllah" /></td>
-
-                            </tr>
-
-
-                        </tbody>
-                        <tfoot>
-
-                            <tr id="totalOfPayment_trAhmed" style="display:none;">
-                                <td>
-                                    الاجمالى
-                                </td>
-                                <td id="totalAhmed">
-                                    0
-                                </td>
-                            </tr>
-
-                        </tfoot>
-
-                    </table>
-
-
-                </div>
-            </div>
-            <div class="d-flex justify-content-center mt-2">
-
-                <a class="btn btn-primary" id="btnAhmed"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
-            </div>
-        </div>
-
-        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
-            <div class="widget-content widget-content-area br-6">
-                <h3>مصروفات مراكب شريكه</h3>
-                <div class="table-responsive mb-4 mt-4">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-
-                                <th>اسم المركب</th>
-                                <th>المبلغ</th>
-                                <th>سبب المصروف</th>
-
-                            </tr>
-                        </thead>
-                        <tbody id="TBodyExpenses">
-                            @if (Model.Expenses.Any())
-                            {
-                                @foreach (var item in Model.Expenses)
-                                {
-                                    <tr>
-
-                                        <td class="BoatNameExpenses">@item.Boat.BoatName</td>
-                                        <td class="ExpensePrice">@item.Price</td>
-                                        <td class="Cause">@item.Cause</td>
-
-                                    </tr>
-                                }
-
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            }
-
-
-                        </tbody>
-                        <tfoot>
-                            @if (Model.Expenses.Any())
-                            {
-
-
-                                <tr id="totalOfPayment_trExpenses">
-                                    <td>
-                                        الاجمالى
-                                    </td>
-                                    <td id="totalExpenses">
-                                        @Model.Expenses.Sum(c => c.Price)
-                                    </td>
-                                </tr>
-                            }
-                            else
-                            {
-                                <tr id="totalOfPayment_trExpenses">
-                                    <td>
-                                        الاجمالى
-                                    </td>
-                                    <td id="totalExpenses">
-                                        0
-                                    </td>
-                                </tr>
-                            }
-                        </tfoot>
-                    </table>
-
-
-                </div>
-            </div>
-            <div class="d-flex justify-content-center mt-2">
-
-                <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal5"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
-            </div>
-        </div>
-
-        <div class="col-xl-4 col-lg-4 col-sm-4"></div>
-        <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
-            <div class="widget-content widget-content-area br-6">
-                <h3>الاجمالى</h3>
-                <div class="table-responsive mb-4 mt-4">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-
-                                <th>القيمه</th>
-                                <th>المبلغ</th>
-
-
-                            </tr>
-                        </thead>
-                        <tbody id="TBody6">
-                        </tbody>
-                        <tfoot>
-
-                            <tr id="totalOfPayment_tr6" style="display:none">
-                                <td>
-                                    المتبقى
-                                </td>
-                                <td id="Calc">
-                                    0
-                                </td>
-                            </tr>
-
-                        </tfoot>
-                    </table>
-
-
-                </div>
-            </div>
-            <div class="d-flex justify-content-center mt-2">
-
-                <a class="btn btn-primary" id="btnCalc"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>حساب</a>
-            </div>
-        </div>
-    </div>
-
-
-
-</div>-->
 
 <div id="MfadeleftModal" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
     <div class="modal-dialog">
@@ -1467,6 +1005,14 @@
                 $('#txtFathAllah').val('')
 
             })
+            $("#btnCash").on('click', function () {
+                var Cash = $('#txtCash').val()
+
+                $('#totalOfCash_trCash').show();
+                $('#totalCash').text(Cash);
+                $('#txtCash').val('')
+
+            })
 
             $("#btnCalc").on('click', function () {
 
@@ -1486,11 +1032,15 @@
                 var paidForFathAllah = parseFloat($('#totalAhmed').text());
                 if (paidForFathAllah == "" || paidForFathAllah == null)
                     paidForFathAllah = 0;
+                var Cash = parseFloat($('#totalCash').text());
+                if (Cash == "" || Cash == null)
+                    Cash = 0;
                 var paidForExpenses = parseFloat($('#totalExpenses').text());
                 if (paidForExpenses == "" || paidForExpenses == null)
                     paidForExpenses = 0;
 
                 var sum = paidForMerchants + paidForHalek + paidForAdditional + paidForFathAllah + paidForExpenses;
+                paidForUs += Cash;
                 $("#totalPaidForMerchants").val(sum)
 
                 var addControls = "<tr>"
@@ -1514,12 +1064,8 @@
 
 
             })
-
-
-
-
             $("#btnFinalSave").on('click', function () {
-
+                $("#btnFinalSave").hide();
                 $("#Bloader").show();
                 var MerchantName = ""
                 $('.MerchantName').each(function () {
@@ -1623,6 +1169,7 @@
 
                 })
                 var fathallah = parseFloat($('#totalAhmed').text());
+                var Cash = parseFloat($('#totalCash').text());
                 //-------------------------------
                 //-----------------------------
 
@@ -1633,6 +1180,7 @@
                     dataType: "json",
                     data: {
                         fathallah: fathallah,
+                        Cash: Cash,
                         MerchantName: MerchantName,
                         Price: Price,
                         ToMerchantName: ToMerchantName,

@@ -51,17 +51,23 @@ namespace FishBusiness.Controllers
             ViewBag.SharedBoats = new SelectList(_context.Boats.Where(b => b.IsActive == true && b.TypeID == 2).Where(b => UnfinishedSarhas.Contains(b.BoatID)).ToList(), "BoatID", "BoatName");
 
             CollectorVm model = new CollectorVm() { Debts_Sarha = halek, PaidForMerchant = paid_for_merchant, PaidForUs = paid_for_Us, Expenses = expenses };
+           var TodayCash = _context.PersonReciepts.ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString()).FirstOrDefault();
+            if (TodayCash != null)
+                ViewBag.TotalOfCashes = TodayCash.TotalPrice;
+            else
+                ViewBag.TotalOfCashes = 0;
             return View(model);
         }
 
-        public async Task<IActionResult> FinalCalc(decimal fathallah, string MerchantName, string Price, string ToMerchantName, string ToPrice, string BoatName, string HalekPrice,
+        public async Task<IActionResult> FinalCalc(decimal fathallah, decimal Cash, string MerchantName, string Price, string ToMerchantName, string ToPrice, string BoatName, string HalekPrice,
             string HalekName, string Adding, string AddingPrice, string BoatNameExpenses, string ExpensePricee, string Cause)
         {
 
             Collecting c = new Collecting()
             {
                 Date = TimeNow(),
-                TotalForFahAllah = fathallah
+                TotalForFahAllah = fathallah,
+                TotalOfCashes = Cash
             };
             if (MerchantName != null && Price != null)
             {
@@ -299,8 +305,9 @@ namespace FishBusiness.Controllers
             }
             var AdditionalItems = _context.AdditionalPayments.ToList().Where(c => c.ID == collectingItem.ID).Select(c => new { Name = c.Name, Value = c.Value }).ToList();
             var AhmedFathAllah = collecting.Sum(c => c.TotalForFahAllah);
+            var Cash = collecting.Sum(c => c.TotalOfCashes);
             var TotalPaidFromUs = paid_for_merchant.Sum(c => c.Payment) + Halek.Sum(c => c.Price) + AdditionalItems.Sum(c => c.Value) + AhmedFathAllah+ Expenses.Sum(c => c.price);
-            var x = paid_for_Us.Sum(c => c.Payment);
+            var x = paid_for_Us.Sum(c => c.Payment) + Cash;
             var y = Halek.Sum(c => c.Price);
             var z = AdditionalItems.Sum(c => c.Value);
             var b = paid_for_merchant.Sum(c => c.Payment);
@@ -315,6 +322,7 @@ namespace FishBusiness.Controllers
                 halek = Halek,
                 additionalItems = AdditionalItems,
                 ahmedFathAllah = AhmedFathAllah,
+                cash = Cash,
                 totalPaidFromUs = TotalPaidFromUs,
                 totalOfHalek = y,
                 totalOfAdditional = z,

@@ -13,7 +13,7 @@ namespace FishBusiness.Models
 
         [Display(Name = "الكمية")]
         [Required(ErrorMessage = "برجاء ادخال الكمية")]
-        public int Qty { get; set; }
+        public double Qty { get; set; }
 
         [Display(Name = "سعر الوحدة")]
         [Required(ErrorMessage = "برجاء ادخال سعر الوحدة")]
@@ -22,6 +22,7 @@ namespace FishBusiness.Models
         [ForeignKey("ProductionType")]
         public int ProductionTypeID { get; set; }
         public virtual ProductionType ProductionType { get; set; }
+        public Guid? AmountId { get; set; }
 
 
         [ForeignKey("Boat")]

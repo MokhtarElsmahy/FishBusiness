@@ -25,5 +25,7 @@ namespace FishBusiness.Models
         [Display(Name = "وصف العمل")]
         public string JobDesc { get; set; }
 
+        public virtual ICollection<OperatorDeal> OperatorDeals { get; set; }
+
     }
 }

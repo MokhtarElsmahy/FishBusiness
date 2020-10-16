@@ -1,0 +1,468 @@
+﻿@model FishBusiness.ViewModels.DistributeSellerRec
+
+@{
+    ViewData["Title"] = "Details";
+    int i = 1;
+}
+@section Styles{
+    <link href="~/plugins/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" type="text/css" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/apps/invoice.css" rel="stylesheet" type="text/css" />
+    <!--  END CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/print.min.css" rel="stylesheet" />
+    <link href="~/plugins/loaders/custom-loader.css" rel="stylesheet" type="text/css">
+
+}
+<div class="layout-px-spacing">
+
+    <div class="container row">
+        <div class="page-header m-3">
+            <div class="page-title">
+                <h2></h2>
+                <h3>توزيع على التجار</h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <div class="row">
+                <div class="company-info ml-2" style="margin-left:5px;">
+                    <button class="btn btn-secondary ml-2" style="display:none" id="btnPrint">طباعة</button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row invoice layout-top-spacing">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="doc-container">
+
+
+                <div class="invoice-container" style="height:4000px;">
+
+                    <div id="ct" class="">
+
+                        <div class="invoice-00001">
+                            <div class="content-section  animated animatedFadeInUp fadeInUp">
+
+                                <div class="row inv--head-section">
+
+                                    <div class="col-sm-6 col-12">
+                                        <h3 class="in-heading">توزيع على التجار</h3>
+                                    </div>
+
+
+                                </div>
+                                <div id="Invoice">
+                                    <div class="row inv--detail-section">
+
+
+
+                                        <div class="col-sm-7 align-self-center">
+
+                                            <p class="inv-street-addr">تاريخ الفاتوره :@Model.SellerRec.Date.ToShortDateString()</p>
+                                            <p class="inv-street-addr">توزيع اسماك المعلم :@Model.SellerRec.Merchant.MerchantName</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row inv--product-table-section">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+
+                                                <table class="table">
+                                                    <thead class="">
+                                                        <tr>
+                                                            <th scope="col">النوع</th>
+                                                            <th class="text-right" scope="col">الانتاج</th>
+                                                            <th class="text-right" scope="col">الكمية</th>
+                                                            <th class="text-right" scope="col">السعر</th>
+                                                            <th style="text-align:center">التاجر</th>
+                                                            <th style="text-align:center">نقدى؟</th>
+                                                            <th style="text-align:center">كميه</th>
+                                                            <th style="text-align:center">السعر</th>
+                                                            <th style="text-align:center"></th>
+                                                        </tr>
+
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var item in Model.NormalSellerRecItems)
+                                                        {
+
+                                                            <tr id="tr_@i">
+                                                                <td>@item.Fish.FishName</td>
+                                                                <td class="text-right">@item.ProductionType.ProductionName</td>
+                                                                <td class="text-right">@item.Qty</td>
+                                                                <td class="text-right">@item.UnitPrice</td>
+
+                                                                <td class="text-right">
+                                                                    <select class="form-control" asp-items="ViewBag.Merchants" name="MerchantID" disabled="disabled"></select>
+                                                                </td>
+                                                                <td class="text-right">
+                                                                    <input class="form-control" style="width:100px;" disabled="disabled" />
+                                                                </td>
+
+                                                                <td class="text-right"><input class="form-control" style="width:100px;" disabled="disabled" /></td>
+
+
+
+                                                                <td class="text-right"><input class="form-control" style="width:100px;" asp-for="@item.UnitPrice" disabled="disabled" /></td>
+                                                                <td class="text-right"><input class="btn btn-primary btnConfirm" type="button" value="تاكيد" disabled="disabled" /></td>
+
+                                                            </tr>
+                                                            i++;
+                                                        }
+                                                        @foreach (var Amount in Model.Amounts)
+                                                        {
+
+                                                            var Fisheslist = Model.AmountSellerRecItems.Where(c => c.AmountId == Amount.AmountId).Select(c => c.Fish.FishName);
+                                                            string fishes = "";
+                                                            string Qts = "";
+                                                            foreach (var item in Fisheslist)
+                                                            {
+                                                                fishes += item + "/";
+                                                            }
+                                                            var Qtylist = Model.AmountSellerRecItems.Where(c => c.AmountId == Amount.AmountId).Select(c => c.Qty);
+                                                            foreach (var item in Qtylist)
+                                                            {
+                                                                Qts += item + "/";
+                                                            }
+
+                                                            <tr data-check="trAmount" id="tr_@i">
+                                                                <td>@fishes</td>
+                                                                @{
+
+                                                                    var info = Model.AmountSellerRecItems.FirstOrDefault(c => c.SellerRecItemID == Amount.items.ElementAt(0));
+
+                                                                }
+                                                                <td class="text-right">@info.ProductionType.ProductionName</td>
+
+                                                                <td class="text-right">@Qts</td>
+                                                                <td class="text-right"> @info.UnitPrice </td>
+
+                                                                <td class="text-right">
+                                                                    <select class="form-control" asp-items="ViewBag.Merchants" name="MerchantID" disabled="disabled"></select>
+                                                                </td>
+                                                                <td class="text-right">
+                                                                    <input class="form-control" style="width:100px;" disabled="disabled" />
+                                                                </td>
+
+                                                                <td class="text-right"><input class="form-control" style="width:100px;" disabled="disabled" value="@Qts" /> </td>
+
+
+
+                                                                <td class="text-right"><input class="form-control" style="width:100px;" value="@info.UnitPrice" disabled="disabled" /></td>
+                                                                <td class="text-right"><input class="btn btn-primary btnConfirm" type="button" value="تاكيد" disabled="disabled" /></td>
+                                                            </tr>
+
+                                                            i++;
+                                                        }
+
+                                                    </tbody>
+                                                    <tfoot>
+
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row inv--product-table-section">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+
+                                                <table class="table" id="tableMerchants" style="display:none">
+                                                    <thead class="">
+                                                        <tr>
+                                                            <th scope="col">التاجر</th>
+                                                            <th scope="col">نوع السمك</th>
+                                                            <th scope="col">نوع الانتاج</th>
+                                                            <th scope="col">الكمية</th>
+                                                            <th scope="col">السعر</th>
+                                                            <th scope="col"></th>
+                                                        </tr>
+
+                                                    </thead>
+                                                    <tbody id="tbodyMerchants">
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td>المبلغ المدفوع للتاجر</td>
+                                                            <td><input type="text" class="form-control" id="paidForSeller"/></td>
+                                                            <td><input type="button" value="حفظ" class="btn btn-primary" id="btnSave" /></td>
+                                                            <td><div class="spinner-border spinner-border-reverse align-self-center loader-lg text-secondary" id="MSloader" style="width:30px;height:30px;display:none">Loading...</div></td>
+
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+
+                </div>
+
+            </div>
+            <div class="col-sm-6 col-12 align-self-center text-sm-right mb-2 ml-auto">
+                <div class="company-info">
+                    <button class="btn btn-secondary" style="display:none" id="btnPrint1">طباعة</button>
+
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="pricescookie" />
+        <input id="ImageUrl" type="hidden" />
+        <input id="trId" type="hidden" value="1" />
+        <input id="ParentId" type="hidden" value="1" />
+    </div>
+</div>
+
+@section scripts{
+    @*   <script src="~/assets/js/print.min.js"></script>*@
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="~/assets/js/apps/invoice.js"></script>
+    <script>
+        var cookieList = function (cookieName) {
+            //When the cookie is saved the items will be a comma seperated string
+            //So we will split the cookie by comma to get the original array
+            var cookie = $.cookie(cookieName);
+            //Load the items or a new array if null.
+            var items = cookie ? cookie.split(/,/) : new Array();
+
+            //Return a object that we can use to access the array.
+            //while hiding direct access to the declared items array
+            //this is called closures see http://www.jibbering.com/faq/faq_notes/closures.html
+            return {
+                "add": function (val) {
+                    //Add to the items.
+                    items.push(val);
+                    var date = new Date();
+                    date.setTime(date.getTime() + (45 * 1000));
+                    //Save the items to a cookie.
+                    //EDIT: Modified from linked answer by Nick see
+                    //      http://stackoverflow.com/questions/3387251/how-to-store-array-in-jquery-cookie
+                    $.cookie(cookieName, items.join(','), { expires: date });
+                },
+                "remove": function (val) {
+                    //EDIT: Thx to Assef and luke for remove.
+                    indx = items.indexOf(val);
+                    if (indx != -1) items.splice(indx, 1);
+                    $.cookie(cookieName, items.join(','));
+                },
+                "clear": function () {
+                    items = null;
+                    //clear the cookie.
+                    $.cookie(cookieName, null);
+                },
+                "items": function () {
+                    //Get all the items.
+                    return items;
+                }
+            }
+        }
+        $(document).ready(function () {
+            var $tr = $('Tbody  tr:first')
+            $tr.find("td input:text,td select,td input:button").each(function () {
+                $(this).prop('disabled', false);
+            });
+
+            $(".btnConfirm").on("click", function (e) {
+
+                var $tr = $(this).closest('tr');
+                var MerchantName = $tr.find('td:nth-child(5) select option:selected').text()
+                var FishName = $tr.find("td:eq(0)").text()
+                var ProductionType = $tr.find("td:eq(1)").text()
+                var Cash = $tr.find('td:nth-child(6) input').val()
+                var Price = $tr.find('td:nth-child(8) input').val()
+                var Qty = $tr.find('td:nth-child(7) input').val()
+                var OldQty
+                var dataCheck = $tr.attr('data-check')
+                if (dataCheck == "trAmount") {
+                }
+                else {
+                    OldQty = $tr.find("td:eq(2)").text()
+                }
+
+
+                var id = $("#trId").val();
+                var addControls = "";
+                addControls = "<tr id=row_" + id + " data-qty=" + Qty + " data-childid=" + $tr.attr('id') + " >"
+                if (Cash == '') {
+                    addControls += "<td class='merchants'>" + MerchantName + "</td>"
+                }
+                else {
+                    addControls += "<td class='merchants'>" + Cash + "</td>"
+                }
+                addControls += "<td class='Fishes'>" + FishName + "</td>"
+                addControls += "<td class='ProductionTypes'>" + ProductionType + "</td>"
+                addControls += "<td class='Qtys'>" + Qty + "</td>"
+                addControls += "<td class='Prices'>" + Price + "</td>"
+                addControls += "<td> <a href='#' onclick=removee('" + id + "')>" + "X</a> </td>"
+                addControls += "</tr>";
+                if (dataCheck != "trAmount") {
+                    if (parseFloat(Qty) <= parseFloat(OldQty)) {
+                        $tr.find("td:eq(2)").text(parseFloat(OldQty) - parseFloat(Qty))
+                        $('#tbodyMerchants').append(addControls);
+                    }
+                    else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'الكمية المطلوبة اكبر من المتاحة',
+                        });
+                    }
+
+                    if ($tr.find("td:eq(2)").text() <= 0) {
+
+                        $tr.find("td input:text,td select,td input:button").each(function () {
+                            $(this).prop('disabled', true);
+                        });
+                        var $nextTr = $tr.next('tr')
+                        $nextTr.find("td input:text,td select,td input:button").each(function () {
+                            $(this).prop('disabled', false);
+                        });
+                    }
+                }
+                else {
+                    $('#tbodyMerchants').append(addControls);
+                    $tr.find("td input:text,td select,td input:button").each(function () {
+                        $(this).prop('disabled', true);
+                    });
+                    var $nextTr = $tr.next('tr')
+                    $nextTr.find("td input:text,td select,td input:button").each(function () {
+                        $(this).prop('disabled', false);
+                    });
+                }
+                $('#tableMerchants').show()
+                $tr.find('td:nth-child(6) input').val('')
+                $("#trId").val(parseInt(id) + 1);
+
+
+            });
+            $("#btnSave").on("click", function () {
+                $('#MSloader').show();
+                var paidForSeller = parseFloat($('#paidForSeller').val());
+                //var RecID = parseInt($('#RecID').val());
+
+                //var CurrentDebt = parseFloat($('#MPreviousDebts').text());
+                //var MTotalBeforePayment = parseFloat($('#MTotalBeforePayment').text());
+                //var MpayFromDebt = parseFloat($('#MpayFromDebt').val());
+                //var MerchantID = $("#MerDDL").val();
+                //var MerRecDate = $("#MerRecDate").val();
+
+                var MerchantNames = ""
+                $('.merchants').each(function () {
+                    MerchantNames += $(this).text();
+                    MerchantNames += ',';
+
+                })
+                var FishNames = ""
+                $('.Fishes').each(function () {
+                    FishNames += $(this).text();
+                    FishNames += ',';
+
+                })
+                var ProductionTypes = ""
+                $('.ProductionTypes').each(function () {
+                    ProductionTypes += $(this).text();
+                    ProductionTypes += ',';
+
+                })
+                var qtys = ""
+                $('.Qtys').each(function () {
+                    qtys += $(this).text();
+                    qtys += ',';
+
+                })
+
+                var unitprices = ""
+                $('.Prices').each(function () {
+                    unitprices += $(this).text();
+                    unitprices += ',';
+
+                })
+                $.ajax({
+                    url: "/SellerRecs/MCreate/",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        RecID: @Model.SellerRec.SellerRecID,
+                        MerchantNames: MerchantNames,
+                        FishNames: FishNames,
+                        ProductionTypes: ProductionTypes,
+                        qtys: qtys,
+                        unitprices: unitprices,
+                        paidForSeller: paidForSeller,
+                        MerchantID: @Model.SellerRec.MerchantID,
+
+
+                    },
+                    success: function (result) {
+                        if (result.message == "success") {
+
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'تم حفظ الفاتورة بنجاح',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+
+                            $("#btnSave").hide()
+
+
+
+                            $('#MSloader').hide();
+                            window.location.href = "/Home/Index";
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حاول مرة اخري',
+                        });
+
+
+                    }
+                });
+
+
+            });
+        });
+
+
+
+
+        var removee = function (id) {
+            //var $tr = $(this).closest('tr');
+            var $tr = $("#row_" + id);
+            var qty = $tr.attr('data-qty');
+
+            var childid = $tr.attr('data-childid');
+            var $Parenttr = $("#" + childid);
+            var OldQty = $Parenttr.find("td:eq(2)").text()
+            $Parenttr.find("td:eq(2)").text(parseFloat(OldQty) + parseFloat(qty))
+            $("#row_" + id).remove();
+            $Parenttr.find("td input:text,td select,td input:button").each(function () {
+                $(this).prop('disabled', false);
+            });
+        }
+
+
+
+
+
+    </script>
+}
+
+

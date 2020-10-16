@@ -51,6 +51,10 @@ namespace FishBusiness.Models
         public bool IsCollected { get; set; }
         public bool IsCheckedOut { get; set; }
 
+        [ForeignKey("Person")]
+        public int PersonID { get; set; }
+        public virtual Person Person { get; set; }
+
         public virtual ICollection<BoatOwnerItem> BoatOwnerItems { get; set; }
 
 

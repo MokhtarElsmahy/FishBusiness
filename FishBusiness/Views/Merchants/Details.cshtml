@@ -24,7 +24,7 @@
 
     <div class="page-header">
         <div class="page-title">
-            <h3>بروفايل</h3>
+            <h3>بروفايل تاجر</h3>
         </div>
     </div>
 
@@ -79,177 +79,322 @@
 
         </div>
 
-        @if (Model.Merchant.IsFromOutsideCity == true)
-        {
-            <div class="col-xl-8 col-lg-6 col-md-7 col-sm-12 layout-top-spacing">
 
-                <div class="skills layout-spacing">
-                    <div class="widget-content widget-content-area">
-                        <div class="container row">
-                            <h3 class="">فواتير سافرت للتاجر</h3>
-                            <div class="ml-auto" style="">
-                                <a asp-action="Create" asp-controller="ISellerReciepts" class="btn btn-primary">اضافة فاتورة جديده</a>
-                            </div>
-                        </div>
+        <div class="col-xl-8 col-lg-6 col-md-7 col-sm-12 layout-top-spacing">
 
-                        <div class="row layout-top-spacing" id="cancel-row">
+            <div class="skills layout-spacing">
+                <div class="widget-content widget-content-area" style="height: 544px;">
+                    <div class="container row">
+                        <h3 class="">المعاملات</h3>
 
-                            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                                <div class="widget-content widget-content-area br-6">
-                                    <div class="table-responsive mb-4 mt-4">
-                                        <table id="zero-config" class="table table-hover" style="width:100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>مسلسل</th>
-                                                    <th>تاريخ </th>
-                                                    <th></th>
-
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if (Model.ISellerReciepts.Any())
-                                                {
-                                                    @foreach (var merchantRec in Model.ISellerReciepts)
-                                                    {
-                                                        <tr>
-                                                            <td>@merchantRec.ISellerRecieptID</td>
-                                                            <td>@merchantRec.Date</td>
-
-                                                            <td>
-                                                                <a asp-action="Details" asp-controller="ISellerReciepts" class="btn btn-primary mb-2" asp-route-id="@merchantRec.ISellerRecieptID"> تفاصيل</a>
-                                                                <a asp-action="Moneytization" asp-controller="ISellerReciepts" class="btn btn-primary mb-2" asp-route-id="@merchantRec.ISellerRecieptID"> تسعير</a>
-
-                                                            </td>
-
-                                                        </tr>
-                                                    }
-
-                                                }
-                                                else
-                                                {
-                                                    <tr>
-
-                                                        <td class="font-weight-bolder">لا توجد معاملات</td>
+                    </div>
+                    <div class="timeline-alter">
+                        <div class="connect-sorting">
 
 
-                                                    </tr>
-                                                }
+                            <div class="connect-sorting-content" data-sortable="true">
 
 
-                                            </tbody>
+                                <div data-draggable="true" class="card simple-title-task" style="">
+                                    <div class="card-body">
 
-                                        </table>
+                                        <div class="task-header">
+                                            <div class="form-group">
+                                                <label class="control-label"> المبلغ المدفوع</label>
+                                                <div class="row">
+
+
+                                                    <input type="text" id="PaidValueForUs" placeholder="دفع حساب قديم على التاجر" class="form-control col-8" />
+                                                    <div class="n-chk col-4">
+                                                        <label class="new-control new-checkbox checkbox-primary">
+                                                            <input type="checkbox" id="IsCash2" class="new-control-input">
+                                                            <span class="new-control-indicator"></span>سمك مقابل سمك
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
                                     </div>
                                 </div>
+
+                            </div>
+                            <div class="add-s-task">
+
+                                <a class="addTask" id="Sub">خصم</a>
                             </div>
 
                         </div>
-                    </div>
-                </div>
+                        <br />
+
+                        <div class="row">
+                            <div class="connect-sorting col-6">
 
 
-
-            </div>
-        }
-        else
-        {
-
-            <div class="col-xl-8 col-lg-6 col-md-7 col-sm-12 layout-top-spacing">
-
-                <div class="skills layout-spacing">
-                    <div class="widget-content widget-content-area">
-                        <div class="container row">
-                            <h3 class="">فواتير اشتراها التاجر</h3>
-                            <div class="ml-auto" style="">
-                                <a asp-action="Create" asp-controller="MerchantReciepts" class="btn btn-primary">اضافة فاتورة جديده</a>
-                            </div>
-                        </div>
-
-                        <div class="row layout-top-spacing" id="cancel-row">
-
-                            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                                <div class="widget-content widget-content-area br-6">
-                                    <div class="table-responsive mb-4 mt-4">
-                                        <table id="zero-config" class="table table-hover" style="width:100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>مسلسل</th>
-                                                    <th>تاريخ </th>
-                                                    <th>ثمن</th>
-                                                    <th>تسديد حساب قديم</th>
-                                                    <th>ديون حتى اللحظه</th>
-                                                    <th></th>
-
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if (Model.MerchantReciepts.Any())
-                                                {
-                                                    @foreach (var merchantRec in Model.MerchantReciepts)
-                                                    {
-                                                        <tr>
-                                                            <td>@merchantRec.MerchantRecieptID</td>
-                                                            <td>@merchantRec.Date</td>
-                                                            <td>@merchantRec.TotalOfReciept</td>
-                                                            <td>@merchantRec.payment</td>
-                                                            <td>@merchantRec.CurrentDebt</td>
-                                                            <td>
-                                                                <a asp-action="Details" asp-controller="MerchantReciepts" class="btn btn-primary mb-2" asp-route-id="@merchantRec.MerchantRecieptID"> تفاصيل</a>
-                                                                @*<a asp-action="Details" asp-route-id="@merchant.MerchantID" class="btn btn-info mb-2">تفاصيل</a>*@
-                                                            </td>
-
-                                                        </tr>
-                                                    }
-
-                                                }
-                                                else
-                                                {
-                                                    <tr>
-
-                                                        <td class="font-weight-bolder">لا توجد معاملات</td>
+                                <div class="connect-sorting-content" data-sortable="true">
 
 
-                                                    </tr>
-                                                }
+                                    <div data-draggable="true" class="card simple-title-task" style="">
+                                        <div class="card-body">
+
+                                            <div class="task-header">
+                                                <div class="form-group">
+                                                    <label class="control-label"> المبلغ المدفوع</label>
+                                                    <div class="row">
 
 
-                                            </tbody>
+                                                        <input type="text" id="PaidValueForMerchant" placeholder="دفع حساب قديم علينا" class="form-control col-8" />
+                                                        <div class="n-chk col-4">
+                                                            <label class="new-control new-checkbox checkbox-primary">
+                                                                <input type="checkbox" id="IsCash" class="new-control-input">
+                                                                <span class="new-control-indicator"></span>سمك مقابل سمك
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                        </table>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
 
+                                </div>
+                                <div class="add-s-task">
+
+                                    <a class="addTask" id="SubFromUs">خصم</a>
+                                </div>
+
+                            </div>
+                            <div class="connect-sorting col-6">
+
+
+                                <div class="connect-sorting-content" data-sortable="true">
+
+
+                                    <div data-draggable="true" class="card simple-title-task" style="">
+                                        <div class="card-body">
+
+                                            <div class="task-header">
+                                                <div class="form-group">
+                                                    <label class="control-label"> المبلغ المدفوع</label>
+                                                    <div class="row">
+
+
+                                                        <input type="text" id="PaidValueForMerchant" placeholder="قبض سرحه/بيعه" class="form-control col-8" />
+                                                        <div class="n-chk col-4">
+                                                            <label class="new-control new-checkbox checkbox-primary">
+                                                                <input type="checkbox" id="IsCash" class="new-control-input">
+                                                                <span class="new-control-indicator"></span>سمك مقابل سمك
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="add-s-task">
+
+                                    <a class="addTask" id="SubFromUs">خصم</a>
+                                </div>
+
+                            </div>
                         </div>
+              
                     </div>
                 </div>
-
-
-
             </div>
-        }
 
 
+
+        </div>
 
 
     </div>
 
     @if (Model.Merchant.IsFromOutsideCity == true)
     {
-        <div class="row layout-spacing">
+        @*<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 layout-top-spacing">
+
+            <div class="skills layout-spacing">
+                <div class="widget-content widget-content-area">*@
+                   
+
+                    <div class="row layout-top-spacing" id="cancel-row">
+
+                        <div class="col-xl-6 col-lg-6 col-sm-12  layout-spacing">
+                            <div class="widget-content widget-content-area br-6">
+                                <div class="container row">
+                                    <h3 class="">فواتير سافرت للتاجر</h3>
+                                    <div class="ml-auto" style="">
+                                        <a asp-action="Create" asp-controller="ISellerReciepts" class="btn btn-primary">اضافة فاتورة جديده</a>
+                                    </div>
+                                </div>
+                                <div class="container row">
+                                    <h3 class="">فواتير سافرت للتاجر</h3>
+                                    <div class="ml-auto" style="">
+                                        <a asp-action="Create" asp-controller="ISellerReciepts" class="btn btn-primary">اضافة فاتورة جديده</a>
+                                    </div>
+                                </div>
+                                <div class="table-responsive mb-4 mt-4">
+                                    <table id="zero-config" class="table table-hover" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>مسلسل</th>
+                                                <th>تاريخ </th>
+                                                <th></th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.ISellerReciepts.Any())
+                                            {
+                                                @foreach (var merchantRec in Model.ISellerReciepts)
+                                                {
+                                                    <tr>
+                                                        <td>@merchantRec.ISellerRecieptID</td>
+                                                        <td>@merchantRec.Date</td>
+
+                                                        <td>
+                                                            <a asp-action="Details" asp-controller="ISellerReciepts" class="btn btn-primary mb-2" asp-route-id="@merchantRec.ISellerRecieptID"> تفاصيل</a>
+                                                            <a asp-action="Moneytization" asp-controller="ISellerReciepts" class="btn btn-primary mb-2" asp-route-id="@merchantRec.ISellerRecieptID"> تسعير</a>
+
+                                                        </td>
+
+                                                    </tr>
+                                                }
+
+                                            }
+                                            else
+                                            {
+                                                <tr>
+
+                                                    <td class="font-weight-bolder">لا توجد معاملات</td>
+
+
+                                                </tr>
+                                            }
+
+
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                @*</div>
+            </div>
+
+
+
+        </div>*@
+    }
+    else
+    {
+
+        @*<div class="col-xl-8 col-lg-6 col-md-7 col-sm-12 layout-top-spacing">*@
+
+            @*<div class="skills layout-spacing">
+                <div class="widget-content widget-content-area">*@
+                    @*<div class="container row">
+                        <h3 class="">فواتير اشتراها التاجر</h3>
+                        <div class="ml-auto" style="">
+                            <a asp-action="Create" asp-controller="MerchantReciepts" class="btn btn-primary">اضافة فاتورة جديده</a>
+                        </div>
+                    </div>*@
+
+                    <div class="row layout-top-spacing" id="cancel-row">
+
+                        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                            <div class="widget-content widget-content-area br-6">
+                                <div class="container row">
+                                    <h3 class="">فواتير اشتراها التاجر</h3>
+                                    <div class="ml-auto" style="">
+                                        <a asp-action="Create" asp-controller="MerchantReciepts" class="btn btn-primary">اضافة فاتورة جديده</a>
+                                    </div>
+                                </div>
+                                <div class="table-responsive mb-4 mt-4">
+                                    <table id="zero-config" class="table table-hover" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>مسلسل</th>
+                                                <th>تاريخ </th>
+                                                <th>ثمن</th>
+                                                <th>تسديد حساب قديم</th>
+                                                <th>ديون حتى اللحظه</th>
+                                                <th></th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.MerchantReciepts.Any())
+                                            {
+                                                @foreach (var merchantRec in Model.MerchantReciepts)
+                                                {
+                                                    <tr>
+                                                        <td>@merchantRec.MerchantRecieptID</td>
+                                                        <td>@merchantRec.Date</td>
+                                                        <td>@merchantRec.TotalOfReciept</td>
+                                                        <td>@merchantRec.payment</td>
+                                                        <td>@merchantRec.CurrentDebt</td>
+                                                        <td>
+                                                            <a asp-action="Details" asp-controller="MerchantReciepts" class="btn btn-primary mb-2" asp-route-id="@merchantRec.MerchantRecieptID"> تفاصيل</a>
+                                                            @*<a asp-action="Details" asp-route-id="@merchant.MerchantID" class="btn btn-info mb-2">تفاصيل</a>*@
+                                                        </td>
+
+                                                    </tr>
+                                                }
+
+                                            }
+                                            else
+                                            {
+                                                <tr>
+
+                                                    <td class="font-weight-bolder">لا توجد معاملات</td>
+
+
+                                                </tr>
+                                            }
+
+
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                @*</div>
+            </div>*@
+
+
+
+        @*</div>*@
+    }
+
+
+    @if (Model.Merchant.IsFromOutsideCity == true)
+    {
+        @*<div class="row layout-spacing">
             <div class="col-xl-12 col-lg-12 col-md-7 col-sm-12 layout-top-spacing">
 
                 <div class="skills layout-spacing ">
-                    <div class="widget-content widget-content-area">
-                        <div class="container row">
-                            <h3 class="">فواتير تم تسعيرها</h3>
-
-                        </div>
+                    <div class="widget-content widget-content-area">*@
+                       
 
                         <div class="row layout-top-spacing" id="cancel-row">
 
-                            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                            <div class="col-xl-6 col-lg-6 col-sm-12  layout-spacing">
                                 <div class="widget-content widget-content-area br-6">
+                                    <div class="container row">
+                                        <h3 class="">فواتير تم تسعيرها</h3>
+
+                                    </div>
                                     <div class="table-responsive mb-4 mt-4">
                                         <table id="zero-configg" class="table table-hover" style="width:100%">
                                             <thead>
@@ -301,7 +446,7 @@
                             </div>
 
                         </div>
-                    </div>
+                    @*</div>
                 </div>
 
 
@@ -310,7 +455,7 @@
 
 
 
-        </div>
+        </div>*@
     }
 
     <div class="row layout-spacing">
@@ -382,168 +527,175 @@
 
             </div>
         </div>
-       
+
     </div>
+
+
 
     
 
-    <div class="row layout-spacing">
-        <div class="col-xl-12 col-lg-12 col-md-7 col-sm-12 layout-top-spacing">
 
-            <div class="skills layout-spacing ">
-                <div class="widget-content widget-content-area">
-                    <div class="container row">
-                        <h3 class="">مدفوعات تم دفعها للتاجر</h3>
+        @*<div class="row layout-spacing">*@
+        @*<div class="col-xl-6 col-lg-6 col-md-7 col-sm-12 layout-top-spacing">*@
 
-                    </div>
-
-                    <div class="row layout-top-spacing" id="cancel-row">
-
-                        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                            <div class="widget-content widget-content-area br-6">
-                                <div class="table-responsive mb-4 mt-4">
-                                    <table id="zero-config4" class="table table-hover" style="width:100%">
-                                        <thead>
-                                            <tr>
-
-                                                <th>تاريخ </th>
-                                                <th>المبلغ</th>
-                                                <th>اسم الشخص</th>
-                                                <th>نوع الدفع</th>
-                                                <th>ديون له</th>
+        @*<div class="skills layout-spacing ">
+        <div class="widget-content widget-content-area">*@
 
 
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (Model.PaidForMerchantsFromUs.Any())
-                                            {
-                                                @foreach (var merchantRec in Model.PaidForMerchantsFromUs)
-                                                {
-                                                    <tr>
+<div class="row layout-top-spacing" id="cancel-row">
 
-                                                        <td>@merchantRec.Date</td>
-                                                        <td>@merchantRec.Payment</td>
-                                                        <td>@merchantRec.Person.Name</td>
-                                                        @if (@merchantRec.IsCash == true)
-                                                        {
-                                                            <td>نقدى</td>
-                                                        }
-                                                        else
-                                                        {
-                                                            <td>سمك</td>
-                                                        }
+    <div class="col-xl-6 col-lg-6 col-sm-12  layout-spacing">
+        <div class="widget-content widget-content-area br-6">
+            <div class="container row">
+                <h3 class="">مدفوعات تم دفعها للتاجر</h3>
 
-                                                        <td>@merchantRec.PreviousDebtsForMerchant</td>
-
-
-
-                                                    </tr>
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                <tr>
-
-                                                    <td class="font-weight-bolder">لا توجد معاملات</td>
-
-
-                                                </tr>
-                                            }
-
-
-                                        </tbody>
-
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
             </div>
+            <div class="table-responsive mb-4 mt-4">
+                <table id="zero-config4" class="table table-hover" style="width:100%">
+                    <thead>
+                        <tr>
+
+                            <th>تاريخ </th>
+                            <th>المبلغ</th>
+                            <th>المسئول</th>
+                            <th>نوع الدفع</th>
+                            <th>ديون له</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.PaidForMerchantsFromUs.Any())
+                        {
+                            @foreach (var merchantRec in Model.PaidForMerchantsFromUs)
+                            {
+                                <tr>
+
+                                    <td>@merchantRec.Date</td>
+                                    <td>@merchantRec.Payment</td>
+                                    <td>@merchantRec.Person.Name</td>
+                                    @if (@merchantRec.IsCash == true)
+                                    {
+                                        <td>نقدى</td>
+                                    }
+                                    else
+                                    {
+                                        <td>سمك</td>
+                                    }
+
+                                    <td>@merchantRec.PreviousDebtsForMerchant</td>
 
 
 
+                                </tr>
+                            }
+
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td class="font-weight-bolder">لا توجد معاملات</td>
+
+
+                            </tr>
+                        }
+
+
+                    </tbody>
+
+                </table>
+            </div>
         </div>
-
-
-
     </div>
+    <div class="col-xl-6 col-lg-6 col-sm-12  layout-spacing">
+        <div class="widget-content widget-content-area br-6">
+            <div class="container row">
+                <h3 class="">مدفوعات دفعها التاجر</h3>
 
-    <div class="row layout-spacing">
-        <div class="col-xl-12 col-lg-12 col-md-7 col-sm-12 layout-top-spacing">
+            </div>
+            <div class="table-responsive mb-4 mt-4">
+                <table id="zero-config5" class="table table-hover" style="width:100%">
+                    <thead>
+                        <tr>
+
+                            <th>تاريخ </th>
+                            <th>المبلغ</th>
+                            <th>المسئول</th>
+                            <th>نوع الدفع</th>
+                            <th>ديون عليه</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.PaidForUs.Any())
+                        {
+                            @foreach (var merchantRec in Model.PaidForUs)
+                            {
+                                <tr>
+
+                                    <td>@merchantRec.Date</td>
+                                    <td>@merchantRec.Payment</td>
+                                    <td>@merchantRec.Person.Name</td>
+                                    @if (@merchantRec.IsCash == true)
+                                    {
+                                        <td>نقدى</td>
+                                    }
+                                    else
+                                    {
+                                        <td>سمك</td>
+                                    }
+
+                                    <td>@merchantRec.PreviousDebtsForMerchant</td>
+
+
+
+                                </tr>
+                            }
+
+                        }
+                        else
+                        {
+                            <tr>
+
+                                <td class="font-weight-bolder">لا توجد معاملات</td>
+
+
+                            </tr>
+                        }
+
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+        @*</div>
+        </div>*@
+
+
+
+        @*</div>*@
+
+
+
+        @*</div>*@
+
+        @*<div class="row layout-spacing">
+        <div class="col-xl-6 col-lg-6 col-md-7 col-sm-12 layout-top-spacing">
 
             <div class="skills layout-spacing">
                 <div class="widget-content widget-content-area">
-                    <div class="container row">
-                        <h3 class="">مدفوعات دفعها التاجر</h3>
-
-                    </div>
-
-                    <div class="row layout-top-spacing" id="cancel-row">
-
-                        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
-                            <div class="widget-content widget-content-area br-6">
-                                <div class="table-responsive mb-4 mt-4">
-                                    <table id="zero-config5" class="table table-hover" style="width:100%">
-                                        <thead>
-                                            <tr>
-
-                                                <th>تاريخ </th>
-                                                <th>المبلغ</th>
-                                                <th>نوع الدفع</th>
-                                                <th>ديون عليه</th>
 
 
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (Model.PaidForUs.Any())
-                                            {
-                                                @foreach (var merchantRec in Model.PaidForUs)
-                                                {
-                                                    <tr>
+                    <div class="row layout-top-spacing" id="cancel-row">*@
 
-                                                        <td>@merchantRec.Date</td>
-                                                        <td>@merchantRec.Payment</td>
-                                                        @if (@merchantRec.IsCash == true)
-                                                        {
-                                                            <td>نقدى</td>
-                                                        }
-                                                        else
-                                                        {
-                                                            <td>سمك</td>
-                                                        }
-
-                                                        <td>@merchantRec.PreviousDebtsForMerchant</td>
-
-
-
-                                                    </tr>
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                <tr>
-
-                                                    <td class="font-weight-bolder">لا توجد معاملات</td>
-
-
-                                                </tr>
-                                            }
-
-
-                                        </tbody>
-
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
+                      
+  
+                    @*</div>
                 </div>
             </div>
 
@@ -553,9 +705,9 @@
 
 
 
-    </div>
+    </div>*@
 
-    <div class="row layout-spacing">
+    @*<div class="row layout-spacing">
 
         <div class="education layout-spacing col-6">
             <div class="widget-content widget-content-area">
@@ -576,7 +728,7 @@
                                             <div class="row">
 
 
-                                                <input type="text" id="PaidValueForUs" class="form-control col-8" />
+                                                <input type="text" id="PaidValueForUs" placeholder="دفع حساب قديم على التاجر" class="form-control col-8" />
                                                 <div class="n-chk col-4">
                                                     <label class="new-control new-checkbox checkbox-primary">
                                                         <input type="checkbox" id="IsCash2" class="new-control-input">
@@ -622,7 +774,7 @@
                                             <div class="row">
 
 
-                                                <input type="text" id="PaidValueForMerchant" class="form-control col-8" />
+                                                <input type="text" id="PaidValueForMerchant" placeholder="دفع حساب قديم علينا" class="form-control col-8" />
                                                 <div class="n-chk col-4">
                                                     <label class="new-control new-checkbox checkbox-primary">
                                                         <input type="checkbox" id="IsCash" class="new-control-input">
@@ -646,7 +798,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>*@
 
 
 

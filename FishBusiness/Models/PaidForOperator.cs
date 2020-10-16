@@ -16,7 +16,7 @@ namespace FishBusiness.Models
         public decimal Payment { get; set; }
 
         [Display(Name = "دين حتى اللحظة")]
-        public decimal PreviousDebtsForMerchant { get; set; }
+        public decimal DebtsAfterPayment { get; set; }
 
         public DateTime Date { get; set; }
         [ForeignKey("Person")]

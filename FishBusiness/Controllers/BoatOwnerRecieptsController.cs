@@ -19,13 +19,6 @@ namespace FishBusiness.Controllers
         {
             _context = context;
         }
-
-        // GET: BoatOwnerReciepts
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.BoatOwnerReciepts.Include(b => b.Boat).Include(b => b.Sarha);
-            return View(await applicationDbContext.ToListAsync());
-        }
         public DateTime TimeNow()
         {
             TimeZone localZone = TimeZone.CurrentTimeZone;
@@ -34,6 +27,13 @@ namespace FishBusiness.Controllers
            localZone.ToUniversalTime(currentDate);
             return currentUTC.AddHours(2);
         }
+        // GET: BoatOwnerReciepts
+        public async Task<IActionResult> Index()
+        {
+            var applicationDbContext = _context.BoatOwnerReciepts.Include(b => b.Boat).Include(b => b.Sarha);
+            return View(await applicationDbContext.ToListAsync());
+        }
+       
         // GET: BoatOwnerReciepts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -68,21 +68,7 @@ namespace FishBusiness.Controllers
             return View(model);
         }
 
-        // GET: BoatOwnerReciepts/Create
-        public IActionResult Create()
-        {
-            ViewData["BoatID"] = new SelectList(_context.Boats.Where(b => b.IsActive == true), "BoatID", "BoatName");
-            ViewData["ProductionTypeID"] = new SelectList(_context.ProductionTypes, "ProductionTypeID", "ProductionName");
-
-            ViewData["FishID"] = new SelectList(_context.Fishes, "FishID", "FishName");
-
-            //
-            ViewData["MerchantID"] = new SelectList(_context.Merchants.Where(m => m.IsFromOutsideCity == false), "MerchantID", "MerchantName");
-            // commission
-             ViewBag.Commission = _context.Cofigs.Find(1);
-            //ViewBag.Commission = _context.Cofigs.Find(2);
-            return View();
-        }
+     
         public IActionResult GetBoatItems(int? id)
         {
             var LastRecieptOfBoat = _context.BoatOwnerReciepts.Where(r => r.BoatID == id).Max(rs => rs.BoatOwnerRecieptID);
@@ -590,7 +576,25 @@ namespace FishBusiness.Controllers
             //return View(model);
             return Json(new { message = "fail" });
         }
-     
+
+
+
+
+        // GET: BoatOwnerReciepts/Create
+        public IActionResult Create()
+        {
+            ViewData["BoatID"] = new SelectList(_context.Boats.Where(b => b.IsActive == true && b.BoatLicenseNumber != "0"), "BoatID", "BoatName");
+            ViewData["ProductionTypeID"] = new SelectList(_context.ProductionTypes, "ProductionTypeID", "ProductionName");
+
+            ViewData["FishID"] = new SelectList(_context.Fishes, "FishID", "FishName");
+
+            //
+            ViewData["MerchantID"] = new SelectList(_context.Merchants.Where(m => m.IsFromOutsideCity == false), "MerchantID", "MerchantName");
+            // commission
+           // ViewBag.Commission = _context.Cofigs.Find(1);
+            ViewBag.Commission = _context.Cofigs.Find(2);
+            return View();
+        }
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(BoatOwnerReciept boatOwnerReciept)
@@ -629,14 +633,13 @@ namespace FishBusiness.Controllers
             await _context.SaveChangesAsync();
             // Cookies Of Receipt Items
             var FishesCookie = Request.Cookies["FishNames"];
-
             var ProductionTypesCookie = Request.Cookies["ProductionTypes"];
             var qtysCookie = Request.Cookies["qtys"];
             var unitpricesCookie = Request.Cookies["unitprices"];
             var pricesCookie = Request.Cookies["prices"];
+
+
             string[] Fishes = FishesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
-
-
             string[] Productions = ProductionTypesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
             string[] qtys = qtysCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
             decimal[] unitPrices = unitpricesCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();

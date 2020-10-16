@@ -200,8 +200,17 @@ namespace FishBusiness.Controllers
                 sellerReciept.CarPrice = CarPrice;
                 sellerReciept.CarDistination = _context.Merchants.Find(MerchantID).Address;
                 _context.Add(sellerReciept);
+
+
+                /*
+                
+                دى مش هتتحسب دلوقت لان السواق مش شرط يتحاسب وقتها ممكن يتحاسب بعد كذا يوم 
+
                 Person p = _context.People.Find(1);
                 p.credit -= (decimal)CarPrice;
+
+                */
+
                 _context.SaveChanges();
 
 

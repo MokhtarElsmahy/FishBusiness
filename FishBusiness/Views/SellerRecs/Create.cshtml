@@ -1,0 +1,498 @@
+﻿@model FishBusiness.Models.SellerRec
+
+@{
+    ViewData["Title"] = "Create";
+}
+@section Styles {
+
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <link href="~/plugins/animate/animate.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/components/custom-modal.css" rel="stylesheet" type="text/css" />
+    <!--  END CUSTOM STYLE FILE  -->
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link href="~/assets/css/apps/scrumboard.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/forms/theme-checkbox-radio.css" rel="stylesheet" type="text/css">
+    <!-- END PAGE LEVEL STYLES -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <link href="~/plugins/loaders/custom-loader.css" rel="stylesheet" type="text/css">
+}
+<div class="layout-px-spacing">
+
+    <div class="container row mb-0">
+        <div class="page-header m-3 ">
+            <div class="page-title">
+                <h3>تسجيل معامله</h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <a asp-action="Index" id="btnIndex" class="btn btn-primary">قائمة الفواتير</a>
+
+            <div class="spinner-border spinner-border-reverse align-self-center loader-lg text-secondary" id="Bloader" style="width:30px;height:30px;display:none">Loading...</div>
+        </div>
+    </div>
+
+    <div class="action-btn layout-top-spacing mb-1 mt-1">
+        @*<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Boards</p>
+            <button id="add-list" class="btn btn-primary">Add List</button>*@
+    </div>
+    <div class="row scrumboard" id="cancel-row">
+
+        <div class="col-lg-4 layout-spacing">
+            <form asp-action="Create" id="Addform">
+                <div class="task-list-section">
+
+                    <div data-section="s-new" class="task-list-container" data-connect="sorting">
+                        <div class="connect-sorting">
+                            <div class="task-container-header">
+                                <h6 class="s-heading" data-listTitle="In Progress">اضافة تفاصيل فاتورة عميل</h6>
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink-1">
+                                        <a class="dropdown-item list-edit" href="javascript:void(0);">Edit</a>
+                                        <a class="dropdown-item list-delete" href="javascript:void(0);">Delete</a>
+                                        <a class="dropdown-item list-clear-all" href="javascript:void(0);">Clear All</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="connect-sorting-content" data-sortable="true">
+
+
+                                <div data-draggable="true" class="card simple-title-task" style="">
+                                    <div class="card-body">
+
+                                        <div class="task-header">
+                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                            <div class="form-group">
+                                                <label asp-for="Merchant.MerchantName" class="control-label"></label>
+                                                <select asp-for="MerchantID" id="MerchantDDL" class="form-control" asp-items="ViewBag.MerchantID"></select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div data-draggable="true" class="card simple-title-task" style="">
+                                    <div class="card-body">
+
+                                        <div class="task-header">
+                                            <div class="form-group">
+                                                <label asp-for="Date" class="control-label"></label>
+                                                <input asp-for="Date" id="BoatOwnerReciept_Date" class="form-control" />
+
+                                                <span asp-validation-for="Date" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <div class="add-s-task">
+                                <a class="addTask" data-toggle="modal" data-target="#fadeleftModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg> اضافة انواع الاسماك</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </form>
+        </div>
+        <div class="col-xl-8 col-lg-8 col-sm-8  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <div class="table-responsive mb-4 ">
+                    <table id="BoatOwner" class="table table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>
+                                    نوع السمك
+                                </th>
+                                <th>
+                                    نوع الانتاج
+                                </th>
+                                <th>
+                                    الكميه
+                                </th>
+
+                                <th>
+                                    السعر
+                                </th>
+
+                                <th>اجمالي</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody id="BoatBody">
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="total text-info">اجمالي الفاتورة</td>
+                                <td class="total" id="TotalBeforePayment">0</td>
+
+                            </tr>
+                            <tr class="total">
+                                <td class="total text-info"> العمولة</td>
+
+                                <td class="total" id=""><input value="0" id="commision" style="width:100px;" class="form-control" /></td>
+
+                                <td>
+                                    <div class="form-group">
+                                        <input asp-for="PercentageCommission" id="PercentageCommission" style="width:100px;" class="form-control" />
+
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary" id="btnPercentage">حساب العموله</button>
+                                </td>
+                            </tr>
+
+
+                            <tr class="total">
+                                <td class="text-info">صافي انتاج المعامله</td>
+                                <td id=""><input id="TotalProduction" style="width:100px;" class="form-control" /></td>
+                                <td></td>
+                                <td>
+                                    <button type="button" class="btn btn-primary" style="margin-left:5px;" id="btnSave">حفظ الفاتورة</button>
+
+                                </td>
+                                <td id="redirectPrint">
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@*-------------------------------------------------*@
+<div id="fadeleftModal" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">التفاصيل الخاصة بالاسماك</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label class="control-label">*</label>
+                    <input type="checkbox" id="ChBoxAmount" onclick="ChangeCheck()" />
+                    <span>حدد مع اول عناصر البيعه و أزل التحديد مع اخر عناصرها</span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">نوع السمك</label>
+                    <select class="form-control" asp-items="ViewBag.FishID" id="FishDDL"></select>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">نوع الانتاج</label>
+                    <select class="form-control" asp-items="ViewBag.ProductionTypeID" id="ProdDDL"></select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">الكميه</label>
+                    <input type="text" class="form-control" id="Qty" />
+
+                </div>
+                <div class="form-group">
+                    <label class="control-label">السعر</label>
+                    <input type="text" class="form-control" id="UnitPrice" />
+
+                </div>
+            </div>
+            <div class="modal-footer md-button">
+                <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> اغلاق</button>
+                <button type="button" class="btn btn-primary" id="NewRows">حفظ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<input type="hidden" id="RecieptIDD" />
+<input type="hidden" id="originalQty" />
+<input type="hidden" id="ChBoxAmountVar" value="0" />
+<input type="hidden" id="trId" value="0" />
+
+
+@section scripts{
+
+    <script>
+
+        $(document).ready(function () {
+
+            $('#UnitPrice').keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    $('#NewRows').trigger('click');
+                    return false;
+                }
+                //Stop the event from propogation to other handlers
+                //If this line will be removed, then keypress event handler attached
+                //at document level will also be triggered
+
+                event.stopPropagation();
+
+            });
+             $('#PercentageCommission').val(@ViewBag.Commission.Value)
+        })
+
+
+        var ChangeCheck = function () {
+            if ($("#chkLeaderDebts").is(":checked")) {
+
+                $("#ChBoxAmountVar").val('1')
+            } else {
+                $("#ChBoxAmountVar").val('0')
+            }
+        }
+
+
+        $("#NewRows").click(function () {
+
+            var id = $("#trId").val();
+
+            var BoatOwnerItem_FishID = $('#FishDDL option:selected').text()
+            var fishID = $('#FishDDL option:selected').val();
+            var BoatOwnerItem_ProductionTypeID = $('#ProdDDL option:selected').text()
+            var BoatOwnerItem_Qty = $('#Qty').val()
+            var BoatOwnerItem_UnitPrice = $('#UnitPrice').val()
+
+            if ($("#ChBoxAmountVar").val() == 1) {
+                if (!$("#ChBoxAmount").is(":checked"))
+                    $("#ChBoxAmountVar").val(0);
+            }
+
+            if ($("#ChBoxAmountVar").val() == "1") {
+
+                var $tr = $('Tbody  tr:last')
+                var originalFish = $tr.find("td:eq(0)").text()
+                var originalQty = $tr.find("td:eq(2)").text()
+                var originalPrice = $tr.find("td:eq(4)").text()
+                $tr.find("td:eq(0)").text(originalFish + "/" + BoatOwnerItem_FishID)
+                $tr.find("td:eq(2)").text(originalQty + "/" + BoatOwnerItem_Qty)
+                if (BoatOwnerItem_UnitPrice != "") {
+                    $tr.find("td:eq(4)").text(BoatOwnerItem_UnitPrice)
+                } else {
+                    $tr.find("td:eq(4)").text(originalPrice)
+                }
+
+
+            }
+            else {
+
+
+                var addControls = "";
+                if ($("#ChBoxAmount").is(":checked")) {
+                    addControls = "<tr id=row_" + id + " data-price=" + BoatOwnerItem_UnitPrice + " >"
+                } else {
+
+                    addControls = "<tr id=row_" + id + " data-price=" + BoatOwnerItem_UnitPrice * BoatOwnerItem_Qty + " >"
+                }
+
+
+                addControls += "<td class='fishes'>" + BoatOwnerItem_FishID + "</td>"
+                addControls += "<td class='productions'>" + BoatOwnerItem_ProductionTypeID + "</td>"
+                addControls += "<td class='qtys'>" + BoatOwnerItem_Qty + "</td>"
+                addControls += "<td class='unitprices'>" + BoatOwnerItem_UnitPrice + "</td>"
+                if ($("#ChBoxAmount").is(":checked")) {
+                    addControls += "<td class='prices'>" + BoatOwnerItem_UnitPrice + "</td>"
+                } else {
+
+                    addControls += "<td class='prices'>" + BoatOwnerItem_UnitPrice * BoatOwnerItem_Qty + "</td>"
+                }
+                addControls += "<td> <a href='#' onclick=removee('" + id + "')>" + "X</a> </td>"
+                addControls += "</tr>";
+
+
+                if ($("#ChBoxAmount").is(":checked")) {
+                    $('#TotalBeforePayment').text(parseFloat($('#TotalBeforePayment').text()) + parseFloat(BoatOwnerItem_UnitPrice));
+                } else {
+
+                    $('#TotalBeforePayment').text(parseFloat($('#TotalBeforePayment').text()) + BoatOwnerItem_UnitPrice * BoatOwnerItem_Qty);
+                }
+
+
+                $('#commision').val(parseFloat($('#PercentageCommission').val()) * parseFloat($('#TotalBeforePayment').text()) / 100)
+                $('#TotalProduction').val(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').val()))
+
+                $('#btnSave').show();
+                $('.total').show();
+                $('#BoatOwnerItem_Qty').val('');
+                $('#BoatOwnerItem_UnitPrice').val('');
+                $('#BoatBody').append(addControls);
+
+            }
+
+            if ($("#ChBoxAmount").is(":checked")) {
+
+                $("#ChBoxAmountVar").val(1)
+            } else {
+                $("#ChBoxAmountVar").val(0)
+
+            }
+            $("#trId").val(parseInt(id) + 1)
+        });
+
+        $("#btnSave").click(function () {
+            $('#Bloader').show();
+            var PercentageCommission;
+            if (!$('#PercentageCommission').val()) {
+                PercentageCommission = @ViewBag.Commission.Value;
+            }
+            else {
+                 PercentageCommission = parseFloat($('#PercentageCommission').val());
+            }
+
+            var Date = $("#BoatOwnerReciept_Date").val();
+            var commision = parseFloat($('#commision').val());
+
+              var TotalProduction = parseFloat($('#TotalProduction').val());
+
+              var MerchantID = $("#MerchantDDL").val();
+
+
+              var TotalBeforePayment = parseFloat($('#TotalBeforePayment').text());
+
+
+
+              var FishNames = ""
+              $('.fishes').each(function () {
+                  FishNames += $(this).text();
+                  FishNames += ',';
+
+              })
+              var ProductionTypes = ""
+              $('.productions').each(function () {
+                  ProductionTypes += $(this).text();
+                  ProductionTypes += ',';
+
+              })
+              var qtys = ""
+              $('.qtys').each(function () {
+                  qtys += $(this).text();
+                  qtys += ',';
+
+              })
+
+              var unitprices = ""
+              $('.unitprices').each(function () {
+                  unitprices += $(this).text();
+                  unitprices += ',';
+
+              })
+
+              var prices = ""
+              $('.prices').each(function () {
+                  prices += $(this).text();
+                  prices += ',';
+
+              })
+
+
+            $.ajax({
+                url: "/SellerRecs/CreateSellerRec/",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    MerchantID: MerchantID,
+                    TotalBeforePaying: TotalBeforePayment,
+                    Date: Date,
+                    Commission: commision,
+                    PercentageCommission: PercentageCommission,
+                    TotalAfterPaying: TotalProduction,
+                    FishNames: FishNames,
+                    ProductionTypes: ProductionTypes,
+                    Unitprices: unitprices,
+                    Prices: prices,
+                    Qtys: qtys,
+                },
+                success: function (result) {
+                    if (result.message == "success") {
+                        window.location.href = "/SellerRecs/Distribute/" + result.id;
+
+
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حاول مرة اخري',
+                        });
+
+                    }
+
+
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'حدث خطأ',
+                        text: 'حاول مرة اخري',
+                    });
+
+                }
+            });
+
+
+          });
+
+
+         var removee = function (id) {
+
+            var price = $("#row_" + id).attr('data-price');
+            if (price) {
+                var tbp = parseFloat($('#TotalBeforePayment').text());
+                var p = parseFloat(price);
+                $('#TotalBeforePayment').text(tbp - p)
+
+                $('#commision').val(parseFloat($('#PercentageCommission').val()) * parseFloat($('#TotalBeforePayment').text()) / 100)
+                $('#TotalProduction').val(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').val()))
+
+
+                $("#row_" + id).remove();
+            }
+        }
+
+        $("#btnPercentage").click(function () {
+            if (!$('#PercentageCommission').val()) {
+                $('#commision').val(@ViewBag.Commission * parseFloat($('#TotalBeforePayment').text()) / 100)
+            }
+            else {
+                $('#commision').val(parseFloat($('#PercentageCommission').val()) * parseFloat($('#TotalBeforePayment').text()) / 100)
+            }
+            $('#TotalProduction').val(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').val()))
+
+            //$('#BoatOwnerReciept_PaidFromDebts').val('')
+        });
+
+        $("#btnIndex").click(function (e) {
+
+            e.preventDefault();
+            var url = $(this).attr('href');
+            window.open(url, '_blank');
+            //$('#BoatOwnerReciept_PaidFromDebts').val('')
+        });
+    </script>
+
+
+
+
+}

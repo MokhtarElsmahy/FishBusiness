@@ -33,6 +33,9 @@ namespace FishBusiness.Models
         public virtual ICollection<MerchantReciept> MerchantReciepts { get; set; }
         public virtual ICollection<IMerchantReciept> IMerchantReciepts { get; set; }
         public virtual ICollection<ISellerReciept> ISellerReciepts { get; set; }
+        public virtual ICollection<SellerRec> SellerRecs { get; set; }
         public virtual ICollection<PaidForMerchant> PaidForMerchants { get; set; }
+
+        public virtual ICollection<PaidForSeller> PaidForSellers { get; set; }
     }
 }

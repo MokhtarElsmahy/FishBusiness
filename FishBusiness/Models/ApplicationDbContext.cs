@@ -75,7 +75,21 @@ namespace FishBusiness
         public virtual DbSet<Debt_In_Sarha> Debts_In_Sarhas { get; set; }
         public virtual DbSet<Operator> Operators { get; set; }
         public virtual DbSet<PaidForOperator> PaidForOperators { get; set; }
+        public virtual DbSet<OperatorDeal> OperatorDeals { get; set; }
+
+
         public virtual DbSet<BranchOffice> BranchOffices { get; set; }
+        public virtual DbSet<StockRec> StockRecs { get; set; }
+        public virtual DbSet<StockRecItem> StockRecItems { get; set; }
+
+        public virtual DbSet<SellerRec> SellerRecs { get; set; }
+        public virtual DbSet<SellerRecItem> SellerRecItems { get; set; }
+        public virtual DbSet<PaidForSeller> PaidForSellers { get; set; }
+
+
+
+
+
 
 
 

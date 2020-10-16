@@ -21,6 +21,7 @@
         <div class="mt-4 ml-auto">
             <a asp-action="CreateReport" class="btn btn-primary">تقرير</a>
             <a asp-action="Create" asp-controller="IMerchantReciepts" class="btn btn-primary">اضافة فاتورة</a>
+            <a asp-action="SendBackToSeaPort" asp-controller="Stocks" class="btn btn-primary">اعادة للميناء</a>
         </div>
     </div>
 
@@ -53,8 +54,15 @@
                                         <td>@item.TotalWeight</td>
 
                                         <td>
+                                            @if (item.ProductionTypeID == 3)
+                                            {
+                                                <a onclick="Details(@item.StockID)" class="btn btn-info mb-2">فرز</a>
 
-                                            <a onclick="Details(@item.StockID)" class="btn btn-info mb-2">فرز</a>
+                                            }
+                                            else
+                                            {
+                                                <a onclick="Details(@item.StockID)" class="btn btn-info mb-2">وزن</a>
+                                            }
 
                                         </td>
 

@@ -20,7 +20,10 @@ namespace FishBusiness.Models
         public virtual ICollection<IMerchantRecieptItem> IMerchantRecieptItems { get; set; }
         public virtual ICollection<PersonRecieptItem> PersonRecieptItems { get; set; }
         public virtual ICollection<ISellerRecieptItem> ISellerRecieptItems { get; set; }
+        public virtual ICollection<StockRecItem> StockRecItems { get; set; }
         public virtual ICollection<Stock> Stocks { get; set; }
+
+        public virtual ICollection<SellerRecItem> SellerRecItems { get; set; }
 
     }
 }

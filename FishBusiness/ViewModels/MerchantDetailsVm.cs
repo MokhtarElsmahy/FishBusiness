@@ -14,6 +14,7 @@ namespace FishBusiness.ViewModels
         public List<ISellerReciept> ISellerRecieptsMoneytized { get; set; }
         public List<PaidForMerchant> PaidForMerchantsFromUs { get; set; }
         public List<PaidForMerchant> PaidForUs { get; set; }
+        public List<PaidForSeller> PaidForSeller { get; set; }
 
        
     }

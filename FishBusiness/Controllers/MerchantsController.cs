@@ -8,16 +8,18 @@ using Microsoft.EntityFrameworkCore;
 using FishBusiness;
 using FishBusiness.Models;
 using FishBusiness.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace FishBusiness.Controllers
 {
     public class MerchantsController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public MerchantsController(ApplicationDbContext context)
+        private readonly UserManager<IdentityUser> _userManager;
+        public MerchantsController(ApplicationDbContext context , UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Merchants
@@ -53,7 +55,8 @@ namespace FishBusiness.Controllers
             model.ISellerReciepts = await _context.ISellerReciepts.Include(x => x.Merchant).Where(x => x.MerchantID == id && x.TotalOfPrices == 0).ToListAsync();
             model.ISellerRecieptsMoneytized = await _context.ISellerReciepts.Include(x => x.Merchant).Where(x => x.MerchantID == id && x.TotalOfPrices > 0).ToListAsync();
             model.PaidForMerchantsFromUs = await _context.PaidForMerchant.Include(c=>c.Person).Where(c => c.IsPaidForUs == false).ToListAsync();
-            model.PaidForUs = await _context.PaidForMerchant.Where(c => c.IsPaidForUs == true).ToListAsync();
+            model.PaidForUs = await _context.PaidForMerchant.Include(c => c.Person).Where(c => c.IsPaidForUs == true).ToListAsync();
+            model.PaidForSeller = await _context.PaidForSellers.Include(c => c.Person).Where(c => c.MerchantID == id).ToListAsync();
             return View(model);
         }
 
@@ -151,12 +154,32 @@ namespace FishBusiness.Controllers
                 return NotFound();
             }
 
-            merchant.PreviousDebtsForMerchant -= PaidValue;
-            PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = false, Payment = PaidValue, Date = TimeNow(), MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebtsForMerchant),PersonID=1 };
-            _context.PaidForMerchant.Add(p);
-            Person pp = _context.People.Find(1);
-            pp.credit -= PaidValue;
-            await _context.SaveChangesAsync();
+           
+           
+
+            var user = await _userManager.GetUserAsync(User);
+         
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains("admin"))
+            {
+                Person pp = _context.People.Find(1);
+                merchant.PreviousDebtsForMerchant -= PaidValue;
+                PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = false, Payment = PaidValue, Date = TimeNow(), MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebtsForMerchant), PersonID = 1 };
+                _context.PaidForMerchant.Add(p);
+                pp.credit -= PaidValue;
+                await _context.SaveChangesAsync();
+
+
+            }
+            else if (roles.Contains("partner"))
+            {
+                Person pp = _context.People.Find(2);
+                merchant.PreviousDebtsForMerchant -= PaidValue;
+                PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = false, Payment = PaidValue, Date = TimeNow(), MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebtsForMerchant), PersonID = 2 };
+                _context.PaidForMerchant.Add(p);
+                pp.credit -= PaidValue;
+                await _context.SaveChangesAsync();
+            }
 
             return Json(new { message="success", debtsForMerchant = merchant.PreviousDebtsForMerchant });
         }
@@ -173,12 +196,28 @@ namespace FishBusiness.Controllers
                 return NotFound();
             }
 
-            merchant.PreviousDebts -= PaidValue;
-            PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = true, Payment = PaidValue, Date = TimeNow(), MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebts),PersonID = 1 };
-            _context.PaidForMerchant.Add(p);
-            Person pp = _context.People.Find(1);
-            pp.credit += PaidValue;
-            await _context.SaveChangesAsync();
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains("admin"))
+            {
+
+                merchant.PreviousDebts -= PaidValue;
+                PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = true, Payment = PaidValue, Date = TimeNow(), MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebts), PersonID = 1 };
+                _context.PaidForMerchant.Add(p);
+                Person pp = _context.People.Find(1);
+                pp.credit += PaidValue;
+                await _context.SaveChangesAsync();
+
+            }
+            else if (roles.Contains("partner"))
+            {
+                merchant.PreviousDebts -= PaidValue;
+                PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = true, Payment = PaidValue, Date = TimeNow(), MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebts), PersonID = 2 };
+                _context.PaidForMerchant.Add(p);
+                Person pp = _context.People.Find(2);
+                pp.credit += PaidValue;
+                await _context.SaveChangesAsync();
+            }
 
             return Json(new { message = "success", debtsOnMerchant = merchant.PreviousDebts });
         }

@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using FishBusiness.Models;
 using FishBusiness.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FishBusiness.Controllers
 {
@@ -15,6 +17,7 @@ namespace FishBusiness.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
+
         public HomeController(ILogger<HomeController> logger , ApplicationDbContext context)
         {
             _logger = logger;
@@ -30,12 +33,51 @@ namespace FishBusiness.Controllers
             return currentUTC.AddHours(2);
         }
 
+        //[Authorize]
         public IActionResult Index()
         {
-            ViewBag.TodaysBoatReceipts = _context.BoatOwnerReciepts.ToList().Where(d=>d.Date.ToShortDateString()== TimeNow().ToShortDateString()).Count();
-            ViewBag.TodaysMerchantReceipts = _context.MerchantReciepts.ToList().Where(d => d.Date.ToShortDateString() == TimeNow().ToShortDateString()).Count();
-            ViewBag.TodaysExternalBoatReceipts = _context.ExternalReceipts.ToList().Where(d => d.Date.ToShortDateString() == TimeNow().ToShortDateString()).Count();
-            ViewBag.Stock = _context.Stocks.Count();
+           _context.Roles.Add(new IdentityRole() { Name = "admin" });
+           _context.SaveChanges();
+
+
+            var TodaysBoatReceipts = _context.BoatOwnerReciepts.ToList().Where(d => d.Date.ToShortDateString() == TimeNow().ToShortDateString());
+            if (TodaysBoatReceipts != null)
+            {
+                ViewBag.TodaysBoatReceipts = TodaysBoatReceipts.Count();
+            }
+            else
+            {
+                ViewBag.TodaysBoatReceipts = 0;
+            }
+            var TodaysMerchantReceipts = _context.MerchantReciepts.ToList().Where(d => d.Date.ToShortDateString() == TimeNow().ToShortDateString());
+            if (TodaysMerchantReceipts !=null)
+            {
+                ViewBag.TodaysMerchantReceipts= TodaysMerchantReceipts.Count();
+            }
+            else
+            {
+                ViewBag.TodaysMerchantReceipts = 0;
+            }
+            var TodaysExternalBoatReceipts = _context.ExternalReceipts.ToList().Where(d => d.Date.ToShortDateString() == TimeNow().ToShortDateString());
+            if (TodaysExternalBoatReceipts != null)
+            {
+                ViewBag.TodaysExternalBoatReceipts = TodaysExternalBoatReceipts.Count();
+            }
+            else
+            {
+                ViewBag.TodaysExternalBoatReceipts = 0;
+            }
+            var Stock = _context.Stocks;
+            if (Stock != null)
+            {
+                ViewBag.Stock = Stock.Count();
+            }
+            else
+            {
+                ViewBag.Stock = 0;
+            }
+         
+            
 
 
 
@@ -133,12 +175,15 @@ namespace FishBusiness.Controllers
             OfficeVM model = new OfficeVM();
             // income
             model.Commisions = _context.BoatOwnerReciepts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.Commission);
+
+            //the same ?
             model.IsellerReceiptsTotal =(decimal) _context.ISellerReciepts.ToList().Where(x => x.Date.ToShortDateString() ==date).Sum(x => x.PaidFromDebt);
+            model.SalesTotal =(decimal) _context.ISellerReciepts.ToList().Where(x => x.Date.ToShortDateString() == date ).Sum(x => x.PaidFromDebt);
+
             model.externalReceiptsTotal = _context.ExternalReceipts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.FinalIncome);
             model.SharedBoatsReceiptsTotal = _context.IncomesOfSharedBoats.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.Income);
             model.collectorForUsTotal = _context.PaidForMerchant.ToList().Where(x => x.Date.ToShortDateString() == date && x.PersonID==3 && x.IsPaidForUs==true).Sum(x => x.Payment);
             model.LeaderLoansPaybackTotal = _context.LeaderPaybacks.ToList().Where(x => x.Date.ToShortDateString() == date ).Sum(x => x.Price);
-            model.SalesTotal =(decimal) _context.ISellerReciepts.ToList().Where(x => x.Date.ToShortDateString() == date ).Sum(x => x.PaidFromDebt);
             model.CheckoutsOfSharedBoats = (decimal)_context.Checkouts.ToList().Where(c => c.Date.ToShortDateString() == date).Sum(c=>c.PaidForUs);
             //outcome
             model.FathallahTotal = _context.FathAllahGifts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.charge);

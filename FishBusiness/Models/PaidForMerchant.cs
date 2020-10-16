@@ -26,9 +26,9 @@ namespace FishBusiness.Models
         public bool IsCash { get; set; }
         [ForeignKey("Person")]
         public int PersonID { get; set; }
+        public virtual Person Person { get; set; }
 
         public virtual Merchant Merchant { get; set; }
-        public virtual Person Person { get; set; }
 
     }
 }

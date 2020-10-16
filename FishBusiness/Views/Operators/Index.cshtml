@@ -1,0 +1,231 @@
+﻿@model IEnumerable<FishBusiness.Models.Operator>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Styles{
+    <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/datatables.css">
+    <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/dt-global_style.css">
+
+
+
+    <link href="~/plugins/animate/animate.css" rel="stylesheet" type="text/css" />
+
+
+}
+<div class="layout-px-spacing">
+
+    @*<div class="page-header">
+            <div class="page-title">
+                <h3>المراكب</h3>
+            </div>
+        </div>*@
+
+    <div class="container row">
+        <div class="page-header m-3">
+            <div class="page-title">
+                <h3>ادارة المقاولون</h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <a href="#" onclick="CreateShow()" class="btn btn-primary">اضافة مقاول جديد</a>
+        </div>
+    </div>
+
+
+    <div id="TableItemsDiv">
+
+        @*@Html.Partial("TableItems")*@
+
+        <div class="row layout-top-spacing" id="cancel-row">
+
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+                    <div class="table-responsive mb-4 mt-4">
+                        <table id="zero-config" class="table table-hover" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>اسم </th>
+                                    <th>عنوان </th>
+                                    <th>تلفون </th>
+                                    <th>المتبقى له</th>
+                                    <th></th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Any())
+                                {
+                                    @foreach (var merchant in Model)
+                                    {
+                                        <tr>
+                                            <td>@merchant.OperatorName</td>
+                                            <td>@merchant.Address</td>
+                                            <td>@merchant.Phone</td>
+                                            <td class="text-danger">@merchant.Credit</td>
+
+                                            <td>
+
+                                                <a href="#" onclick="EditShow(@merchant.OperatorID)" class="btn btn-success mb-2">تعديل</a>
+                                                <a asp-action="Profile" asp-route-id="@merchant.OperatorID" class="btn btn-info mb-2">بروفايل</a>
+                                                <a class="btn btn-danger mb-2 delete"
+                                                   data-id="@merchant.OperatorID"
+                                                   data-controller="Operators"
+                                                   data-action="Delete"
+                                                   data-body-message="هل انت متأكد من عملية الحذف ؟">حذف</a>
+                                            </td>
+
+                                        </tr>
+                                    }
+
+                                }
+                                else
+                                {
+                                    <tr>
+
+                                        <td class="font-weight-bolder">لا يوجد مقاولون</td>
+
+
+                                    </tr>
+                                }
+
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @*<div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    ddddddddddddddddd
+                </div>*@
+            <div class="modal-body" id="ModalBodyDiv2">
+
+                <hr>
+                <center>
+
+                </center>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">اغلاق</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="fadeleftModal" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">اضافة مقاول</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+
+
+            <div class="modal-body" id="ModalBodyDiv">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+
+        })
+        var Create = function () {
+            var fd = $("#MyForm").serialize();
+            $.ajax({
+
+                url: "/Operators/CreateC",
+                type: "POST",
+                dataType: "json",
+                data: fd,
+                success: function (response) {
+                    if (response.message == "success") {
+                        $("#fadeleftModal").modal("hide");
+                        window.location.href = "/Operators/Index";
+                    }
+                    else {
+                        alert("Error")
+                    }
+
+                }
+
+
+
+            })
+
+        }
+        var CreateShow = function (id) {
+            var url = "/Operators/Create";
+            $("#ModalBodyDiv").load(url, function () {
+                $("#fadeleftModal").modal("show");
+            })
+        }
+
+
+        var EditShow = function (id) {
+            $.ajax({
+                url: "/Operators/Edit",
+                type: "GET",
+                data: { id: id },
+                success: function (response) {
+                    $("#fadeleftModal").modal("show");
+                    $("#ModalBodyDiv").html(response);
+
+                }
+
+
+
+            })
+        }
+
+        var ConfirmEdit = function () {
+
+            var myform = $("#MyForm").serialize();
+
+            $.ajax({
+                type: "POST",
+                url: "/Operators/EditC",
+                type: "POST",
+                data: myform,
+
+                success: function (response) {
+                    if (response.message == "success") {
+                        $("#fadeleftModal").modal("hide");
+                        window.location.href = "/Operators/Index";
+                    }
+                    else {
+                        alert("Error")
+                    }
+
+                }
+
+
+            });
+        }
+
+    </script>
+
+}

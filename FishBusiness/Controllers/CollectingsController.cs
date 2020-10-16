@@ -47,7 +47,7 @@ namespace FishBusiness.Controllers
             ViewBag.PayForMerchant = new SelectList(_context.Merchants.Where(c=>c.IsOwner==false && c.IsFromOutsideCity == false).ToList(), "MerchantID", "MerchantName");
             ViewBag.Halek = new SelectList(_context.Debts.ToList(), "DebtID", "DebtName");
             var UnfinishedSarhas = _context.Sarhas.Where(x => x.IsFinished == false).Select(x => x.BoatID);
-            ViewBag.Boats = new SelectList(_context.Boats.Where(b => b.IsActive == true).Where(b => UnfinishedSarhas.Contains(b.BoatID)).ToList(), "BoatID", "BoatName");
+            ViewBag.Boats = new SelectList(_context.Boats.Where(b => b.IsActive == true && b.BoatLicenseNumber != "0").Where(b => UnfinishedSarhas.Contains(b.BoatID)).ToList(), "BoatID", "BoatName");
             ViewBag.SharedBoats = new SelectList(_context.Boats.Where(b => b.IsActive == true && b.TypeID == 2).Where(b => UnfinishedSarhas.Contains(b.BoatID)).ToList(), "BoatID", "BoatName");
 
             CollectorVm model = new CollectorVm() { Debts_Sarha = halek, PaidForMerchant = paid_for_merchant, PaidForUs = paid_for_Us, Expenses = expenses };
@@ -352,7 +352,7 @@ namespace FishBusiness.Controllers
             ViewBag.Leaders = new SelectList(_context.Boats.Where(b => b.IsActive == true).ToList(), "BoatID", "BoatLeader");
             ViewBag.Halek = new SelectList(_context.Debts.ToList(), "DebtID", "DebtName");
             var UnfinishedSarhas = _context.Sarhas.Where(x => x.IsFinished == false).Select(x => x.BoatID);
-            ViewBag.Boats = new SelectList(_context.Boats.Where(b => b.IsActive == true).Where(b => UnfinishedSarhas.Contains(b.BoatID)).ToList(), "BoatID", "BoatName");
+            ViewBag.Boats = new SelectList(_context.Boats.Where(b => b.IsActive == true && b.BoatLicenseNumber != "0").Where(b => UnfinishedSarhas.Contains(b.BoatID)).ToList(), "BoatID", "BoatName");
             ViewBag.SharedBoats = new SelectList(_context.Boats.Where(b => b.IsActive == true && b.TypeID == 2).Where(b => UnfinishedSarhas.Contains(b.BoatID)).ToList(), "BoatID", "BoatName");
             ViewBag.People = new SelectList(_context.People.Where(c => c.PersonID != 4 &&c.PersonID!=2), "PersonID", "Name");
             var pp = _context.People.Find(4);

@@ -7,6 +7,7 @@ using FishBusiness.Models;
 using FishBusiness.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +17,13 @@ namespace FishBusiness.Controllers
     public class BoatsController : Controller
     {
         private readonly ApplicationDbContext db;
-        private readonly IHostingEnvironment _hosting;
-        public BoatsController(ApplicationDbContext _db, IHostingEnvironment hosting)
+        private readonly IHostingEnvironment _hosting; 
+        private readonly UserManager<IdentityUser> _userManager;
+        public BoatsController(ApplicationDbContext _db, IHostingEnvironment hosting, UserManager<IdentityUser> userManager)
         {
             db = _db;
-            _hosting = hosting;
+            _hosting = hosting; 
+            _userManager = userManager;
         }
         public async Task<IActionResult> Index()
         {
@@ -28,7 +31,7 @@ namespace FishBusiness.Controllers
         }
         public async Task<IActionResult> ActiveBoats()
         {
-            return View(await db.Boats.Where(x => x.IsActive == true).Include(x => x.BoatType).ToListAsync());
+            return View(await db.Boats.Where(x => x.IsActive == true && x.BoatLicenseNumber!="0").Include(x => x.BoatType).ToListAsync());
         }
         public DateTime TimeNow()
         {
@@ -42,7 +45,7 @@ namespace FishBusiness.Controllers
 
         public async Task<IActionResult> InActiveBoats()
         {
-            return View(await db.Boats.Where(x => x.IsActive == false).Include(x => x.BoatType).ToListAsync());
+            return View(await db.Boats.Where(x => x.IsActive == false && x.BoatLicenseNumber != "0").Include(x => x.BoatType).ToListAsync());
         }
         public async Task<IActionResult> SharedBoats()
         {
@@ -52,7 +55,7 @@ namespace FishBusiness.Controllers
         public async Task<IActionResult> BasicBoats()
         {
             // Find its id in your db
-            return View(await db.Boats.Where(x => x.BoatType.TypeID == 1).ToListAsync());
+            return View(await db.Boats.Where(x => x.BoatType.TypeID == 1 && x.BoatLicenseNumber != "0").ToListAsync());
         }
         [HttpGet]
         public IActionResult Create()
@@ -451,7 +454,7 @@ namespace FishBusiness.Controllers
         }
 
         [HttpPost]
-        public IActionResult SaveRec(int? id, decimal individualSalary, decimal halek, decimal total, decimal expense, string flag, int NumberOfFisherMen, decimal PaymentLeaderDebts)
+        public async Task<IActionResult> SaveRec(int? id, decimal individualSalary, decimal halek, decimal total, decimal expense, string flag, int NumberOfFisherMen, decimal PaymentLeaderDebts)
         {
 
             var rec = db.BoatOwnerReciepts.Find(id);
@@ -467,7 +470,7 @@ namespace FishBusiness.Controllers
                 var recs = db.BoatOwnerReciepts.Where(c => c.BoatID == boat.BoatID && c.IsCollected == false && c.IsCalculated == false).ToList();
                 var sumOfTotalAfterPayment = total;
                 var finalIncome = 0.0m;
-                if (boat.TypeID == 5) //shared boat
+                if (boat.TypeID == 2) //shared boat
                 {
 
                     finalIncome = sumOfTotalAfterPayment / 2;
@@ -484,6 +487,9 @@ namespace FishBusiness.Controllers
                     boat.IncomeOfSharedBoat += finalIncome - LeaderSalary;
                     IncomesOfSharedBoat inc = new IncomesOfSharedBoat() { BoatID = boat.BoatID, Date = TimeNow(), Income = finalIncome - LeaderSalary };
                     db.IncomesOfSharedBoats.Add(inc);
+
+                    //Person pp = db.People.Find(1);
+                    //pp.credit -= finalIncome;
 
                 }
                 else
@@ -502,6 +508,7 @@ namespace FishBusiness.Controllers
                 }
 
 
+
             }
             else
             {
@@ -513,8 +520,9 @@ namespace FishBusiness.Controllers
                 {
                     var recs = db.BoatOwnerReciepts.Where(c => c.BoatID == boat.BoatID && c.IsCollected == false && c.IsCalculated == true).ToList();
                     var sumOfTotalAfterPayment = recs.Sum(c => c.TotalAfterPaying);
+
                     var finalIncome = 0.0m;
-                    if (boat.TypeID == 5)
+                    if (boat.TypeID == 2)
                     {
 
                         finalIncome = sumOfTotalAfterPayment / 2;
@@ -544,25 +552,32 @@ namespace FishBusiness.Controllers
                     foreach (var item in recs)
                     {
                         item.IsCollected = true;
+                        
                     }
                     db.SaveChanges();
                 }
             }
 
-            Person p = db.People.Find(1);
-            p.credit += halek;
-            if (PaymentLeaderDebts != 0.0m)
-            {
-                boat.DebtsOfLeader -= PaymentLeaderDebts;
-                LeaderPayback l = new LeaderPayback()
+         
+           
+          
+                Person p = db.People.Find(1);
+                //p.credit += halek; دى بتكون حسابات على ورق لانهم مش بياخدوا فلوس ف ايديهم ..لسه هياخدوه فلوسهم دى لما التجار تسدد 
+                if (PaymentLeaderDebts != 0.0m)
                 {
-                    BoatID = boat.BoatID,
-                    Date = TimeNow(),
-                    Price = PaymentLeaderDebts
-                };
-                db.LeaderPaybacks.Add(l);
-                p.credit += PaymentLeaderDebts;
-            }
+                    boat.DebtsOfLeader -= PaymentLeaderDebts;
+                    LeaderPayback l = new LeaderPayback()
+                    {
+                        BoatID = boat.BoatID,
+                        Date = TimeNow(),
+                        Price = PaymentLeaderDebts
+                    };
+                    db.LeaderPaybacks.Add(l);
+                    //p.credit += PaymentLeaderDebts;
+                }
+           
+          
+
             db.SaveChanges();
             return Json(new { message = "success", current = boat.DebtsOfHalek, income = boat.IncomeOfSharedBoat, cexpense = boat.TotalOfExpenses, leaderdebts = boat.DebtsOfLeader });
         }

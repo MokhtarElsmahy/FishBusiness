@@ -184,6 +184,44 @@ namespace FishBusiness.Controllers
             return Json(new { message="success", debtsForMerchant = merchant.PreviousDebtsForMerchant });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CalcDebtsAsSeller(decimal PaidValue, int MerchantID, bool IsCash)
+        {
+
+            var merchant = await _context.Merchants.FindAsync(MerchantID);
+
+            if (merchant == null)
+            {
+                return NotFound();
+            }
+
+
+
+
+            var user = await _userManager.GetUserAsync(User);
+
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains("admin"))
+            {
+                Person pp = _context.People.Find(1);
+                merchant.PreviousDebtsForMerchant -= PaidValue;
+                PaidForSeller p = new PaidForSeller() { Payment = PaidValue, Date = TimeNow(), MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForSeller = (merchant.PreviousDebtsForMerchant), PersonID = 1 };
+                _context.PaidForSellers.Add(p);
+                pp.credit -= PaidValue;
+                await _context.SaveChangesAsync();
+            }
+            else if (roles.Contains("partner"))
+            {
+                Person pp = _context.People.Find(2);
+                merchant.PreviousDebtsForMerchant -= PaidValue;
+                PaidForSeller p = new PaidForSeller() { Payment = PaidValue, Date = TimeNow(), MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForSeller = (merchant.PreviousDebtsForMerchant), PersonID = 2 };
+                _context.PaidForSellers.Add(p);
+                pp.credit -= PaidValue;
+                await _context.SaveChangesAsync();
+            }
+
+            return Json(new { message = "success", debtsForMerchant = merchant.PreviousDebtsForMerchant });
+        }
 
         [HttpPost]
         public async Task<IActionResult> CalcDebtForUs(decimal PaidValue, int MerchantID, bool IsCash)

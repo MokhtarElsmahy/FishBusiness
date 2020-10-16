@@ -33,11 +33,11 @@ namespace FishBusiness.Controllers
             return currentUTC.AddHours(2);
         }
 
-        //[Authorize]
+       [Authorize]
         public IActionResult Index()
         {
-           _context.Roles.Add(new IdentityRole() { Name = "admin" });
-           _context.SaveChanges();
+           //_context.Roles.Add(new IdentityRole() { Name = "admin" });
+           //_context.SaveChanges();
 
 
             var TodaysBoatReceipts = _context.BoatOwnerReciepts.ToList().Where(d => d.Date.ToShortDateString() == TimeNow().ToShortDateString());

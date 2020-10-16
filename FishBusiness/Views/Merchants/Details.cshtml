@@ -180,10 +180,10 @@
                                                     <div class="row">
 
 
-                                                        <input type="text" id="PaidValueForMerchant" placeholder="قبض سرحه/بيعه" class="form-control col-8" />
+                                                        <input type="text" id="PaidValueForMerchantAsSeller" placeholder="قبض سرحه/بيعه" class="form-control col-8" />
                                                         <div class="n-chk col-4">
                                                             <label class="new-control new-checkbox checkbox-primary">
-                                                                <input type="checkbox" id="IsCash" class="new-control-input">
+                                                                <input type="checkbox" id="IsSellerCash" class="new-control-input">
                                                                 <span class="new-control-indicator"></span>سمك مقابل سمك
                                                             </label>
                                                         </div>
@@ -197,7 +197,7 @@
                                 </div>
                                 <div class="add-s-task">
 
-                                    <a class="addTask" id="SubFromUs">خصم</a>
+                                    <a class="addTask" id="SubFromUsAsSeller">خصم</a>
                                 </div>
 
                             </div>
@@ -673,134 +673,7 @@
         </div>
     </div>
 </div>
-        @*</div>
-        </div>*@
-
-
-
-        @*</div>*@
-
-
-
-        @*</div>*@
-
-        @*<div class="row layout-spacing">
-        <div class="col-xl-6 col-lg-6 col-md-7 col-sm-12 layout-top-spacing">
-
-            <div class="skills layout-spacing">
-                <div class="widget-content widget-content-area">
-
-
-                    <div class="row layout-top-spacing" id="cancel-row">*@
-
-                      
-  
-                    @*</div>
-                </div>
-            </div>
-
-
-
-        </div>
-
-
-
-    </div>*@
-
-    @*<div class="row layout-spacing">
-
-        <div class="education layout-spacing col-6">
-            <div class="widget-content widget-content-area">
-                <h3 class="">دفع حساب قديم على التاجر</h3>
-                <div class="timeline-alter">
-                    <div class="connect-sorting">
-
-
-                        <div class="connect-sorting-content" data-sortable="true">
-
-
-                            <div data-draggable="true" class="card simple-title-task" style="">
-                                <div class="card-body">
-
-                                    <div class="task-header">
-                                        <div class="form-group">
-                                            <label class="control-label"> المبلغ المدفوع</label>
-                                            <div class="row">
-
-
-                                                <input type="text" id="PaidValueForUs" placeholder="دفع حساب قديم على التاجر" class="form-control col-8" />
-                                                <div class="n-chk col-4">
-                                                    <label class="new-control new-checkbox checkbox-primary">
-                                                        <input type="checkbox" id="IsCash2" class="new-control-input">
-                                                        <span class="new-control-indicator"></span>سمك مقابل سمك
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="add-s-task">
-
-                            <a class="addTask" id="Sub">خصم</a>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="education layout-spacing col-6">
-            <div class="widget-content widget-content-area">
-                <h3 class="">دفع حساب قديم علينا</h3>
-                <div class="timeline-alter">
-                    <div class="connect-sorting">
-
-
-                        <div class="connect-sorting-content" data-sortable="true">
-
-
-                            <div data-draggable="true" class="card simple-title-task" style="">
-                                <div class="card-body">
-
-                                    <div class="task-header">
-                                        <div class="form-group">
-                                            <label class="control-label"> المبلغ المدفوع</label>
-                                            <div class="row">
-
-
-                                                <input type="text" id="PaidValueForMerchant" placeholder="دفع حساب قديم علينا" class="form-control col-8" />
-                                                <div class="n-chk col-4">
-                                                    <label class="new-control new-checkbox checkbox-primary">
-                                                        <input type="checkbox" id="IsCash" class="new-control-input">
-                                                        <span class="new-control-indicator"></span>سمك مقابل سمك
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="add-s-task">
-
-                            <a class="addTask" id="SubFromUs">خصم</a>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>*@
-
-
+       
 
 
 
@@ -899,7 +772,44 @@
                     }
                 });
             })
+            $("#SubFromUsAsSeller").on('click', function () {
+                var PaidValue = parseFloat($('#PaidValueForMerchantAsSeller').val());
+                var id = @Model.Merchant.MerchantID;
+                var IsCash = $('#IsSellerCash').is(":checked");
 
+                $.ajax({
+                    url: "/Merchants/CalcDebtsAsSeller/",
+                    type: "Post",
+                    dataType: "json",
+                    traditional: true,
+                    data: {
+                        PaidValue: PaidValue,
+                        MerchantID: id,
+                        IsCash: IsCash
+                    }, //id of the state which is used to extract cities
+                    success: function (result) {
+                        if (result.message == "success") {
+
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'تم الخصم بنجاح',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                            $('#PaidValueForMerchantAsSeller').val('')
+                            $('#DebtsForMerchant').text(result.debtsForMerchant)
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حاول مرة اخري',
+                        });
+                    }
+                });
+            })
 
              $("#Sub").on('click', function () {
                 var PaidValue = parseFloat($('#PaidValueForUs').val());

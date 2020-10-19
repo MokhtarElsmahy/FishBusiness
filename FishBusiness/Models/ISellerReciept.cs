@@ -43,6 +43,9 @@ namespace FishBusiness.Models
 
         public string ReceiptImage { get; set; }
 
+        [ForeignKey("Person")]
+        public int PersonID { get; set; }
+        public virtual Person Person { get; set; }
         public virtual ICollection<ISellerRecieptItem> ISellerRecieptItems { get; set; }
 
     }

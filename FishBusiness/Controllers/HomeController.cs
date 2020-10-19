@@ -190,7 +190,7 @@ namespace FishBusiness.Controllers
             model.CollectorTotalFromUs = _context.PaidForMerchant.Include(x=>x.Merchant).ToList().Where(x => x.Date.ToShortDateString() == date && x.PersonID == 1 && x.IsPaidForUs == true && x.Merchant.IsOwner==true).Sum(x => x.Payment);
             var CollectorPaidForMerchant = _context.PaidForMerchant.ToList().Where(x => x.Date.ToShortDateString() == date && x.PersonID == 3 && x.IsPaidForUs == false).Sum(x => x.Payment);
             var CollectorPaidForHalek = _context.Debts_Sarhas.ToList().Where(x => x.Date.ToShortDateString() == date && x.PersonID == 3 ).Sum(x => x.Price);
-            var CollectorPaidForHalekFromFathallahAndMohamed = _context.Debts_In_Sarhas.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.Price);
+            var CollectorPaidForHalekFromFathallahAndMohamed = _context.Debts_Sarhas.ToList().Where(x => x.Date.ToShortDateString() == date && (x.PersonID==3 || x.PersonID==4)).Sum(x => x.Price);
 
             var CollectorPaidForFathallah = _context.FathAllahGifts.ToList().Where(x => x.Date.ToShortDateString() == date && x.PersonID == 3 ).Sum(x => x.charge);
             var CollectorPaidForAdditional = _context.AdditionalPayments.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.Value);

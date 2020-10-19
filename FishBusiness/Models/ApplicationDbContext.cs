@@ -85,6 +85,8 @@ namespace FishBusiness
         public virtual DbSet<SellerRec> SellerRecs { get; set; }
         public virtual DbSet<SellerRecItem> SellerRecItems { get; set; }
         public virtual DbSet<PaidForSeller> PaidForSellers { get; set; }
+        public virtual DbSet<PaidForBoat> PaidForBoats { get; set; }
+        public virtual DbSet<AdditionalForOffice> AdditionalForOffices { get; set; }
 
 
 

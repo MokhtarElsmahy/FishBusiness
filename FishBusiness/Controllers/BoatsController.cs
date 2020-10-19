@@ -456,11 +456,30 @@ namespace FishBusiness.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveRec(int? id, decimal individualSalary, decimal halek, decimal total, decimal expense, string flag, int NumberOfFisherMen, decimal PaymentLeaderDebts)
         {
-
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+            int PID = 1;
+            if (roles.Contains("partner"))
+                PID = 2;
             var rec = db.BoatOwnerReciepts.Find(id);
-
-
+            //Person p = db.People.Find(PID);
+            //p.credit += halek; دى بتكون حسابات على ورق لانهم مش بياخدوا فلوس ف ايديهم ..لسه هياخدوه فلوسهم دى لما التجار تسدد 
+            decimal leaderPaidDebts = 0.0m;
             var boat = db.Boats.Find(rec.BoatID);
+            if (PaymentLeaderDebts != 0.0m)
+            {
+                boat.DebtsOfLeader -= PaymentLeaderDebts;
+                LeaderPayback l = new LeaderPayback()
+                {
+                    BoatID = boat.BoatID,
+                    Date = TimeNow(),
+                    Price = PaymentLeaderDebts
+                };
+                db.LeaderPaybacks.Add(l);
+                //p.credit += PaymentLeaderDebts;
+                leaderPaidDebts = PaymentLeaderDebts;
+            }
+
             boat.DebtsOfHalek -= halek;
 
             if (flag == "True") // fishermen number is the same 
@@ -468,9 +487,9 @@ namespace FishBusiness.Controllers
 
 
                 var recs = db.BoatOwnerReciepts.Where(c => c.BoatID == boat.BoatID && c.IsCollected == false && c.IsCalculated == false).ToList();
-                var sumOfTotalAfterPayment = total;
+                var sumOfTotalAfterPayment = total- leaderPaidDebts;
                 var finalIncome = 0.0m;
-                if (boat.TypeID == 2) //shared boat
+                if (boat.TypeID == 5) //shared boat
                 {
 
                     finalIncome = sumOfTotalAfterPayment / 2;
@@ -487,9 +506,18 @@ namespace FishBusiness.Controllers
                     boat.IncomeOfSharedBoat += finalIncome - LeaderSalary;
                     IncomesOfSharedBoat inc = new IncomesOfSharedBoat() { BoatID = boat.BoatID, Date = TimeNow(), Income = finalIncome - LeaderSalary };
                     db.IncomesOfSharedBoats.Add(inc);
-
-                    //Person pp = db.People.Find(1);
-                    //pp.credit -= finalIncome;
+                    PaidForBoat paidForBoat = new PaidForBoat()
+                    {
+                        BoatID = boat.BoatID,
+                        Date = TimeNow(),
+                        Payment = finalIncome + LeaderSalary,
+                        PersonID = PID,
+                        HalekDebtsTillNow = boat.DebtsOfHalek
+                    };
+                    db.PaidForBoats.Add(paidForBoat);
+                    Person pp = db.People.Find(PID);
+                    pp.credit -= finalIncome + LeaderSalary;
+                    db.SaveChanges();
 
                 }
                 else
@@ -499,6 +527,18 @@ namespace FishBusiness.Controllers
 
                         boat.TotalOfExpenses -= expense;
                     }
+                    PaidForBoat paidForBoat = new PaidForBoat()
+                    {
+                        BoatID = boat.BoatID,
+                        Date = TimeNow(),
+                        Payment = sumOfTotalAfterPayment,
+                        PersonID = PID,
+                        HalekDebtsTillNow = boat.DebtsOfHalek
+                    };
+                    db.PaidForBoats.Add(paidForBoat);
+                    Person pp = db.People.Find(PID);
+                    pp.credit -= sumOfTotalAfterPayment;
+                    db.SaveChanges();
                 }
 
                 foreach (var item in recs)
@@ -513,7 +553,7 @@ namespace FishBusiness.Controllers
             else
             {
                 rec.PaidFromDebts = halek;
-                rec.TotalAfterPaying = total;
+                rec.TotalAfterPaying = total - leaderPaidDebts;
                 rec.IsCalculated = true;
                 db.SaveChanges();
                 if (db.BoatOwnerReciepts.Where(c => c.BoatID == boat.BoatID && c.IsCollected == false && c.IsCalculated == false).Count() == 0)//check if last rec 
@@ -522,7 +562,7 @@ namespace FishBusiness.Controllers
                     var sumOfTotalAfterPayment = recs.Sum(c => c.TotalAfterPaying);
 
                     var finalIncome = 0.0m;
-                    if (boat.TypeID == 2)
+                    if (boat.TypeID == 5)
                     {
 
                         finalIncome = sumOfTotalAfterPayment / 2;
@@ -539,6 +579,18 @@ namespace FishBusiness.Controllers
                         boat.IncomeOfSharedBoat += finalIncome - LeaderSalary;
                         IncomesOfSharedBoat inc = new IncomesOfSharedBoat() { BoatID = boat.BoatID, Date = TimeNow(), Income = finalIncome - LeaderSalary };
                         db.IncomesOfSharedBoats.Add(inc);
+                        PaidForBoat paidForBoat = new PaidForBoat()
+                        {
+                            BoatID = boat.BoatID,
+                            Date = TimeNow(),
+                            Payment = finalIncome + LeaderSalary,
+                            PersonID = PID,
+                            HalekDebtsTillNow = boat.DebtsOfHalek
+                        };
+                        db.PaidForBoats.Add(paidForBoat);
+                        Person pp = db.People.Find(PID);
+                        pp.credit -= finalIncome + LeaderSalary;
+                        db.SaveChanges();
                     }
                     else
                     {
@@ -547,6 +599,18 @@ namespace FishBusiness.Controllers
 
                             boat.TotalOfExpenses -= expense;
                         }
+                        PaidForBoat paidForBoat = new PaidForBoat()
+                        {
+                            BoatID = boat.BoatID,
+                            Date = TimeNow(),
+                            Payment = total - leaderPaidDebts,
+                            PersonID = PID,
+                            HalekDebtsTillNow = boat.DebtsOfHalek
+                        };
+                        db.PaidForBoats.Add(paidForBoat);
+                        Person pp = db.People.Find(PID);
+                        pp.credit -= total- leaderPaidDebts;
+                        db.SaveChanges();
                     }
 
                     foreach (var item in recs)
@@ -556,28 +620,59 @@ namespace FishBusiness.Controllers
                     }
                     db.SaveChanges();
                 }
-            }
-
-         
-           
-          
-                Person p = db.People.Find(1);
-                //p.credit += halek; دى بتكون حسابات على ورق لانهم مش بياخدوا فلوس ف ايديهم ..لسه هياخدوه فلوسهم دى لما التجار تسدد 
-                if (PaymentLeaderDebts != 0.0m)
+                else
                 {
-                    boat.DebtsOfLeader -= PaymentLeaderDebts;
-                    LeaderPayback l = new LeaderPayback()
+                    var finalIncome = 0.0m;
+                    if (boat.TypeID == 5)
                     {
-                        BoatID = boat.BoatID,
-                        Date = TimeNow(),
-                        Price = PaymentLeaderDebts
-                    };
-                    db.LeaderPaybacks.Add(l);
-                    //p.credit += PaymentLeaderDebts;
-                }
-           
-          
 
+                        finalIncome = rec.TotalAfterPaying / 2;
+                        var LeaderSalary = 0.0m;
+                        if (NumberOfFisherMen != 0)
+                        {
+                            LeaderSalary = finalIncome / NumberOfFisherMen;
+                        }
+                        else
+                        {
+
+                            LeaderSalary = finalIncome / 6;
+                        }
+                     
+                        PaidForBoat paidForBoat = new PaidForBoat()
+                        {
+                            BoatID = boat.BoatID,
+                            Date = TimeNow(),
+                            Payment = finalIncome + LeaderSalary,
+                            PersonID = PID,
+                            HalekDebtsTillNow = boat.DebtsOfHalek
+                        };
+                        db.PaidForBoats.Add(paidForBoat);
+                        Person pp = db.People.Find(PID);
+                        pp.credit -= finalIncome + LeaderSalary;
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        if (expense != 0.0m)
+                        {
+
+                            boat.TotalOfExpenses -= expense;
+                        }
+                        PaidForBoat paidForBoat = new PaidForBoat()
+                        {
+                            BoatID = boat.BoatID,
+                            Date = TimeNow(),
+                            Payment = total - leaderPaidDebts,
+                            PersonID = PID,
+                            HalekDebtsTillNow = boat.DebtsOfHalek
+                        };
+                        db.PaidForBoats.Add(paidForBoat);
+                        Person pp = db.People.Find(PID);
+                        pp.credit -= total - leaderPaidDebts;
+                        db.SaveChanges();
+                    }
+                }
+            }
             db.SaveChanges();
             return Json(new { message = "success", current = boat.DebtsOfHalek, income = boat.IncomeOfSharedBoat, cexpense = boat.TotalOfExpenses, leaderdebts = boat.DebtsOfLeader });
         }

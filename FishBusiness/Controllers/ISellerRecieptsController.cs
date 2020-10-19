@@ -12,18 +12,23 @@ using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 
 namespace FishBusiness.Controllers
 {
     public class ISellerRecieptsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+
         private IHostingEnvironment _hosting { get; set; }
 
-        public ISellerRecieptsController(ApplicationDbContext context, IHostingEnvironment hosting)
+        public ISellerRecieptsController(ApplicationDbContext context, IHostingEnvironment hosting, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _hosting = hosting;
+            _userManager = userManager;
+
         }
 
         // GET: ISellerReciepts
@@ -92,17 +97,21 @@ namespace FishBusiness.Controllers
         }
 
         [HttpPost]
-        public IActionResult MoneytizationSave(int IsellerRecieptID, double TotalOfPrices, double Commision, double TotalOfPricesAfterCommision, double PaidFromDebt, double DebtsAfterCommisionAndPayment, string Pricescookie, string ImageUrl)
+        public async Task<IActionResult> MoneytizationSave(int IsellerRecieptID, double TotalOfPrices, double Commision, double TotalOfPricesAfterCommision, double PaidFromDebt, double DebtsAfterCommisionAndPayment, string Pricescookie, string ImageUrl)
         {
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+            int PID=1;
+            if (roles.Contains("partner"))
+                PID = 2;
             decimal[] prices = Pricescookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
-
-
             var iSellerReciept = _context.ISellerReciepts
                 .Include(i => i.Merchant)
                 .FirstOrDefault(m => m.ISellerRecieptID == IsellerRecieptID);
             iSellerReciept.Commision = Commision;
             iSellerReciept.PaidFromDebt = PaidFromDebt;
             iSellerReciept.TotalOfPrices = TotalOfPrices;
+            iSellerReciept.PersonID = PID;
             if (ImageUrl != null)
             {
                 iSellerReciept.ReceiptImage = ImageUrl;
@@ -113,9 +122,9 @@ namespace FishBusiness.Controllers
             }
 
             iSellerReciept.DateOfMoneytization = TimeNow();
-            PaidForMerchant p = new PaidForMerchant() { Date = TimeNow(), IsCash = true, MerchantID = iSellerReciept.MerchantID, Payment = (decimal)PaidFromDebt, IsPaidForUs = true, PreviousDebtsForMerchant = (decimal)(DebtsAfterCommisionAndPayment - PaidFromDebt), PersonID = 1 };
+            PaidForMerchant p = new PaidForMerchant() { Date = TimeNow(), IsCash = true, MerchantID = iSellerReciept.MerchantID, Payment = (decimal)PaidFromDebt, IsPaidForUs = true, PreviousDebtsForMerchant = (decimal)(DebtsAfterCommisionAndPayment - PaidFromDebt), PersonID = PID };
             _context.PaidForMerchant.Add(p);
-            Person pp = _context.People.Find(1);
+            Person pp = _context.People.Find(PID);
             pp.credit += Convert.ToDecimal(PaidFromDebt);
             if (iSellerReciept == null)
             {
@@ -199,6 +208,7 @@ namespace FishBusiness.Controllers
                 sellerReciept.Date = Date;
                 sellerReciept.CarPrice = CarPrice;
                 sellerReciept.CarDistination = _context.Merchants.Find(MerchantID).Address;
+                sellerReciept.PersonID = 2;
                 _context.Add(sellerReciept);
 
 

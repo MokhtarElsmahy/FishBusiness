@@ -12,14 +12,12 @@ namespace FishBusiness.Models
         public decimal CurrentCredit { get; set; }
         // اجمالي المحصل
         public decimal Collecting { get; set; }
-        // اجمالي التجار الخارجيين
-        public decimal ExternalMerchantTotal { get; set; }
-        // اجمالي التجار المحليين
-        public decimal LocalMerchantsTotal { get; set; }
         // تمويل الحاج مجدي
         public decimal OfficeMoney { get; set; }
         // اجمالي المصروف اليومي
         public decimal ExpensesTotal { get; set; }
+        // اجمالي الايرادات
+        public decimal IncomeTotal { get; set; }
         // اجمالي قبض السرح
         public decimal SarhasTotal { get; set; }
         // شهرية فتح الله

@@ -4,46 +4,22 @@ using FishBusiness;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FishBusiness.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201018091150_addPersonIdTOLeaderLoans")]
+    partial class addPersonIdTOLeaderLoans
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("FishBusiness.Models.AdditionalForOffice", b =>
-                {
-                    b.Property<int>("AdditionalForOfficeID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PersonID")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("AdditionalForOfficeID");
-
-                    b.HasIndex("PersonID");
-
-                    b.ToTable("AdditionalForOffices");
-                });
 
             modelBuilder.Entity("FishBusiness.Models.AdditionalPayment", b =>
                 {
@@ -256,10 +232,13 @@ namespace FishBusiness.Data.Migrations
                     b.Property<decimal>("ExpensesTotal")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<decimal>("ExternalMerchantTotal")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("FathallahSalary")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("IncomeTotal")
+                    b.Property<decimal>("LocalMerchantsTotal")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("OfficeMoney")
@@ -970,37 +949,6 @@ namespace FishBusiness.Data.Migrations
                     b.ToTable("OperatorDeals");
                 });
 
-            modelBuilder.Entity("FishBusiness.Models.PaidForBoat", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("BoatID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("HalekDebtsTillNow")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Payment")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("PersonID")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("BoatID");
-
-                    b.HasIndex("PersonID");
-
-                    b.ToTable("PaidForBoats");
-                });
-
             modelBuilder.Entity("FishBusiness.Models.PaidForMerchant", b =>
                 {
                     b.Property<int>("ID")
@@ -1638,15 +1586,6 @@ namespace FishBusiness.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("FishBusiness.Models.AdditionalForOffice", b =>
-                {
-                    b.HasOne("FishBusiness.Models.Person", "Person")
-                        .WithMany("AdditionalForOffices")
-                        .HasForeignKey("PersonID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("FishBusiness.Models.AdditionalPayment", b =>
                 {
                     b.HasOne("FishBusiness.Models.Collecting", "Collecting")
@@ -1958,21 +1897,6 @@ namespace FishBusiness.Data.Migrations
 
                     b.HasOne("FishBusiness.Models.Person", "Person")
                         .WithMany("OperatorDeals")
-                        .HasForeignKey("PersonID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("FishBusiness.Models.PaidForBoat", b =>
-                {
-                    b.HasOne("FishBusiness.Models.Boat", "Boat")
-                        .WithMany("PaidForBoats")
-                        .HasForeignKey("BoatID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FishBusiness.Models.Person", "Person")
-                        .WithMany("PaidForBoats")
                         .HasForeignKey("PersonID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

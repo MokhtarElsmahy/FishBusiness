@@ -163,7 +163,7 @@ namespace FishBusiness.Controllers
                     var lastSarhaID = _context.Sarhas.Where(c => c.BoatID == boat.BoatID && c.IsFinished == false).FirstOrDefault().SarhaID;
                     var lastSarha = _context.Sarhas.Find(lastSarhaID);
 
-                    var debt_sarha = _context.Debts_In_Sarhas.Include(c => c.Debt).Where(c => c.SarhaID == lastSarhaID && c.Debt.DebtName == HalekNames[i]&&c.PersonID==3).FirstOrDefault();
+                    var debt_sarha = _context.Debts_Sarhas.Include(c => c.Debt).Where(c => c.SarhaID == lastSarhaID && c.Debt.DebtName == HalekNames[i]&&c.PersonID==3).FirstOrDefault();
                     boat.DebtsOfHalek += HalekPrices[i];
                     if (debt_sarha != null)
                     {
@@ -172,8 +172,8 @@ namespace FishBusiness.Controllers
                     else
                     {
                         var debt = _context.Debts.Where(c => c.DebtName == HalekNames[i]).FirstOrDefault();
-                        Debt_In_Sarha ds = new Debt_In_Sarha() { Price = HalekPrices[i], DebtID = debt.DebtID, SarhaID = lastSarhaID, PersonID = 3, Date = TimeNow() };
-                        _context.Debts_In_Sarhas.Add(ds);
+                        Debts_Sarha ds = new Debts_Sarha() { Price = HalekPrices[i], DebtID = debt.DebtID, SarhaID = lastSarhaID, PersonID = 3, Date = TimeNow() };
+                        _context.Debts_Sarhas.Add(ds);
                         _context.SaveChanges();
 
                     }
@@ -284,7 +284,7 @@ namespace FishBusiness.Controllers
             //    .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == 3)
             //    .ToList();
 
-            var Halek = _context.Debts_In_Sarhas.Include(c => c.Sarha)
+            var Halek = _context.Debts_Sarhas.Include(c => c.Sarha)
                 .Include(c => c.Sarha.Boat)
                 .Include(c => c.Debt).ToList()
                 .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == 3).OrderBy(c=>c.Sarha.BoatID)
@@ -431,7 +431,7 @@ namespace FishBusiness.Controllers
                 for (int i = 0; i < ToLeaderNames.Length; i++)
                 {
                     var Boat = _context.Boats.Where(c => c.BoatLeader == ToLeaderNames[i]).FirstOrDefault();
-                    _context.LeaderLoans.Add(new LeaderLoan { Price = Toprices[i], BoatID = Boat.BoatID, Date = TimeNow() });
+                    _context.LeaderLoans.Add(new LeaderLoan { Price = Toprices[i], BoatID = Boat.BoatID, Date = TimeNow(),PersonID=4 });
                     Boat.DebtsOfLeader += Toprices[i];
                     pp.credit -= Toprices[i];
                     _context.SaveChanges();
@@ -460,7 +460,7 @@ namespace FishBusiness.Controllers
                         int maxSarahaID = lastSarhaID.FirstOrDefault().SarhaID;
                         var lastSarha = _context.Sarhas.Find(maxSarahaID);
 
-                        var debt_sarha = _context.Debts_In_Sarhas.Include(c => c.Debt).Where(c => c.SarhaID == maxSarahaID && c.Debt.DebtName == HalekNames[i]&&c.PersonID==4).FirstOrDefault();
+                        var debt_sarha = _context.Debts_Sarhas.Include(c => c.Debt).Where(c => c.SarhaID == maxSarahaID && c.Debt.DebtName == HalekNames[i]&&c.PersonID==4).FirstOrDefault();
                         boat.DebtsOfHalek += HalekPrices[i];
                         if (debt_sarha != null)
                         {
@@ -469,8 +469,8 @@ namespace FishBusiness.Controllers
                         else
                         {
                             var debt = _context.Debts.Where(c => c.DebtName == HalekNames[i]).FirstOrDefault();
-                            Debt_In_Sarha ds = new Debt_In_Sarha() { Price = HalekPrices[i], DebtID = debt.DebtID, SarhaID = maxSarahaID, PersonID = 4, Date = TimeNow() };
-                            _context.Debts_In_Sarhas.Add(ds);
+                            Debts_Sarha ds = new Debts_Sarha() { Price = HalekPrices[i], DebtID = debt.DebtID, SarhaID = maxSarahaID, PersonID = 4, Date = TimeNow() };
+                            _context.Debts_Sarhas.Add(ds);
                             _context.SaveChanges();
 
                         }
@@ -547,7 +547,7 @@ namespace FishBusiness.Controllers
             //   .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == 4)
             //   .ToList();
 
-            var Halek = _context.Debts_In_Sarhas.Include(c => c.Sarha)
+            var Halek = _context.Debts_Sarhas.Include(c => c.Sarha)
                .Include(c => c.Sarha.Boat)
                .Include(c => c.Debt).ToList()
                .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == 4).OrderBy(c => c.Sarha.BoatID)

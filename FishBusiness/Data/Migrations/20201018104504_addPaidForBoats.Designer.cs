@@ -4,46 +4,22 @@ using FishBusiness;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FishBusiness.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201018104504_addPaidForBoats")]
+    partial class addPaidForBoats
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("FishBusiness.Models.AdditionalForOffice", b =>
-                {
-                    b.Property<int>("AdditionalForOfficeID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PersonID")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("AdditionalForOfficeID");
-
-                    b.HasIndex("PersonID");
-
-                    b.ToTable("AdditionalForOffices");
-                });
 
             modelBuilder.Entity("FishBusiness.Models.AdditionalPayment", b =>
                 {
@@ -256,10 +232,13 @@ namespace FishBusiness.Data.Migrations
                     b.Property<decimal>("ExpensesTotal")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<decimal>("ExternalMerchantTotal")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("FathallahSalary")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("IncomeTotal")
+                    b.Property<decimal>("LocalMerchantsTotal")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("OfficeMoney")
@@ -1636,15 +1615,6 @@ namespace FishBusiness.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("FishBusiness.Models.AdditionalForOffice", b =>
-                {
-                    b.HasOne("FishBusiness.Models.Person", "Person")
-                        .WithMany("AdditionalForOffices")
-                        .HasForeignKey("PersonID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("FishBusiness.Models.AdditionalPayment", b =>

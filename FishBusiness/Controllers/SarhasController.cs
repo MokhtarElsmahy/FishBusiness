@@ -8,16 +8,19 @@ using Microsoft.EntityFrameworkCore;
 using FishBusiness;
 using FishBusiness.Models;
 using FishBusiness.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace FishBusiness.Controllers
 {
     public class SarhasController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public SarhasController(ApplicationDbContext context)
+        public SarhasController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
         public DateTime TimeNow()
         {
@@ -49,11 +52,11 @@ namespace FishBusiness.Controllers
             {
                 return NotFound();
             }
-            ViewBag.depts = _context.Debts_In_Sarhas.Include(x => x.Person).Where(x => x.SarhaID == id).Include(d => d.Debt);
-            ViewBag.Total = _context.Debts_In_Sarhas.Where(x => x.SarhaID == id).Sum(x => x.Price);
+            ViewBag.depts = _context.Debts_Sarhas.Include(x => x.Person).Where(x => x.SarhaID == id && (x.PersonID==3|| x.PersonID == 4)).Include(d => d.Debt);
+            ViewBag.Total = _context.Debts_Sarhas.Where(x => x.SarhaID == id && (x.PersonID == 3 || x.PersonID == 4)).Sum(x => x.Price);
 
-            ViewBag.deptsOfHalaka = _context.Debts_Sarhas.Include(x => x.Person).Where(x => x.SarhaID == id).Include(d => d.Debt);
-            ViewBag.TotalOfHalaka = _context.Debts_Sarhas.Where(x => x.SarhaID == id).Sum(x => x.Price);
+            ViewBag.deptsOfHalaka = _context.Debts_Sarhas.Include(x => x.Person).Where(x => x.SarhaID == id && (x.PersonID == 1 || x.PersonID == 2)).Include(d => d.Debt);
+            ViewBag.TotalOfHalaka = _context.Debts_Sarhas.Where(x => x.SarhaID == id && (x.PersonID == 1 || x.PersonID == 2)).Sum(x => x.Price);
             return View(sarha);
         }
 
@@ -235,13 +238,18 @@ namespace FishBusiness.Controllers
         [HttpPost]
         //[ValidateAntiForgeryToken]
         //public IActionResult Editing(EditSarhaVm editSarhaVm)int id , int BoatID , int NoFisherMen , int NoBoxes ,DateTime DateOfSarha
-        public IActionResult Editing(EditSarhaVm editSarhaVm)
+        public async Task<IActionResult> Editing(EditSarhaVm editSarhaVm)
         {
           
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var user = await _userManager.GetUserAsync(User);
+                    var roles = await _userManager.GetRolesAsync(user);
+                    int PID = 1;
+                    if (roles.Contains("partner"))
+                        PID = 2;
                     var sar = _context.Sarhas.Find(editSarhaVm.id);
                     sar.BoatID = editSarhaVm.BoatID;
                     //sar.DateOfSarha = editSarhaVm.DateOfSarha;
@@ -264,7 +272,8 @@ namespace FishBusiness.Controllers
                             var element = dept_sarha.ToList().ElementAt(i);
                             var oldPrice = element.Price;
                             element.Date = element.Date;
-                            Person p = _context.People.Find(element.PersonID);
+                            Person p = _context.People.Find(PID);
+                            element.PersonID = PID;
                             element.Price = oldPrices[i];
                             if (oldPrice > oldPrices[i])
                             {
@@ -304,12 +313,12 @@ namespace FishBusiness.Controllers
                                     SarhaID = editSarhaVm.id,
                                     DebtID = lst.ElementAt(i).DebtID,
                                     Price = newPrices[i],
-                                    PersonID = 1,
+                                    PersonID = PID,
                                     Date = TimeNow()
 
                                 };
                                 _context.Debts_Sarhas.Add(d_s);
-                                Person pp = _context.People.Find(1);
+                                Person pp = _context.People.Find(PID);
                                 pp.credit -= newPrices[i];
                                 _context.SaveChanges();
                             }

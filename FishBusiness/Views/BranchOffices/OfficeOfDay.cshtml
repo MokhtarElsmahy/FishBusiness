@@ -1,0 +1,552 @@
+﻿@section Styles{
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="~/plugins/jquery-step/jquery.steps.css">
+    <style>
+        #formValidate .wizard > .content {
+            min-height: 25em;
+        }
+
+        #example-vertical.wizard > .content {
+            min-height: 24.5em;
+        }
+    </style>
+    <!--  END CUSTOM STYLE FILE  -->
+}
+
+
+<div class="layout-spacing">
+    <div class="container row">
+        <div class="page-header m-3">
+            <div class="page-title">
+                <h3>المكتب الفرعي / يومية علاء</h3>
+            </div>
+            <input type="date" id="date" class="form-control col-4" />
+            <a id="btnconfirm" class="btn btn-primary" as style="margin-right:10px;">تاكيد</a>
+        </div>
+        <div class="mt-4 ml-auto">
+            <a asp-action="Index" asp-controller="Home" class="btn btn-primary">الرئيسية</a>
+            <a asp-action="OfficeToday"  class="btn btn-primary">صفحة العمل</a>
+            <img src="~/assets/img/loader.gif" id="Bloader" style="width:50px;height:50px;display:none" />
+        </div>
+    </div>
+    <div class="statbox widget box box-shadow ml-3 mr-3">
+        <div class="widget-content widget-content-area">
+            <div id="example-basic">
+                <h3>الايرادات</h3>
+                <section>
+                    <div>
+                        <div class="widget-content widget-content-area br-6">
+
+                            <div class="table-responsive mb-4 mt-4">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+
+                                            <th>العميل</th>
+                                            <th>القيمة</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="TBodyIncome">
+                                      
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td>الاجمالي</td>
+                                            <td id="totalOfIncome"></td>
+                                        </tr>
+                                    </tfoot>
+
+                                </table>
+
+
+                            </div>
+
+
+
+
+                        </div>
+                        
+                    </div>
+                </section>
+                <h3>هالك</h3>
+                <section>
+                    <div>
+                        <div class="widget-content widget-content-area br-6">
+
+                            <div class="table-responsive mb-4 mt-4">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+
+                                            <th>مركب/ عميل</th>
+                                            <th>القيمة</th>
+                                            <th>نوع الهالك</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="TBodyHalek">
+
+                                      
+                                    </tbody>
+                                    <tfoot>
+                                       
+                                            <tr id="totalOfPayment_tr3">
+                                                <td>
+                                                    الاجمالى
+                                                </td>
+                                                <td id="totalHalek">
+                                                    0
+                                                </td>
+                                            </tr>
+                                    </tfoot>
+
+                                </table>
+
+
+                            </div>
+
+
+
+
+                        </div>
+                       
+                    </div>
+                </section>
+                <h3>مصروف ريس مركب</h3>
+                <section>
+                    <div>
+                        <div class="widget-content widget-content-area br-6">
+
+                            <div class="table-responsive mb-4 mt-4">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+
+                                            <th>اسم المركب</th>
+                                            <th>القيمة</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="TBodyLeaderExpense">
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td>الاجمالي</td>
+                                            <td id="totalOfPaymentTo">0</td>
+                                        </tr>
+                                    </tfoot>
+
+                                </table>
+
+
+                            </div>
+
+
+
+
+                        </div>
+                       
+                    </div>
+                </section>
+                <h3>مصروف مركب شريك</h3>
+                <section>
+                    <div class="widget-content widget-content-area br-6">
+                        <div class="table-responsive mb-4 mt-4">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+
+                                        <th>اسم المركب</th>
+                                        <th>المبلغ</th>
+                                        <th>سبب المصروف</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody id="TBodySharedExpenses">
+                                </tbody>
+                                <tfoot>
+                                    <tr id="totalOfPayment_trExpenses">
+                                        <td>
+                                            الاجمالى
+                                        </td>
+                                        <td id="totalExpenses">
+                                            0
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+
+                        </div>
+                    </div>
+                   
+                </section>
+                <h3>نثريات و سواقين</h3>
+                <section>
+                    <div>
+                        <div class="widget-content widget-content-area br-6">
+                            <div class="table-responsive mb-4 mt-4">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+
+                                            <th>الاسم</th>
+                                            <th>المبلغ</th>
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="TBodyAdditional">
+                                    </tbody>
+                                    <tfoot>
+                                       
+                                        <tr id="totalOfPayment_tr4">
+                                            <td>
+                                                الاجمالى
+                                            </td>
+                                            <td id="totalAdditional">
+                                                0
+                                            </td>
+                                        </tr>
+
+                                    </tfoot>
+                                </table>
+
+
+                            </div>
+                        </div>
+                       
+                    </div>
+                </section>
+                <h3>مقاولون</h3>
+                <section>
+
+                    <div class="widget-content widget-content-area br-6">
+                        <div class="table-responsive mb-4 mt-4">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>اسم المقاول</th>
+                                        <th>المبلغ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="TBodyOperators">
+                                </tbody>
+                                <tfoot>
+                                    <tr id="totalOfPayment_trOperators">
+                                        <td>
+                                            الاجمالى
+                                        </td>
+                                        <td id="totalOperators">
+                                            0
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+
+                        </div>
+                    </div>
+                  
+                </section>
+                <h3>قبض السرح</h3>
+                <section>
+                    <div>
+                        <div class="widget-content widget-content-area br-6">
+
+                            <div class="table-responsive mb-4 mt-4">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+
+                                            <th>مركب/ عميل</th>
+                                            <th>القيمة</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="TBodySarhas">
+
+                                      
+                                    </tbody>
+                                    <tfoot>
+                                     
+                                            <tr id="totalOfPayment_tr3">
+                                                <td>
+                                                    الاجمالى
+                                                </td>
+                                                <td id="totalSarhas">
+                                                    0
+                                                </td>
+                                            </tr>
+                                    </tfoot>
+
+                                </table>
+
+
+                            </div>
+
+
+
+
+                        </div>
+
+                    </div>
+                </section>
+                <h3>الاجمالى</h3>
+                <section>
+                    <div>
+                        <div class="widget-content widget-content-area br-6">
+                            <h3>الاجمالى</h3>
+                            <div class="table-responsive mb-4 mt-4">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+
+                                            <th>القيمه</th>
+                                            <th>المبلغ</th>
+
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="TBodyFinal">
+                                    </tbody>
+                                    <tfoot>
+
+                                        <tr id="totalOfPayment_tr6">
+                                            <td>
+                                                رصيد مرحل
+                                            </td>
+                                            <td id="FinalTotal">
+                                                0
+                                            </td>
+                                        </tr>
+
+                                    </tfoot>
+                                </table>
+
+
+                            </div>
+                        </div>
+                       
+                    </div>
+                </section>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+@section Scripts{
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <script src="~/assets/js/scrollspyNav.js"></script>
+    <script src="~/plugins/jquery-step/jquery.steps.min.js"></script>
+    <script src="~/plugins/jquery-step/custom-jquery.steps.js"></script>
+    <!-- END PAGE LEVEL SCRIPTS -->
+    <script>
+        $(document).ready(function () {
+
+
+            $("#btnconfirm").on('click', function () {
+                var date = $('#date').val();
+
+                $(".loader").show();
+
+                TBodyIncome = $("#TBodyIncome");
+                TBodyHalek = $("#TBodyHalek");
+                TBodyLeaderExpense = $("#TBodyLeaderExpense");
+                TBodySharedExpenses = $("#TBodySharedExpenses");
+                TBodyAdditional = $("#TBodyAdditional");
+                TBodyOperators = $("#TBodyOperators");
+                TBodySarhas = $("#TBodySarhas");
+                TBodyFinal = $("#TBodyFinal");
+
+                $.ajax({
+                    url: "/BranchOffices/OfficeOfDayData",
+                    type: "GET",
+                    contentType: "json",
+                    data: { Date: date },
+                    traditional: true,
+                    success: function (result) {
+                        if (result.message == "success") {
+
+                            $(".loader").hide();
+                            TBodyIncome.empty();
+                            TBodyIncome.append("<tr>" +
+                                "<td>رصيد مترحل</td>" +
+                                "<td>" + result.currentCredit + "</td>" +
+                                "</tr>");
+                            TBodyIncome.append("<tr>" +
+                                "<td>تحصيل المينا</td>" +
+                                "<td>" + result.collecting + "</td>" +
+                                "</tr>");
+                            TBodyIncome.append("<tr>" +
+                                "<td>المكتب</td>" +
+                                "<td>" + result.paidFromMagdy + "</td>" +
+                                "</tr>");
+
+                            $.each(result.isellerReciepts, function (i, item) {
+
+                                TBodyIncome.append("<tr>" +
+                                    "<td>" + item.merchantName + "</td>" +
+                                    "<td>" + item.paidFromDebt + "</td>" +
+                                    "</tr>");
+                            });
+                            $.each(result.paid_for_Us, function (i, item) {
+
+                                TBodyIncome.append("<tr>" +
+                                    "<td>" + item.merchantName + "</td>" +
+                                    "<td>" + item.payment + "</td>" +
+                                    "</tr>");
+                            });
+
+                            $("#totalOfIncome").text(result.totalIncome)
+
+                            //---------------------------------------
+
+                            TBodyHalek.empty();
+
+                            $.each(result.halek, function (i, item) {
+
+                                TBodyHalek.append("<tr>" +
+                                    "<td>" + item.boatName + "</td>" +
+                                    "<td>" + item.price + "</td>" +
+                                    "<td>" + item.debtName + "</td>" +
+                                    "</tr>");
+                            });
+
+                            $("#totalHalek").text(result.halekTotal)
+
+                            //-----------------------------------------
+                            TBodyLeaderExpense.empty();
+
+                            $.each(result.loans, function (i, item) {
+
+                                TBodyLeaderExpense.append("<tr>" +
+                                    "<td>" + item.boatName + "</td>" +
+                                    "<td>" + item.price + "</td>" +
+                                    "</tr>");
+                            });
+
+                            //------------------------------------
+                            $("#totalOfPaymentTo").text(result.leaderLoanTotal)
+                            //---------------------------------------------------
+
+
+                            TBodySharedExpenses.empty();
+
+                            $.each(result.sharedBoatExpenses, function (i, item) {
+
+                                TBodySharedExpenses.append("<tr>" +
+                                    "<td>" + item.boatName + "</td>" +
+                                    "<td>" + item.price + "</td>" +
+                                    "<td>" + item.cause + "</td>" +
+
+                                    "</tr>");
+                            });
+
+                            $("#totalExpenses").text(result.sharedExpensesTotal)
+                            //------------------------------------
+                            TBodyAdditional.empty();
+                            TBodyAdditional.append("<tr>" +
+                                "<td>اجرة السواقين</td>" +
+                                "<td>" + result.totalDrivers + "</td>" +
+                                "</tr>");
+                            TBodyAdditional.append("<tr>" +
+                                "<td>تمويل فتح الله</td>" +
+                                "<td>" + result.paidForFathallah + "</td>" +
+                                "</tr>");
+                            TBodyAdditional.append("<tr>" +
+                                "<td>شهرية فتح الله</td>" +
+                                "<td>" + result.fathallahSalary + "</td>" +
+                                "</tr>");
+                            $.each(result.additionalItems, function (i, item) {
+
+                                TBodyAdditional.append("<tr>" +
+                                    "<td>" + item.name + "</td>" +
+                                    "<td>" + item.value + "</td>" +
+                                    "</tr>");
+                            });
+                            $("#totalAdditional").text(result.allAditionalTotal)
+
+                            //---------------------------------------------------
+
+
+                            TBodyOperators.empty();
+
+                            $.each(result.operatorItems, function (i, item) {
+
+                                TBodyOperators.append("<tr>" +
+                                    "<td>" + item.operatorName + "</td>" +
+                                    "<td>" + item.payment + "</td>" +
+                                    "</tr>");
+                            });
+
+                            $("#totalOperators").text(result.operatorsTotal)
+                            //------------------------------------
+                            TBodySarhas.empty();
+
+                            $.each(result.paid_for_seller, function (i, item) {
+
+                                TBodySarhas.append("<tr>" +
+                                    "<td>" + item.merchantName + "</td>" +
+                                    "<td>" + item.payment + "</td>" +
+                                    "</tr>");
+                            });
+                            $.each(result.paid_for_boat, function (i, item) {
+
+                                TBodySarhas.append("<tr>" +
+                                    "<td>" + item.boatName + "</td>" +
+                                    "<td>" + item.payment + "</td>" +
+                                    "</tr>");
+                            });
+
+                            $("#totalSarhas").text(result.totalSarhas)
+                            //------------------------------------
+                            TBodyFinal.empty();
+                                TBodyFinal.append("<tr>" +
+                                    "<td>اجمالي الايرادات</td>" +
+                                    "<td>" + result.totalIncome + "</td>" +
+                                    "</tr>");
+                                TBodyFinal.append("<tr>" +
+                                    "<td>المصروف اليومي</td>" +
+                                    "<td>" + result.totalDailyExpense + "</td>" +
+                                    "</tr>");
+                            TBodyFinal.append("<tr>" +
+                                "<td>قبض السرح</td>" +
+                                "<td>" + result.totalSarhas + "</td>" +
+                                "</tr>");
+                            $("#FinalTotal").text(result.finalTotal)
+                           
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'حدث خطأ',
+                                text: 'لا يوجد بيانات لهذا التاريخ',
+                            });
+                            $(".loader").hide();
+                        }
+
+                    },
+                    error: function () {
+                        $(".loader").hide();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حدث خطأ',
+                        });
+                    }
+                });
+
+
+            })
+        })
+    </script>
+
+}
+
+

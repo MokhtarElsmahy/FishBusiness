@@ -284,5 +284,121 @@ namespace FishBusiness.Controllers
             await _context.SaveChangesAsync();
             return Json(new { message = "success" });
         }
+
+        public async Task<IActionResult> OfficeOfDay()
+        {
+           return View();
+        }
+
+        public async Task<IActionResult> OfficeOfDayData(DateTime Date)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+            int PID = 1;
+            if (roles.Contains("partner"))
+                PID = 2;
+            // الايرادات
+            var Yesterdaybranch = _context.BranchOffices.ToList().Where(x => x.Date.ToShortDateString() == Date.AddDays(-1).ToShortDateString()).FirstOrDefault();
+            var Todaybranch = _context.BranchOffices.ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString()).FirstOrDefault();
+            decimal collecting = 0.0m;
+            decimal PaidFromMagdy = 0.0m;
+            decimal TotalIncome = 0.0m;
+            decimal TotalDrivers = 0.0m;
+            decimal PaidForFathallah = 0.0m;
+            decimal FathallahSalary = 0.0m;
+            decimal totalDailyExpense = 0.0m;
+            decimal totalSarhas = 0.0m;
+            decimal FinalTotal = 0.0m;
+            if (Todaybranch != null)
+            {
+                collecting = Todaybranch.Collecting;
+                PaidFromMagdy = Todaybranch.OfficeMoney;
+                TotalIncome = Todaybranch.IncomeTotal;
+                TotalDrivers = Todaybranch.DriversSalary;
+                FathallahSalary = Todaybranch.FathallahSalary;
+                totalDailyExpense = Todaybranch.ExpensesTotal;
+                totalSarhas = Todaybranch.SarhasTotal;
+                FinalTotal = Todaybranch.CurrentCredit; // رصيد مترحل
+            }
+            var halek = _context.Debts_Sarhas.Include(c => c.Sarha).Include(c => c.Debt).Include(c => c.Sarha.Boat).ToList().Where(c => c.Date.ToShortDateString() == TimeNow().ToShortDateString() && c.PersonID == PID).ToList();
+            decimal CurrentCredit = Yesterdaybranch.CurrentCredit;
+            var IsellerReciepts = _context.ISellerReciepts.Include(x => x.Merchant).ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString() && x.TotalOfPrices != 0 && x.PersonID == PID).Select(c => new { merchantName = c.Merchant.MerchantName, paidFromDebt = c.PaidFromDebt }).ToList();
+            var paid_for_Us = _context.PaidForMerchant
+               .Include(c => c.Merchant).ToList()
+               .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.IsPaidForUs == true && c.PersonID == PID).ToList()
+               .Select(c => new { merchantName = c.Merchant.MerchantName, payment = c.Payment}).ToList();
+
+            ///////////////////////////////////////////////////////////////////
+            // المصروف اليومي
+            var Halek = _context.Debts_Sarhas.Include(c => c.Sarha)
+                .Include(c => c.Sarha.Boat)
+                .Include(c => c.Debt).ToList()
+                .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == PID).OrderBy(c => c.Sarha.BoatID)
+                .Select(c => new { boatName = c.Sarha.Boat.BoatName, price = c.Price, debtName = c.Debt.DebtName }).ToList();
+            
+            var Loans = _context.LeaderLoans.Include(c => c.Boat).ToList().Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID==PID).Select(c => new { price = c.Price, boatName = c.Boat.BoatName }).ToList();
+
+            var SharedBoatExpenses = _context.Expenses.Include(c => c.Boat)
+             .ToList().Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == PID)
+             .Select(c => new {  boatName = c.Boat.BoatName, price = c.Price, cause = c.Cause })
+             .ToList();
+
+            PaidForFathallah = _context.FathAllahGifts.ToList().Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == PID).Sum(c=>c.charge);
+
+            var AdditionalItems = _context.AdditionalForOffices.ToList().Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == PID).Select(c => new { name = c.Name, value = c.Value }).ToList();
+            
+            var OperatorItems = _context.PaidForOperators.Include(c=>c.Operator).ToList().Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == PID).Select(c => new { operatorName = c.Operator.OperatorName, payment = c.Payment }).ToList();
+
+            //////////////////////////////////////////////////////////////////
+            /// قبض السرح
+            var paid_for_seller = _context.PaidForSellers.
+                Include(c => c.Merchant).ToList()
+                .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID==PID)
+                .Select(c => new { merchantName = c.Merchant.MerchantName, payment = c.Payment }).ToList();
+            var paid_for_boat = _context.PaidForBoats.
+              Include(c => c.Boat).ToList()
+              .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == PID)
+              .Select(c => new { boatName = c.Boat.BoatName, payment = c.Payment }).ToList();
+
+            /////////////////////////////////////////////////////////////////
+           
+            var HalekTotal = halek.Sum(c => c.Price);
+            var LeaderLoanTotal = Loans.Sum(c => c.price);
+            var SharedExpensesTotal = SharedBoatExpenses.Sum(c => c.price);
+            var AdditionalTotal = AdditionalItems.Sum(c => c.value);
+            var AllAditionalTotal = TotalDrivers + PaidForFathallah + FathallahSalary + AdditionalTotal;
+            var OperatorsTotal = OperatorItems.Sum(c => c.payment);
+            /////////////////////////////////////////////////////////////////
+            return Json(new
+            {
+                message = "success",
+                currentCredit = CurrentCredit,
+                collecting = collecting,
+                paidFromMagdy = PaidFromMagdy,
+                isellerReciepts = IsellerReciepts,
+                paid_for_Us = paid_for_Us,
+                totalIncome = TotalIncome,
+                halek = Halek,
+                halekTotal = HalekTotal,
+                loans = Loans,
+                leaderLoanTotal = LeaderLoanTotal,
+                sharedBoatExpenses = SharedBoatExpenses,
+                sharedExpensesTotal = SharedExpensesTotal,
+                totalDrivers = TotalDrivers,
+                paidForFathallah = PaidForFathallah,
+                fathallahSalary = FathallahSalary,
+                additionalItems = AdditionalItems,
+                allAditionalTotal = AllAditionalTotal,
+                operatorItems = OperatorItems,
+                operatorsTotal = OperatorsTotal,
+                paid_for_seller = paid_for_seller,
+                paid_for_boat = paid_for_boat,
+                totalSarhas = totalSarhas,
+                totalDailyExpense = totalDailyExpense,
+                finalTotal = FinalTotal,
+            });
+        }
     }
+
+  
 }

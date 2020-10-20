@@ -378,6 +378,17 @@
                 <div class="submenu" id="users">
                     <ul class="submenu-list" data-parent-element="#users">
                         <li class="active">
+                            <a href="#" class="font-weight-bold"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>  المكتب الفرعي</a>
+                        </li>
+                        <li>
+
+                            <a asp-action="OfficeToday" asp-controller="BranchOffices" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> صفحه عمل المكتب </a>
+                        </li>
+                        <li>
+                            <a asp-action="OfficeOfDay" asp-controller="BranchOffices" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> سجل عمل المكتب </a>
+                        </li>
+                        <li><span>----------------------------------------------------------------</span></li>
+                        <li class="active">
                             <a asp-action="FathAllahMainProfile" asp-controller="Collectings" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> احمد فتح الله  </a>
                         </li>
 
@@ -408,8 +419,8 @@
                             <a asp-action="Create" asp-controller="IMerchantReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>تسجيل مشتريات الحلقه</a>
                         </li>
                         @*<li>
-                            <a asp-action="Create" asp-controller="MerchantReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> تسجيل مشتريات تجار البلد</a>
-                        </li>*@
+            <a asp-action="Create" asp-controller="MerchantReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> تسجيل مشتريات تجار البلد</a>
+        </li>*@
                         <li>
                             <a asp-action="Create" asp-controller="ISellerReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>تسجيل مشتريات تجار خارجيين</a>
                         </li>

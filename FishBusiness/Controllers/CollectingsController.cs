@@ -69,6 +69,9 @@ namespace FishBusiness.Controllers
                 TotalForFahAllah = fathallah,
                 TotalOfCashes = Cash
             };
+
+           
+
             if (MerchantName != null && Price != null)
             {
                 var MerchantNameCookie = MerchantName.TrimEnd(MerchantName[MerchantName.Length - 1]);

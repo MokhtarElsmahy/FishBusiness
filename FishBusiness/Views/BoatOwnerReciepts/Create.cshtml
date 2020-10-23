@@ -18,6 +18,9 @@
     <!-- END PAGE LEVEL STYLES -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
+
+    <link rel="stylesheet" type="text/css" href="~/assets/css/forms/switches.css">
+
 }
 <div class="layout-px-spacing">
 
@@ -355,10 +358,16 @@
             <div class="modal-body">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                <div class="form-group">
-                    <label asp-for="BoatOwnerItem.ProductionType.ProductionName" class="control-label">*</label>
-                    <input type="checkbox" id="ChBoxAmount" onclick="ChangeCheck()" />
-                    <span>حدد مع اول عناصر البيعه و أزل التحديد مع اخر عناصرها</span>
+                <div class="form-row">
+                    @*<label asp-for="BoatOwnerItem.ProductionType.ProductionName" class="control-label">*</label>*@
+                    @*<input type="checkbox" id="ChBoxAmount" onclick="ChangeCheck()" />*@
+                    <label class="switch s-icons s-outline s-outline-primary mr-4 col-2">
+                        <input type="checkbox" id="ChBoxAmount" onclick="ChangeCheck()">
+                        <span class="slider"></span>
+                    </label>
+                        
+                    <span class="col-9">حدد مع اول عناصر البيعه و أزل التحديد مع اخر عناصرها</span>
+
                 </div>
                 <div class="form-group">
                     <label asp-for="BoatOwnerItem.Fish.FishName" class="control-label"></label>
@@ -846,7 +855,7 @@
 
                     $('#TotalBeforePayment').text(parseFloat($('#TotalBeforePayment').text()) + BoatOwnerItem_UnitPrice * BoatOwnerItem_Qty);
                 }
-              
+
 
                $('#commision').val(parseFloat($('#BoatOwnerReciept_PercentageCommission').val()) * parseFloat($('#TotalBeforePayment').text()) / 100)
                $('#TotalProduction').val(parseFloat($('#TotalBeforePayment').text()) - parseFloat($('#commision').val()))
@@ -858,7 +867,7 @@
                $('#BoatBody').append(addControls);
 
             }
-          
+
             if ($("#ChBoxAmount").is(":checked")) {
 
                 $("#ChBoxAmountVar").val(1)

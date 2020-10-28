@@ -19,10 +19,10 @@
     <div class="container row">
         <div class="page-header m-3">
             <div class="page-title">
-                <h3>المكتب الفرعي / يومية علاء</h3>
+                <h5>@ViewBag.title</h5>
             </div>
             <input type="date" id="date" class="form-control col-4" />
-            <a id="btnconfirm" class="btn btn-primary" as style="margin-right:10px;">تاكيد</a>
+            <a id="btnconfirm" class="btn btn-primary"  style="margin-right:10px;">تاكيد</a>
         </div>
         <div class="mt-4 ml-auto">
             <a asp-action="Index" asp-controller="Home" class="btn btn-primary">الرئيسية</a>
@@ -114,9 +114,10 @@
                        
                     </div>
                 </section>
-                <h3>مصروف ريس مركب</h3>
+                <h3> ريس مركب</h3>
                 <section>
                     <div>
+                        <h3>مصروف ريس مركب</h3>
                         <div class="widget-content widget-content-area br-6">
 
                             <div class="table-responsive mb-4 mt-4">
@@ -150,8 +151,9 @@
                        
                     </div>
                 </section>
-                <h3>مصروف مركب شريك</h3>
+                <h3> مصروف</h3>
                 <section>
+                    <h3>مصروف مركب شريك</h3>
                     <div class="widget-content widget-content-area br-6">
                         <div class="table-responsive mb-4 mt-4">
                             <table class="table table-hover">
@@ -181,11 +183,12 @@
 
                         </div>
                     </div>
-                   
+
                 </section>
-                <h3>نثريات و سواقين</h3>
+                <h3>نثريات</h3>
                 <section>
                     <div>
+                        <h3>نثريات و سواقين</h3>
                         <div class="widget-content widget-content-area br-6">
                             <div class="table-responsive mb-4 mt-4">
                                 <table class="table table-hover">
@@ -201,7 +204,7 @@
                                     <tbody id="TBodyAdditional">
                                     </tbody>
                                     <tfoot>
-                                       
+
                                         <tr id="totalOfPayment_tr4">
                                             <td>
                                                 الاجمالى
@@ -217,7 +220,7 @@
 
                             </div>
                         </div>
-                       
+
                     </div>
                 </section>
                 <h3>مقاولون</h3>

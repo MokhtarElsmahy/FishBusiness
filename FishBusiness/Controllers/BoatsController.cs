@@ -73,6 +73,13 @@ namespace FishBusiness.Controllers
 
             if (ModelState.IsValid)
             {
+                var user = await _userManager.GetUserAsync(User);
+                var roles = await _userManager.GetRolesAsync(user);
+                int PID = 1;
+                if (roles.Contains("partner"))
+                {
+                    PID = 2;
+                }
                 model.BoatImage = "default.png";
                 if (model.File != null)
                 {
@@ -98,7 +105,7 @@ namespace FishBusiness.Controllers
                 db.Boats.Add(boat);
                 if (model.chkBoatStatus == true)
                 {
-                    Person p = db.People.Find(1);
+                    Person p = db.People.Find(PID);
                     p.credit -= model.DebtsOfStartingWork;
                 }
 
@@ -202,7 +209,13 @@ namespace FishBusiness.Controllers
 
             if (ModelState.IsValid)
             {
-
+                var user = await _userManager.GetUserAsync(User);
+                var roles = await _userManager.GetRolesAsync(user);
+                int PID = 1;
+                if (roles.Contains("partner"))
+                {
+                    PID = 2;
+                }
 
                 if (model.File != null)
                 {
@@ -238,7 +251,7 @@ namespace FishBusiness.Controllers
                 db.Entry(boat).State = EntityState.Modified;
                 if (boat.DebtsOfStartingWork != BoatBeforeUpdate.DebtsOfStartingWork)
                 {
-                    Person p = db.People.Find(1);
+                    Person p = db.People.Find(PID);
                     if (boat.DebtsOfStartingWork > BoatBeforeUpdate.DebtsOfStartingWork)
                     {
                         p.credit -= boat.DebtsOfStartingWork - BoatBeforeUpdate.DebtsOfStartingWork;
@@ -315,18 +328,25 @@ namespace FishBusiness.Controllers
         }
 
         [HttpPost]
-        public IActionResult GiveExpense(string cause, decimal expensePrice, int boatID)
+        public async Task<IActionResult> GiveExpense(string cause, decimal expensePrice, int boatID)
         {
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+            int PID = 1;
+            if (roles.Contains("partner"))
+            {
+                PID = 2;
+            }
             Expense ex = new Expense()
             {
                 BoatID = boatID,
                 Cause = cause,
                 Date = TimeNow(),
-                PersonID = 1,
+                PersonID = PID,
                 Price = expensePrice
             };
             db.Expenses.Add(ex);
-            Person p = db.People.Find(1);
+            Person p = db.People.Find(PID);
             p.credit -= expensePrice;
             var boat = db.Boats.Find(boatID);
             boat.TotalOfExpenses += expensePrice;
@@ -688,8 +708,15 @@ namespace FishBusiness.Controllers
             return View(model);
         }
         [HttpPost]
-        public IActionResult FinalCheckout(decimal value, int id, decimal FinalCredit)
+        public async Task<IActionResult> FinalCheckout(decimal value, int id, decimal FinalCredit)
         {
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+            int PID = 1;
+            if (roles.Contains("partner"))
+            {
+                PID = 2;
+            }
             var recs = db.IncomesOfSharedBoats.Where(c => c.BoatID == id && c.IsCheckedOut == false).ToList();
             var expenses = db.Expenses.Where(c => c.BoatID == id && c.IsCheckedOut == false).ToList();
             for (int i = 0; i < recs.Count; i++)
@@ -703,11 +730,11 @@ namespace FishBusiness.Controllers
             if (FinalCredit < 0)
             {
 
-                Expense ex = new Expense()
+                Expense ex = new Expense() 
                 {
                     BoatID = id,
                     Date = TimeNow(),
-                    Price = FinalCredit * -1,
+                    Price = FinalCredit * -1, 
                     Cause = "باقي تصفية"
                 };
                 db.Expenses.Add(ex);
@@ -722,7 +749,7 @@ namespace FishBusiness.Controllers
                     PaidForUs = value
                 };
                 db.Checkouts.Add(ch);
-                Person p = db.People.Find(1);
+                Person p = db.People.Find(PID);
                 p.credit -= FinalCredit - value;
             }
             else

@@ -124,8 +124,8 @@ namespace FishBusiness.Controllers
             iSellerReciept.DateOfMoneytization = TimeNow();
             PaidForMerchant p = new PaidForMerchant() { Date = TimeNow(), IsCash = true, MerchantID = iSellerReciept.MerchantID, Payment = (decimal)PaidFromDebt, IsPaidForUs = true, PreviousDebtsForMerchant = (decimal)(DebtsAfterCommisionAndPayment - PaidFromDebt), PersonID = PID };
             _context.PaidForMerchant.Add(p);
-            Person pp = _context.People.Find(PID);
-            pp.credit += Convert.ToDecimal(PaidFromDebt);
+            //Person pp = _context.People.Find(PID);
+            //pp.credit += Convert.ToDecimal(PaidFromDebt);
             if (iSellerReciept == null)
             {
                 return NotFound();
@@ -199,16 +199,17 @@ namespace FishBusiness.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public IActionResult Create(int MerchantID, DateTime Date, double CarPrice, string FishNames, string ProductionTypes, string qtyss, string NOfBoxess)
+        public async Task<IActionResult> Create(int MerchantID, DateTime Date, double CarPrice, string FishNames, string ProductionTypes, string qtyss, string NOfBoxess)
         {
             if (ModelState.IsValid)
             {
+               
                 ISellerReciept sellerReciept = new ISellerReciept();
                 sellerReciept.MerchantID = MerchantID;
                 sellerReciept.Date = Date;
                 sellerReciept.CarPrice = CarPrice;
                 sellerReciept.CarDistination = _context.Merchants.Find(MerchantID).Address;
-                sellerReciept.PersonID = 2;
+                sellerReciept.PersonID = 1;
                 _context.Add(sellerReciept);
 
 
@@ -364,32 +365,6 @@ namespace FishBusiness.Controllers
         {
             return _context.ISellerReciepts.Any(e => e.ISellerRecieptID == id);
         }
-        #region MyRegion
-        //[HttpPost]
-        //public async Task<IActionResult> UploadImage(IList<IFormFile> files)
-        //{
-        //    foreach (IFormFile source in files)
-        //    {
-        //        string filename = ContentDispositionHeaderValue.Parse(source.ContentDisposition).FileName.Trim('"');
-
-        //        filename = this.EnsureCorrectFilename(filename);
-
-        //        using (FileStream output = System.IO.File.Create(this.GetPathAndFilename(filename)))
-        //            await source.CopyToAsync(output);
-        //        return Json(new { ImageURL = GetPathAndFilename(filename) });
-        //    }
-
-        //    return Json(new { ImageURL = "/img/defaultRecImage.png" });
-        //}
-
-        //private string EnsureCorrectFilename(string filename)
-        //{
-        //    if (filename.Contains("\\"))
-        //        filename = filename.Substring(filename.LastIndexOf("\\") + 1);
-
-        //    return filename;
-        //} 
-        #endregion
         private string GetPathAndFilename(string filename)
         {
             return this._hosting.WebRootPath + "\\img\\" + filename;

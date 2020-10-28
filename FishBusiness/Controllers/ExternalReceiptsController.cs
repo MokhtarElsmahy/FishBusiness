@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FishBusiness;
 using FishBusiness.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace FishBusiness.Controllers
 {
     public class ExternalReceiptsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public ExternalReceiptsController(ApplicationDbContext context)
+        public ExternalReceiptsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: ExternalReceipts
@@ -71,9 +74,16 @@ namespace FishBusiness.Controllers
             //if (ModelState.IsValid)
             //{
             //    // Subtracting Paid From Halek
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+            int PID = 1;
+            if (roles.Contains("partner"))
+            {
+                PID = 2;
+            }
             var boat = _context.Boats.Find(externalReceipt.BoatID);
             boat.DebtsOfHalek -= Convert.ToDecimal(externalReceipt.PaidFromDebts);
-            var p = _context.People.Find(1);
+            var p = _context.People.Find(PID);
             p.credit += Convert.ToDecimal(externalReceipt.PaidFromDebts);
             var sarhaId = _context.Sarhas.Where(x => x.BoatID == externalReceipt.BoatID).Max(x => x.SarhaID);
             var TotalAfterPaying = externalReceipt.TotalBeforePaying - externalReceipt.Commission - externalReceipt.PaidFromDebts;
@@ -129,9 +139,16 @@ namespace FishBusiness.Controllers
                 return NotFound();
             }
             // Increase Halek Again
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+            int PID = 1;
+            if (roles.Contains("partner"))
+            {
+                PID = 2;
+            }
             var boat = _context.Boats.Find(externalReceipt.BoatID);
             boat.DebtsOfHalek += Convert.ToDecimal(externalReceipt.PaidFromDebts);
-            var p = _context.People.Find(1);
+            var p = _context.People.Find(PID);
             p.credit -= Convert.ToDecimal(externalReceipt.PaidFromDebts);
             // Decrease Shared Boat Income
             if (boat.TypeID == 2)

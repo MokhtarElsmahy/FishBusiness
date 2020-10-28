@@ -166,39 +166,7 @@ namespace FishBusiness.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> PayDebts(int OperatorID ,decimal PaidValue)
-        {
-            OperatorProfileVm model = new OperatorProfileVm();
-            
-
-            var ID = _userManager.GetUserId(User);
-            var userDetails = _context.Users.Find(ID);
-
-            var op = _context.Operators.Find(OperatorID);
-            var user = await _userManager.GetUserAsync(User);
-            var roles = await _userManager.GetRolesAsync(user);
-            if ( roles.Contains("admin"))
-            {
-                var person = _context.People.Find(1);
-                PaidForOperator p = new PaidForOperator() { Date = TimeNow(), OperatorID = OperatorID, PersonID =person.PersonID , Payment = PaidValue , DebtsAfterPayment =op.Credit-PaidValue };
-                _context.PaidForOperators.Add(p);
-                person.credit -= PaidValue;
-                op.Credit -= PaidValue;
-
-            }
-            else if (roles.Contains("partner"))
-            {
-                var person = _context.People.Find(2);
-                PaidForOperator p = new PaidForOperator() { Date = TimeNow(), OperatorID = OperatorID, PersonID = person.PersonID, Payment = PaidValue, DebtsAfterPayment = op.Credit - PaidValue };
-                _context.PaidForOperators.Add(p);
-                person.credit -= PaidValue;
-                op.Credit -= PaidValue;
-            }
-            _context.SaveChanges();
-            return Json(new { message = "success" ,operatorCredit = op.Credit });
-
-
-        }
+   
 
         public async Task<IActionResult> NewDeal(int OperatorID, decimal PaidValue)
         {
@@ -222,7 +190,7 @@ namespace FishBusiness.Controllers
 
 
             }
-            else if (roles.Contains("admin"))
+            else if (roles.Contains("partner"))
             {
                 var person = _context.People.Find(2);
                 op.Credit += PaidValue;

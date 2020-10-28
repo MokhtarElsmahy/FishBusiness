@@ -256,8 +256,8 @@ namespace FishBusiness.Controllers
             }
 
             var FinalCredit = c.TotalPaidFromMerchants - (c.TotalPaidForMerchants + c.TotalHalek + c.TotalOfAdditionalPayment + fathallah + c.TotalOfExpenses);
-            Person halaka = _context.People.Find(1);
-            halaka.credit += FinalCredit;
+            //Person halaka = _context.People.Find(1);
+            //halaka.credit += FinalCredit;
             pp.credit = 0.0m;
             await _context.SaveChangesAsync();
             return Json(new { message = "success" });
@@ -370,36 +370,6 @@ namespace FishBusiness.Controllers
         public IActionResult FathAllahCalc(decimal fathallahFinalCredit, string Place, string Price , string ToLeader, string ToPrice, string BoatName, string HalekPrice,
             string HalekName, string BoatNameExpenses, string ExpensePricee, string Cause)
         {
-            #region cookies
-            //-----------------------------paid for الحلقه----------------------------------------------
-            //var PlaceCookie = Request.Cookies["Place"];
-
-
-            //var PriceCookie = Request.Cookies["Price"];
-
-            //--------------------------------------------paid for Leader-------------------------
-
-            //var ToLeaderCookie = Request.Cookies["ToLeader"];
-
-            //var ToPriceCookie = Request.Cookies["ToPrice"];
-
-            //-----------------------------------------------paid for halek
-
-            //var BoatNameCookie = Request.Cookies["BoatName"];
-
-
-            //var HalekPriceCookie = Request.Cookies["HalekPrice"];
-
-            //var HalekNameCookie = Request.Cookies["HalekName"];
-            //-----------------------------------------------paid for Expenses
-
-            //var BoatNameExpensesCookie = Request.Cookies["BoatNameExpensesCookie"];
-
-
-            //var ExpensePriceCookie = Request.Cookies["ExpensePriceCookie"];
-
-            //var CauseCookie = Request.Cookies["CauseCookie"]; 
-            #endregion
 
             //-----------------------------------------------------------------------------------------
             var pp = _context.People.Find(4);
@@ -592,7 +562,6 @@ namespace FishBusiness.Controllers
 
         public IActionResult GiveFathAllah(decimal price, int personID)
         {
-            System.Threading.Thread.Sleep(1000);
             Person p = _context.People.Find(4);
             FathAllahGift g = new FathAllahGift() { PersonID = personID, Date = TimeNow(), CreditBefore = p.credit, charge = price, CreditAfter = price + p.credit };
             p.credit += price;

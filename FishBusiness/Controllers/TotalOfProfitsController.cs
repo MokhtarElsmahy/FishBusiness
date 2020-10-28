@@ -73,8 +73,8 @@ namespace FishBusiness.Controllers
             var profit = totalOfSales - (totalOfPurchases+totalOfCars+ice+labour);
             TotalOfProfit t = new TotalOfProfit() { Date = TimeNow(), Ice = ice, Labour = labour, TotalOfPurchases = totalOfPurchases, TotalOfSales = totalOfSales, Profit = profit };
             _context.TotalOfProfits.Add(t);
-            Person p = _context.People.Find(1);
-            p.credit -= (decimal)(ice + labour);
+            //Person p = _context.People.Find(1);
+            //p.credit -= (decimal)(ice + labour);
             _context.SaveChanges();
          
             return Json(new {message="success" , profits = profit });

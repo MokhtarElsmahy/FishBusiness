@@ -143,48 +143,46 @@ namespace FishBusiness.Controllers
             return PartialView(merchant);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CalcDebts(decimal PaidValue, int MerchantID, bool IsCash)
-        {
+        //[HttpPost]
+        //// احنا دافعين فلوس
+        //public async Task<IActionResult> CalcDebts(decimal PaidValue, int MerchantID, bool IsCash)
+        //{
 
-            var merchant = await _context.Merchants.FindAsync(MerchantID);
+        //    var merchant = await _context.Merchants.FindAsync(MerchantID);
 
-            if (merchant == null)
-            {
-                return NotFound();
-            }
-
-           
-           
-
-            var user = await _userManager.GetUserAsync(User);
+        //    if (merchant == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    var user = await _userManager.GetUserAsync(User);
          
-            var roles = await _userManager.GetRolesAsync(user);
-            if (roles.Contains("admin"))
-            {
-                Person pp = _context.People.Find(1);
-                merchant.PreviousDebtsForMerchant -= PaidValue;
-                PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = false, Payment = PaidValue, Date = TimeNow(), MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebtsForMerchant), PersonID = 1 };
-                _context.PaidForMerchant.Add(p);
-                pp.credit -= PaidValue;
-                await _context.SaveChangesAsync();
+        //    var roles = await _userManager.GetRolesAsync(user);
+        //    if (roles.Contains("admin"))
+        //    {
+        //        //Person pp = _context.People.Find(1);
+        //        merchant.PreviousDebtsForMerchant -= PaidValue;
+        //        PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = false, Payment = PaidValue, Date = TimeNow(), MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebtsForMerchant), PersonID = 1 };
+        //        _context.PaidForMerchant.Add(p);
+        //        //pp.credit -= PaidValue;
+        //        await _context.SaveChangesAsync();
 
 
-            }
-            else if (roles.Contains("partner"))
-            {
-                Person pp = _context.People.Find(2);
-                merchant.PreviousDebtsForMerchant -= PaidValue;
-                PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = false, Payment = PaidValue, Date = TimeNow(), MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebtsForMerchant), PersonID = 2 };
-                _context.PaidForMerchant.Add(p);
-                pp.credit -= PaidValue;
-                await _context.SaveChangesAsync();
-            }
+        //    }
+        //    else if (roles.Contains("partner"))
+        //    {
+        //        //Person pp = _context.People.Find(2);
+        //        merchant.PreviousDebtsForMerchant -= PaidValue;
+        //        PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = false, Payment = PaidValue, Date = TimeNow(), MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebtsForMerchant), PersonID = 2 };
+        //        _context.PaidForMerchant.Add(p);
+        //        //pp.credit -= PaidValue;
+        //        await _context.SaveChangesAsync();
+        //    }
 
-            return Json(new { message="success", debtsForMerchant = merchant.PreviousDebtsForMerchant });
-        }
+        //    return Json(new { message="success", debtsForMerchant = merchant.PreviousDebtsForMerchant });
+        //}
 
         [HttpPost]
+        // قبض سرحة او بيعة
         public async Task<IActionResult> CalcDebtsAsSeller(decimal PaidValue, int MerchantID, bool IsCash)
         {
 
@@ -199,20 +197,20 @@ namespace FishBusiness.Controllers
             var roles = await _userManager.GetRolesAsync(user);
             if (roles.Contains("admin"))
             {
-                Person pp = _context.People.Find(1);
+                //Person pp = _context.People.Find(1);
                 merchant.PreviousDebtsForMerchant -= PaidValue;
                 PaidForSeller p = new PaidForSeller() { Payment = PaidValue, Date = TimeNow(), MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForSeller = (merchant.PreviousDebtsForMerchant), PersonID = 1 };
                 _context.PaidForSellers.Add(p);
-                pp.credit -= PaidValue;
+                //pp.credit -= PaidValue;
                 await _context.SaveChangesAsync();
             }
             else if (roles.Contains("partner"))
             {
-                Person pp = _context.People.Find(2);
+                //Person pp = _context.People.Find(2);
                 merchant.PreviousDebtsForMerchant -= PaidValue;
                 PaidForSeller p = new PaidForSeller() { Payment = PaidValue, Date = TimeNow(), MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForSeller = (merchant.PreviousDebtsForMerchant), PersonID = 2 };
                 _context.PaidForSellers.Add(p);
-                pp.credit -= PaidValue;
+                //pp.credit -= PaidValue;
                 await _context.SaveChangesAsync();
             }
 
@@ -220,6 +218,7 @@ namespace FishBusiness.Controllers
         }
 
         [HttpPost]
+        // مدفوع لينا
         public async Task<IActionResult> CalcDebtForUs(decimal PaidValue, int MerchantID, bool IsCash)
         {
 
@@ -238,8 +237,8 @@ namespace FishBusiness.Controllers
                 merchant.PreviousDebts -= PaidValue;
                 PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = true, Payment = PaidValue, Date = TimeNow(), MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebts), PersonID = 1 };
                 _context.PaidForMerchant.Add(p);
-                Person pp = _context.People.Find(1);
-                pp.credit += PaidValue;
+                //Person pp = _context.People.Find(1);
+                //pp.credit += PaidValue;
                 await _context.SaveChangesAsync();
 
             }
@@ -248,8 +247,8 @@ namespace FishBusiness.Controllers
                 merchant.PreviousDebts -= PaidValue;
                 PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = true, Payment = PaidValue, Date = TimeNow(), MerchantID = MerchantID, IsCash = !IsCash, PreviousDebtsForMerchant = (merchant.PreviousDebts), PersonID = 2 };
                 _context.PaidForMerchant.Add(p);
-                Person pp = _context.People.Find(2);
-                pp.credit += PaidValue;
+                //Person pp = _context.People.Find(2);
+                //pp.credit += PaidValue;
                 await _context.SaveChangesAsync();
             }
 

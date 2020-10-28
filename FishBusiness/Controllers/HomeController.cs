@@ -90,7 +90,23 @@ namespace FishBusiness.Controllers
             {
                 ViewBag.ProfitOfDay = 0;
             }
-             return View();
+            List<CommissionsVM> model = new List<CommissionsVM>();
+            for (int i = 0; i < 7; i++)
+            {
+                var recs = _context.BoatOwnerReciepts.ToList().Where(x => x.Date.ToShortDateString() == TimeNow().AddDays(-i).ToShortDateString());
+                if (recs.Count() > 0)
+                {
+                    CommissionsVM vm = new CommissionsVM()
+                    {
+                        Day = recs.FirstOrDefault().Date,
+                        Value = recs.Sum(x => x.Commission)
+                    };
+                    model.Add(vm);
+                }
+
+            }
+
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

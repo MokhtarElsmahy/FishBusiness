@@ -1,4 +1,5 @@
-﻿
+﻿@model IEnumerable<FishBusiness.ViewModels.CommissionsVM>
+
 @{
     ViewData["Title"] = "Index";
 
@@ -9,189 +10,235 @@
     var TimeNow = currentUTC.AddHours(2);
 }
 
-    <div class="layout-px-spacing">
+<div class="layout-px-spacing">
 
-        <div class="page-header m-3">
-            <div class="page-title">
-                <h3>المكتب</h3>
-            </div>
-            <div class="mt-4 ml-auto">
-                <a asp-action="Office" class="btn btn-primary">اجمالى تفاصيل اليوم</a>
-            </div>
+    <div class="page-header m-3">
+        <div class="page-title" style="margin-right: 30px;">
+            <h3 >احصائيات</h3>
         </div>
-
-        <div class="row layout-top-spacing">
-
-
-
-
-
-            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
-                <div class="widget widget-five">
-                    <div class="widget-content">
-
-                        <div class="header">
-                            <div class="header-body">
-                                <h6 class="text-info">فواتير المراكب </h6>
-                                <p class="meta-date mt-10" style="margin-top:5px">
-                                    @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
-                                    , @TimeNow.ToShortDateString()
-                                </p>
-                            </div>
-
-                        </div>
-
-                        <div class="w-content">
-                            <div class="">
-                                <p class="task-left">@ViewBag.TodaysBoatReceipts</p>
-                                <p class="task-completed"><span><a asp-action="GetTodaysBoatReceipts" asp-controller="Home" class="btn btn-warning">عرض الفواتير</a></span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
-                <div class="widget widget-five">
-                    <div class="widget-content">
-
-                        <div class="header">
-                            <div class="header-body">
-                                <h6 class="text-info">الفواتير الخارجية للمراكب  </h6>
-                                <p class="meta-date" style="margin-top:5px">
-                                    @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
-                                    , @TimeNow.ToShortDateString()
-                                </p>
-                            </div>
-
-                        </div>
-
-                        <div class="w-content">
-                            <div class="">
-                                <p class="task-left">@ViewBag.TodaysExternalBoatReceipts</p>
-                                <p class="task-completed"><span><a asp-action="GetTodaysExternalBoatReceipts" asp-controller="Home" class="btn btn-warning">عرض الفواتير</a></span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
-                <div class="widget widget-five">
-                    <div class="widget-content">
-
-                        <div class="header">
-                            <div class="header-body">
-                                <h6 class="text-info">فواتير التجار </h6>
-                                <p class="meta-date mt-10" style="margin-top:5px">
-                                    @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
-                                    , @TimeNow.ToShortDateString()
-                                </p>
-                            </div>
-
-                        </div>
-
-                        <div class="w-content">
-                            <div class="">
-                                <p class="task-left">@ViewBag.TodaysMerchantReceipts</p>
-                                <p class="task-completed"><span><a asp-action="GetTodaysMerchantReceipts" asp-controller="Home" class="btn btn-warning">عرض الفواتير</a></span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-
-            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
-                <div class="widget widget-five">
-                    <div class="widget-content">
-
-                        <div class="header">
-                            <div class="header-body">
-                                <h6 class="text-info">المخزن </h6>
-                                <p class="meta-date mt-10" style="margin-top:5px">
-                                    @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
-                                    , @TimeNow.ToShortDateString()
-                                </p>
-                            </div>
-
-                        </div>
-
-                        <div class="w-content">
-                            <div class="">
-                                <p class="task-left">@ViewBag.Stock</p>
-                                <p class="task-completed"><span><a asp-action="Index" asp-controller="Stocks" class="btn btn-warning">المخزن</a></span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-
-
-            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
-                <div class="widget widget-five">
-                    <div class="widget-content">
-
-                        <div class="header">
-                            <div class="header-body">
-                                <h6 class="text-info">مكاسب اليوم </h6>
-                                <p class="meta-date mt-10" style="margin-top:5px">
-                                    @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
-                                    , @TimeNow.ToShortDateString()
-                                </p>
-                            </div>
-
-                        </div>
-
-                        <div class="w-content">
-                            <div class="">
-                                @if (ViewBag.ProfitOfDay != null)
-                                {
-                                    <p class="task-left">@ViewBag.ProfitOfDay</p>
-                                }
-
-                                <p class="task-completed"><span><a asp-action="Summation" asp-controller="TotalOfProfits" asp-route-Date="@TimeNow" class="btn btn-warning">تجميع</a></span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
-                <div class="widget widget-five">
-                    <div class="widget-content">
-
-                        <div class="header">
-                            <div class="header-body">
-                                <h6 class="text-info">دفتر مكاسب الايام</h6>
-
-                            </div>
-
-                        </div>
-
-                        <div class="w-content">
-                            <div class="">
-                                @*@if (ViewBag.ProfitOfDay != null)
-                            {
-                                <p class="task-left">@ViewBag.ProfitOfDay</p>
-                            }*@
-                                <p class="task-left"></p>
-                                <p class="task-completed"><span><a asp-action="SummationOfAday" asp-controller="TotalOfProfits" class="btn btn-warning">عرض</a></span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            
-       
-            
+        <div class="mt-4 ml-auto">
+            <a asp-action="Office" style="margin-left: 20px;" class="btn btn-primary">اجمالى تفاصيل اليوم</a>
         </div>
     </div>
+    <div class="row mt-3 ">
+        <div id="piechart" style="width: 700px;height: 425px;margin-right: 50px;" class="col-8 mr-3">
+        </div>
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 layout-spacing">
+            <div class="widget widget-activity-three">
+
+                <div class="widget-heading">
+                    <h5 class="">ملاحظات</h5>
+                </div>
+
+                <div class="widget-content">
+
+                    <div class="mt-container mx-auto">
+                        <div class="timeline-line">
+                            <div class="item-timeline timeline-new">
+                                <div class="t-dot">
+                                    <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                                <div class="t-content">
+                                    <div class="t-uppercontent">
+                                        <h5>مكاسب اليوم</h5>
+                                        <span class="">
+                                            @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                            @TimeNow.ToShortDateString()
+                                        </span>
+                                    </div>
+                                    @if (ViewBag.ProfitOfDay != null)
+                                    {
+                                        <p><span>@ViewBag.ProfitOfDay</span></p>
+                                    }
+                                    <div class="tags d-flex justify-content-center">
+                                        <div class="badge badge-primary"><a asp-action="Summation" asp-controller="TotalOfProfits" asp-route-Date="@TimeNow">تجميع</a></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="item-timeline timeline-new">
+                                <div class="t-dot">
+                                    <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                                <div class="t-content">
+                                    <div class="t-uppercontent">
+                                        <h5>فواتير المراكب</h5>
+                                        <span class="">
+                                            @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                            @TimeNow.ToShortDateString()
+                                        </span>
+                                    </div>
+                                    <p><span>@ViewBag.TodaysBoatReceipts</span></p>
+                                    <div class="tags d-flex justify-content-center">
+                                        <div class="badge badge-primary"><a asp-action="GetTodaysBoatReceipts" asp-controller="Home">عرض الفواتير</a></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="item-timeline timeline-new">
+                                <div class="t-dot">
+                                    <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                                <div class="t-content">
+                                    <div class="t-uppercontent">
+                                        <h5>الفواتير الخارجية</h5>
+                                        <span class="">
+                                            @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                            @TimeNow.ToShortDateString()
+                                        </span>
+                                    </div>
+                                    <p><span>@ViewBag.TodaysExternalBoatReceipts</span></p>
+                                    <div class="tags d-flex justify-content-center">
+                                        <div class="badge badge-primary"><a asp-action="GetTodaysExternalBoatReceipts" asp-controller="Home">عرض الفواتير</a></div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="item-timeline timeline-new">
+                                <div class="t-dot">
+                                    <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                                <div class="t-content">
+                                    <div class="t-uppercontent">
+                                        <h5>فواتير التجار </h5>
+                                        <span class="">
+                                            @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                            @TimeNow.ToShortDateString()
+                                        </span>
+                                    </div>
+                                    <p><span>@ViewBag.TodaysMerchantReceipts</span></p>
+                                    <div class="tags d-flex justify-content-center">
+                                        <div class="badge badge-primary"><a asp-action="GetTodaysMerchantReceipts" asp-controller="Home">عرض الفواتير</a></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="item-timeline timeline-new">
+                                <div class="t-dot">
+                                    <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                                <div class="t-content">
+                                    <div class="t-uppercontent">
+                                        <h5>محتوي المخزن</h5>
+                                        <span class="">
+                                            @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                            @TimeNow.ToShortDateString()
+                                        </span>
+                                    </div>
+                                    <p><span>@ViewBag.Stock</span></p>
+                                    <div class="tags d-flex justify-content-center">
+                                        <div class="badge badge-primary"><a asp-action="Index" asp-controller="Stocks"> المخزن</a></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="item-timeline timeline-new">
+                                <div class="t-dot">
+                                    <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                </div>
+                                <div class="t-content">
+                                    <div class="t-uppercontent">
+                                        <h5>دفتر المكاسب</h5>
+                                        <span class="">
+                                            @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                            @TimeNow.ToShortDateString()
+                                        </span>
+                                    </div>
+                                    <div class="tags d-flex justify-content-center">
+                                        <div class="badge badge-primary"><a asp-action="SummationOfAday" asp-controller="TotalOfProfits">عرض</a></div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3 test">
+        <div id="ExternalRecs" dir="ltr" style="width: 700px;height: 425px;margin-right: 50px;" class="col-6 mb-2">
+        </div>
+        <div id="InternalRecs" dir="ltr" style="width: 700px;height: 425px;margin-right: 15px;" class="col-5 mb-2">
+        </div>
+
+    </div>
+</div>
+@section Scripts{
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['corechart'], 'language': 'ar' });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+
+            var data = google.visualization.arrayToDataTable([
+                ['اليوم', 'العمولة'],
+                @foreach (var item in Model)
+            {
+              <Text>  [ '@item.Day.ToShortDateString()', @item.Value],</Text>
+            }
+
+            ]);
+
+            var options = {
+                title: 'Commission'
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+            chart.draw(data, options);
+        }
+
+        google.setOnLoadCallback(drawChartForExternalRecs);
+        function drawChartForExternalRecs() {
+
+            var data = google.visualization.arrayToDataTable([
+                ['اليوم', 'العمولة'],
+                @foreach (var item in Model)
+            {
+              <Text>  [ '@item.Day.ToShortDateString()', @item.Value],</Text>
+            }
+
+            ]);
+
+            var options = {
+                title: 'Commission'
+            };
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('ExternalRecs'));
+
+            chart.draw(data, options);
+        }
+
+
+        google.charts.setOnLoadCallback(drawChartForInternalRecs);
+        function drawChartForInternalRecs() {
+
+            var data = google.visualization.arrayToDataTable([
+                ['اليوم', 'العمولة'],
+                @foreach (var item in Model)
+            {
+              <Text>  [ '@item.Day.ToShortDateString()', @item.Value],</Text>
+            }
+
+            ]);
+
+            var options = {
+                title: 'Commission',
+                isStacked: 'percent',
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('InternalRecs'));
+
+            chart.draw(data, options);
+        }
+
+
+
+    </script>
+
+
+}

@@ -62,9 +62,6 @@ namespace FishBusiness.Controllers
                           select new AmountVm { AmountId = g.Key, items = g };
 
             model.Amounts = results;
-
-
-
             return View(model);
         }
 
@@ -616,8 +613,8 @@ namespace FishBusiness.Controllers
             boatOwnerReciept.IsCalculated = false;
             boatOwnerReciept.IsCollected = false;
             boatOwnerReciept.PaidFromDebts = Convert.ToDecimal(PaidFromDebtsCookie);
-            Person p = _context.People.Find(1);
-            p.credit += Convert.ToDecimal(commisionCookie); ;
+         
+
             // Subtracting Paid From Halek
             var boat = _context.Boats.Find(boatOwnerReciept.BoatID);
             boat.DebtsOfHalek -= Convert.ToDecimal(PaidFromDebtsCookie);

@@ -156,19 +156,8 @@ namespace FishBusiness.Controllers
                         _context.SaveChanges();
                     }
                 }
-
-
-
-
-                // المفروض ان
-                //total After paying 
-                //يتم خصمه من رصيد علاء او مجدى
-                //اسال علاء فيها
                 //المفروض نعمل نسبة العموله 
                 //decimal
-
-
-
                 return Json(new { message = "success", id = stockRec.SellerRecID });
             }
             catch (Exception)
@@ -595,8 +584,6 @@ namespace FishBusiness.Controllers
 
                 if (paidForSeller > 0.0m)
                 {
-                   
-
                     var user = await _userManager.GetUserAsync(User);
                     var roles = await _userManager.GetRolesAsync(user);
                     if (roles.Contains("admin"))
@@ -607,7 +594,7 @@ namespace FishBusiness.Controllers
                         PaidForSeller p = new PaidForSeller() { Date = TimeNow(), PersonID = person.PersonID, Payment = paidForSeller, PreviousDebtsForSeller = mer.PreviousDebtsForMerchant - paidForSeller, MerchantID = mer.MerchantID};
                         _context.PaidForSellers.Add(p);
                         mer.PreviousDebtsForMerchant -= paidForSeller;
-                        person.credit -= paidForSeller;
+                        //person.credit -= paidForSeller;
                         
 
 
@@ -619,7 +606,7 @@ namespace FishBusiness.Controllers
                         PaidForSeller p = new PaidForSeller() { Date = TimeNow(), PersonID = person.PersonID, Payment = paidForSeller, PreviousDebtsForSeller = mer.PreviousDebtsForMerchant - paidForSeller, MerchantID = mer.MerchantID };
                         _context.PaidForSellers.Add(p);
                         mer.PreviousDebtsForMerchant -= paidForSeller;
-                        person.credit -= paidForSeller;
+                        //person.credit -= paidForSeller;
 
                     }
                     _context.SaveChanges();

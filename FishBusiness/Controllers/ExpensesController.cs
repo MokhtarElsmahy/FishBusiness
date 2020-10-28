@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FishBusiness;
 using FishBusiness.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace FishBusiness.Controllers
 {
     public class ExpensesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public ExpensesController(ApplicationDbContext context)
+        public ExpensesController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Expenses
@@ -45,36 +48,7 @@ namespace FishBusiness.Controllers
         //    return View(expense);
         //}
 
-        // GET: Expenses/Create
-        public IActionResult Create()
-        {
-            ViewData["BoatID"] = new SelectList(_context.Boats, "BoatID", "BoatName");
-            return View();
-        }
-
-        // POST: Expenses/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-       // [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ExpenseID,BoatID,Price,Cause,Date")] Expense expense)
-        {
-            if (ModelState.IsValid)
-            {
-                expense.PersonID = 1;
-                _context.Add(expense);
-                Person p = _context.People.Find(1);
-                p.credit -= expense.Price;
-
-                Boat boat = await _context.Boats.FindAsync(expense.BoatID);
-                boat.TotalOfExpenses += expense.Price;
-
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["BoatID"] = new SelectList(_context.Boats, "BoatID", "BoatName", expense.BoatID);
-            return View(expense);
-        }
+       
 
         // GET: Expenses/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -110,7 +84,13 @@ namespace FishBusiness.Controllers
             {
                 try
                 {
-
+                    var user = await _userManager.GetUserAsync(User);
+                    var roles = await _userManager.GetRolesAsync(user);
+                    int PID = 1;
+                    if (roles.Contains("partner"))
+                    {
+                        PID = 2;
+                    }
                     var Oldexpense = await _context.Expenses.FindAsync(expense.ExpenseID);
                     if (Oldexpense != null)
                     {
@@ -127,7 +107,7 @@ namespace FishBusiness.Controllers
                     _context.Update(expense);
                     if(expense.Price != Oldexpense.Price)
                     {
-                        Person p = _context.People.Find(1);
+                        Person p = _context.People.Find(PID);
                         if(expense.Price > Oldexpense.Price)
                         {
                             p.credit -= expense.Price - Oldexpense.Price;

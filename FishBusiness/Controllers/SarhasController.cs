@@ -284,7 +284,7 @@ namespace FishBusiness.Controllers
                             else
                             {
                                 decimal diff = oldPrices[i] - oldPrice;
-                                p.credit -= diff ;
+                                //p.credit -= diff ;
                                
                             }
                         }
@@ -318,8 +318,8 @@ namespace FishBusiness.Controllers
 
                                 };
                                 _context.Debts_Sarhas.Add(d_s);
-                                Person pp = _context.People.Find(PID);
-                                pp.credit -= newPrices[i];
+                                //Person pp = _context.People.Find(PID);
+                                //pp.credit -= newPrices[i];
                                 _context.SaveChanges();
                             }
                         }

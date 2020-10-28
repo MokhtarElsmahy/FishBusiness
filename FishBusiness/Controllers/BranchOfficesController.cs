@@ -35,7 +35,12 @@ namespace FishBusiness.Controllers
             var roles = await _userManager.GetRolesAsync(user);
             int PID = 1;
             if (roles.Contains("partner"))
+            {
                 PID = 2;
+                ViewBag.title = "المكتب الفرعي / يومية علاء";
+            }
+            else
+                ViewBag.title = "المكتب";
             var branch = _context.BranchOffices.ToList().Where(x => x.Date.ToShortDateString() == TimeNow().AddDays(-1).ToShortDateString()).FirstOrDefault();
             var c = _context.Collectings.ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString()).FirstOrDefault();
             BranchOfficeVM model = new BranchOfficeVM();
@@ -55,6 +60,7 @@ namespace FishBusiness.Controllers
             }
             model.IsellerReciepts = _context.ISellerReciepts.Include(x => x.Merchant).ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString() && x.TotalOfPrices != 0 && x.PersonID == PID).ToList();
             model.PaidForSellers = _context.PaidForSellers.Include(x => x.Merchant).ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString() && x.PersonID == PID).ToList();
+            model.PaidForMerchants = _context.PaidForMerchant.Include(x => x.Merchant).ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString() && x.PersonID == PID && x.IsCash==true && x.IsPaidForUs==true).ToList();
             model.PaidForBoats = _context.PaidForBoats.Include(x => x.Boat).ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString() && x.PersonID == PID).ToList();
             model.Debts_Sarha = halek;
             ViewBag.Merchant = new SelectList(_context.Merchants.Where(c => c.IsFromOutsideCity == false).ToList(), "MerchantID", "MerchantName");
@@ -282,16 +288,22 @@ namespace FishBusiness.Controllers
                 }
             }
 
-            //var FinalCredit = c.TotalPaidFromMerchants - (c.TotalPaidForMerchants + c.TotalHalek + c.TotalOfAdditionalPayment + fathallah + c.TotalOfExpenses);
-            //Person halaka = _context.People.Find(1);
-            //halaka.credit += FinalCredit;
-            //pp.credit = 0.0m;
+            Person pppp = _context.People.Find(PID);
+            pppp.credit = FinalTotal;
             await _context.SaveChangesAsync();
             return Json(new { message = "success" });
         }
 
         public async Task<IActionResult> OfficeOfDay()
         {
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains("partner"))
+            {
+                ViewBag.title = "المكتب الفرعي / يومية علاء";
+            }
+            else
+                ViewBag.title = "المكتب";
             return View();
         }
 

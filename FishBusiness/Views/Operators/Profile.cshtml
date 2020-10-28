@@ -122,7 +122,7 @@
                         </div>
                         <br />
                         <br />
-                        <div class="connect-sorting">
+                        @*<div class="connect-sorting">
                             <div class="connect-sorting-content" data-sortable="true">
 
 
@@ -154,7 +154,7 @@
 
 
 
-                        </div>
+                        </div>*@
                     </div>
                 </div>
             </div>
@@ -410,46 +410,6 @@
                     }
                 });
             })
-
-
-            $("#Sub").on('click', function () {
-                var PaidValue = parseFloat($('#PaidValueForOperator').val());
-                var id = @Model.Operator.OperatorID
-
-                $.ajax({
-                    url: "/Operators/PayDebts/",
-                    type: "Post",
-                    dataType: "json",
-                    traditional: true,
-                    data: {
-                        PaidValue: PaidValue,
-                        OperatorID: id,
-
-                    }, //id of the state which is used to extract cities
-                    success: function (result) {
-                        if (result.message == "success") {
-
-                            Swal.fire({
-                                position: 'top-end',
-                                icon: 'success',
-                                title: 'تم الدفع بنجاح',
-                                showConfirmButton: false,
-                                timer: 3000
-                            });
-                            $('#PaidValueForOperator').val('')
-                            $('#DebtsForOperator').text(result.operatorCredit)
-                        }
-                    },
-                    error: function () {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'حدث خطأ',
-                            text: 'حاول مرة اخري',
-                        });
-                    }
-                });
-            })
-        })
 
         var EditShow = function (id) {
             $.ajax({

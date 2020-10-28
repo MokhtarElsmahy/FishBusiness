@@ -1,7 +1,5 @@
 ﻿@model FishBusiness.ViewModels.BranchOfficeVM
-@{
-    ViewData["Title"] = "OfficeToday";
-}
+
 
 @section Styles{
     <!--  BEGIN CUSTOM STYLE FILE  -->
@@ -80,7 +78,20 @@
                                                 <tr>
 
                                                     <td class="MerchantName">@item.Merchant.MerchantName</td>
-                                                    <td class="Price"> @item.TotalOfPrices</td>
+                                                    <td class="Price"> @item.PaidFromDebt</td>
+
+                                                </tr>
+                                            }
+
+                                        }
+                                        @if (Model.PaidForMerchants.Any())
+                                        {
+                                            @foreach (var item in Model.PaidForMerchants)
+                                            {
+                                                <tr>
+
+                                                    <td class="MerchantName">@item.Merchant.MerchantName</td>
+                                                    <td class="Price"> @item.Payment</td>
 
                                                 </tr>
                                             }
@@ -95,7 +106,7 @@
                                         </tr>
                                         <tr>
                                             <td>الاجمالي</td>
-                                            <td id="totalOfIncome">@(Model.CurrentCredit+Model.Collecting+(decimal)Model.IsellerReciepts.Sum(x=>x.TotalOfPrices))</td>
+                                            <td id="totalOfIncome">@(Model.CurrentCredit+Model.Collecting+(decimal)Model.IsellerReciepts.Sum(x=>x.TotalOfPrices) + (decimal)Model.PaidForMerchants.Sum(x => x.Payment))</td>
                                         </tr>
                                     </tfoot>
 

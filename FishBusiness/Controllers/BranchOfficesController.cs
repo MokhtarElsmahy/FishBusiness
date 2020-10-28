@@ -35,13 +35,7 @@ namespace FishBusiness.Controllers
             var roles = await _userManager.GetRolesAsync(user);
             int PID = 1;
             if (roles.Contains("partner"))
-            {
-
                 PID = 2;
-                ViewBag.title = "المكتب الفرعي / يومية علاء";
-            }
-            else
-                ViewBag.title = "المكتب";
             var branch = _context.BranchOffices.ToList().Where(x => x.Date.ToShortDateString() == TimeNow().AddDays(-1).ToShortDateString()).FirstOrDefault();
             var c = _context.Collectings.ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString()).FirstOrDefault();
             BranchOfficeVM model = new BranchOfficeVM();
@@ -53,7 +47,12 @@ namespace FishBusiness.Controllers
             else
                 model.Collecting = 0.0m;
             var halek = _context.Debts_Sarhas.Include(c => c.Sarha).Include(c => c.Debt).Include(c => c.Sarha.Boat).ToList().Where(c => c.Date.ToShortDateString() == TimeNow().ToShortDateString() && c.PersonID == PID).ToList();
-            model.CurrentCredit = branch.CurrentCredit;
+            model.CurrentCredit = 0.0m;
+            if (branch != null)
+            {
+              model.CurrentCredit = branch.CurrentCredit;
+
+            }
             model.IsellerReciepts = _context.ISellerReciepts.Include(x => x.Merchant).ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString() && x.TotalOfPrices != 0 && x.PersonID == PID).ToList();
             model.PaidForSellers = _context.PaidForSellers.Include(x => x.Merchant).ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString() && x.PersonID == PID).ToList();
             model.PaidForBoats = _context.PaidForBoats.Include(x => x.Boat).ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString() && x.PersonID == PID).ToList();
@@ -62,7 +61,7 @@ namespace FishBusiness.Controllers
             ViewBag.Halek = new SelectList(_context.Debts.ToList(), "DebtID", "DebtName");
             var UnfinishedSarhas = _context.Sarhas.Where(x => x.IsFinished == false).Select(x => x.BoatID);
             ViewBag.Boats = new SelectList(_context.Boats.Where(b => b.IsActive == true && b.BoatLicenseNumber != "0").Where(b => UnfinishedSarhas.Contains(b.BoatID)).ToList(), "BoatID", "BoatName");
-            ViewBag.SharedBoats = new SelectList(_context.Boats.Where(b => b.IsActive == true && b.TypeID == 5).Where(b => UnfinishedSarhas.Contains(b.BoatID)).ToList(), "BoatID", "BoatName");
+            ViewBag.SharedBoats = new SelectList(_context.Boats.Where(b => b.IsActive == true && b.TypeID == 2).Where(b => UnfinishedSarhas.Contains(b.BoatID)).ToList(), "BoatID", "BoatName");
             ViewBag.Operators = new SelectList(_context.Operators.ToList(), "OperatorID", "OperatorName");
 
             return View(model);
@@ -293,14 +292,6 @@ namespace FishBusiness.Controllers
 
         public async Task<IActionResult> OfficeOfDay()
         {
-            var user = await _userManager.GetUserAsync(User);
-            var roles = await _userManager.GetRolesAsync(user);
-            if (roles.Contains("partner"))
-            {
-                ViewBag.title = "المكتب الفرعي / يومية علاء";
-            }
-            else
-                ViewBag.title = "المكتب";
             return View();
         }
 
@@ -310,12 +301,7 @@ namespace FishBusiness.Controllers
             var roles = await _userManager.GetRolesAsync(user);
             int PID = 1;
             if (roles.Contains("partner"))
-            {
-
                 PID = 2;
-                
-            }
-           
             // الايرادات
             var Yesterdaybranch = _context.BranchOffices.ToList().Where(x => x.Date.ToShortDateString() == Date.AddDays(-1).ToShortDateString()).FirstOrDefault();
             var Todaybranch = _context.BranchOffices.ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString()).FirstOrDefault();
@@ -328,6 +314,7 @@ namespace FishBusiness.Controllers
             decimal totalDailyExpense = 0.0m;
             decimal totalSarhas = 0.0m;
             decimal FinalTotal = 0.0m;
+            decimal CurrentCredit = 0.0m;
             if (Todaybranch != null)
             {
                 collecting = Todaybranch.Collecting;
@@ -340,7 +327,12 @@ namespace FishBusiness.Controllers
                 FinalTotal = Todaybranch.CurrentCredit; // رصيد مترحل
             }
             var halek = _context.Debts_Sarhas.Include(c => c.Sarha).Include(c => c.Debt).Include(c => c.Sarha.Boat).ToList().Where(c => c.Date.ToShortDateString() == TimeNow().ToShortDateString() && c.PersonID == PID).ToList();
-            decimal CurrentCredit = Yesterdaybranch.CurrentCredit;
+
+            if (Yesterdaybranch != null)
+            {
+                CurrentCredit = Yesterdaybranch.CurrentCredit;
+
+            }
             var IsellerReciepts = _context.ISellerReciepts.Include(x => x.Merchant).ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString() && x.TotalOfPrices != 0 && x.PersonID == PID).Select(c => new { merchantName = c.Merchant.MerchantName, paidFromDebt = c.PaidFromDebt }).ToList();
             var paid_for_Us = _context.PaidForMerchant
                .Include(c => c.Merchant).ToList()
@@ -355,7 +347,15 @@ namespace FishBusiness.Controllers
                 .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == PID).OrderBy(c => c.Sarha.BoatID)
                 .Select(c => new { boatName = c.Sarha.Boat.BoatName, price = c.Price, debtName = c.Debt.DebtName }).ToList();
 
-            var Loans = _context.LeaderLoans.Include(c => c.Boat).ToList().Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == PID).Select(c => new { price = c.Price, boatName = c.Boat.BoatName }).ToList();
+
+
+            //فيها مشكله
+            var Loans = _context.LeaderLoans.Include(c => c.Boat).ToList()
+               .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == PID).Select(c => new { price = c.Price, boatName = c.Boat.BoatName }).ToList();
+
+          
+            
+
 
             var SharedBoatExpenses = _context.Expenses.Include(c => c.Boat)
              .ToList().Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == PID)

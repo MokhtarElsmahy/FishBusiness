@@ -15,19 +15,14 @@
 }
 
 <div class="layout-px-spacing">
+    <div class="row layout-top-spacing">
 
-    <div class="page-header m-3">
-        <div class="page-title" style="margin-right: 30px;">
-            <h3>احصائيات</h3>
+
+        <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+            <div id="piechart" style="width: 700px;height: 425px;margin-right: 50px;" class="col-8 mr-3">
+            </div>
         </div>
-        <div class="mt-4 ml-auto">
-            <a asp-action="Office" style="margin-left: 20px;" class="btn btn-primary">اجمالى تفاصيل اليوم</a>
-        </div>
-    </div>
-    <div class="row mt-3 ">
-        <div id="piechart" style="width: 700px;height: 425px;margin-right: 50px;" class="col-8 mr-3">
-        </div>
-        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12 layout-spacing">
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
             <div class="widget widget-activity-three">
 
                 <div class="widget-heading">
@@ -161,16 +156,29 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row mt-3 test">
-        <div id="ExternalRecs" style="margin-right: 50px;" class="col-6 mb-2">
-        </div>
-        <div id="InternalRecs" class="col-5 mb-2" style="margin-left: 50px;">
-        </div>
 
-        <div id="profit" style="margin-right: 50px;" class="col-6 mb-2">
+        <div class="col-2">
+
         </div>
+          <div id="ExternalRecs" class="col-xl-5 col-lg-6 col-md-12 col-sm-12 col-12 layout-spacing">
+          </div>
+        
+        
+          <div id="InternalRecs" class="col-xl-5 col-lg-6 col-md-12 col-sm-12 col-12 layout-spacing">
+          </div>
+        
+       
+
+             <div id="profit"  class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 layout-spacing">
+             </div>
     </div>
+</div>
+
+
+
+
+
+
 
 
 @section Scripts{
@@ -178,7 +186,7 @@
 
     @*<script type="text/javascript" src="https://www.google.com/jsapi"></script>*@
 
-<script type="text/javascript">
+    <script type="text/javascript">
 
         google.charts.load('current', { 'packages': ['corechart'], 'language': 'en' });
 
@@ -223,9 +231,10 @@
                 ['day', 'profit'],
                    @foreach (var item in Model.chatProfit)
                     {
-                        
+
                        <Text>  [new Date(@item.Day.Year,@item.Day.AddMonths(-1).Month,@item.Day.Day),parseFloat(@item.profit)],</Text>
-                       
+                         @*<Text>   ['@item.Day.Day/@item.Day.Month/@item.Day.Year' ,parseFloat(@item.profit)],</Text>*@
+
                     }
 
             ]);
@@ -265,7 +274,7 @@
                 title: 'internal collecting',
                 width: 600,
                 height: 300,
-              
+
                 curveType: 'function',
                 hAxis: {
                     format: 'd/M/yy',
@@ -300,7 +309,7 @@
                 title: 'external collecting',
                 width: 600,
                 height: 300,
-              
+
                 curveType: 'function',
                 hAxis: {
                     format: 'd/M/yy',
@@ -318,7 +327,7 @@
 
 
 
-</script>
+    </script>
 
 
 }

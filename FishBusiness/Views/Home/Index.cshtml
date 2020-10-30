@@ -14,165 +14,188 @@
     var TimeNow = currentUTC.AddHours(2);
 }
 
-<div class="layout-px-spacing">
-    <div class="row layout-top-spacing">
+    <div class="layout-px-spacing">
 
-
-        <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
-            <div id="piechart" style="width: 700px;height: 425px;margin-right: 50px;" class="col-8 mr-3">
+        <div class="container row">
+            <div class="page-header m-3">
+                <div class="page-title">
+                    <h5>العمولات</h5>
+                </div>
+            </div>
+            <div class="mt-4 ml-auto">
+                <a asp-action="Office" class="btn btn-primary">المكتب</a>
             </div>
         </div>
-        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
-            <div class="widget widget-activity-three">
 
-                <div class="widget-heading">
-                    <h5 class="">ملاحظات</h5>
+       
+        <div class="row  layout-top-spacing">
+            <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12 ">
+                <div id="piechart" style="height: 425px;">
                 </div>
+            </div>
 
-                <div class="widget-content">
+            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 layout-spacing">
+                <div class="widget widget-activity-three">
 
-                    <div class="mt-container mx-auto">
-                        <div class="timeline-line">
-                            <div class="item-timeline timeline-new">
-                                <div class="t-dot">
-                                    <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                                </div>
-                                <div class="t-content">
-                                    <div class="t-uppercontent">
-                                        <h5>مكاسب اليوم</h5>
-                                        <span class="">
-                                            @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
-                                            @TimeNow.ToShortDateString()
-                                        </span>
+                    <div class="widget-heading">
+                        <h5 class="">ملاحظات</h5>
+                    </div>
+
+                    <div class="widget-content">
+
+                        <div class="mt-container mx-auto">
+                            <div class="timeline-line">
+                                <div class="item-timeline timeline-new">
+                                    <div class="t-dot">
+                                        <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
                                     </div>
-                                    @if (ViewBag.ProfitOfDay != null)
-                                    {
-                                        <p><span>@ViewBag.ProfitOfDay</span></p>
-                                    }
-                                    <div class="tags d-flex justify-content-center">
-                                        <div class="badge badge-primary"><a asp-action="Summation" asp-controller="TotalOfProfits" asp-route-Date="@TimeNow">تجميع</a></div>
+                                    <div class="t-content">
+                                        <div class="t-uppercontent">
+                                            <h5>مكاسب اليوم</h5>
+                                            <span class="">
+                                                @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                                @TimeNow.ToShortDateString()
+                                            </span>
+                                        </div>
+                                        @if (ViewBag.ProfitOfDay != null)
+                                        {
+                                            <p><span>@ViewBag.ProfitOfDay</span></p>
+                                        }
+                                        <div class="tags d-flex justify-content-center">
+                                            <div class="badge badge-primary"><a asp-action="Summation" asp-controller="TotalOfProfits" asp-route-Date="@TimeNow">تجميع</a></div>
+                                        </div>
                                     </div>
                                 </div>
+
+                                <div class="item-timeline timeline-new">
+                                    <div class="t-dot">
+                                        <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                    </div>
+                                    <div class="t-content">
+                                        <div class="t-uppercontent">
+                                            <h5>فواتير المراكب</h5>
+                                            <span class="">
+                                                @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                                @TimeNow.ToShortDateString()
+                                            </span>
+                                        </div>
+                                        <p><span>@ViewBag.TodaysBoatReceipts</span></p>
+                                        <div class="tags d-flex justify-content-center">
+                                            <div class="badge badge-primary"><a asp-action="GetTodaysBoatReceipts" asp-controller="Home">عرض الفواتير</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="item-timeline timeline-new">
+                                    <div class="t-dot">
+                                        <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                    </div>
+                                    <div class="t-content">
+                                        <div class="t-uppercontent">
+                                            <h5>الفواتير الخارجية</h5>
+                                            <span class="">
+                                                @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                                @TimeNow.ToShortDateString()
+                                            </span>
+                                        </div>
+                                        <p><span>@ViewBag.TodaysExternalBoatReceipts</span></p>
+                                        <div class="tags d-flex justify-content-center">
+                                            <div class="badge badge-primary"><a asp-action="GetTodaysExternalBoatReceipts" asp-controller="Home">عرض الفواتير</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="item-timeline timeline-new">
+                                    <div class="t-dot">
+                                        <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                    </div>
+                                    <div class="t-content">
+                                        <div class="t-uppercontent">
+                                            <h5>فواتير التجار </h5>
+                                            <span class="">
+                                                @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                                @TimeNow.ToShortDateString()
+                                            </span>
+                                        </div>
+                                        <p><span>@ViewBag.TodaysMerchantReceipts</span></p>
+                                        <div class="tags d-flex justify-content-center">
+                                            <div class="badge badge-primary"><a asp-action="GetTodaysMerchantReceipts" asp-controller="Home">عرض الفواتير</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="item-timeline timeline-new">
+                                    <div class="t-dot">
+                                        <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                    </div>
+                                    <div class="t-content">
+                                        <div class="t-uppercontent">
+                                            <h5>محتوي المخزن</h5>
+                                            <span class="">
+                                                @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                                @TimeNow.ToShortDateString()
+                                            </span>
+                                        </div>
+                                        <p><span>@ViewBag.Stock</span></p>
+                                        <div class="tags d-flex justify-content-center">
+                                            <div class="badge badge-primary"><a asp-action="Index" asp-controller="Stocks"> المخزن</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="item-timeline timeline-new">
+                                    <div class="t-dot">
+                                        <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                    </div>
+                                    <div class="t-content">
+                                        <div class="t-uppercontent">
+                                            <h5>دفتر المكاسب</h5>
+                                            <span class="">
+                                                @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
+                                                @TimeNow.ToShortDateString()
+                                            </span>
+                                        </div>
+                                        <div class="tags d-flex justify-content-center">
+                                            <div class="badge badge-primary"><a asp-action="SummationOfAday" asp-controller="TotalOfProfits">عرض</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
                             </div>
-
-                            <div class="item-timeline timeline-new">
-                                <div class="t-dot">
-                                    <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                                </div>
-                                <div class="t-content">
-                                    <div class="t-uppercontent">
-                                        <h5>فواتير المراكب</h5>
-                                        <span class="">
-                                            @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
-                                            @TimeNow.ToShortDateString()
-                                        </span>
-                                    </div>
-                                    <p><span>@ViewBag.TodaysBoatReceipts</span></p>
-                                    <div class="tags d-flex justify-content-center">
-                                        <div class="badge badge-primary"><a asp-action="GetTodaysBoatReceipts" asp-controller="Home">عرض الفواتير</a></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="item-timeline timeline-new">
-                                <div class="t-dot">
-                                    <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                                </div>
-                                <div class="t-content">
-                                    <div class="t-uppercontent">
-                                        <h5>الفواتير الخارجية</h5>
-                                        <span class="">
-                                            @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
-                                            @TimeNow.ToShortDateString()
-                                        </span>
-                                    </div>
-                                    <p><span>@ViewBag.TodaysExternalBoatReceipts</span></p>
-                                    <div class="tags d-flex justify-content-center">
-                                        <div class="badge badge-primary"><a asp-action="GetTodaysExternalBoatReceipts" asp-controller="Home">عرض الفواتير</a></div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div class="item-timeline timeline-new">
-                                <div class="t-dot">
-                                    <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                                </div>
-                                <div class="t-content">
-                                    <div class="t-uppercontent">
-                                        <h5>فواتير التجار </h5>
-                                        <span class="">
-                                            @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
-                                            @TimeNow.ToShortDateString()
-                                        </span>
-                                    </div>
-                                    <p><span>@ViewBag.TodaysMerchantReceipts</span></p>
-                                    <div class="tags d-flex justify-content-center">
-                                        <div class="badge badge-primary"><a asp-action="GetTodaysMerchantReceipts" asp-controller="Home">عرض الفواتير</a></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="item-timeline timeline-new">
-                                <div class="t-dot">
-                                    <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                                </div>
-                                <div class="t-content">
-                                    <div class="t-uppercontent">
-                                        <h5>محتوي المخزن</h5>
-                                        <span class="">
-                                            @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
-                                            @TimeNow.ToShortDateString()
-                                        </span>
-                                    </div>
-                                    <p><span>@ViewBag.Stock</span></p>
-                                    <div class="tags d-flex justify-content-center">
-                                        <div class="badge badge-primary"><a asp-action="Index" asp-controller="Stocks"> المخزن</a></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="item-timeline timeline-new">
-                                <div class="t-dot">
-                                    <div class="t-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                                </div>
-                                <div class="t-content">
-                                    <div class="t-uppercontent">
-                                        <h5>دفتر المكاسب</h5>
-                                        <span class="">
-                                            @TimeNow.ToString("dddd", new System.Globalization.CultureInfo("ar-AE"))
-                                            @TimeNow.ToShortDateString()
-                                        </span>
-                                    </div>
-                                    <div class="tags d-flex justify-content-center">
-                                        <div class="badge badge-primary"><a asp-action="SummationOfAday" asp-controller="TotalOfProfits">عرض</a></div>
-                                    </div>
-                                </div>
-                            </div>
-
-
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="col-2">
 
         </div>
-          <div id="ExternalRecs" class="col-xl-5 col-lg-6 col-md-12 col-sm-12 col-12 layout-spacing">
-          </div>
-        
-        
-          <div id="InternalRecs" class="col-xl-5 col-lg-6 col-md-12 col-sm-12 col-12 layout-spacing">
-          </div>
-        
-       
 
-             <div id="profit"  class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 layout-spacing">
-             </div>
+        <div class="row">
+
+            <h5 class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 layout-spacing">الفواتير الخارجية</h5>
+            <h5 class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 layout-spacing">الفواتير الداخلية</h5>
+        </div>
+        <div class="row">
+
+
+            <div id="ExternalRecs" class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 layout-spacing">
+            </div>
+            <div id="InternalRecs" class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 layout-spacing">
+            </div>
+
+        </div>
+        <div class="row">
+
+            <h5 class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 layout-spacing">الارباح</h5>
+        </div>
+        <div class="row">
+
+            <div id="profit" class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 layout-spacing">
+            </div>
+        </div>
+
     </div>
-</div>
 
 
 
@@ -184,7 +207,6 @@
 @section Scripts{
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-    @*<script type="text/javascript" src="https://www.google.com/jsapi"></script>*@
 
     <script type="text/javascript">
 
@@ -206,7 +228,6 @@
 
             var options = {
                 title: 'Commission',
-                width: 900,
                 height: 425,
                 hAxis: {
                     format: 'd/M/yy',
@@ -241,7 +262,6 @@
 
             var options = {
                 title: 'profit',
-                width: 600,
                 height: 300,
                 hAxis: {
                     format: 'd/M/yy',
@@ -264,7 +284,7 @@
                 @foreach (var item in Model.chartCollectionVm)
                 {
               @*<Text>  [@item.Day.Day, parseFloat(@item.Value)],</Text>*@
-              <Text>   [new Date(@item.Day.Year, @item.Day.AddMonths(-1).Month, @item.Day.Day), @item.Collecting],</Text>
+              <Text>   [new Date(@item.Day.Year, @item.Day.AddMonths(-1).Month, @item.Day.Day), parseFloat(@item.Collecting)],</Text>
 
                 }
 
@@ -272,7 +292,6 @@
 
             var options = {
                 title: 'internal collecting',
-                width: 600,
                 height: 300,
 
                 curveType: 'function',
@@ -299,7 +318,7 @@
                 @foreach (var item in Model.chartExternalCollectionVm)
                 {
               @*<Text>  [@item.Day.Day, parseFloat(@item.Value)],</Text>*@
-              <Text>   [new Date(@item.Day.Year, @item.Day.AddMonths(-1).Month, @item.Day.Day), @item.ExternalCollecting],</Text>
+              <Text>   [new Date(@item.Day.Year, @item.Day.AddMonths(-1).Month, @item.Day.Day),parseFloat(@item.ExternalCollecting)],</Text>
 
                 }
 
@@ -307,7 +326,6 @@
 
             var options = {
                 title: 'external collecting',
-                width: 600,
                 height: 300,
 
                 curveType: 'function',

@@ -1,0 +1,4 @@
+﻿html[dir="rtl"] svg + [aria-label] {
+    top: -1000px !important;
+    left: auto !important;
+}

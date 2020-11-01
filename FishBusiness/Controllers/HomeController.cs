@@ -162,7 +162,14 @@ namespace FishBusiness.Controllers
             }
             analysis.chartExternalCollectionVm = chartExternalCollectionVm;
 
-
+            var merchantsDepts = _context.Merchants.Sum(c => c.PreviousDebts);
+            var HalekDepts = _context.Boats.Sum(c => c.DebtsOfHalek);
+            var LeadersDepts = _context.Boats.Sum(c => c.DebtsOfLeader);
+            var ExpensessDepts = _context.Boats.Sum(c => c.TotalOfExpenses);
+            ViewBag.DebtsForUs = merchantsDepts + HalekDepts + LeadersDepts + ExpensessDepts;
+            var ForMerchantsDepts = _context.Merchants.Sum(c => c.PreviousDebtsForMerchant);
+            var OperatorsDepts = _context.Operators.Sum(c => c.Credit);
+            ViewBag.DebtsForMerchants = ForMerchantsDepts + OperatorsDepts;
             return View(analysis);
         }
 

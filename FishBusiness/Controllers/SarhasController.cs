@@ -278,8 +278,16 @@ namespace FishBusiness.Controllers
                             if (oldPrice > oldPrices[i])
                             {
                                 decimal diff= oldPrice - oldPrices[i];
-                                p.credit += diff;
-                            
+                                //p.credit += diff;
+                                HalekDifference h = new HalekDifference()
+                                {
+                                    BoatID = sar.BoatID,
+                                    PersonID = PID,
+                                    Date = TimeNow(),
+                                    ReturnedValue = diff
+                                };
+                                _context.HalekDifferences.Add(h);
+                                _context.SaveChanges();
                             }
                             else
                             {

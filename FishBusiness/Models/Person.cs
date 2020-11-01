@@ -30,6 +30,7 @@ namespace FishBusiness.Models
         public virtual ICollection<PaidForBoat> PaidForBoats { get; set; }
         public virtual ICollection<AdditionalForOffice> AdditionalForOffices { get; set; }
 
+        public virtual ICollection<HalekDifference> HalekDifferences { get; set; }
 
     }
 }

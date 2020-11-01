@@ -62,6 +62,7 @@ namespace FishBusiness.Controllers
             model.PaidForSellers = _context.PaidForSellers.Include(x => x.Merchant).ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString() && x.PersonID == PID).ToList();
             model.PaidForMerchants = _context.PaidForMerchant.Include(x => x.Merchant).ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString() && x.PersonID == PID && x.IsCash==true && x.IsPaidForUs==true).ToList();
             model.PaidForBoats = _context.PaidForBoats.Include(x => x.Boat).ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString() && x.PersonID == PID).ToList();
+            model.HalekDifferences = _context.HalekDifferences.Include(x => x.Boat).ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString() && x.PersonID == PID).ToList();
             model.Debts_Sarha = halek;
             ViewBag.Merchant = new SelectList(_context.Merchants.Where(c => c.IsFromOutsideCity == false).ToList(), "MerchantID", "MerchantName");
             ViewBag.Halek = new SelectList(_context.Debts.ToList(), "DebtID", "DebtName");
@@ -172,7 +173,7 @@ namespace FishBusiness.Controllers
                     var lastSarhaID = _context.Sarhas.Where(c => c.BoatID == boat.BoatID && c.IsFinished == false).FirstOrDefault().SarhaID;
                     var lastSarha = _context.Sarhas.Find(lastSarhaID);
 
-                    var debt_sarha = _context.Debts_Sarhas.Include(c => c.Debt).Where(c => c.SarhaID == lastSarhaID && c.Debt.DebtName == HalekNames[i] && c.PersonID == PID).FirstOrDefault();
+                    var debt_sarha = _context.Debts_Sarhas.Include(c => c.Debt).Where(c => c.SarhaID == lastSarhaID && c.Debt.DebtName == HalekNames[i] && c.PersonID == PID && c.Date.ToShortDateString()==TimeNow().ToShortDateString()).FirstOrDefault();
                     boat.DebtsOfHalek += HalekPrices[i];
                     if (debt_sarha != null)
                     {

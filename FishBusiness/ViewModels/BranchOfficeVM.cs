@@ -14,6 +14,7 @@ namespace FishBusiness.ViewModels
         public decimal Collecting { get; set; }
         public List<ISellerReciept> IsellerReciepts { get; set; }
         public virtual ICollection<Debts_Sarha> Debts_Sarha { get; set; }
+        public virtual ICollection<HalekDifference> HalekDifferences { get; set; }
         public virtual ICollection<PaidForSeller> PaidForSellers { get; set; }
         public virtual ICollection<PaidForBoat> PaidForBoats { get; set; }
         public virtual ICollection<PaidForMerchant> PaidForMerchants { get; set; }

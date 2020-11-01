@@ -17,7 +17,7 @@ namespace FishBusiness
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Debts_Sarha>()
-                .HasKey(c => new { c.DebtID, c.SarhaID });
+                .HasKey(c => new { c.DebtID, c.SarhaID,c.Date });
 
             modelBuilder.Entity<Debt_In_Sarha>()
                .HasKey(c => new { c.DebtID, c.SarhaID ,c.PersonID});
@@ -87,6 +87,7 @@ namespace FishBusiness
         public virtual DbSet<PaidForSeller> PaidForSellers { get; set; }
         public virtual DbSet<PaidForBoat> PaidForBoats { get; set; }
         public virtual DbSet<AdditionalForOffice> AdditionalForOffices { get; set; }
+        public virtual DbSet<HalekDifference> HalekDifferences { get; set; }
 
 
 

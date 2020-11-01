@@ -166,7 +166,7 @@ namespace FishBusiness.Controllers
                     var lastSarhaID = _context.Sarhas.Where(c => c.BoatID == boat.BoatID && c.IsFinished == false).FirstOrDefault().SarhaID;
                     var lastSarha = _context.Sarhas.Find(lastSarhaID);
 
-                    var debt_sarha = _context.Debts_Sarhas.Include(c => c.Debt).Where(c => c.SarhaID == lastSarhaID && c.Debt.DebtName == HalekNames[i]&&c.PersonID==3).FirstOrDefault();
+                    var debt_sarha = _context.Debts_Sarhas.Include(c => c.Debt).Where(c => c.SarhaID == lastSarhaID && c.Debt.DebtName == HalekNames[i]&&c.PersonID==3 && c.Date.ToShortDateString()== TimeNow().ToShortDateString()).FirstOrDefault();
                     boat.DebtsOfHalek += HalekPrices[i];
                     if (debt_sarha != null)
                     {
@@ -433,7 +433,7 @@ namespace FishBusiness.Controllers
                         int maxSarahaID = lastSarhaID.FirstOrDefault().SarhaID;
                         var lastSarha = _context.Sarhas.Find(maxSarahaID);
 
-                        var debt_sarha = _context.Debts_Sarhas.Include(c => c.Debt).Where(c => c.SarhaID == maxSarahaID && c.Debt.DebtName == HalekNames[i]&&c.PersonID==4).FirstOrDefault();
+                        var debt_sarha = _context.Debts_Sarhas.Include(c => c.Debt).Where(c => c.SarhaID == maxSarahaID && c.Debt.DebtName == HalekNames[i]&&c.PersonID==4 && c.Date.ToShortDateString() == TimeNow().ToShortDateString()).FirstOrDefault();
                         boat.DebtsOfHalek += HalekPrices[i];
                         if (debt_sarha != null)
                         {

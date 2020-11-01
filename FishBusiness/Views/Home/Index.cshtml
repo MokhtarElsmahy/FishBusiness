@@ -217,7 +217,7 @@
         function drawChart() {
 
             var data = google.visualization.arrayToDataTable([
-                ['اليوم', 'العمولة'],
+                ['day', 'commision'],
                 @foreach (var item in Model.CommissionsVM)
                 {
               @*<Text>  [ '@item.Day.ToShortDateString()', @item.Value],</Text>*@

@@ -24,11 +24,11 @@
         </div>
         <div class="mt-4 ml-auto">
             <a asp-action="Edit" asp-controller="Boats" asp-route-id="@Model.BoatInfo.BoatID" class="btn btn-primary">تعديل بيانات المركب</a>
-            @if (Model.BoatInfo.TypeID == 5 && ViewBag.IsCheckedOut == false)
+            @if (Model.BoatInfo.TypeID == 2 && ViewBag.IsCheckedOut == false)
             {
                 <a asp-action="CheckOut" asp-route-id="@Model.BoatInfo.BoatID" class="btn btn-primary">تصفيه سنويه/نصف سنويه</a>
             }
-            @if (Model.BoatInfo.TypeID == 5)
+            @if (Model.BoatInfo.TypeID == 2)
             {
                 <a asp-action="CheckoutsOfSharedBoat" asp-controller="Home" asp-route-id="@Model.BoatInfo.BoatID" class="btn btn-primary">سجل تصفيات</a>
 
@@ -60,7 +60,7 @@
                                 @*<p class="task-left"></p>*@
                                 <label style="font-size:larger;font-weight:bolder;color:black">@Model.BoatInfo.Type</label><br />
 
-                                @if (Model.BoatInfo.TypeID == 5)
+                                @if (Model.BoatInfo.TypeID == 2)
                                 {
                                     <label style="font-size:larger;font-weight:bolder;color:black">الايراد</label>
                                     <label style="font-size:larger;font-weight:bolder;color:black" id="income">@Model.BoatInfo.IncomeOfSharedBoat $</label>

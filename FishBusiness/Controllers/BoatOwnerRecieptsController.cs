@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using FishBusiness;
 using FishBusiness.Models;
 using FishBusiness.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace FishBusiness.Controllers
 {
@@ -15,9 +16,12 @@ namespace FishBusiness.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public BoatOwnerRecieptsController(ApplicationDbContext context)
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public BoatOwnerRecieptsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
         public DateTime TimeNow()
         {
@@ -596,7 +600,16 @@ namespace FishBusiness.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(BoatOwnerReciept boatOwnerReciept)
         {
-
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+            int PID = 1;
+            if (roles.Contains("partner"))
+            {
+                PID = 2;
+                ViewBag.title = "المكتب الفرعي / يومية علاء";
+            }
+            else
+                ViewBag.title = "المكتب";
 
             var TotalBeforePaymentCookie = boatOwnerReciept.TotalBeforePaying;
             var commisionCookie = boatOwnerReciept.Commission;
@@ -613,6 +626,7 @@ namespace FishBusiness.Controllers
             boatOwnerReciept.IsCalculated = false;
             boatOwnerReciept.IsCollected = false;
             boatOwnerReciept.PaidFromDebts = Convert.ToDecimal(PaidFromDebtsCookie);
+            boatOwnerReciept.PersonID = PID;
          
 
             // Subtracting Paid From Halek

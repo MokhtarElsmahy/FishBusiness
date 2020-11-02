@@ -142,15 +142,25 @@ namespace FishBusiness.Controllers
         }
 
         // GET: Sarhas/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
+
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+            int PID = 1;
+            if (roles.Contains("partner"))
+            {
+                PID = 2;
+               
+            }
+           
             if (id == null)
             {
                 return NotFound();
             }
 
             var sarha = _context.Sarhas.Find(id);
-            var dept_sarha = _context.Debts_Sarhas.Where(x => x.SarhaID == id).Include(x => x.Debt).Include(x => x.Person);
+            var dept_sarha = _context.Debts_Sarhas.Where(x => x.SarhaID == id&&x.PersonID==PID).Include(x => x.Debt).Include(x => x.Person);
 
             var ds = dept_sarha.Select(c => c.DebtID);
             // ViewBag.OtherDebts = _context.Debts.Where(d => !ds.Contains(d.DebtID)).ToList();

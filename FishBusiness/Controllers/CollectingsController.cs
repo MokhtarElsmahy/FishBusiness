@@ -93,7 +93,7 @@ namespace FishBusiness.Controllers
                             PreviousDebtsForMerchant = merchant.PreviousDebts - prices[i],
                             Date = TimeNow(),
                             IsCash = true,
-                            PersonID = 1
+                            PersonID = 3
                         };
                     }
                     else
@@ -166,7 +166,8 @@ namespace FishBusiness.Controllers
                     var lastSarhaID = _context.Sarhas.Where(c => c.BoatID == boat.BoatID && c.IsFinished == false).FirstOrDefault().SarhaID;
                     var lastSarha = _context.Sarhas.Find(lastSarhaID);
 
-                    var debt_sarha = _context.Debts_Sarhas.Include(c => c.Debt).Where(c => c.SarhaID == lastSarhaID && c.Debt.DebtName == HalekNames[i]&&c.PersonID==3 && c.Date.ToShortDateString()== TimeNow().ToShortDateString()).FirstOrDefault();
+                    var debt_sarha = _context.Debts_Sarhas.Include(c => c.Debt).ToList().
+                        Where(c => c.SarhaID == lastSarhaID && c.Debt.DebtName == HalekNames[i]&&c.PersonID==3 && c.Date.ToShortDateString()== TimeNow().ToShortDateString()).FirstOrDefault();
                     boat.DebtsOfHalek += HalekPrices[i];
                     if (debt_sarha != null)
                     {
@@ -352,7 +353,7 @@ namespace FishBusiness.Controllers
 
         public IActionResult FathAllahProfile()
         {
-            ViewBag.Leaders = new SelectList(_context.Boats.Where(b => b.IsActive == true).ToList(), "BoatID", "BoatLeader");
+            ViewBag.Leaders = new SelectList(_context.Boats.Where(b => b.IsActive == true && b.BoatLicenseNumber != "0").ToList(), "BoatID", "BoatLeader");
             ViewBag.Halek = new SelectList(_context.Debts.ToList(), "DebtID", "DebtName");
             var UnfinishedSarhas = _context.Sarhas.Where(x => x.IsFinished == false).Select(x => x.BoatID);
             ViewBag.Boats = new SelectList(_context.Boats.Where(b => b.IsActive == true && b.BoatLicenseNumber != "0").Where(b => UnfinishedSarhas.Contains(b.BoatID)).ToList(), "BoatID", "BoatName");
@@ -433,7 +434,8 @@ namespace FishBusiness.Controllers
                         int maxSarahaID = lastSarhaID.FirstOrDefault().SarhaID;
                         var lastSarha = _context.Sarhas.Find(maxSarahaID);
 
-                        var debt_sarha = _context.Debts_Sarhas.Include(c => c.Debt).Where(c => c.SarhaID == maxSarahaID && c.Debt.DebtName == HalekNames[i]&&c.PersonID==4 && c.Date.ToShortDateString() == TimeNow().ToShortDateString()).FirstOrDefault();
+                        var debt_sarha = _context.Debts_Sarhas.Include(c => c.Debt).ToList()
+                            .Where(c => c.SarhaID == maxSarahaID && c.Debt.DebtName == HalekNames[i]&&c.PersonID==4 && c.Date.ToShortDateString() == TimeNow().ToShortDateString()).FirstOrDefault();
                         boat.DebtsOfHalek += HalekPrices[i];
                         if (debt_sarha != null)
                         {

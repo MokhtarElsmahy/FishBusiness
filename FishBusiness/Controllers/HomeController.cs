@@ -36,8 +36,7 @@ namespace FishBusiness.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            //_context.Roles.Add(new IdentityRole() { Name = "admin" });
-            //_context.SaveChanges();
+           
 
 
             var TodaysBoatReceipts = _context.BoatOwnerReciepts.ToList().Where(d => d.Date.ToShortDateString() == TimeNow().ToShortDateString());
@@ -162,7 +161,7 @@ namespace FishBusiness.Controllers
             }
             analysis.chartExternalCollectionVm = chartExternalCollectionVm;
 
-            var merchantsDepts = _context.Merchants.Sum(c => c.PreviousDebts);
+            var merchantsDepts = _context.Merchants.Where(c=>c.IsOwner==false).Sum(c => c.PreviousDebts);
             var HalekDepts = _context.Boats.Sum(c => c.DebtsOfHalek);
             var LeadersDepts = _context.Boats.Sum(c => c.DebtsOfLeader);
             var ExpensessDepts = _context.Boats.Sum(c => c.TotalOfExpenses);

@@ -280,13 +280,16 @@
 
         google.setOnLoadCallback(drawChartForProfit);
         function drawChartForProfit() {
+
+         
             var data = google.visualization.arrayToDataTable([
-                ['day', 'profit'],
+
+             ['day', 'profit'],
                    @foreach (var item in Model.chatProfit)
                     {
 
                        <Text>  [new Date(@item.Day.Year,@item.Day.AddMonths(-1).Month,@item.Day.Day),parseFloat(@item.profit)],</Text>
-                         @*<Text>   ['@item.Day.Day/@item.Day.Month/@item.Day.Year' ,parseFloat(@item.profit)],</Text>*@
+                       @*<Text>   ['@item.Day.Day/@item.Day.Month/@item.Day.Year' ,parseFloat(@item.profit)],</Text>*@
 
                     }
 

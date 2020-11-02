@@ -64,7 +64,7 @@ namespace FishBusiness.Controllers
             model.PaidForBoats = _context.PaidForBoats.Include(x => x.Boat).ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString() && x.PersonID == PID).ToList();
             model.HalekDifferences = _context.HalekDifferences.Include(x => x.Boat).ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString() && x.PersonID == PID).ToList();
             model.Debts_Sarha = halek;
-            ViewBag.Merchant = new SelectList(_context.Merchants.Where(c => c.IsFromOutsideCity == false).ToList(), "MerchantID", "MerchantName");
+            ViewBag.Merchant = new SelectList(_context.Merchants.Where(c => c.IsFromOutsideCity == false &&c.IsOwner==false).ToList(), "MerchantID", "MerchantName");
             ViewBag.Halek = new SelectList(_context.Debts.ToList(), "DebtID", "DebtName");
             var UnfinishedSarhas = _context.Sarhas.Where(x => x.IsFinished == false).Select(x => x.BoatID);
             ViewBag.Boats = new SelectList(_context.Boats.Where(b => b.IsActive == true && b.BoatLicenseNumber != "0").Where(b => UnfinishedSarhas.Contains(b.BoatID)).ToList(), "BoatID", "BoatName");
@@ -173,7 +173,7 @@ namespace FishBusiness.Controllers
                     var lastSarhaID = _context.Sarhas.Where(c => c.BoatID == boat.BoatID && c.IsFinished == false).FirstOrDefault().SarhaID;
                     var lastSarha = _context.Sarhas.Find(lastSarhaID);
 
-                    var debt_sarha = _context.Debts_Sarhas.Include(c => c.Debt).Where(c => c.SarhaID == lastSarhaID && c.Debt.DebtName == HalekNames[i] && c.PersonID == PID && c.Date.ToShortDateString()==TimeNow().ToShortDateString()).FirstOrDefault();
+                    var debt_sarha = _context.Debts_Sarhas.Include(c => c.Debt).ToList().Where(c => c.SarhaID == lastSarhaID && c.Debt.DebtName == HalekNames[i] && c.PersonID == PID && c.Date.ToShortDateString()==TimeNow().ToShortDateString()).FirstOrDefault();
                     boat.DebtsOfHalek += HalekPrices[i];
                     if (debt_sarha != null)
                     {
@@ -215,9 +215,11 @@ namespace FishBusiness.Controllers
                         PersonID = PID,
                         Price = ExpensePrice[i]
                     };
+                   
                     _context.Expenses.Add(ex);
+                    boat.TotalOfExpenses += ExpensePrice[i];
                     await _context.SaveChangesAsync();
-
+                   
                     //Person person1 = _context.People.Find(3);
                     //person1.credit -= ExpensePrice[i];
 

@@ -509,7 +509,7 @@ namespace FishBusiness.Controllers
                 var recs = db.BoatOwnerReciepts.Where(c => c.BoatID == boat.BoatID && c.IsCollected == false && c.IsCalculated == false).ToList();
                 var sumOfTotalAfterPayment = total- leaderPaidDebts;
                 var finalIncome = 0.0m;
-                if (boat.TypeID == 5) //shared boat
+                if (boat.TypeID == 2) //shared boat
                 {
 
                     finalIncome = sumOfTotalAfterPayment / 2;
@@ -582,7 +582,7 @@ namespace FishBusiness.Controllers
                     var sumOfTotalAfterPayment = recs.Sum(c => c.TotalAfterPaying);
 
                     var finalIncome = 0.0m;
-                    if (boat.TypeID == 5)
+                    if (boat.TypeID == 2)
                     {
 
                         finalIncome = sumOfTotalAfterPayment / 2;
@@ -643,7 +643,7 @@ namespace FishBusiness.Controllers
                 else
                 {
                     var finalIncome = 0.0m;
-                    if (boat.TypeID == 5)
+                    if (boat.TypeID == 2)
                     {
 
                         finalIncome = rec.TotalAfterPaying / 2;

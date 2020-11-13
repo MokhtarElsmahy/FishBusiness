@@ -329,7 +329,7 @@ namespace FishBusiness.Controllers
                             StockRecID = stockRec.StockRecID,
                             FishID = fish.FishID,
                             ProductionTypeID = Produc.ProductionTypeID,
-                            Qty = qtysRest[i],
+                            Qty = Convert.ToDouble(qtys[i]),
                             UnitPrice = unitPrices[i],
 
                         };

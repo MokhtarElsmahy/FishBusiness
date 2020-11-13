@@ -1,712 +1,694 @@
-﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+﻿
+        <!DOCTYPE html>
+        <html lang="en">
 
-@{ 
+        <!-- Mirrored from designreset.com/cork/rtl/demo9/ by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 21 Jul 2020 20:30:45 GMT -->
+        <head>
+            <meta http-equiv="content-type" content="text/html; charset=UTF-16" />
 
-    var name = "";
-}
-<!DOCTYPE html>
-<html lang="en">
-
-<!-- Mirrored from designreset.com/cork/rtl/demo9/ by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 21 Jul 2020 20:30:45 GMT -->
-<head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-16" />
-
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
-    <title>لوحة التحكم</title>
-    <link rel="icon" type="image/x-icon" href="~/assets/img/favicon.ico" />
-    <link href="~/assets/css/loader.css" rel="stylesheet" type="text/css" />
-    <script src="~/assets/js/loader.js"></script>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+            <title>لوحة التحكم</title>
+            <link rel="icon" type="image/x-icon" href="~/assets/img/favicon.ico" />
+            <link href="~/assets/css/loader.css" rel="stylesheet" type="text/css" />
+            <script src="~/assets/js/loader.js"></script>
 
 
 
-    
-    <!-- BEGIN GLOBAL MANDATORY STYLES -->
-    <link href="https://fonts.googleapis.com/css?family=Quicksand:400,500,600,700&amp;display=swap" rel="stylesheet">
 
-    <link href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="~/assets/css/plugins.css" rel="stylesheet" type="text/css" />
-    <link href="~/assets/css/structure.css" rel="stylesheet" type="text/css" class="structure" />
-    <!-- END GLOBAL MANDATORY STYLES -->
-    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
-    <link href="~/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
-    <link href="~/assets/css/dashboard/dash_1.css" rel="stylesheet" type="text/css" class="dashboard-analytics" />
-    <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+            <!-- BEGIN GLOBAL MANDATORY STYLES -->
+            <link href="https://fonts.googleapis.com/css?family=Quicksand:400,500,600,700&amp;display=swap" rel="stylesheet">
 
-    @RenderSection("Styles", false)
+            <link href="~/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+            <link href="~/assets/css/plugins.css" rel="stylesheet" type="text/css" />
+            <link href="~/assets/css/structure.css" rel="stylesheet" type="text/css" class="structure" />
+            <!-- END GLOBAL MANDATORY STYLES -->
+            <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
+            <link href="~/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
+            <link href="~/assets/css/dashboard/dash_1.css" rel="stylesheet" type="text/css" class="dashboard-analytics" />
+            <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
 
-
-</head>
-<body class="dashboard-analytics">
+            @RenderSection("Styles", false)
 
 
-    <!-- BEGIN LOADER -->
-    <div id="load_screen">
-        <div class="loader">
-            <div class="loader-content">
-                <div class="spinner-grow align-self-center"></div>
+        </head>
+        <body class="dashboard-analytics">
+
+
+            <!-- BEGIN LOADER -->
+            <div id="load_screen">
+                <div class="loader">
+                    <div class="loader-content">
+                        <div class="spinner-grow align-self-center"></div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <!--  END LOADER -->
-    <!--  BEGIN NAVBAR  -->
-    <div class="header-container fixed-top">
-        <header class="header navbar navbar-expand-sm">
-            <ul class="navbar-item flex-row">
-                <li class="nav-item theme-logo">
-                    <a asp-action="Index" asp-controller="Home">
-                        <img src="~/assets/img/logo.svg" class="navbar-logo" alt="logo">
-                    </a>
-                </li>
-            </ul>
-
-            <a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></a>
-
-            <ul class="navbar-item flex-row search-ul">
-                <li class="nav-item align-self-center search-animated">
-                    @* <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search toggle-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>*@
-                    @*<form class="form-inline search-full form-inline search" role="search">
-                            <div class="search-bar">
-                                <input type="text" class="form-control search-form-control  ml-lg-auto" placeholder="بحث...">
-                            </div>
-                        </form>*@
-                </li>
-            </ul>
-
-        </header>
-    </div>
-
-    @if (SignInManager.IsSignedIn(User))
-    {
-        var user = await UserManager.GetUserAsync(User);
-        var roles = await UserManager.GetRolesAsync(user);
-        if (roles.Contains("admin"))
-        {
-            name = "المكتب";
-        }
-        else
-        {
-            name = "المكتب الفرعى";
-        }
-    }
-        <!--  END NAVBAR  -->
-        <!--  BEGIN MAIN CONTAINER  -->
-        <div class="main-container" id="container">
-
-            <div class="overlay"></div>
-            <div class="cs-overlay"></div>
-            <div class="search-overlay"></div>
-
-            <!--  BEGIN SIDEBAR  -->
-            <div class="sidebar-wrapper sidebar-theme">
-
-                <nav id="compactSidebar">
-                    <ul class="menu-categories">
-                        <li class="menu active">
-                            <a href="#dashboard" data-active="true" class="menu-toggle">
-                                <div class="base-menu">
-                                    <div class="base-icons">
-                                        @* <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>*@
-                                        <img src="~/img/homepage.svg" style="width:50px;height:50px;" />
-                                    </div>
-                                    <span>المكتب</span>
-                                </div>
+            <!--  END LOADER -->
+            <!--  BEGIN NAVBAR  -->
+            <div class="header-container fixed-top">
+                <header class="header navbar navbar-expand-sm">
+                    <ul class="navbar-item flex-row">
+                        <li class="nav-item theme-logo">
+                            <a asp-action="Index" asp-controller="Home">
+                                <img src="~/assets/img/logo.svg" class="navbar-logo" alt="logo">
                             </a>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
                         </li>
-
-                        <li class="menu">
-                            <a href="#app" data-active="false" class="menu-toggle">
-                                <div class="base-menu">
-                                    <div class="base-icons">
-                                        @*<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>*@
-                                        <img src="~/img/boat.svg" style="width:50px;height:50px;" />
-                                    </div>
-                                    <span>المراكب</span>
-                                </div>
-                            </a>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                        </li>
-
-
-
-                        <li class="menu">
-                            <a href="#forms" data-active="false" class="menu-toggle">
-                                <div class="base-menu">
-                                    <div class="base-icons">
-                                        @* <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clipboard"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>*@
-                                        <img src="~/img/find (1).svg" style="width:50px;height:50px;" />
-                                    </div>
-                                    <span>التجار</span>
-                                </div>
-                            </a>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                        </li>
-
-                        <li class="menu">
-                            <a href="#formss" data-active="false" class="menu-toggle">
-                                <div class="base-menu">
-                                    <div class="base-icons">
-                                        @* <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clipboard"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>*@
-                                        <img src="~/img/engineer.svg" style="width:50px;height:50px;" />
-                                    </div>
-                                    <span>المقاولون</span>
-                                </div>
-                            </a>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                        </li>
-
-                        @*<li class="menu">OGFB450
-                                <a href="#tables" data-active="false" class="menu-toggle">
-                                    <div class="base-menu">
-                                        <div class="base-icons">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layout"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
-                                        </div>
-                                        <span>Tables</span>
-                                    </div>
-                                </a>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                            </li>*@
-
-                        <li class="menu">
-                            <a href="#users" data-active="false" class="menu-toggle">
-                                <div class="base-menu">
-                                    <div class="base-icons">
-                                        @*<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>*@
-                                        <img src="~/img/boy.svg" style="width:50px;height:50px;" />
-                                    </div>
-                                    <span>الموظفين</span>
-                                </div>
-                            </a>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                        </li>
-                        <li class="menu">
-                            <a href="#uiKit" data-active="false" class="menu-toggle">
-                                <div class="base-menu">
-                                    <div class="base-icons">
-                                        @*  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>*@
-                                        <img src="~/img/detail.svg" style="width:50px;height:50px;" />
-                                    </div>
-                                    <span>بيانات أوليه</span>
-                                </div>
-                            </a>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                        </li>
-
-                        @*<li class="menu">
-                                <a href="#components" data-active="false" class="menu-toggle">
-                                    <div class="base-menu">
-                                        <div class="base-icons">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-box"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                                        </div>
-                                        <span>ادارة الهالك</span>
-                                    </div>
-                                </a>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                            </li>*@
-                        @*<li class="menu">
-                                <a href="#pages" data-active="false" class="menu-toggle">
-                                    <div class="base-menu">
-                                        <div class="base-icons">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
-                                        </div>
-                                        <span>Pages</span>
-                                    </div>
-                                </a>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                            </li>*@
-
-                        @*<li class="menu">
-                                <a href="#more" data-active="false" class="menu-toggle">
-                                    <div class="base-menu">
-                                        <div class="base-icons">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-                                        </div>
-                                        <span class="">More</span>
-                                    </div>
-                                </a>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                            </li>*@
                     </ul>
-                </nav>
 
-                <div id="compact_submenuSidebar" style="width:300px;" class="submenu-sidebar">
+                    <a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></a>
 
-                    <div class="submenu" id="dashboard">
-                        <ul class="submenu-list" data-parent-element="#dashboard">
-                            @*<li class="active">
-                                    <a asp-action="Create" asp-controller="Sarhas" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> اضافة سرحة  </a>
+                    <ul class="navbar-item flex-row search-ul">
+                        <li class="nav-item align-self-center search-animated">
+                            @* <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search toggle-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>*@
+                            @*<form class="form-inline search-full form-inline search" role="search">
+                                    <div class="search-bar">
+                                        <input type="text" class="form-control search-form-control  ml-lg-auto" placeholder="بحث...">
+                                    </div>
+                                </form>*@
+                        </li>
+                    </ul>
+
+                </header>
+            </div>
+
+         
+            <!--  END NAVBAR  -->
+            <!--  BEGIN MAIN CONTAINER  -->
+            <div class="main-container" id="container">
+
+                <div class="overlay"></div>
+                <div class="cs-overlay"></div>
+                <div class="search-overlay"></div>
+
+                <!--  BEGIN SIDEBAR  -->
+                <div class="sidebar-wrapper sidebar-theme">
+
+                    <nav id="compactSidebar">
+                        <ul class="menu-categories">
+                            <li class="menu active">
+                                <a href="#dashboard" data-active="true" class="menu-toggle">
+                                    <div class="base-menu">
+                                        <div class="base-icons">
+                                            @* <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>*@
+                                            <img src="~/img/homepage.svg" style="width:50px;height:50px;" />
+                                        </div>
+                                        <span>المكتب</span>
+                                    </div>
+                                </a>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            </li>
+
+                            <li class="menu">
+                                <a href="#app" data-active="false" class="menu-toggle">
+                                    <div class="base-menu">
+                                        <div class="base-icons">
+                                            @*<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-cpu"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>*@
+                                            <img src="~/img/boat.svg" style="width:50px;height:50px;" />
+                                        </div>
+                                        <span>المراكب</span>
+                                    </div>
+                                </a>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            </li>
+
+
+
+                            <li class="menu">
+                                <a href="#forms" data-active="false" class="menu-toggle">
+                                    <div class="base-menu">
+                                        <div class="base-icons">
+                                            @* <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clipboard"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>*@
+                                            <img src="~/img/find (1).svg" style="width:50px;height:50px;" />
+                                        </div>
+                                        <span>التجار</span>
+                                    </div>
+                                </a>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            </li>
+
+                            <li class="menu">
+                                <a href="#formss" data-active="false" class="menu-toggle">
+                                    <div class="base-menu">
+                                        <div class="base-icons">
+                                            @* <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clipboard"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>*@
+                                            <img src="~/img/engineer.svg" style="width:50px;height:50px;" />
+                                        </div>
+                                        <span>المقاولون</span>
+                                    </div>
+                                </a>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            </li>
+
+                            @*<li class="menu">OGFB450
+                                    <a href="#tables" data-active="false" class="menu-toggle">
+                                        <div class="base-menu">
+                                            <div class="base-icons">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layout"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                                            </div>
+                                            <span>Tables</span>
+                                        </div>
+                                    </a>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
                                 </li>*@
-                            <li>
-                                <a asp-action="Index" asp-controller="Sarhas" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> سجل هالك المراكب  </a>
+
+                            <li class="menu">
+                                <a href="#users" data-active="false" class="menu-toggle">
+                                    <div class="base-menu">
+                                        <div class="base-icons">
+                                            @*<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>*@
+                                            <img src="~/img/boy.svg" style="width:50px;height:50px;" />
+                                        </div>
+                                        <span>الموظفين</span>
+                                    </div>
+                                </a>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
                             </li>
-                            <li><span>----------------------------------------------------------------</span></li>
-                            <li>
-                                <a asp-action="Index" asp-controller="BoatOwnerReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> سجل انتاج المراكب  </a>
-                            </li>
-                            <li><span>----------------------------------------------------------------</span></li>
-                            <li>
-                                <a asp-action="Index" asp-controller="IMerchantReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> سجل مشتريات الحلقة  </a>
-                            </li>
-                            <li><span>----------------------------------------------------------------</span></li>
-                            <li>
-                                <a asp-action="Index" asp-controller="ExternalReceipts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>سجل الفواتير الخارجيه </a>
-                            </li>
-                            <li><span>----------------------------------------------------------------</span></li>
-                            <li>
-                                <a asp-action="PersonRecieptIndex" asp-controller="MerchantReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>سجل مشتريات الافراد </a>
-                            </li>
-                            <li><span>----------------------------------------------------------------</span></li>
-                            <li>
-                                <a asp-action="Index" asp-controller="ISellerReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>سجل فواتير سافرت </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="submenu" id="app">
-
-
-                        <ul class="submenu-list" data-parent-element="#app">
-
-                            <li>
-                                @*<a asp-action="Index" asp-controller="Boats" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>سجل كل المراكب</a>
-
-                                    <span>----------------------------------------------------------------</span>*@
-
-                                <a asp-action="ActiveBoats" asp-controller="Boats" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>سجل المراكب الساريه فقط</a>
-                                <a asp-action="InActiveBoats" asp-controller="Boats" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>سجل المراكب مؤرشفه فقط</a>
-
-                                <span>----------------------------------------------------------------</span>
-
-                                <a asp-action="BasicBoats" asp-controller="Boats" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>سجل المراكب المستقلة فقط</a>
-                                <a asp-action="SharedBoats" asp-controller="Boats" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>سجل المراكب الشريكه فقط</a>
-
-                                @*<span>----------------------------------------------------------------</span>*@
-                                @*<a asp-action="Index" asp-controller="Expenses" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>سجل مصروفات المراكب</a>*@
-
-
+                            <li class="menu">
+                                <a href="#uiKit" data-active="false" class="menu-toggle">
+                                    <div class="base-menu">
+                                        <div class="base-icons">
+                                            @*  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>*@
+                                            <img src="~/img/detail.svg" style="width:50px;height:50px;" />
+                                        </div>
+                                        <span>بيانات أوليه</span>
+                                    </div>
+                                </a>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
                             </li>
 
-                        </ul>
-                    </div>
+                            @*<li class="menu">
+                                    <a href="#components" data-active="false" class="menu-toggle">
+                                        <div class="base-menu">
+                                            <div class="base-icons">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-box"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                                            </div>
+                                            <span>ادارة الهالك</span>
+                                        </div>
+                                    </a>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                </li>*@
+                            @*<li class="menu">
+                                    <a href="#pages" data-active="false" class="menu-toggle">
+                                        <div class="base-menu">
+                                            <div class="base-icons">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+                                            </div>
+                                            <span>Pages</span>
+                                        </div>
+                                    </a>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                </li>*@
 
-                    <div class="submenu" id="uiKit">
-                        <ul class="submenu-list" data-parent-element="#uiKit">
-                            <li>
-                                <a asp-action="Create" asp-controller="Fishes" class="font-weight-bold"> <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> اضافة نوع سمك جديد </a>
-                            </li>
-                            <li>
-                                <a asp-action="Index" asp-controller="Fishes" class="font-weight-bold"> <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> سجل الاسماك </a>
-                            </li>
-                            <li><span>----------------------------------------------------------------</span></li>
-                            <li>
-                                <a asp-action="Create" asp-controller="Debts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> اضافة نوع هالك جديد </a>
-                            </li>
-
-                            <li>
-                                <a asp-action="Index" asp-controller="Debts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> سجل الهالك </a>
-                            </li>
-
-                            @*<li><span class="icon">------------------------------------</span></li>
-                                <li>
-                                    <a asp-action="Index" asp-controller="BoatTypes" class="font-weight-bold"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>نوع المراكب</a>
-
+                            @*<li class="menu">
+                                    <a href="#more" data-active="false" class="menu-toggle">
+                                        <div class="base-menu">
+                                            <div class="base-icons">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                                            </div>
+                                            <span class="">More</span>
+                                        </div>
+                                    </a>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left"><polyline points="15 18 9 12 15 6"></polyline></svg>
                                 </li>*@
                         </ul>
-                    </div>
+                    </nav>
 
-                    @*<div class="submenu" id="components">
-                            <ul class="submenu-list" data-parent-element="#components">
+                    <div id="compact_submenuSidebar" style="width:300px;" class="submenu-sidebar">
+
+                        <div class="submenu" id="dashboard">
+                            <ul class="submenu-list" data-parent-element="#dashboard">
+                                @*<li class="active">
+                                        <a asp-action="Create" asp-controller="Sarhas" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> اضافة سرحة  </a>
+                                    </li>*@
                                 <li>
-                                    <a asp-action="Create" asp-controller="Debts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> اضافة نوع جديد </a>
+                                    <a asp-action="Index" asp-controller="Sarhas" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> سجل هالك المراكب  </a>
+                                </li>
+                                <li><span>----------------------------------------------------------------</span></li>
+                                <li>
+                                    <a asp-action="Index" asp-controller="BoatOwnerReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> سجل انتاج المراكب  </a>
+                                </li>
+                                <li><span>----------------------------------------------------------------</span></li>
+                                <li>
+                                    <a asp-action="Index" asp-controller="IMerchantReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> سجل مشتريات الحلقة  </a>
+                                </li>
+                                <li><span>----------------------------------------------------------------</span></li>
+                                <li>
+                                    <a asp-action="Index" asp-controller="ExternalReceipts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>سجل الفواتير الخارجيه </a>
+                                </li>
+                                <li><span>----------------------------------------------------------------</span></li>
+                                <li>
+                                    <a asp-action="PersonRecieptIndex" asp-controller="MerchantReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>سجل مشتريات الافراد </a>
+                                </li>
+                                <li><span>----------------------------------------------------------------</span></li>
+                                <li>
+                                    <a asp-action="Index" asp-controller="ISellerReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>سجل فواتير سافرت </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="submenu" id="app">
+
+
+                            <ul class="submenu-list" data-parent-element="#app">
+
+                                <li>
+                                    @*<a asp-action="Index" asp-controller="Boats" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>سجل كل المراكب</a>
+
+                                        <span>----------------------------------------------------------------</span>*@
+
+                                    <a asp-action="ActiveBoats" asp-controller="Boats" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>سجل المراكب الساريه فقط</a>
+                                    <a asp-action="InActiveBoats" asp-controller="Boats" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>سجل المراكب مؤرشفه فقط</a>
+
+                                    <span>----------------------------------------------------------------</span>
+
+                                    <a asp-action="BasicBoats" asp-controller="Boats" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>سجل المراكب المستقلة فقط</a>
+                                    <a asp-action="SharedBoats" asp-controller="Boats" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>سجل المراكب الشريكه فقط</a>
+
+                                    @*<span>----------------------------------------------------------------</span>*@
+                                    @*<a asp-action="Index" asp-controller="Expenses" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>سجل مصروفات المراكب</a>*@
+
+
+                                </li>
+
+                            </ul>
+                        </div>
+
+                        <div class="submenu" id="uiKit">
+                            <ul class="submenu-list" data-parent-element="#uiKit">
+                                <li>
+                                    <a asp-action="Create" asp-controller="Fishes" class="font-weight-bold"> <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> اضافة نوع سمك جديد </a>
+                                </li>
+                                <li>
+                                    <a asp-action="Index" asp-controller="Fishes" class="font-weight-bold"> <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> سجل الاسماك </a>
+                                </li>
+                                <li><span>----------------------------------------------------------------</span></li>
+                                <li>
+                                    <a asp-action="Create" asp-controller="Debts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> اضافة نوع هالك جديد </a>
                                 </li>
 
                                 <li>
                                     <a asp-action="Index" asp-controller="Debts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> سجل الهالك </a>
                                 </li>
 
+                                @*<li><span class="icon">------------------------------------</span></li>
+                                    <li>
+                                        <a asp-action="Index" asp-controller="BoatTypes" class="font-weight-bold"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>نوع المراكب</a>
+
+                                    </li>*@
                             </ul>
-                        </div>*@
+                        </div>
 
-                    <div class="submenu" id="forms">
-                        <ul class="submenu-list" data-parent-element="#forms">
-                            <li>
-                                <a asp-action="Index" asp-controller="Merchants" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> ادارة التجار </a>
-                            </li>
+                        @*<div class="submenu" id="components">
+                                <ul class="submenu-list" data-parent-element="#components">
+                                    <li>
+                                        <a asp-action="Create" asp-controller="Debts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> اضافة نوع جديد </a>
+                                    </li>
 
-                            <li>
-                                <a asp-action="Index" asp-controller="MerchantReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>  فواتير التجار </a>
-                            </li>
-                            <li>
-                                @*<a asp-action="Create" asp-controller="MerchantReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> اضافة فاتورة تاجر </a>*@
-                            </li>
-                        </ul>
-                    </div>
+                                    <li>
+                                        <a asp-action="Index" asp-controller="Debts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> سجل الهالك </a>
+                                    </li>
 
-                    <div class="submenu" id="formss">
-                        <ul class="submenu-list" data-parent-element="#forms">
-                            <li>
-                                <a asp-action="Index" asp-controller="Operators" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> ادارة المقاولون </a>
-                            </li>
-
-                        </ul>
-                    </div>
-
-
-                    <div class="submenu" id="tables">
-                        <ul class="submenu-list" data-parent-element="#tables">
-                            <li>
-                                <a href="table_basic.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Basic </a>
-                            </li>
-                            <li class="sub-submenu">
-                                <a role="menu" class="collapsed" data-toggle="collapse" data-target="#datatables" aria-expanded="false"><div><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Datatables</div> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
-                                <ul id="datatables" class="collapse" data-parent="#compact_submenuSidebar">
-                                    <li>
-                                        <a href="table_dt_basic.html"> Basic </a>
-                                    </li>
-                                    <li>
-                                        <a href="table_dt_basic-dark.html"> Dark </a>
-                                    </li>
-                                    <li>
-                                        <a href="table_dt_ordering_sorting.html"> Order Sorting </a>
-                                    </li>
-                                    <li>
-                                        <a href="table_dt_multi-column_ordering.html"> Multi-Column </a>
-                                    </li>
-                                    <li>
-                                        <a href="table_dt_multiple_tables.html"> Multiple Tables</a>
-                                    </li>
-                                    <li>
-                                        <a href="table_dt_alternative_pagination.html"> Alt. Pagination</a>
-                                    </li>
-                                    <li>
-                                        <a href="table_dt_custom.html"> Custom </a>
-                                    </li>
-                                    <li>
-                                        <a href="table_dt_range_search.html"> Range Search </a>
-                                    </li>
-                                    <li>
-                                        <a href="table_dt_html5.html"> HTML5 Export </a>
-                                    </li>
-                                    <li>
-                                        <a href="table_dt_live_dom_ordering.html"> Live DOM ordering </a>
-                                    </li>
-                                    <li>
-                                        <a href="table_dt_miscellaneous.html"> Miscellaneous </a>
-                                    </li>
                                 </ul>
-                            </li>
-                        </ul>
-                    </div>
+                            </div>*@
 
-                    <div class="submenu" id="users">
-                        <ul class="submenu-list" data-parent-element="#users">
-                            <li class="active">
-                                <a href="#" class="font-weight-bold"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>@name</a>
-                            </li>
-                            <li>
+                        <div class="submenu" id="forms">
+                            <ul class="submenu-list" data-parent-element="#forms">
+                                <li>
+                                    <a asp-action="Index" asp-controller="Merchants" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> ادارة التجار </a>
+                                </li>
 
-                                <a asp-action="OfficeToday" asp-controller="BranchOffices" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> صفحه عمل المكتب </a>
-                            </li>
-                            <li>
-                                <a asp-action="OfficeOfDay" asp-controller="BranchOffices" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> سجل عمل المكتب </a>
-                            </li>
-                            <li><span>----------------------------------------------------------------</span></li>
-                            <li class="active">
-                                <a asp-action="FathAllahMainProfile" asp-controller="Collectings" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> احمد فتح الله  </a>
-                            </li>
+                                <li>
+                                    <a asp-action="Index" asp-controller="MerchantReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>  فواتير التجار </a>
+                                </li>
+                                <li>
+                                    @*<a asp-action="Create" asp-controller="MerchantReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> اضافة فاتورة تاجر </a>*@
+                                </li>
+                            </ul>
+                        </div>
 
-                            <li><span>----------------------------------------------------------------</span></li>
-                            <li class="active">
-                                <a href="#" class="font-weight-bold"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> اعمال المحصل</a>
-                            </li>
-                            <li>
+                        <div class="submenu" id="formss">
+                            <ul class="submenu-list" data-parent-element="#forms">
+                                <li>
+                                    <a asp-action="Index" asp-controller="Operators" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> ادارة المقاولون </a>
+                                </li>
 
-                                <a asp-action="Profile" asp-controller="Collectings" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> صفحه عمل المحصل </a>
-                            </li>
-                            <li>
-                                <a asp-action="ProfileOfDay" asp-controller="Collectings" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> سجل عمل المحصل </a>
-                            </li>
-                            <li><span>----------------------------------------------------------------</span></li>
-                            <li class="active">
-                                <a href="#" class="font-weight-bold"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> اعمال المحاسب</a>
-                            </li>
-                            <li><span class="icon"></span></li>
+                            </ul>
+                        </div>
 
 
+                        <div class="submenu" id="tables">
+                            <ul class="submenu-list" data-parent-element="#tables">
+                                <li>
+                                    <a href="table_basic.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Basic </a>
+                                </li>
+                                <li class="sub-submenu">
+                                    <a role="menu" class="collapsed" data-toggle="collapse" data-target="#datatables" aria-expanded="false"><div><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Datatables</div> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
+                                    <ul id="datatables" class="collapse" data-parent="#compact_submenuSidebar">
+                                        <li>
+                                            <a href="table_dt_basic.html"> Basic </a>
+                                        </li>
+                                        <li>
+                                            <a href="table_dt_basic-dark.html"> Dark </a>
+                                        </li>
+                                        <li>
+                                            <a href="table_dt_ordering_sorting.html"> Order Sorting </a>
+                                        </li>
+                                        <li>
+                                            <a href="table_dt_multi-column_ordering.html"> Multi-Column </a>
+                                        </li>
+                                        <li>
+                                            <a href="table_dt_multiple_tables.html"> Multiple Tables</a>
+                                        </li>
+                                        <li>
+                                            <a href="table_dt_alternative_pagination.html"> Alt. Pagination</a>
+                                        </li>
+                                        <li>
+                                            <a href="table_dt_custom.html"> Custom </a>
+                                        </li>
+                                        <li>
+                                            <a href="table_dt_range_search.html"> Range Search </a>
+                                        </li>
+                                        <li>
+                                            <a href="table_dt_html5.html"> HTML5 Export </a>
+                                        </li>
+                                        <li>
+                                            <a href="table_dt_live_dom_ordering.html"> Live DOM ordering </a>
+                                        </li>
+                                        <li>
+                                            <a href="table_dt_miscellaneous.html"> Miscellaneous </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
 
-                            <li>
+                        <div class="submenu" id="users">
+                            <ul class="submenu-list" data-parent-element="#users">
+                                <li class="active">
+                                    <a href="#" class="font-weight-bold"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></a>
+                                </li>
+                                <li>
 
-                                <a asp-action="Create" asp-controller="BoatOwnerReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>تسجيل انتاج المراكب و توزيعه</a>
-                            </li>
-                            <li>
-                                <a asp-action="Create" asp-controller="IMerchantReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>تسجيل مشتريات الحلقه</a>
-                            </li>
-                            @*<li>
-                                    <a asp-action="Create" asp-controller="MerchantReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> تسجيل مشتريات تجار البلد</a>
-                                </li>*@
-                            <li>
-                                <a asp-action="Create" asp-controller="ISellerReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>تسجيل مشتريات تجار خارجيين</a>
-                            </li>
-                            <li>
-                                <a asp-action="Create" asp-controller="SellerRecs" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>تسجيل بيعه لتاجر</a>
-                            </li>
+                                    <a asp-action="OfficeToday" asp-controller="BranchOffices" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> صفحه عمل المكتب </a>
+                                </li>
+                                <li>
+                                    <a asp-action="OfficeOfDay" asp-controller="BranchOffices" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> سجل عمل المكتب </a>
+                                </li>
+                                <li><span>----------------------------------------------------------------</span></li>
+                                <li class="active">
+                                    <a asp-action="FathAllahMainProfile" asp-controller="Collectings" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> احمد فتح الله  </a>
+                                </li>
 
-                        </ul>
-                    </div>
+                                <li><span>----------------------------------------------------------------</span></li>
+                                <li class="active">
+                                    <a href="#" class="font-weight-bold"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> اعمال المحصل</a>
+                                </li>
+                                <li>
 
-                    <div class="submenu" id="pages">
-                        <ul class="submenu-list" data-parent-element="#pages">
-                            <li>
-                                <a href="pages_helpdesk.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Helpdesk </a>
-                            </li>
-                            <li>
-                                <a href="pages_contact_us.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Contact Form </a>
-                            </li>
-                            <li>
-                                <a href="pages_faq.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> FAQ </a>
-                            </li>
-                            <li>
-                                <a href="pages_faq2.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> FAQ 2 </a>
-                            </li>
-                            <li>
-                                <a href="pages_privacy.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Privacy Policy </a>
-                            </li>
-                            <li>
-                                <a href="pages_coming_soon.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Coming Soon </a>
-                            </li>
-                            <li class="sub-submenu">
-                                <a role="menu" class="collapsed" data-toggle="collapse" data-target="#error" aria-expanded="false"><div><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Error</div> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg></a>
-                                <ul id="error" class="collapse" data-parent="#compact_submenuSidebar">
-                                    <li>
-                                        <a href="pages_error404.html"> 404 </a>
-                                    </li>
-                                    <li>
-                                        <a href="pages_error500.html"> 500 </a>
-                                    </li>
-                                    <li>
-                                        <a href="pages_error503.html"> 503 </a>
-                                    </li>
-                                    <li>
-                                        <a href="pages_maintenence.html"> Maintanence </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
+                                    <a asp-action="Profile" asp-controller="Collectings" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> صفحه عمل المحصل </a>
+                                </li>
+                                <li>
+                                    <a asp-action="ProfileOfDay" asp-controller="Collectings" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> سجل عمل المحصل </a>
+                                </li>
+                                <li><span>----------------------------------------------------------------</span></li>
+                                <li class="active">
+                                    <a href="#" class="font-weight-bold"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> اعمال المحاسب</a>
+                                </li>
+                                <li><span class="icon"></span></li>
 
-                    <div class="submenu" id="more">
-                        <ul class="submenu-list" data-parent-element="#more">
 
-                            <li class="sub-submenu">
-                                <a role="menu" class="collapsed" data-toggle="collapse" data-target="#auth" aria-expanded="false"><div> <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Authentication</div> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg></a>
-                                <ul id="auth" class="collapse" data-parent="#compact_submenuSidebar">
-                                    <li>
-                                        <a href="auth_login.html"> Login </a>
-                                    </li>
-                                    <li>
-                                        <a href="auth_login_boxed.html"> Login Boxed </a>
-                                    </li>
-                                    <li>
-                                        <a href="auth_register.html"> Register </a>
-                                    </li>
-                                    <li>
-                                        <a href="auth_register_boxed.html"> Register Boxed </a>
-                                    </li>
-                                    <li>
-                                        <a href="auth_lockscreen.html"> Unlock </a>
-                                    </li>
-                                    <li>
-                                        <a href="auth_lockscreen_boxed.html"> Unlock Boxed </a>
-                                    </li>
-                                    <li>
-                                        <a href="auth_pass_recovery.html"> Recover ID </a>
-                                    </li>
-                                    <li>
-                                        <a href="auth_pass_recovery_boxed.html"> Recover ID Boxed </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="dragndrop_dragula.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Drag and Drop </a>
-                            </li>
-                            <li>
-                                <a href="charts_apex.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Charts </a>
-                            </li>
-                            <li>
-                                <a href="map_jvector.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Maps </a>
-                            </li>
-                            <li class="sub-submenu">
-                                <a role="menu" class="collapsed" data-toggle="collapse" data-target="#starter-kit" aria-expanded="false"><div><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Starter Kit</div> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg></a>
-                                <ul id="starter-kit" class="collapse" data-parent="#compact_submenuSidebar">
-                                    <li>
-                                        <a href="starter_kit_blank_page.html"> Blank Page </a>
-                                    </li>
-                                    <li>
-                                        <a href="starter_kit_breadcrumb.html"> Breadcrumb </a>
-                                    </li>
-                                    <li>
-                                        <a href="starter_kit_boxed.html"> Boxed </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="https://designreset.com/cork/rtl/documentation/index.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Documentation </a>
-                            </li>
-                        </ul>
+
+                                <li>
+
+                                    <a asp-action="Create" asp-controller="BoatOwnerReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>تسجيل انتاج المراكب و توزيعه</a>
+                                </li>
+                                <li>
+                                    <a asp-action="Create" asp-controller="IMerchantReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>تسجيل مشتريات الحلقه</a>
+                                </li>
+                                @*<li>
+                                        <a asp-action="Create" asp-controller="MerchantReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> تسجيل مشتريات تجار البلد</a>
+                                    </li>*@
+                                <li>
+                                    <a asp-action="Create" asp-controller="ISellerReciepts" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>تسجيل مشتريات تجار خارجيين</a>
+                                </li>
+                                <li>
+                                    <a asp-action="Create" asp-controller="SellerRecs" class="font-weight-bold"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span>تسجيل بيعه لتاجر</a>
+                                </li>
+
+                            </ul>
+                        </div>
+
+                        <div class="submenu" id="pages">
+                            <ul class="submenu-list" data-parent-element="#pages">
+                                <li>
+                                    <a href="pages_helpdesk.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Helpdesk </a>
+                                </li>
+                                <li>
+                                    <a href="pages_contact_us.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Contact Form </a>
+                                </li>
+                                <li>
+                                    <a href="pages_faq.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> FAQ </a>
+                                </li>
+                                <li>
+                                    <a href="pages_faq2.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> FAQ 2 </a>
+                                </li>
+                                <li>
+                                    <a href="pages_privacy.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Privacy Policy </a>
+                                </li>
+                                <li>
+                                    <a href="pages_coming_soon.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Coming Soon </a>
+                                </li>
+                                <li class="sub-submenu">
+                                    <a role="menu" class="collapsed" data-toggle="collapse" data-target="#error" aria-expanded="false"><div><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Error</div> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg></a>
+                                    <ul id="error" class="collapse" data-parent="#compact_submenuSidebar">
+                                        <li>
+                                            <a href="pages_error404.html"> 404 </a>
+                                        </li>
+                                        <li>
+                                            <a href="pages_error500.html"> 500 </a>
+                                        </li>
+                                        <li>
+                                            <a href="pages_error503.html"> 503 </a>
+                                        </li>
+                                        <li>
+                                            <a href="pages_maintenence.html"> Maintanence </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="submenu" id="more">
+                            <ul class="submenu-list" data-parent-element="#more">
+
+                                <li class="sub-submenu">
+                                    <a role="menu" class="collapsed" data-toggle="collapse" data-target="#auth" aria-expanded="false"><div> <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Authentication</div> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg></a>
+                                    <ul id="auth" class="collapse" data-parent="#compact_submenuSidebar">
+                                        <li>
+                                            <a href="auth_login.html"> Login </a>
+                                        </li>
+                                        <li>
+                                            <a href="auth_login_boxed.html"> Login Boxed </a>
+                                        </li>
+                                        <li>
+                                            <a href="auth_register.html"> Register </a>
+                                        </li>
+                                        <li>
+                                            <a href="auth_register_boxed.html"> Register Boxed </a>
+                                        </li>
+                                        <li>
+                                            <a href="auth_lockscreen.html"> Unlock </a>
+                                        </li>
+                                        <li>
+                                            <a href="auth_lockscreen_boxed.html"> Unlock Boxed </a>
+                                        </li>
+                                        <li>
+                                            <a href="auth_pass_recovery.html"> Recover ID </a>
+                                        </li>
+                                        <li>
+                                            <a href="auth_pass_recovery_boxed.html"> Recover ID Boxed </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="dragndrop_dragula.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Drag and Drop </a>
+                                </li>
+                                <li>
+                                    <a href="charts_apex.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Charts </a>
+                                </li>
+                                <li>
+                                    <a href="map_jvector.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Maps </a>
+                                </li>
+                                <li class="sub-submenu">
+                                    <a role="menu" class="collapsed" data-toggle="collapse" data-target="#starter-kit" aria-expanded="false"><div><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Starter Kit</div> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg></a>
+                                    <ul id="starter-kit" class="collapse" data-parent="#compact_submenuSidebar">
+                                        <li>
+                                            <a href="starter_kit_blank_page.html"> Blank Page </a>
+                                        </li>
+                                        <li>
+                                            <a href="starter_kit_breadcrumb.html"> Breadcrumb </a>
+                                        </li>
+                                        <li>
+                                            <a href="starter_kit_boxed.html"> Boxed </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="https://designreset.com/cork/rtl/documentation/index.html"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-circle"><circle cx="12" cy="12" r="10"></circle></svg></span> Documentation </a>
+                                </li>
+                            </ul>
+                        </div>
+
                     </div>
 
                 </div>
+                <!--  END SIDEBAR  -->
+                <!--  BEGIN CONTENT AREA  -->
+                <div id="content" class="main-content">
+                    @RenderBody()
+
+                </div>
+                <!--  END CONTENT AREA  -->
+
 
             </div>
-            <!--  END SIDEBAR  -->
-            <!--  BEGIN CONTENT AREA  -->
-            <div id="content" class="main-content">
-                @RenderBody()
+            <!-- END MAIN CONTAINER -->
+            <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
+            <script src="~/assets/js/libs/jquery-3.1.1.min.js"></script>
+            <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+            <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
 
-            </div>
-            <!--  END CONTENT AREA  -->
-
-
-        </div>
-        <!-- END MAIN CONTAINER -->
-        <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
-        <script src="~/assets/js/libs/jquery-3.1.1.min.js"></script>
-        <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
-        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
-        <script src="~/bootstrap/js/popper.min.js"></script>
-        <script src="~/bootstrap/js/bootstrap.min.js"></script>
-        <script src="~/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-        <script src="~/assets/js/app.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-        <script src="~/assets/js/delete.js"></script>
+            <script src="~/bootstrap/js/popper.min.js"></script>
+            <script src="~/bootstrap/js/bootstrap.min.js"></script>
+            <script src="~/plugins/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+            <script src="~/assets/js/app.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+            <script src="~/assets/js/delete.js"></script>
 
 
-        <script>
-            $(document).ready(function () {
-                App.init();
-            });
-        </script>
-        <script src="~/assets/js/custom.js"></script>
-        <!-- END GLOBAL MANDATORY SCRIPTS -->
-        <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
-        <script src="~/plugins/apex/apexcharts.min.js"></script>
-        <script src="~/assets/js/dashboard/dash_1.js"></script>
-        <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+            <script>
+                $(document).ready(function () {
+                    App.init();
+                });
+            </script>
+            <script src="~/assets/js/custom.js"></script>
+            <!-- END GLOBAL MANDATORY SCRIPTS -->
+            <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
+            <script src="~/plugins/apex/apexcharts.min.js"></script>
+            <script src="~/assets/js/dashboard/dash_1.js"></script>
+            <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
 
 
-        <script src="~/plugins/table/datatable/datatables.js"></script>
-        <script>
-            $('#zero-config').DataTable({
-                "oLanguage": {
-                    "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' },
-                    "sInfo": "Showing page _PAGE_ of _PAGES_",
-                    "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                    "sSearchPlaceholder": "Search...",
-                    "sLengthMenu": "Results :  _MENU_",
-                },
-                "stripeClasses": [],
-                "lengthMenu": [7, 10, 20, 50],
-                "pageLength": 7
-            });
+            <script src="~/plugins/table/datatable/datatables.js"></script>
+            <script>
+                $('#zero-config').DataTable({
+                    "oLanguage": {
+                        "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' },
+                        "sInfo": "Showing page _PAGE_ of _PAGES_",
+                        "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                        "sSearchPlaceholder": "Search...",
+                        "sLengthMenu": "Results :  _MENU_",
+                    },
+                    "stripeClasses": [],
+                    "lengthMenu": [7, 10, 20, 50],
+                    "pageLength": 7
+                });
 
-            $('#zero-config2').DataTable({
-                "oLanguage": {
-                    "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' },
-                    "sInfo": "Showing page _PAGE_ of _PAGES_",
-                    "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                    "sSearchPlaceholder": "Search...",
-                    "sLengthMenu": "Results :  _MENU_",
-                },
-                "stripeClasses": [],
-                "lengthMenu": [7, 10, 20, 50],
-                "pageLength": 7
-            });
+                $('#zero-config2').DataTable({
+                    "oLanguage": {
+                        "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' },
+                        "sInfo": "Showing page _PAGE_ of _PAGES_",
+                        "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                        "sSearchPlaceholder": "Search...",
+                        "sLengthMenu": "Results :  _MENU_",
+                    },
+                    "stripeClasses": [],
+                    "lengthMenu": [7, 10, 20, 50],
+                    "pageLength": 7
+                });
 
-            $('#zero-config3').DataTable({
-                "oLanguage": {
-                    "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' },
-                    "sInfo": "Showing page _PAGE_ of _PAGES_",
-                    "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                    "sSearchPlaceholder": "Search...",
-                    "sLengthMenu": "Results :  _MENU_",
-                },
-                "stripeClasses": [],
-                "lengthMenu": [7, 10, 20, 50],
-                "pageLength": 7
-            });
+                $('#zero-config3').DataTable({
+                    "oLanguage": {
+                        "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' },
+                        "sInfo": "Showing page _PAGE_ of _PAGES_",
+                        "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                        "sSearchPlaceholder": "Search...",
+                        "sLengthMenu": "Results :  _MENU_",
+                    },
+                    "stripeClasses": [],
+                    "lengthMenu": [7, 10, 20, 50],
+                    "pageLength": 7
+                });
 
-            $('#zero-config4').DataTable({
-                "oLanguage": {
-                    "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' },
-                    "sInfo": "Showing page _PAGE_ of _PAGES_",
-                    "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                    "sSearchPlaceholder": "Search...",
-                    "sLengthMenu": "Results :  _MENU_",
-                },
-                "stripeClasses": [],
-                "lengthMenu": [7, 10, 20, 50],
-                "pageLength": 7
-            });
+                $('#zero-config4').DataTable({
+                    "oLanguage": {
+                        "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' },
+                        "sInfo": "Showing page _PAGE_ of _PAGES_",
+                        "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                        "sSearchPlaceholder": "Search...",
+                        "sLengthMenu": "Results :  _MENU_",
+                    },
+                    "stripeClasses": [],
+                    "lengthMenu": [7, 10, 20, 50],
+                    "pageLength": 7
+                });
 
-            $('#zero-config5').DataTable({
-                "oLanguage": {
-                    "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' },
-                    "sInfo": "Showing page _PAGE_ of _PAGES_",
-                    "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                    "sSearchPlaceholder": "Search...",
-                    "sLengthMenu": "Results :  _MENU_",
-                },
-                "stripeClasses": [],
-                "lengthMenu": [7, 10, 20, 50],
-                "pageLength": 7
-            });
+                $('#zero-config5').DataTable({
+                    "oLanguage": {
+                        "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' },
+                        "sInfo": "Showing page _PAGE_ of _PAGES_",
+                        "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                        "sSearchPlaceholder": "Search...",
+                        "sLengthMenu": "Results :  _MENU_",
+                    },
+                    "stripeClasses": [],
+                    "lengthMenu": [7, 10, 20, 50],
+                    "pageLength": 7
+                });
 
-            $('#zero-config6').DataTable({
-                "oLanguage": {
-                    "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' },
-                    "sInfo": "Showing page _PAGE_ of _PAGES_",
-                    "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                    "sSearchPlaceholder": "Search...",
-                    "sLengthMenu": "Results :  _MENU_",
-                },
-                "stripeClasses": [],
-                "lengthMenu": [7, 10, 20, 50],
-                "pageLength": 7
-            });
+                $('#zero-config6').DataTable({
+                    "oLanguage": {
+                        "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' },
+                        "sInfo": "Showing page _PAGE_ of _PAGES_",
+                        "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                        "sSearchPlaceholder": "Search...",
+                        "sLengthMenu": "Results :  _MENU_",
+                    },
+                    "stripeClasses": [],
+                    "lengthMenu": [7, 10, 20, 50],
+                    "pageLength": 7
+                });
 
-            $('#zero-config7').DataTable({
-                "oLanguage": {
-                    "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' },
-                    "sInfo": "Showing page _PAGE_ of _PAGES_",
-                    "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                    "sSearchPlaceholder": "Search...",
-                    "sLengthMenu": "Results :  _MENU_",
-                },
-                "stripeClasses": [],
-                "lengthMenu": [7, 10, 20, 50],
-                "pageLength": 7
-            });
-                            //$('.zero-configg').DataTable({
-                            //    "oLanguage": {
-                            //        "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' },
-                            //        "sInfo": "Showing page _PAGE_ of _PAGES_",
-                            //        "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                            //        "sSearchPlaceholder": "Search...",
-                            //        "sLengthMenu": "Results :  _MENU_",
-                            //    },
-                            //    "stripeClasses": [],
-                            //    "lengthMenu": [7, 10, 20, 50],
-                            //    "pageLength": 7
-                            //});
+                $('#zero-config7').DataTable({
+                    "oLanguage": {
+                        "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' },
+                        "sInfo": "Showing page _PAGE_ of _PAGES_",
+                        "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                        "sSearchPlaceholder": "Search...",
+                        "sLengthMenu": "Results :  _MENU_",
+                    },
+                    "stripeClasses": [],
+                    "lengthMenu": [7, 10, 20, 50],
+                    "pageLength": 7
+                });
+                                        //$('.zero-configg').DataTable({
+                                        //    "oLanguage": {
+                                        //        "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>' },
+                                        //        "sInfo": "Showing page _PAGE_ of _PAGES_",
+                                        //        "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
+                                        //        "sSearchPlaceholder": "Search...",
+                                        //        "sLengthMenu": "Results :  _MENU_",
+                                        //    },
+                                        //    "stripeClasses": [],
+                                        //    "lengthMenu": [7, 10, 20, 50],
+                                        //    "pageLength": 7
+                                        //});
 
 
-        </script>
+            </script>
 
-        @RenderSection("scripts", false)
-    </body>
+            @RenderSection("scripts", false)
+        </body>
 
-<!-- Mirrored from designreset.com/cork/rtl/demo9/ by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 21 Jul 2020 20:31:23 GMT -->
-</html>
+        <!-- Mirrored from designreset.com/cork/rtl/demo9/ by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 21 Jul 2020 20:31:23 GMT -->
+    </html>

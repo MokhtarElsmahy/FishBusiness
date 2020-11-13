@@ -57,15 +57,16 @@ namespace FishBusiness
             }
             app.UseHttpsRedirection();
             //app.UseStaticFiles();
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                OnPrepareResponse = ctx =>
-                {
-                    const int durationInSeconds = 10;
-                    ctx.Context.Response.Headers[HeaderNames.CacheControl] =
-                        "public,max-age=" + durationInSeconds;
-                }
-            });
+            app.UseStaticFiles();
+            //    new StaticFileOptions
+            //{
+            //    OnPrepareResponse = ctx =>
+            //    {
+            //        const int durationInSeconds = 10;
+            //        ctx.Context.Response.Headers[HeaderNames.CacheControl] =
+            //            "public,max-age=" + durationInSeconds;
+            //    }
+            //});
             app.UseRouting();
 
             app.UseAuthentication();

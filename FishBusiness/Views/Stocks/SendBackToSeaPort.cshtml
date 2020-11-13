@@ -221,11 +221,11 @@
             </div>
             <div class="modal-body">
 
-                <div class="form-group">
+                @*<div class="form-group">
                     <label class="control-label">*</label>
                     <input type="checkbox" id="ChBoxAmount" onclick="ChangeCheck()" />
                     <span>حدد مع اول عناصر البيعه و أزل التحديد مع اخر عناصرها</span>
-                </div>
+                </div>*@
                 <div class="form-group">
                     <label class="control-label">نوع السمك</label>
                     <select class="form-control" asp-items="ViewBag.StockFishID" id="StockItem">
@@ -372,15 +372,20 @@
             var id = $("#trId").val();
 
             var BoatOwnerItem_FishID = $('#StockItem option:selected').text()
-            var fishID = $('#StockItem option:selected').val();
+
+            var OldprodTypeID = parseInt($('#ProdDDLStock option:selected').val());
+
+            var NewprodTypeID = parseInt($('#ProdDDL option:selected').val());
+
             var BoatOwnerItem_ProductionTypeID = $('#ProdDDL option:selected').text()
+
             var BoatOwnerItem_Qty = $('#Qty').val()
             var BoatOwnerItem_UnitPrice = $('#UnitPrice').val()
 
             var restQty = $('#RestQty').val()
             var restProd = $('#RestProdDDL option:selected').text()
 
-            if (parseFloat(BoatOwnerItem_Qty) > parseFloat($("#quantityInStock").val())) {
+            if (parseFloat(BoatOwnerItem_Qty) > parseFloat($("#quantityInStock").val()) && OldprodTypeID == NewprodTypeID) {
 
                 Swal.fire({
                     icon: 'error',
@@ -480,7 +485,12 @@
 
                 addControlsRest += "<td> <input  class='QtyRest' type='text' value=" + restQty + "> </td>"
                 $('#RestStore').append(addControlsRest);
-                $("#quantityInStock").val(parseFloat($("#quantityInStock").val()) - parseFloat(BoatOwnerItem_Qty))
+
+                if (OldprodTypeID == NewprodTypeID) {
+                  $("#quantityInStock").val(parseFloat($("#quantityInStock").val()) - parseFloat(BoatOwnerItem_Qty))
+                } else {
+                    $("#quantityInStock").val(parseFloat(restQty))
+                }
                 $('#RestQty').val('');
 
                 $("#trId").val(parseInt(id) + 1)

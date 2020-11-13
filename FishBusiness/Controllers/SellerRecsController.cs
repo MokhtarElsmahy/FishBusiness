@@ -44,7 +44,7 @@ namespace FishBusiness.Controllers
             ViewData["FishID"] = new SelectList(_context.Fishes, "FishID", "FishName");
 
             //
-            ViewData["MerchantID"] = new SelectList(_context.Merchants.Where(m => m.IsFromOutsideCity == false), "MerchantID", "MerchantName");
+            ViewData["MerchantID"] = new SelectList(_context.Merchants.Where(m => m.IsFromOutsideCity == false&&m.IsOwner==false), "MerchantID", "MerchantName");
             // commission
             //ViewBag.Commission = _context.Cofigs.Find(1);
             ViewBag.Commission = _context.Cofigs.Find(2);

@@ -348,7 +348,11 @@ namespace FishBusiness.Controllers
                 CurrentCredit = Yesterdaybranch.CurrentCredit;
 
             }
-            var IsellerReciepts = _context.ISellerReciepts.Include(x => x.Merchant).ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString() && x.TotalOfPrices != 0 && x.PersonID == PID).Select(c => new { merchantName = c.Merchant.MerchantName, paidFromDebt = c.PaidFromDebt }).ToList();
+
+            var IsellerReciepts = _context.ISellerReciepts.Include(x => x.Merchant).ToList()
+                .Where(x => x.Date.ToShortDateString() == Date.ToShortDateString() && x.TotalOfPrices != 0 && x.PersonID == PID)
+                .Select(c => new { merchantName = c.Merchant.MerchantName, paidFromDebt = c.PaidFromDebt }).ToList();
+
             var paid_for_Us = _context.PaidForMerchant
                .Include(c => c.Merchant).ToList()
                .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.IsPaidForUs == true && c.PersonID == PID).ToList()

@@ -122,8 +122,8 @@ namespace FishBusiness.Controllers
             }
 
             iSellerReciept.DateOfMoneytization = TimeNow();
-            PaidForMerchant p = new PaidForMerchant() { Date = TimeNow(), IsCash = true, MerchantID = iSellerReciept.MerchantID, Payment = (decimal)PaidFromDebt, IsPaidForUs = true, PreviousDebtsForMerchant = (decimal)(DebtsAfterCommisionAndPayment - PaidFromDebt), PersonID = PID };
-            _context.PaidForMerchant.Add(p);
+            //PaidForMerchant p = new PaidForMerchant() { Date = TimeNow(), IsCash = true, MerchantID = iSellerReciept.MerchantID, Payment = (decimal)PaidFromDebt, IsPaidForUs = true, PreviousDebtsForMerchant = (decimal)(DebtsAfterCommisionAndPayment - PaidFromDebt), PersonID = PID };
+            //_context.PaidForMerchant.Add(p);
             //Person pp = _context.People.Find(PID);
             //pp.credit += Convert.ToDecimal(PaidFromDebt);
             if (iSellerReciept == null)

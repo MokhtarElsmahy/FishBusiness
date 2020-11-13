@@ -1,4 +1,8 @@
-﻿@model FishBusiness.ViewModels.BranchOfficeVM
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@model FishBusiness.ViewModels.BranchOfficeVM
 
 
 @section Styles{
@@ -27,7 +31,7 @@
         </div>
         <div class="mt-4 ml-auto">
             <a asp-action="Index" asp-controller="Home" class="btn btn-primary">الرئيسية</a>
-            <a asp-action="OfficeOfDay"  class="btn btn-primary">السجل</a>
+            <a asp-action="OfficeOfDay" class="btn btn-primary">السجل</a>
             <a class="btn btn-primary" id="btnFinalSave" style="display:none;">حفظ</a>
             <img src="~/assets/img/loader.gif" id="Bloader" style="width:50px;height:50px;display:none" />
         </div>
@@ -77,8 +81,8 @@
                                             {
                                                 <tr>
 
-                                                    <td class="MerchantName">@item.Merchant.MerchantName</td>
-                                                    <td class="Price"> @item.PaidFromDebt</td>
+                                                    <td class="InternalMerchant">@item.Merchant.MerchantName</td>
+                                                    <td class="InternalMerchantPrice"> @item.PaidFromDebt</td>
 
                                                 </tr>
                                             }
@@ -112,14 +116,24 @@
                                         }
                                     </tbody>
                                     <tfoot>
-                                        <tr id="MagdyTr">
-                                            <td>الحاج مجدي</td>
-                                            <td><input type="text" id="PaidFromMagdy" class="form-control" /></td>
-                                            <td><input type="button" id="btnPaidFromMagdy" value="دفع" class="btn btn-primary" /></td>
-                                        </tr>
+                                        @if (SignInManager.IsSignedIn(User))
+                                        {
+                                            var user = await UserManager.GetUserAsync(User);
+                                            var roles = await UserManager.GetRolesAsync(user);
+                                            if (!roles.Contains("admin"))
+                                            {
+                                                <tr id="MagdyTr">
+                                                    <td>الحاج مجدي</td>
+                                                    <td><input type="text" id="PaidFromMagdy" class="form-control" /></td>
+                                                    <td><input type="button" id="btnPaidFromMagdy" value="دفع" class="btn btn-primary" /></td>
+                                                </tr>
+                                            }
+
+                                        }
+
                                         <tr>
                                             <td>الاجمالي</td>
-                                            <td id="totalOfIncome">@(Model.CurrentCredit+Model.Collecting+(decimal)Model.IsellerReciepts.Sum(x=>x.TotalOfPrices) + (decimal)Model.PaidForMerchants.Sum(x => x.Payment) + (decimal)Model.HalekDifferences.Sum(x => x.ReturnedValue))</td>
+                                            <td id="totalOfIncome">@(Model.CurrentCredit+Model.Collecting+(decimal)Model.IsellerReciepts.Sum(x=>x.PaidFromDebt) + (decimal)Model.PaidForMerchants.Sum(x => x.Payment) + (decimal)Model.HalekDifferences.Sum(x => x.ReturnedValue))</td>
                                         </tr>
                                     </tfoot>
 
@@ -457,7 +471,7 @@
 
 
                         </div>
-                        
+
                     </div>
                 </section>
                 <h3>الاجمالى</h3>
@@ -480,7 +494,7 @@
                                     </tbody>
                                     <tfoot>
 
-                                        <tr id="totalOfPayment_tr6" >
+                                        <tr id="totalOfPayment_tr6">
                                             <td>
                                                 رصيد مرحل
                                             </td>
@@ -764,7 +778,7 @@
                 $("#MagdyTr").css("display", "none")
                 i++;
                 $('#indexer').val(i)
-            }) 
+            })
             $("#btnPaidForDrivers").on('click', function () {
 
                 var PaidForDrivers = parseFloat($('#PaidForDrivers').val());
@@ -944,9 +958,9 @@
                 var totalHalek = parseFloat($('#totalHalek').text());
                 var totalOfPaymentTo = parseFloat($('#totalOfPaymentTo').text()); // ريس مركب
                 var totalExpenses = parseFloat($('#totalExpenses').text()); // مركب شريك
-                var totalAdditional = parseFloat($('#totalAdditional').text()); 
-                var totalOperators = parseFloat($('#totalOperators').text()); 
-                var totalSarhas = parseFloat($('#totalSarhas').text()); 
+                var totalAdditional = parseFloat($('#totalAdditional').text());
+                var totalOperators = parseFloat($('#totalOperators').text());
+                var totalSarhas = parseFloat($('#totalSarhas').text());
                 var totalOfDailyExpense = totalHalek + totalOfPaymentTo + totalExpenses + totalAdditional + totalOperators;
                 var addControls = "<tr>"
                 addControls += "<td class=''>اجمالي الايرادات</td>"
@@ -965,7 +979,7 @@
                 $('#TBodyFinal').append(addControls);
                 $("#btnCalc").css("display", "none")
                 $("#btnSave").show()
-                
+
             })
 
             // Final Save

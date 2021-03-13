@@ -170,7 +170,15 @@ namespace FishBusiness.Controllers
 
             if (stock != null)
             {
-                return Json(new { message = "success", totalWeight = stock.TotalWeight, productionTypeId = stock.ProductionTypeID });
+                if (stock.ProductionTypeID == 3)
+                {
+                   return Json(new { message = "success", totalWeight = stock.TotalWeight, productionTypeId = stock.ProductionTypeID });
+
+                }
+                else
+                {
+                    return Json(new { message = "success", totalWeight = stock.Qty, productionTypeId = stock.ProductionTypeID });
+                }
             }
             else
             {
@@ -251,11 +259,18 @@ namespace FishBusiness.Controllers
                         BoxQty = NOfBoxes[i],
                     };
                     var stock = _context.Stocks.Where(i => i.FishID == fish.FishID && i.ProductionTypeID == Produc.ProductionTypeID).FirstOrDefault();
-                    stock.Qty -= qtys[i];
+                   
                     if (stock.ProductionTypeID == 3)
                     {
-                        stock.TotalWeight -= qtys[i];
+                        stock.Qty -= qtys[i] * Convert.ToDouble(NOfBoxes[i]);
+                        stock.TotalWeight -= qtys[i] * Convert.ToDouble(NOfBoxes[i]);
                     }
+                    else
+                    {
+                        stock.Qty -= qtys[i];
+                       
+                    }
+                  
                     _context.SaveChanges();
                     stock = _context.Stocks.Where(i => i.FishID == fish.FishID && i.ProductionTypeID == Produc.ProductionTypeID).FirstOrDefault();
                     if (stock.Qty == 0)

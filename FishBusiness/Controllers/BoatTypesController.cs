@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FishBusiness;
 using FishBusiness.Models;
+using FishBusiness.ViewModels;
 
 namespace FishBusiness.Controllers
 {
@@ -25,7 +26,7 @@ namespace FishBusiness.Controllers
             return View(await _context.BoatTypes.ToListAsync());
         }
 
-       
+   
 
         // GET: BoatTypes/Create
         public IActionResult Create()

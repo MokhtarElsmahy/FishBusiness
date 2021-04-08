@@ -59,7 +59,7 @@ namespace FishBusiness.Controllers
         // GET: ExternalReceipts/Create
         public IActionResult Create()
         {
-            ViewData["BoatID"] = new SelectList(_context.Boats, "BoatID", "BoatName");
+            ViewData["BoatID"] = new SelectList(_context.Boats.Where(c=>c.BoatLicenseNumber != "0"), "BoatID", "BoatName");
             ViewData["SarhaID"] = new SelectList(_context.Sarhas, "SarhaID", "SarhaID");
             return View();
         }

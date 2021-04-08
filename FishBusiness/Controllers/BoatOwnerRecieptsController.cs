@@ -34,10 +34,68 @@ namespace FishBusiness.Controllers
         // GET: BoatOwnerReciepts
         public async Task<IActionResult> Index()
         {
+           
             var applicationDbContext = _context.BoatOwnerReciepts.Include(b => b.Boat).Include(b => b.Sarha);
             return View(await applicationDbContext.ToListAsync());
         }
-       
+
+        public IActionResult BoatRecBuyers(int BoatId , string date ,int BoatOwnerRecId)
+        {
+          
+            List<BoatRecBuyers> lst = new List<BoatRecBuyers>();
+            string boatname = _context.Boats.Find(BoatId).BoatName;
+            string BoatRecdate = _context.BoatOwnerReciepts.Find(BoatOwnerRecId).Date.ToShortDateString();
+            var MerchantReciepts = _context.MerchantReciepts.Include(c => c.Merchant).ToList().Where(c => c.Date.ToShortDateString() == date).ToList();
+           
+                foreach (var itemR in MerchantReciepts)
+                {
+                    var lstR_Items = _context.MerchantRecieptItems.Include(c => c.ProductionType).Include(c => c.Fish).Where(c => c.MerchantRecieptID == itemR.MerchantRecieptID && c.BoatID == BoatId &&c.AmountId ==null).ToList();
+                  
+                    foreach (var itemI in lstR_Items)
+                    {
+
+                        lst.Add(new BoatRecBuyers { buyerName = itemR.Merchant.MerchantName, FishName = itemI.Fish.FishName, Qty = itemI.Qty.ToString(), unitPrice = itemI.UnitPrice, ProductionType = itemI.ProductionType.ProductionName });
+                    }
+                }
+
+            foreach (var itemR in MerchantReciepts)
+            {
+                var lstR_Items = _context.MerchantRecieptItems.Include(c => c.ProductionType).Include(c => c.Fish).Where(c => c.MerchantRecieptID == itemR.MerchantRecieptID && c.BoatID == BoatId &&c.AmountId!=null).ToList();
+
+                var results = from p in lstR_Items
+                              group p.MerchantRecieptItemID by p.AmountId into g
+                              select new AmountVm { AmountId = g.Key, items = g };
+
+                foreach (var Amount in results)
+                {
+                    var Fisheslist = lstR_Items.Where(c => c.AmountId == Amount.AmountId).Select(c => c.Fish.FishName);
+                    string fishes = "";
+                    string Qts = "";
+                    foreach (var item in Fisheslist)
+                    {
+                        fishes += item + "/";
+                    }
+                    var Qtylist = lstR_Items.Where(c => c.AmountId == Amount.AmountId).Select(c => c.Qty);
+                    foreach (var item in Qtylist)
+                    {
+                        Qts += item + "/";
+                    }
+                    var info = lstR_Items.FirstOrDefault(c => c.MerchantRecieptItemID == Amount.items.ElementAt(0));
+                    lst.Add(new BoatRecBuyers { buyerName = itemR.Merchant.MerchantName, FishName = fishes, Qty = Qts, unitPrice = info.UnitPrice, ProductionType = info.ProductionType.ProductionName });
+                }
+
+               
+            }
+
+            BoatRecBuyerContainer boatRecBuyerContainer = new BoatRecBuyerContainer();
+            boatRecBuyerContainer.BoatName = boatname;
+            boatRecBuyerContainer.BoatRecBuyers = lst.OrderBy(c=>c.buyerName).ToList();
+            boatRecBuyerContainer.date = BoatRecdate;
+
+
+            return PartialView(boatRecBuyerContainer);
+        }
+
         // GET: BoatOwnerReciepts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -371,14 +429,35 @@ namespace FishBusiness.Controllers
                                         }
                                         else
                                         {
-                                            Stock stoc = new Stock()
+
+                                            var ss = _context.Stocks.Where(c => c.FishID == fish.FishID && c.ProductionTypeID == Produc.ProductionTypeID).FirstOrDefault();
+                                            if (ss != null)
                                             {
-                                                FishID = fish.FishID,
-                                                ProductionTypeID = Produc.ProductionTypeID,
-                                                Qty = splitItemQty[z],
-                                                Date = ImerchantReciept.Date
-                                            };
-                                            _context.Stocks.Add(stoc);
+                                                ss.Qty += double.Parse(qtys[i]);
+
+                                            }
+                                            else
+                                            {
+
+                                                Stock stoc = new Stock()
+                                                {
+                                                    FishID = fish.FishID,
+                                                    ProductionTypeID = Produc.ProductionTypeID,
+                                                    Qty = splitItemQty[z],
+                                                    Date = ImerchantReciept.Date
+                                                };
+                                                _context.Stocks.Add(stoc);
+                                            }
+
+
+                                            //Stock stoc = new Stock()
+                                            //{
+                                            //    FishID = fish.FishID,
+                                            //    ProductionTypeID = Produc.ProductionTypeID,
+                                            //    Qty = splitItemQty[z],
+                                            //    Date = ImerchantReciept.Date
+                                            //};
+                                            //_context.Stocks.Add(stoc);
                                         }
                                     }
                                     else
@@ -391,6 +470,18 @@ namespace FishBusiness.Controllers
                                         };
                                         _context.Stocks.Add(stock);
                                     }
+
+                                    var stockHistory = _context.StockHistories.ToList().Where(c => c.Date.ToShortDateString() == TimeNow().ToShortDateString() && c.FishID == fish.FishID && c.ProductionTypeID == Produc.ProductionTypeID).FirstOrDefault();
+                                    if (stockHistory != null)
+                                    {
+                                        stockHistory.Total += splitItemQty[z];
+                                    }
+                                    else
+                                    {
+                                        StockHistory history = new StockHistory() { FishID = fish.FishID, ProductionTypeID = Produc.ProductionTypeID, Total = splitItemQty[z], Date = TimeNow() };
+                                        _context.StockHistories.Add(history);
+                                    }
+
                                 }
                             }
                             else
@@ -446,14 +537,35 @@ namespace FishBusiness.Controllers
                                     }
                                     else
                                     {
-                                        Stock stoc = new Stock()
+
+                                        var ss = _context.Stocks.Where(c => c.FishID == fish.FishID && c.ProductionTypeID == Produc.ProductionTypeID).FirstOrDefault();
+                                        if (ss != null)
                                         {
-                                            FishID = fish.FishID,
-                                            ProductionTypeID = Produc.ProductionTypeID,
-                                            Qty = Convert.ToDouble(qtys[i]),
-                                            Date = ImerchantReciept.Date
-                                        };
-                                        _context.Stocks.Add(stoc);
+                                            ss.Qty += double.Parse(qtys[i]);
+
+                                        }
+                                        else
+                                        {
+
+                                            Stock stoc = new Stock()
+                                            {
+                                                FishID = fish.FishID,
+                                                ProductionTypeID = Produc.ProductionTypeID,
+                                                Qty = double.Parse(qtys[i]),
+                                                Date = ImerchantReciept.Date
+                                            };
+                                            _context.Stocks.Add(stoc);
+                                        }
+
+                                        ////-------------
+                                        //Stock stoc = new Stock()
+                                        //{
+                                        //    FishID = fish.FishID,
+                                        //    ProductionTypeID = Produc.ProductionTypeID,
+                                        //    Qty = Convert.ToDouble(qtys[i]),
+                                        //    Date = ImerchantReciept.Date
+                                        //};
+                                        //_context.Stocks.Add(stoc);
                                     }
                                 }
                                 else
@@ -465,6 +577,18 @@ namespace FishBusiness.Controllers
                                         Qty = Convert.ToDouble(qtys[i])
                                     };
                                     _context.Stocks.Add(stock);
+                                }
+
+
+                                var stockHistory = _context.StockHistories.ToList().Where(c => c.Date.ToShortDateString() == TimeNow().ToShortDateString() && c.FishID == fish.FishID && c.ProductionTypeID == Produc.ProductionTypeID).FirstOrDefault();
+                                if (stockHistory != null)
+                                {
+                                    stockHistory.Total += double.Parse(qtys[i]);
+                                }
+                                else
+                                {
+                                    StockHistory history = new StockHistory() { FishID = fish.FishID, ProductionTypeID = Produc.ProductionTypeID, Total = double.Parse(qtys[i]), Date = TimeNow() };
+                                    _context.StockHistories.Add(history);
                                 }
 
                             }

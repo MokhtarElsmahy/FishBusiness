@@ -32,10 +32,10 @@ namespace FishBusiness.Controllers
         }
 
         // GET: ISellerReciepts
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var applicationDbContext = _context.ISellerReciepts.Include(i => i.Merchant);
-            return View(await applicationDbContext.ToListAsync());
+            var applicationDbContext = _context.ISellerReciepts.Include(i => i.Merchant).ToList();
+            return View(applicationDbContext);
         }
         public DateTime TimeNow()
         {

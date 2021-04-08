@@ -1,4 +1,4 @@
-﻿@model IEnumerable<FishBusiness.Models.Merchant>
+﻿@model FishBusiness.ViewModels.MerchantsIndexVmcs
 
 @{
     ViewData["Title"] = "Index";
@@ -39,9 +39,11 @@
         @*@Html.Partial("TableItems")*@
 
         <div class="row layout-top-spacing" id="cancel-row">
-
+          
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+               
                 <div class="widget-content widget-content-area br-6">
+                    <h4>تجار محليين</h4>
                     <div class="table-responsive mb-4 mt-4">
                         <table id="zero-config" class="table table-hover" style="width:100%">
                             <thead>
@@ -49,22 +51,92 @@
                                     <th>اسم العميل</th>
                                     <th>عنوان العميل</th>
                                     <th>تلفون العميل</th>
-                                    <th>ديون العميل</th>
+                                    <th>ديون عليه</th>
+                                    <th>ديون له</th>
                                     <th></th>
 
 
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (Model.Any())
+                                @if (Model.InternalMerchants.Any())
                                 {
-                                    @foreach (var merchant in Model)
+                                    @foreach (var merchant in Model.InternalMerchants)
                                     {
                                         <tr>
                                             <td>@merchant.MerchantName</td>
                                             <td>@merchant.Address</td>
                                             <td>@merchant.Phone</td>
                                             <td class="text-danger">@merchant.PreviousDebts</td>
+                                            <td class="text-danger">@merchant.PreviousDebtsForMerchant</td>
+
+                                            <td>
+
+                                                @*<a href="#" onclick="EditShow(@merchant.MerchantID)" class="btn btn-success mb-2">تعديل</a>*@
+                                                <a asp-action="Details" asp-route-id="@merchant.MerchantID" class="btn btn-info mb-2">بروفايل</a>
+                                                <a href="#" onclick="Details(@merchant.MerchantID)" class="btn btn-info mb-2">اخر فاتورة</a>
+                                                <a class="btn btn-danger mb-2 delete"
+                                                   data-id="@merchant.MerchantID"
+                                                   data-controller="Merchants"
+                                                   data-action="Delete"
+                                                   data-body-message="هل انت متأكد من عملية الحذف ؟">حذف</a>
+                                            </td>
+
+                                        </tr>
+                                    }
+
+                                }
+                                else
+                                {
+                                    <tr>
+
+                                        <td class="font-weight-bolder">لا توجد عملاء</td>
+
+
+                                    </tr>
+                                }
+
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="row layout-top-spacing" id="cancel-row">
+
+            <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+                <div class="widget-content widget-content-area br-6">
+                    <h4>تجار خارجيين</h4>
+                    <div class="table-responsive mb-4 mt-4">
+                        <table id="zero-config2" class="table table-hover" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>اسم العميل</th>
+                                    <th>عنوان العميل</th>
+                                    <th>تلفون العميل</th>
+                                    <th>ديون عليه</th>
+                                    <th>ديون له</th>
+                                    <th></th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.ExternalMerchants.Any())
+                                {
+                                    @foreach (var merchant in Model.ExternalMerchants)
+                                    {
+                                        <tr>
+                                            <td>@merchant.MerchantName</td>
+                                            <td>@merchant.Address</td>
+                                            <td>@merchant.Phone</td>
+                                            <td class="text-danger">@merchant.PreviousDebts</td>
+                                            <td class="text-danger">@merchant.PreviousDebtsForMerchant</td>
 
                                             <td>
 
@@ -152,7 +224,12 @@
 
     <script>
         $(document).ready(function () {
+            $('#myModal').on('hidden.bs.modal', function () {
+                
 
+                $("#ModalBodyDiv2").html('');
+                $("#myModal").modal('hide');
+            })
         })
         var Create = function () {
             var fd = $("#MyForm").serialize();

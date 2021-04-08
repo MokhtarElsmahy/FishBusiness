@@ -564,6 +564,136 @@ namespace FishBusiness.Data.Migrations
                     b.ToTable("Fishermen");
                 });
 
+            modelBuilder.Entity("FishBusiness.Models.HalakSellReciept", b =>
+                {
+                    b.Property<int>("HalakSellRecieptID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsCash")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PersonID")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalOfPrices")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("buyerName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("HalakSellRecieptID");
+
+                    b.HasIndex("PersonID");
+
+                    b.ToTable("HalakSellReciepts");
+                });
+
+            modelBuilder.Entity("FishBusiness.Models.HalakSellRecieptItem", b =>
+                {
+                    b.Property<int>("HalakSellRecieptItemID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BoxQty")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FishID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HalakSellRecieptID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductionTypeID")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Qty")
+                        .HasColumnType("float");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("HalakSellRecieptItemID");
+
+                    b.HasIndex("FishID");
+
+                    b.HasIndex("HalakSellRecieptID");
+
+                    b.HasIndex("ProductionTypeID");
+
+                    b.ToTable("HalakSellRecieptItems");
+                });
+
+            modelBuilder.Entity("FishBusiness.Models.HalakaBuyReciept", b =>
+                {
+                    b.Property<int>("HalakaBuyRecieptID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PersonID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SellerName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("TotalOfPrices")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("HalakaBuyRecieptID");
+
+                    b.HasIndex("PersonID");
+
+                    b.ToTable("HalakaBuyReciepts");
+                });
+
+            modelBuilder.Entity("FishBusiness.Models.HalakaBuyRecieptItem", b =>
+                {
+                    b.Property<int>("HalakaBuyRecieptItemID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<Guid?>("AmountId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("BoxQty")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FishID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HalakaBuyRecieptID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductionTypeID")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Qty")
+                        .HasColumnType("float");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("HalakaBuyRecieptItemID");
+
+                    b.HasIndex("FishID");
+
+                    b.HasIndex("HalakaBuyRecieptID");
+
+                    b.HasIndex("ProductionTypeID");
+
+                    b.ToTable("HalakaBuyRecieptItems");
+                });
+
             modelBuilder.Entity("FishBusiness.Models.HalakaHalek", b =>
                 {
                     b.Property<int>("ID")
@@ -1382,6 +1512,34 @@ namespace FishBusiness.Data.Migrations
                     b.ToTable("Stocks");
                 });
 
+            modelBuilder.Entity("FishBusiness.Models.StockHistory", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("FishID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductionTypeID")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Total")
+                        .HasColumnType("float");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("FishID");
+
+                    b.HasIndex("ProductionTypeID");
+
+                    b.ToTable("StockHistories");
+                });
+
             modelBuilder.Entity("FishBusiness.Models.StockRec", b =>
                 {
                     b.Property<int>("StockRecID")
@@ -1832,6 +1990,66 @@ namespace FishBusiness.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FishBusiness.Models.HalakSellReciept", b =>
+                {
+                    b.HasOne("FishBusiness.Models.Person", "Person")
+                        .WithMany("HalakSellReciepts")
+                        .HasForeignKey("PersonID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FishBusiness.Models.HalakSellRecieptItem", b =>
+                {
+                    b.HasOne("FishBusiness.Models.Fish", "Fish")
+                        .WithMany()
+                        .HasForeignKey("FishID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FishBusiness.Models.HalakSellReciept", null)
+                        .WithMany("ISellerRecieptItems")
+                        .HasForeignKey("HalakSellRecieptID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FishBusiness.Models.ProductionType", "ProductionType")
+                        .WithMany()
+                        .HasForeignKey("ProductionTypeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FishBusiness.Models.HalakaBuyReciept", b =>
+                {
+                    b.HasOne("FishBusiness.Models.Person", "Person")
+                        .WithMany("HalakaBuyRecipets")
+                        .HasForeignKey("PersonID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FishBusiness.Models.HalakaBuyRecieptItem", b =>
+                {
+                    b.HasOne("FishBusiness.Models.Fish", "Fish")
+                        .WithMany()
+                        .HasForeignKey("FishID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FishBusiness.Models.HalakaBuyReciept", "HalakaBuyReciept")
+                        .WithMany("HalakaBuyRecieptItems")
+                        .HasForeignKey("HalakaBuyRecieptID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FishBusiness.Models.ProductionType", "ProductionType")
+                        .WithMany()
+                        .HasForeignKey("ProductionTypeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("FishBusiness.Models.HalakaHalek", b =>
                 {
                     b.HasOne("FishBusiness.Models.Debt", "Debt")
@@ -2151,6 +2369,21 @@ namespace FishBusiness.Data.Migrations
 
                     b.HasOne("FishBusiness.Models.ProductionType", "ProductionType")
                         .WithMany("Stocks")
+                        .HasForeignKey("ProductionTypeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FishBusiness.Models.StockHistory", b =>
+                {
+                    b.HasOne("FishBusiness.Models.Fish", "Fish")
+                        .WithMany("StockHistories")
+                        .HasForeignKey("FishID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FishBusiness.Models.ProductionType", "ProductionType")
+                        .WithMany("StockHistories")
                         .HasForeignKey("ProductionTypeID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

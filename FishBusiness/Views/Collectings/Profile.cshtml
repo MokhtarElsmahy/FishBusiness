@@ -22,6 +22,7 @@
     <!--  BEGIN CUSTOM STYLE FILE  -->
 
     <link rel="stylesheet" type="text/css" href="~/plugins/jquery-step/jquery.steps.css">
+    <link rel="stylesheet" type="text/css" href="~/plugins/select2/select2.min.css">
     <style>
         #formValidate .wizard > .content {
             min-height: 25em;
@@ -212,7 +213,7 @@
                             </div>
 
 
-                                 </div>
+                        </div>
                         <div class="d-flex justify-content-center mt-2">
 
                             <a class="btn btn-primary mt-2" data-toggle="modal" data-target="#MfadeleftModal2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>دفع</a>
@@ -480,7 +481,7 @@
                                     <tbody id="TBodyCash">
                                         <tr>
                                             <td>المبلغ</td>
-                                            <td><input type="text" class="form-control" id="txtCash"  /></td>
+                                            <td><input type="text" class="form-control" id="txtCash" /></td>
                                         </tr>
 
 
@@ -559,7 +560,7 @@
 </div>
 
 <div class="col-lg-12  layout-spacing">
-    
+
 </div>
 
 
@@ -583,7 +584,7 @@
                     <div class="form-group" style="margin-top:10px">
                         <label class="control-label">اختر تاجر</label>
                         <select name="MerchantID" id="MerchantDDL" class="form-control" asp-items="ViewBag.Merchant"></select>
-
+                        @*<input type="button" onclick="Details()" class="btn btn-sm btn-primary" value="اخر فاتوره" />*@
                     </div>
 
                     <div class="form-group">
@@ -593,11 +594,15 @@
                     </div>
 
                 </form>
+                <div id="LastRecBody">
+                    <img src="~/assets/img/loader.gif" id="LastRecloader" style="width:50px;height:50px;display:none" />
+                </div>
             </div>
 
             <div class="modal-footer md-button">
                 <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> اغلاق</button>
-                <button type="button" class="btn btn-primary" id="MNewRows">حفظ</button>
+                <button type="button" class="btn btn-primary" id="MNewRows">دفع</button>
+                <input type="button" onclick="Details()" class="btn btn-primary" value="عرض اخر فاتوره" />
             </div>
         </div>
     </div>
@@ -788,9 +793,24 @@
     <script src="~/assets/js/scrollspyNav.js"></script>
     <script src="~/plugins/jquery-step/jquery.steps.min.js"></script>
     <script src="~/plugins/jquery-step/custom-jquery.steps.js"></script>
-    <script>
 
+
+    <script src="~/plugins/select2/select2.min.js"></script>
+    <script src="~/plugins/select2/custom-select2.js"></script>
+    <script>
+        var Details = function () {
+            $("#LastRecloader").show();
+            var id = $("#MerchantDDL").val();
+            var url = "/Merchants/LatestRec?id=" + id;
+            $("#LastRecBody").load(url, function () {
+                $("#LastRecloader").hide();
+            })
+
+
+        }
         $(document).ready(function () {
+
+
 
             $('#Price').keypress(function (event) {
                 var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -1307,78 +1327,78 @@
             }
         }
 
-                    //var MerchantName = new cookieList("MerchantName"); //المدفوع لينا
-                    //$('.MerchantName').each(function () {
-                    //    if ($(this).text() != '')
-                    //        MerchantName.add($(this).text());
-                    //})
-                    //var Price = new cookieList("Price");
-                    //$('.Price').each(function () {
-                    //    if ($(this).text() != '')
-                    //        Price.add($(this).text());
-                    //})
+                        //var MerchantName = new cookieList("MerchantName"); //المدفوع لينا
+                        //$('.MerchantName').each(function () {
+                        //    if ($(this).text() != '')
+                        //        MerchantName.add($(this).text());
+                        //})
+                        //var Price = new cookieList("Price");
+                        //$('.Price').each(function () {
+                        //    if ($(this).text() != '')
+                        //        Price.add($(this).text());
+                        //})
 
-                    ////---------------------------------------------------------
+                        ////---------------------------------------------------------
 
 
-                    //var ToMerchantName = new cookieList("ToMerchantName"); // اللى دفعناه
-                    //$('.ToMerchantName').each(function () {
-                    //    if ($(this).text() != '')
-                    //        ToMerchantName.add($(this).text());
-                    //})
-                    //var ToPrice = new cookieList("ToPrice");
-                    //$('.ToPrice').each(function () {
-                    //    if ($(this).text() != '')
-                    //        ToPrice.add($(this).text());
-                    //})
+                        //var ToMerchantName = new cookieList("ToMerchantName"); // اللى دفعناه
+                        //$('.ToMerchantName').each(function () {
+                        //    if ($(this).text() != '')
+                        //        ToMerchantName.add($(this).text());
+                        //})
+                        //var ToPrice = new cookieList("ToPrice");
+                        //$('.ToPrice').each(function () {
+                        //    if ($(this).text() != '')
+                        //        ToPrice.add($(this).text());
+                        //})
 
-                    ////---------------------------------------------------------
-                    //var BoatName = new cookieList("BoatName"); // الهالك اللى دفعناه
-                    //$('.BoatName').each(function () {
-                    //    if ($(this).text() != '')
-                    //        BoatName.add($(this).text());
-                    //})
-                    //var HalekPrice = new cookieList("HalekPrice");
-                    //$('.HalekPrice').each(function () {
-                    //    if ($(this).text() != '')
-                    //        HalekPrice.add($(this).text());
-                    //})
-                    //var HalekName = new cookieList("HalekName");
-                    //$('.HalekName').each(function () {
-                    //    if ($(this).text() != '')
-                    //        HalekName.add($(this).text());
-                    //})
+                        ////---------------------------------------------------------
+                        //var BoatName = new cookieList("BoatName"); // الهالك اللى دفعناه
+                        //$('.BoatName').each(function () {
+                        //    if ($(this).text() != '')
+                        //        BoatName.add($(this).text());
+                        //})
+                        //var HalekPrice = new cookieList("HalekPrice");
+                        //$('.HalekPrice').each(function () {
+                        //    if ($(this).text() != '')
+                        //        HalekPrice.add($(this).text());
+                        //})
+                        //var HalekName = new cookieList("HalekName");
+                        //$('.HalekName').each(function () {
+                        //    if ($(this).text() != '')
+                        //        HalekName.add($(this).text());
+                        //})
 
-                    ////------------------------------------------------AddingPrice
+                        ////------------------------------------------------AddingPrice
 
-                    //var Adding = new cookieList("Adding");
-                    //$('.Adding').each(function () {
-                    //    if ($(this).text() != '')
-                    //        Adding.add($(this).text());
-                    //})
-                    //var AddingPrice = new cookieList("AddingPrice"); //المدفوع لينا
-                    //$('.AddingPrice').each(function () {
-                    //    if ($(this).text() != '')
-                    //        AddingPrice.add($(this).text());
-                    //})
-                    ////-----------------------------------------------------
+                        //var Adding = new cookieList("Adding");
+                        //$('.Adding').each(function () {
+                        //    if ($(this).text() != '')
+                        //        Adding.add($(this).text());
+                        //})
+                        //var AddingPrice = new cookieList("AddingPrice"); //المدفوع لينا
+                        //$('.AddingPrice').each(function () {
+                        //    if ($(this).text() != '')
+                        //        AddingPrice.add($(this).text());
+                        //})
+                        ////-----------------------------------------------------
 
-                    //var fathallah = parseFloat($('#totalAhmed').text());
-                    ////-----------------------------------------------
-                    //var BoatNameExpenses = new cookieList("BoatNameExpensesCookie"); // المصروف اللى دفعناه
-                    //$('.BoatNameExpenses').each(function () {
-                    //    BoatNameExpenses.add($(this).text());
-                    //})
-                    //var ExpensePrice = new cookieList("ExpensePriceCookie");
-                    //$('.ExpensePrice').each(function () {
-                    //    ExpensePrice.add($(this).text());
-                    //})
-                    //var Cause = new cookieList("CauseCookie");
-                    //$('.Cause').each(function () {
-                    //    Cause.add($(this).text());
-                    //})
-                    //        //var totalPaidForUs = parseFloat($('#totalOfPayment').text());
-                    //        //var totalPaidForMerchants = parseFloat($("#totalPaidForMerchants").val());
+                        //var fathallah = parseFloat($('#totalAhmed').text());
+                        ////-----------------------------------------------
+                        //var BoatNameExpenses = new cookieList("BoatNameExpensesCookie"); // المصروف اللى دفعناه
+                        //$('.BoatNameExpenses').each(function () {
+                        //    BoatNameExpenses.add($(this).text());
+                        //})
+                        //var ExpensePrice = new cookieList("ExpensePriceCookie");
+                        //$('.ExpensePrice').each(function () {
+                        //    ExpensePrice.add($(this).text());
+                        //})
+                        //var Cause = new cookieList("CauseCookie");
+                        //$('.Cause').each(function () {
+                        //    Cause.add($(this).text());
+                        //})
+                        //        //var totalPaidForUs = parseFloat($('#totalOfPayment').text());
+                        //        //var totalPaidForMerchants = parseFloat($("#totalPaidForMerchants").val());
 
 
     </script>

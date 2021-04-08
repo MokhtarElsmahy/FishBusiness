@@ -31,6 +31,9 @@ namespace FishBusiness.Models
         public virtual ICollection<AdditionalForOffice> AdditionalForOffices { get; set; }
 
         public virtual ICollection<HalekDifference> HalekDifferences { get; set; }
+        public virtual ICollection<HalakSellReciept> HalakSellReciepts { get; set; }
+
+        public virtual ICollection<HalakaBuyReciept> HalakaBuyRecipets { get; set; }
 
     }
 }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<FishBusiness.Models.Stock>
+﻿@model FishBusiness.ViewModels.StockIndexVm
 @{
     ViewData["Title"] = "Index";
 }
@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="mt-4 ml-auto">
-          
+
         </div>
         <div class="mt-4 ml-auto">
             <a asp-action="CreateReport" class="btn btn-primary">تقرير</a>
@@ -43,9 +43,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if (Model.Any())
+                            @if (Model.Stocks.Any())
                             {
-                                @foreach (var item in Model)
+                                @foreach (var item in Model.Stocks)
                                 {
                                     <tr>
                                         <td>@item.Fish.FishName</td>
@@ -90,6 +90,65 @@
 
     </div>
 
+
+
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <h6>الارشيف</h6>
+                <input type="date" id="HistoryDate" />
+                <input type="button" value="تحميل" onclick="GetHistoryDate()" />
+                <p>هنا يوجد نفس عناصر المخزن لليوم الحالى حتى تتمكن من معرفة مصدر كل نوع فى المخزن --ويمكنك تحميل تاريخ معين ومعرفه مصدره</p>
+                <p>هذا النص توضيحى وسيتم ازالته لاحقا</p>
+                <div class="table-responsive mb-4 mt-4" id="HistoryDateDiv">
+                    <img src="~/assets/img/loader.gif" id="HDloader" style="width:50px;height:50px;display:none;" />
+                    <table id="zero-config" class="table table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>نوع السمك</th>
+                                <th>الانتاج</th>
+                                <th>الكميه</th>
+                                <th></th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.StockHistory.Any())
+                            {
+                                @foreach (var item in Model.StockHistory)
+                                {
+                                    <tr>
+                                        <td>@item.Fish.FishName</td>
+                                        <td>@item.ProductionType.ProductionName</td>
+                                        <td>@item.Total</td>
+                                        <td>
+                                            <a class="btn btn-info" href="#" onclick="GetHistoryDetails('@item.FishID','@item.ProductionTypeID','@DateTime.Now.ToShortDateString()')">تفاصيل</a>
+                                        </td>
+                                    </tr>
+                                }
+
+                            }
+                            else
+                            {
+                                <tr>
+
+                                    <td class="font-weight-bolder">لا توجد اشيف</td>
+
+                                    @*<td><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle table-cancel"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></td>*@
+                                </tr>
+                            }
+
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 
@@ -117,7 +176,32 @@
             </div>
         </div>
     </div>
-    
+
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="HistoryModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">تفاصيل</h5>
+                <img src="~/assets/img/loader.gif" id="Hloader" style="width:50px;height:50px;display:none;" />
+            </div>
+            <div class="modal-body" id="HistoryModalBodyDiv">
+
+               
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default"  data-dismiss="modal">اغلاق</button>
+                
+      
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
@@ -132,7 +216,7 @@
         $(document).ready(function () {
 
 
-          
+
 
 
             $("#btnSave").on("click", function (e) {
@@ -151,7 +235,7 @@
                     var FishID = parseInt($("#FishDDL").val());
 
                     var flag = $('#IsCalssify').is(":checked")
-               
+
                     $.ajax({
                         url: "/Stocks/UpdateStock/",
                         type: "Post",
@@ -199,14 +283,14 @@
                     var oldPID = parseInt($("#PID").val());
                     var FishID = parseInt($("#FishDDL").val());
 
-                   // var flag = $('#IsCalssify').is(":checked")
-              
+                    // var flag = $('#IsCalssify').is(":checked")
+
                     $.ajax({
                         url: "/Stocks/UpdateStock/",
                         type: "Post",
                         dataType: "json",
-                       // contentType: 'application/json;charset=utf-8',
-                       //data: JSON.stringify(settings),
+                        // contentType: 'application/json;charset=utf-8',
+                        //data: JSON.stringify(settings),
                         data: {
                             FishID: FishID,
                             StockID: StockID,
@@ -262,6 +346,64 @@
             var url = "/Stocks/Calssify?id=" + id;
             $("#ModalBodyDiv2").load(url, function () {
                 $("#myModal").modal("show");
+            })
+            //GetHistoryDetails int FishID,int ProductionTypeID , string Date   GetHistoryDate
+
+
+           
+
+        }
+
+
+        //var GetHistoryDetails = function (FishID, ProductionTypeID, Date) {
+        //    $("#HistoryModal").modal("show");
+        //    $("#Hloader").show();
+        //    $.ajax({
+        //        url: "/Stocks/GetStockHistoryMerchants",
+        //        type: 'GET',
+        //        data: { FishID: FishID, ProductionTypeID: ProductionTypeID, Date: Date },
+        //        dataType: "json",
+        //        success: function (result) {
+        //            $("#HistoryModalBodyDiv").html(result);
+        //            $("#Hloader").hide();
+        //        }, error: function () {
+        //            alert("fail");
+        //        }
+
+        //    });
+
+
+
+        //}
+
+
+        var GetHistoryDetails = function (FishID, ProductionTypeID, Date) {
+            $("#HistoryModal").modal("show");
+            $("#Hloader").show();
+           
+            var url = "/Stocks/GetStockHistoryMerchants?FishID=" + FishID + "&ProductionTypeID=" + ProductionTypeID + "&Date=" + Date;
+            $("#HistoryModalBodyDiv").load(url, function () {
+                $("#Hloader").hide();
+            })
+
+
+        }
+
+
+
+
+
+        var GetHistoryDate = function () {
+            if ($("#HistoryDate").val() == "") {
+                return false
+            }
+
+
+            $("#HDloader").show();
+            var date = $("#HistoryDate").val();
+            var url = "/Stocks/GetHistoryDate?Date=" +date;
+            $("#HistoryDateDiv").load(url, function () {
+                $("#HDloader").hide();
             })
 
 

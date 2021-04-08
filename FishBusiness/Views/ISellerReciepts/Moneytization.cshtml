@@ -73,6 +73,7 @@
                                                             <th class="text-right" scope="col">الانتاج</th>
                                                             <th class="text-right" scope="col">الكمية بالكجم</th>
                                                             <th class="text-right" scope="col">عدد البوكس</th>
+                                                            <th class="text-right" scope="col">اجمالى الكجم</th>
                                                             <th class="text-right" scope="col">السعر</th>
                                                         </tr>
 
@@ -87,6 +88,7 @@
                                                                 <td class="text-right">@item.ProductionType.ProductionName</td>
                                                                 <td class="text-right">@item.Qty</td>
                                                                 <td class="text-right">@item.BoxQty</td>
+                                                                <td class="text-right">@( double.Parse(item.BoxQty.ToString()) * item.Qty)</td>
                                                                 <td class="text-right prices_td"><input class="form-control prices" asp-for="@item.UnitPrice" /></td>
 
                                                             </tr>
@@ -197,7 +199,7 @@
             </div>
         </div>
         <input type="hidden" id="pricescookie" />
-        <input id="ImageUrl" type="hidden"  />
+        <input id="ImageUrl" type="hidden" />
     </div>
 </div>
 
@@ -418,11 +420,11 @@
 
         $("#files").change(function () {
 		      var element = this;
-              
+
 		      var formData = new FormData();
-              
+
 		      var totalFiles = element.files.length;
-              
+
 		      for (var i = 0; i < totalFiles; i++) {
 		      	var file = element.files[i];
 		      	formData.append("Photo", file);
@@ -448,7 +450,7 @@
                 //        alert(response.ImageURL)
                 //       // $("#ImageUrl").val(response.ImageURL);
                 //      //  $("#SelectedImage").attr("src", response.ImageURL);
-        	       
+
                 // })
                 //.fail(function (XMLHttpRequest, textStatus, errorThrown) {
                 //    	alert("FAIL");

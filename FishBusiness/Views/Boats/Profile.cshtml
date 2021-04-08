@@ -72,7 +72,7 @@
 
             </div>
 
-     
+
 
             <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-12 layout-spacing">
                 <div class="widget widget-five">
@@ -90,7 +90,7 @@
                             <div class="">
 
                                 <label style="font-size:larger;font-weight:bolder;color:black">@Model.BoatInfo.BoatLeader</label><br />
-                                <a href="#"  onclick="LoansShow(@Model.BoatInfo.BoatID)" data-toggle="modal" data-target="#fadeleftModalLoans">ديونه</a> : <label id="PaymentLeaderDebtsLabel" style="font-size:larger;font-weight:bolder;color:black">@Model.BoatInfo.DebtsOfLeader</label>
+                                <a href="#" onclick="LoansShow(@Model.BoatInfo.BoatID)" data-toggle="modal" data-target="#fadeleftModalLoans">ديونه</a> : <label id="PaymentLeaderDebtsLabel" style="font-size:larger;font-weight:bolder;color:black">@Model.BoatInfo.DebtsOfLeader</label>
                             </div>
                         </div>
                     </div>
@@ -243,14 +243,14 @@
                                                             <tr>
                                                                 <td>@rec.TotalBeforePaying</td>
                                                                 <td>@rec.Commission</td>
-                                                                <td>@rec.Date</td>
+                                                                <td>@rec.Date.ToString("dd/MM/yyyy")</td>
                                                                 <td>@rec.PaidFromDebts</td>
                                                                 <td>@rec.TotalAfterPaying</td>
                                                                 <td>
                                                                     <a asp-action="Details" asp-controller="BoatOwnerReciepts" asp-route-id="@rec.BoatOwnerRecieptID" class="btn btn-info mb-2">عرض</a>|
                                                                     <a asp-action="Details" asp-controller="Sarhas" asp-route-id="@rec.SarhaID" class="btn btn-info mb-2">الهالك</a>|
                                                                     <a href="#" data-toggle="modal" data-target="#fadeleftModal" onclick="CalculateShow(@rec.BoatOwnerRecieptID)" class="btn btn-info mb-2">محاسبة</a>|
-
+                                                                    <a href="#" class="btn btn-primary" onclick="GetBuyers('@Model.BoatInfo.BoatID','@rec.Date.ToShortDateString()','@rec.BoatOwnerRecieptID')">التوزيعه</a>
                                                                 </td>
 
                                                             </tr>
@@ -316,13 +316,13 @@
                                                             <tr>
                                                                 <td>@rec.TotalBeforePaying</td>
                                                                 <td>@rec.Commission</td>
-                                                                <td>@rec.Date</td>
+                                                                <td>@rec.Date.ToString("dd/MM/yyyy")</td>
                                                                 <td>@rec.PaidFromDebts</td>
                                                                 <td>@rec.TotalAfterPaying</td>
                                                                 <td>
-                                                                    <a asp-action="Details" asp-controller="BoatOwnerReciepts" asp-route-id="@rec.BoatOwnerRecieptID" class="btn btn-info mb-2">تفاصيل الفاتوره</a>|
-                                                                    <a asp-action="Details" asp-controller="Sarhas" asp-route-id="@rec.SarhaID" class="btn btn-info mb-2">تفاصيل الهالك</a>|
-
+                                                                    <a asp-action="Details" asp-controller="BoatOwnerReciepts" asp-route-id="@rec.BoatOwnerRecieptID" class="btn btn-primary mb-2"> الفاتوره</a>|
+                                                                    <a asp-action="Details" asp-controller="Sarhas" asp-route-id="@rec.SarhaID" class="btn btn-primary mb-2"> الهالك</a>|
+                                                                    <a href="#" class="btn btn-primary" onclick="GetBuyers('@Model.BoatInfo.BoatID','@rec.Date.ToShortDateString()','@rec.BoatOwnerRecieptID')">التوزيعه</a>
                                                                 </td>
 
                                                             </tr>
@@ -382,7 +382,7 @@
                                                                 <tr>
                                                                     <td>@rec.TotalBeforePaying</td>
                                                                     <td>@rec.Commission</td>
-                                                                    <td>@rec.Date</td>
+                                                                    <td>@rec.Date.ToString("dd/MM/yyyy")</td>
                                                                     <td>@rec.PaidFromDebts</td>
                                                                     <td>@rec.TotalAfterPaying</td>
                                                                     <td>
@@ -439,7 +439,7 @@
                                                         foreach (var expense in Model.BoatExpenses)
                                                         {
                                                             <tr>
-                                                                <td>@expense.Date</td>
+                                                                <td>@expense.Date.ToString("dd/MM/yyyy")</td>
                                                                 <td>@expense.Price</td>
                                                                 <td>@expense.Cause</td>
                                                                 <td>
@@ -574,6 +574,25 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <img src="~/assets/img/loader.gif" id="loader" style="width:50px;height:50px;display:none" />
+            <div class="modal-body" id="ModalBodyDiv2">
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">اغلاق</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!--  END CONTENT AREA  -->
 
 @section scripts{
@@ -581,7 +600,7 @@
 
     <script src="~/plugins/dropify/dropify.min.js"></script>
     <script src="~/plugins/blockui/jquery.blockUI.min.js"></script>
-    <!-- <script src="plugins/tagInput/tags-input.js"></script> SubExpense-->
+    <!-- <script src="plugins/tagInput/tags-input.js"></script> SubExpense GetDistribution -->
     <script src="~/assets/js/users/account-settings.js"></script>
     <script>
         $('#zero-config9').DataTable({
@@ -672,7 +691,7 @@
         var fun = function () {
 
             var myform = $("#MyForm").serialize();
-            
+
             $.ajax({
                 type: "POST",
                 url: "/Merchants/cEdit",
@@ -681,7 +700,7 @@
 
                 success: function (response) {
                     if (response.message == "success") {
-                       
+
                         $("#fadeleftModal").modal("hide");
                         location.reload();
                     }
@@ -728,5 +747,37 @@
         }
 
 
+       
+
+        var GetBuyers = function (id, date, BoatOwnerRecId) {
+            $("#loader").show();
+            $("#myModal").modal("show");
+            $.ajax({
+                url: "/BoatOwnerReciepts/BoatRecBuyers",
+                type: "GET",
+                data: {
+
+                    BoatId: id,
+                    date: date,
+                    BoatOwnerRecId: BoatOwnerRecId
+                },
+                success: function (response) {
+
+                    $("#ModalBodyDiv2").html(response);
+                    $("#loader").hide();
+                }, error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'حدث خطأ',
+                        text: 'مشكلة انترنت او ربما لم يتم توزيع الفاتوره',
+                    });
+                    $("#loader").hide();
+                }
+
+
+
+            })
+
+        }
     </script>
 }

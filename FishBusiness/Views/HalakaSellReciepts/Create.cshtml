@@ -1,0 +1,512 @@
+﻿@model FishBusiness.ViewModels.HalakaSellRecVm
+@section Styles {
+
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <link href="~/plugins/animate/animate.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!--  BEGIN CUSTOM STYLE FILE  -->
+    <link href="~/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/components/custom-modal.css" rel="stylesheet" type="text/css" />
+    <!--  END CUSTOM STYLE FILE  -->
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <link href="~/assets/css/apps/scrumboard.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/forms/theme-checkbox-radio.css" rel="stylesheet" type="text/css">
+    <!-- END PAGE LEVEL STYLES -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+}
+<div class="layout-px-spacing">
+
+    <div class="container row mb-0">
+        <div class="page-header m-3 ">
+            <div class="page-title">
+                <h3>اضافة فاتورة أوردر</h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <a asp-action="Index" class="btn btn-primary">قائمة الفواتير</a>
+        </div>
+    </div>
+    <div class="row scrumboard MerchantArea" id="cancel-row">
+
+        <div class="col-lg-4 layout-spacing">
+            <form>
+                <div class="task-list-section">
+
+                    <div data-section="s-new" class="task-list-container" data-connect="sorting">
+                        <div class="connect-sorting">
+                            <div class="task-container-header">
+                                <h6 class="s-heading" data-listTitle="In Progress">اضافة تفاصيل فاتورة أوردر </h6>
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink-1">
+                                        <a class="dropdown-item list-edit" href="javascript:void(0);">Edit</a>
+                                        <a class="dropdown-item list-delete" href="javascript:void(0);">Delete</a>
+                                        <a class="dropdown-item list-clear-all" href="javascript:void(0);">Clear All</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="connect-sorting-content" data-sortable="true">
+
+
+                                <div data-draggable="true" class="card simple-title-task" style="">
+                                    <div class="card-body">
+
+                                        <div class="task-header">
+                                            <div class="form-group">
+                                                <label class="control-label"> اسم الشخص</label>
+                                                <input class="form-control"  required id="buyerName" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div data-draggable="true" class="card simple-title-task" style="">
+                                    <div class="card-body">
+
+                                        <div class="task-header">
+                                            <div class="form-group">
+                                                <label class="control-label">التاريخ</label>
+                                                <input id="Date" asp-for="HalakSellReciept.Date" required class="form-control" />
+
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                               
+
+                            </div>
+
+                            <div class="add-s-task">
+
+                                <a class="addTask" data-toggle="modal" id="Buy" data-target="#MfadeleftModal"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>توزيع</a>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </form>
+        </div>
+        <div class="col-xl-8 col-lg-8 col-sm-8  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <div class="table-responsive mb-4 ">
+                    <table class="table table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+
+                                <th>
+                                    نوع السمك
+                                </th>
+                                <th>
+                                    نوع الانتاج
+                                </th>
+
+                                <th>
+                                    الكمية كجم/طوايل
+                                </th>
+
+                                <th>
+                                   سعر الكجم/الطاوله
+                                </th>
+
+                                <th>
+                                    عددالبوكسات
+                                </th>
+
+
+                                <th>#</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody id="TBody">
+                        </tbody>
+                       
+
+                    </table>
+                    <table>
+                        <tfoot class="table table-hover" style="width:100%">
+                            <tr>
+                                <td>اجمالى الفاتوره</td>
+                                <td> <input type="text" id="TotalOfPrices" value="0" class="form-control" /></td>
+                                <td>التحصيل الان <input type="checkbox" id="IsCash" /></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td> <button type="button" class="btn btn-primary" style="margin-left:5px;display:none" id="btnSave">حفظ الفاتورة</button></td>
+                                <td> <img src="~/assets/img/loader.gif" id="Loader" style="width:50px;height:50px;display:none" /></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                   <p>نص توضيحى : فى حالة حسابك للشخص اضغط على التحصيل الان وفى حالة تاجيل الحساب ليوم اخر لا تختاره وحين يزورك الشخص للحساب اذهب الى سجل مبيع الحلقه واضغط على تحصيل </p>
+                    
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <input type="hidden" id="index" value="1" />
+    <div id="MfadeleftModal" class="modal animated fadeInLeft custo-fadeInLeft" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">توزيع الاسماك بالمخزن</h5>
+                    <img src="~/assets/img/loader.gif" id="IsellerNewRow" style="width:50px;height:50px;display:none" />
+                </div>
+                <div class="modal-body">
+                    <form id="MyForm">
+
+                        <div class="form-group">
+                            <label class="control-label">نوع السمك</label>
+                            <select class="form-control" id="FishIDDDL" name="StockID">
+                                <option value="-1">اختر</option>
+                                @foreach (var item in Model.Stocks)
+                                {
+                                    <option value="@item.StockID">@item.Fish.FishName</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">الكمية بالمخزن</label>
+                            <input name="TotalWeight" id="OldtotalWeight" class="form-control" disabled />
+
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">نوع الانتاج</label>
+                            <select class="form-control" asp-items="ViewBag.ProductionTypeID" name="ProductionTypeID" id="ProductionTypeID">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">الكمية :كجم/طوايل</label>
+                            <input type="number" class="form-control" name="Qty" id="Qty" />
+                            <span class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">سعر الكجم/الطاوله</label>
+                            <input type="number" class="form-control" name="UnitPrice" id="UnitPrice" />
+                            <span class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">عدد البوكسات </label>
+                            <input type="number" class="form-control" id="NOfBoxes" name="" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer md-button">
+                    <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> اغلاق</button>
+                    <button type="button" class="btn btn-primary" id="NewRows">حفظ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $("#FishIDDDL").on("change", function () {
+
+                var StockID = $("#FishIDDDL").val()
+                var FishName = $('#FishIDDDL option:selected').text()
+                $("#IsellerNewRow").show();
+                $.ajax({
+                    url: "/ISellerReciepts/GetStockInfo/",
+                    type: "GET",
+                    contentType: "json",
+                    traditional: true,
+                    data: {
+                        StockID: StockID,
+                        FishName: FishName
+                    },
+                    success: function (result) {
+                       
+                        $("#Qty").val("");
+                        $("#NOfBoxes").val("");
+                        $("#UnitPrice").val("");
+                        $("#NOfBoxes").prop("disabled", false);
+                        $("#OldtotalWeight").val(result.totalWeight)
+                        $("#ProductionTypeID").val(result.productionTypeId)
+                        if (result.productionTypeId == 2) {
+                            $("#NOfBoxes").val(0);
+                            $("#NOfBoxes").prop("disabled", true);
+                        }
+                        $("#IsellerNewRow").hide(); //loader
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'حدث خطأ',
+                            text: 'حاول مرة اخري',
+                        });
+                    }
+                });
+            });
+            $("#btnSave").on("click", function (e) {
+
+
+                if ($("#buyerName").val() == "" || $("#Date").val()=="") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'حدث خطأ',
+                        text: 'تاكد من الاسم والتاريخ',
+                    });
+                    return false;
+                }
+
+                $("#Loader").show();
+                $("#btnSave").prop("disabled", true);
+              
+
+                var FishNames = ""
+                $('.fishes').each(function () {
+                    FishNames += $(this).text();
+                    FishNames += ',';
+
+                })
+                var ProductionTypes = ""
+                $('.productions').each(function () {
+                    ProductionTypes += $(this).text();
+                    ProductionTypes += ',';
+
+                })
+
+                var qtys = ""
+                $('.qtys').each(function () {
+                    qtys += $(this).text();
+                    qtys += ',';
+
+                })
+
+                var UnitePrices = ""
+                $('.uniteprices').each(function () {
+                    UnitePrices += $(this).text();
+                    UnitePrices += ',';
+
+                })
+
+                var NOfBoxes = ""
+                $('.NOfBoxes').each(function () {
+                    NOfBoxes += $(this).text();
+                    NOfBoxes += ',';
+
+                })
+
+
+                var buyerName = $("#buyerName").val()
+                var Date = $("#Date").val();
+                var TotalOfPrices = parseFloat($("#TotalOfPrices").val());
+                
+
+
+                $.ajax({
+                    url: "/HalakaSellReciepts/Create/",
+                    type: "POST",
+                    dataType: "json",
+                    //contentType: 'application/json;charset=utf-8', دى احيانا بتخلى القيم تتبعت فاضيه
+                    data: {
+                        Date: Date,
+                        buyerName: buyerName,
+                        TotalOfPrices: TotalOfPrices,
+                        FishNames: FishNames,
+                        ProductionTypes: ProductionTypes,
+                        qtyss: qtys,
+                        NOfBoxess: NOfBoxes,
+                        UnitePrices: UnitePrices,
+                        IsCash: $('#IsCash').is(':checked') //$("#IsCash").val()
+                    },
+                    traditional: true,
+                    statusCode: {
+                        415: function () {
+                            Response.redirect("/ISellerReciepts/Index/");
+                        }
+                    },
+                    success: function (result) {
+                        if (result.message == "success") {
+                            Swal.fire({
+                                position: 'top-end',
+                                icon: 'success',
+                                title: 'تم الحفظ',
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                            $("#Loader").hide();
+                            $("#btnSave").prop("disabled", false);
+                            $('#TBody').html("");
+                            $("#TotalOfPrices").val(0);
+                            $("#buyerName").val("");
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'حدث خطأ',
+                                text: 'حاول مره اخرى',
+                            });
+
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        if (xhr.status == 401) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'حدث خطأ',
+                                text: 'حاول مره اخرى',
+                            });
+
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'حدث خطأ',
+                                text: 'حاول مره اخرى',
+                            });
+                        }
+                    }
+
+                });
+                e.preventDefault();
+
+
+            });
+
+        });
+        var cookieList = function (cookieName) {
+            //When the cookie is saved the items will be a comma seperated string
+            //So we will split the cookie by comma to get the original array
+            var cookie = $.cookie(cookieName);
+            //Load the items or a new array if null.
+            var items = cookie ? cookie.split(/,/) : new Array();
+
+            //Return a object that we can use to access the array.
+            //while hiding direct access to the declared items array
+            //this is called closures see http://www.jibbering.com/faq/faq_notes/closures.html
+            return {
+                "add": function (val) {
+                    //Add to the items.
+                    items.push(val);
+                    var date = new Date();
+                    date.setTime(date.getTime() + (45 * 1000));
+                    //Save the items to a cookie.
+                    //EDIT: Modified from linked answer by Nick see
+                    //      http://stackoverflow.com/questions/3387251/how-to-store-array-in-jquery-cookie
+                    $.cookie(cookieName, items.join(','), { expires: date });
+                },
+                "remove": function (val) {
+                    //EDIT: Thx to Assef and luke for remove.
+                    indx = items.indexOf(val);
+                    if (indx != -1) items.splice(indx, 1);
+                    $.cookie(cookieName, items.join(','));
+                },
+                "clear": function () {
+                    items = null;
+                    //clear the cookie.
+                    $.cookie(cookieName, null);
+                },
+                "items": function () {
+                    //Get all the items.
+                    return items;
+                }
+            }
+        }
+
+        $("#NewRows").click(function () {
+
+            var Qty = $('#Qty').val()
+            var UnitPrice = $('#UnitPrice').val()
+            var NOfBoxes = $('#NOfBoxes').val()
+            var total = 0;
+            var TotalOfPrices = 0;
+            if (NOfBoxes == 0) {
+
+             total = parseFloat(Qty);
+            } else {
+                 total = parseFloat(Qty) * parseFloat(NOfBoxes);
+            }
+
+            if (total <= $("#OldtotalWeight").val()) {
+
+
+
+                var i = $("#index").val()
+                var Fish = $('#FishIDDDL option:selected').text()
+                var Fishh = $('#FishIDDDL option:selected').text()
+                var ProductionType = $('#ProductionTypeID option:selected').text()
+                var IntProdType = parseInt($('#ProductionTypeID option:selected').val())
+
+
+                //var addControls = "<tr id='row_" + Fish + i + ">"
+                var addControls = "<tr id='row_" + i + "'>"
+
+                addControls += " <td class='fishes'>" + Fishh + "</td>"
+
+                addControls += "<td class='productions'>" + ProductionType + "</td>"
+
+                addControls += "<td class='qtys'>" + Qty + "</td> "
+
+                addControls += "<td class='uniteprices'>" + UnitPrice + "</td> "
+
+                addControls += "<td class='NOfBoxes'> " + NOfBoxes + "</td> "
+
+                addControls += "<td> <a href='#' onclick=remove('" + i + "')>" + "X</a> </td>"
+
+                addControls += "</tr>";
+
+                if (IntProdType == 3) {
+
+                    $("#OldtotalWeight").val($("#OldtotalWeight").val() - total)
+                  
+
+                } else {
+                   
+                    $("#OldtotalWeight").val($("#OldtotalWeight").val() - parseFloat(Qty))
+                   
+                }
+                $('#btnSave').show();
+
+                $('#TBody').append(addControls);
+                $("#index").val(i + 1)
+                $("#Qty").val("");
+                $("#UnitPrice").val("");
+                $("#NOfBoxes").val("");
+                TotalOfPrices = Qty * UnitPrice;
+                $("#TotalOfPrices").val(  parseFloat($("#TotalOfPrices").val()) + parseFloat(TotalOfPrices));
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'حدث خطأ',
+                    text: 'الكمية المدخلة اكبر من اجمالى قيمة المخزن',
+                });
+            }
+        });
+
+        var remove = function (id) {
+
+
+            $("#row_" + id).remove();
+
+        }
+
+
+
+    </script>
+}

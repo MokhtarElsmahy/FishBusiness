@@ -9,16 +9,19 @@ using FishBusiness;
 using FishBusiness.Models;
 using FishBusiness.ViewModels;
 using System.Net.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace FishBusiness.Controllers
 {
     public class IMerchantRecieptsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public IMerchantRecieptsController(ApplicationDbContext context)
+        public IMerchantRecieptsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
         public DateTime TimeNow()
         {
@@ -58,14 +61,14 @@ namespace FishBusiness.Controllers
 
             model.NormalIMerchantItems = _context.IMerchantRecieptItem.Include(c => c.Fish).Include(c => c.ProductionType).Where(c => c.IMerchantRecieptID == iMerchantReciept.IMerchantRecieptID && c.AmountId == null).ToList();
             model.AmountIMerchantItems = _context.IMerchantRecieptItem.Include(c => c.Fish).Include(c => c.ProductionType).Where(c => c.IMerchantRecieptID == iMerchantReciept.IMerchantRecieptID && c.AmountId != null).ToList();
-           
+
 
             var results = from p in model.AmountIMerchantItems
                           group p.IMerchantRecieptItemID by p.AmountId into g
                           select new AmountVm { AmountId = g.Key, items = g };
 
             model.Amounts = results;
-          
+
 
             return View(model);
         }
@@ -73,7 +76,7 @@ namespace FishBusiness.Controllers
         // GET: IMerchantReciepts/Create
         public IActionResult Create()
         {
-            ViewData["MerchantID"] = new SelectList(_context.Merchants.Where(c=>c.IsOwner==false && c.IsFromOutsideCity==false), "MerchantID", "MerchantName");
+            ViewData["MerchantID"] = new SelectList(_context.Merchants.Where(c => c.IsOwner == false && c.IsFromOutsideCity == false), "MerchantID", "MerchantName");
             ViewData["FishID"] = new SelectList(_context.Fishes, "FishID", "FishName");
 
 
@@ -111,7 +114,7 @@ namespace FishBusiness.Controllers
                 string[] Fishes = FishesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 string[] Productions = ProductionTypesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
 
-                double[] qtys = qtysCookie.Split(",").Select(c => Convert.ToDouble(c)).ToArray();
+                string[] qtys = qtysCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
                 decimal[] unitPrices = unitpricesCookie.Split(",").Select(c => Convert.ToDecimal(c)).ToArray();
 
                 IMerchantReciept imerchantReciept;
@@ -120,28 +123,142 @@ namespace FishBusiness.Controllers
                 {
                     imerchantReciept = new IMerchantReciept() { Date = data.Date, MerchantID = data.MerchantID, TotalOfReciept = data.TotalOfReciept };
                     _context.Add(imerchantReciept);
-                     _context.SaveChanges();
+                    _context.SaveChanges();
                 }
                 else
                 {
                     imerchantReciept = _context.IMerchantReciept.Find(data.RecID);
                     m = _context.Merchants.Find(data.MerchantID);
                     imerchantReciept.TotalOfReciept += data.TotalOfReciept;
-                   
+
                 }
 
                 for (int i = 0; i < Fishes.Length; i++)
                 {
-                    var fish = _context.Fishes.Single(x => x.FishName == Fishes[i]);
-                    var Produc = _context.ProductionTypes.Single(x => x.ProductionName == Productions[i]);
+                    string[] splitItem = Fishes[i].Split("/").Select(c => Convert.ToString(c)).ToArray();
 
-                    var TodaysIMerchantRecItems = _context.IMerchantRecieptItem.Include(c => c.IMerchantReciept).ToList().Where(c => c.IMerchantReciept.Date.ToShortDateString() == TimeNow().ToShortDateString() && c.IMerchantRecieptID == imerchantReciept.IMerchantRecieptID).ToList();
-                    var IMerchantRecieptItems = TodaysIMerchantRecItems.Where(c => c.FishID == fish.FishID && c.UnitPrice == unitPrices[i]).FirstOrDefault();
-                    if (IMerchantRecieptItems != null)
+                    if (splitItem.Length > 1)
                     {
-                        if (IMerchantRecieptItems.ProductionTypeID == Produc.ProductionTypeID)
+                        Guid amountID = Guid.NewGuid();
+                        double[] splitItemQty = qtys[i].Split("/").Select(c => Convert.ToDouble(c)).ToArray();
+                        for (int j = 0; j < splitItem.Length; j++)
                         {
-                            IMerchantRecieptItems.Qty += qtys[i];
+
+
+                            var fish = _context.Fishes.Single(x => x.FishName == splitItem[j]);
+                            var Produc = _context.ProductionTypes.Single(x => x.ProductionName == Productions[i]);
+
+
+
+                            IMerchantRecieptItem NewIMerchantRecieptItems = new IMerchantRecieptItem()
+                            {
+                                IMerchantRecieptID = imerchantReciept.IMerchantRecieptID,
+                                FishID = fish.FishID,
+                                ProductionTypeID = Produc.ProductionTypeID,
+                                Qty = splitItemQty[j],
+                                UnitPrice = unitPrices[i],
+                                AmountId = amountID
+
+                            };
+                            _context.IMerchantRecieptItem.Add(NewIMerchantRecieptItems);
+
+                            _context.SaveChanges();
+
+                            var s = _context.Stocks.Where(c => c.FishID == fish.FishID).FirstOrDefault();
+                            if (s != null)
+                            {
+                                if (s.ProductionTypeID == Produc.ProductionTypeID)
+                                {
+
+                                    s.Qty += splitItemQty[j];
+
+
+                                }
+                                else
+                                {
+                                    var ss = _context.Stocks.Where(c => c.FishID == fish.FishID && c.ProductionTypeID == Produc.ProductionTypeID).FirstOrDefault();
+                                    if (ss != null)
+                                    {
+                                        ss.Qty += double.Parse(qtys[i]);
+
+                                    }
+                                    else
+                                    {
+
+                                        Stock stoc = new Stock()
+                                        {
+                                            FishID = fish.FishID,
+                                            ProductionTypeID = Produc.ProductionTypeID,
+                                            Qty = splitItemQty[j],
+                                            Date = imerchantReciept.Date
+                                        };
+                                        _context.Stocks.Add(stoc);
+                                    }
+
+                                    //Stock stoc = new Stock()
+                                    //{
+                                    //    FishID = fish.FishID,
+                                    //    ProductionTypeID = Produc.ProductionTypeID,
+                                    //    Qty = splitItemQty[j],
+                                    //    Date = imerchantReciept.Date
+                                    //};
+                                    //_context.Stocks.Add(stoc);
+                                }
+                            }
+                            else
+                            {
+
+                                Stock stock = new Stock()
+                                {
+                                    FishID = fish.FishID,
+                                    ProductionTypeID = Produc.ProductionTypeID,
+                                    Qty = splitItemQty[j],
+                                };
+                                _context.Stocks.Add(stock);
+                            }
+
+                            var stockHistory = _context.StockHistories.ToList().Where(c => c.Date.ToShortDateString() == TimeNow().ToShortDateString() && c.FishID == fish.FishID && c.ProductionTypeID == Produc.ProductionTypeID).FirstOrDefault();
+                            if (stockHistory != null)
+                            {
+                                stockHistory.Total += splitItemQty[j];
+                            }
+                            else
+                            {
+                                StockHistory history = new StockHistory() { FishID = fish.FishID, ProductionTypeID = Produc.ProductionTypeID, Total = splitItemQty[j], Date = TimeNow() };
+                                _context.StockHistories.Add(history);
+                            }
+
+                        }
+                    }
+                    else
+                    {
+
+
+
+                        var fish = _context.Fishes.Single(x => x.FishName == Fishes[i]);
+                        var Produc = _context.ProductionTypes.Single(x => x.ProductionName == Productions[i]);
+
+                        var TodaysIMerchantRecItems = _context.IMerchantRecieptItem.Include(c => c.IMerchantReciept).ToList().Where(c => c.IMerchantReciept.Date.ToShortDateString() == TimeNow().ToShortDateString() && c.IMerchantRecieptID == imerchantReciept.IMerchantRecieptID).ToList();
+                        var IMerchantRecieptItems = TodaysIMerchantRecItems.Where(c => c.FishID == fish.FishID && c.UnitPrice == unitPrices[i]).FirstOrDefault();
+                        if (IMerchantRecieptItems != null)
+                        {
+                            if (IMerchantRecieptItems.ProductionTypeID == Produc.ProductionTypeID)
+                            {
+                                IMerchantRecieptItems.Qty += double.Parse(qtys[i]);
+                            }
+                            else
+                            {
+                                IMerchantRecieptItem NewIMerchantRecieptItems = new IMerchantRecieptItem()
+                                {
+                                    IMerchantRecieptID = imerchantReciept.IMerchantRecieptID,
+                                    FishID = fish.FishID,
+                                    ProductionTypeID = Produc.ProductionTypeID,
+                                    Qty = double.Parse(qtys[i]),
+                                    UnitPrice = unitPrices[i],
+
+                                }; _context.IMerchantRecieptItem.Add(NewIMerchantRecieptItems);
+                            }
+
                         }
                         else
                         {
@@ -150,61 +267,71 @@ namespace FishBusiness.Controllers
                                 IMerchantRecieptID = imerchantReciept.IMerchantRecieptID,
                                 FishID = fish.FishID,
                                 ProductionTypeID = Produc.ProductionTypeID,
-                                Qty = qtys[i],
+                                Qty = double.Parse(qtys[i]),
                                 UnitPrice = unitPrices[i],
 
                             }; _context.IMerchantRecieptItem.Add(NewIMerchantRecieptItems);
                         }
+                        _context.SaveChanges();
 
-                    }
-                    else
-                    {
-                        IMerchantRecieptItem NewIMerchantRecieptItems = new IMerchantRecieptItem()
+
+
+
+                        var s = _context.Stocks.Where(c => c.FishID == fish.FishID).FirstOrDefault();
+                        if (s != null)
                         {
-                            IMerchantRecieptID = imerchantReciept.IMerchantRecieptID,
-                            FishID = fish.FishID,
-                            ProductionTypeID = Produc.ProductionTypeID,
-                            Qty = qtys[i],
-                            UnitPrice = unitPrices[i],
+                            if (s.ProductionTypeID == Produc.ProductionTypeID)
+                            {
+                                s.Qty += double.Parse(qtys[i]);
 
-                        }; _context.IMerchantRecieptItem.Add(NewIMerchantRecieptItems);
-                    }
-                    _context.SaveChanges();
-                   
-                    var s = _context.Stocks.Where(c => c.FishID == fish.FishID).FirstOrDefault();
-                    if (s != null)
-                    {
-                        if (s.ProductionTypeID == Produc.ProductionTypeID)
-                        {
-                            s.Qty += qtys[i];
+                            }
+                            else
+                            {
+                                var ss = _context.Stocks.Where(c => c.FishID == fish.FishID && c.ProductionTypeID == Produc.ProductionTypeID).FirstOrDefault();
+                                if (ss != null)
+                                {
+                                    ss.Qty += double.Parse(qtys[i]);
 
+                                }
+                                else
+                                {
+
+                                    Stock stoc = new Stock()
+                                    {
+                                        FishID = fish.FishID,
+                                        ProductionTypeID = Produc.ProductionTypeID,
+                                        Qty = double.Parse(qtys[i]),
+                                        Date = imerchantReciept.Date
+                                    };
+                                    _context.Stocks.Add(stoc);
+                                }
+                            }
                         }
                         else
                         {
-                            
-                            Stock stoc = new Stock()
+
+                            Stock stock = new Stock()
                             {
                                 FishID = fish.FishID,
                                 ProductionTypeID = Produc.ProductionTypeID,
-                                Qty = qtys[i],
-                                Date = imerchantReciept.Date
+                                Qty = double.Parse(qtys[i])
                             };
-                            _context.Stocks.Add(stoc);
+                            _context.Stocks.Add(stock);
                         }
-                    }
-                    else
-                    {
-                     
-                        Stock stock = new Stock()
+
+
+                        var stockHistory = _context.StockHistories.ToList().Where(c => c.Date.ToShortDateString() == TimeNow().ToShortDateString() && c.FishID == fish.FishID && c.ProductionTypeID == Produc.ProductionTypeID).FirstOrDefault();
+                        if (stockHistory != null)
                         {
-                            FishID = fish.FishID,
-                            ProductionTypeID = Produc.ProductionTypeID,
-                            Qty = qtys[i]
-                        };
-                        _context.Stocks.Add(stock);
+                            stockHistory.Total += double.Parse(qtys[i]);
+                        }
+                        else
+                        {
+                            StockHistory history = new StockHistory() { FishID = fish.FishID, ProductionTypeID = Produc.ProductionTypeID, Total = double.Parse(qtys[i]), Date = TimeNow() };
+                            _context.StockHistories.Add(history);
+                        }
+
                     }
-
-
                     //_context.IMerchantRecieptItem.Add(IMerchantRecieptItems);
                     _context.SaveChanges();
 
@@ -245,25 +372,25 @@ namespace FishBusiness.Controllers
 
         public IActionResult GetMerchantt(int? id, DateTime date)
         {
-                Merchant m = _context.Merchants.Find(id);
-           
-                var rowsOfRec = _context.IMerchantReciept.Where(i => i.MerchantID == id);
-                int recID = 0;
-                if (rowsOfRec.Any())
-                {
-                    recID = rowsOfRec.Max(i => i.IMerchantRecieptID);
-                }
-                var rec = _context.IMerchantReciept.Find(recID);
-                if (rec != null)
-                {
-                    if (rec.Date.ToShortDateString() == date.ToShortDateString())
-                    {
-                        return Json(new { RecID = recID, debts = m.PreviousDebtsForMerchant });
-                    }
-                    return Json(new { RecID = 0, debts = m.PreviousDebtsForMerchant });
-                }
+            Merchant m = _context.Merchants.Find(id);
 
+            var rowsOfRec = _context.IMerchantReciept.Where(i => i.MerchantID == id);
+            int recID = 0;
+            if (rowsOfRec.Any())
+            {
+                recID = rowsOfRec.Max(i => i.IMerchantRecieptID);
+            }
+            var rec = _context.IMerchantReciept.Find(recID);
+            if (rec != null)
+            {
+                if (rec.Date.ToShortDateString() == date.ToShortDateString())
+                {
+                    return Json(new { RecID = recID, debts = m.PreviousDebtsForMerchant });
+                }
                 return Json(new { RecID = 0, debts = m.PreviousDebtsForMerchant });
+            }
+
+            return Json(new { RecID = 0, debts = m.PreviousDebtsForMerchant });
 
         }
 
@@ -276,7 +403,7 @@ namespace FishBusiness.Controllers
             Fish fish = _context.Fishes.Find(item.FishID);
 
             ProductionType production = _context.ProductionTypes.Find(item.ProductionTypeID);
-            var res = new { productionName = production.ProductionName, fishName = fish.FishName, qty = item.Qty, unitPrice = item.UnitPrice, total = (decimal) item.Qty * item.UnitPrice };
+            var res = new { productionName = production.ProductionName, fishName = fish.FishName, qty = item.Qty, unitPrice = item.UnitPrice, total = (decimal)item.Qty * item.UnitPrice };
 
             return Json(res);
 
@@ -339,32 +466,85 @@ namespace FishBusiness.Controllers
         // GET: IMerchantReciepts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+
+
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var iMerchantReciept = await _context.IMerchantReciept
-                .Include(i => i.Merchant)
-                .FirstOrDefaultAsync(m => m.IMerchantRecieptID == id);
-            if (iMerchantReciept == null)
+
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+            int PID = 1;
+            if (roles.Contains("partner"))
+            {
+                PID = 2;
+
+            }
+
+
+            var IMerchantReciept = await _context.IMerchantReciept.Include(c => c.Merchant).FirstOrDefaultAsync(ww => ww.IMerchantRecieptID == id);
+            if (IMerchantReciept == null)
             {
                 return NotFound();
             }
+            var IMerchantRecieptItems = _context.IMerchantRecieptItem.Where(x => x.IMerchantRecieptID == id).ToList();
+            if (IMerchantRecieptItems.Any())
+            {
+                foreach (var item in IMerchantRecieptItems)
+                {
+                    var stockitem = _context.Stocks.FirstOrDefault(c => c.FishID == item.FishID && c.ProductionTypeID == item.ProductionTypeID);
+                    if (stockitem != null)
+                    {
+                        if (item.ProductionTypeID == 2)//طاوله
+                        {
+                            stockitem.Qty -= item.Qty;
+                        }
+                        else
+                        {
+                            stockitem.TotalWeight -= item.Qty;
+                            stockitem.Qty -= item.Qty;
+                        }
+                    }
 
-            return View(iMerchantReciept);
+
+                    var stockHistory = _context.StockHistories.ToList().Where(c => c.Date.ToShortDateString() == IMerchantReciept.Date.ToShortDateString() && c.FishID == item.FishID && c.ProductionTypeID == item.ProductionTypeID).FirstOrDefault();
+                    if (stockHistory != null)
+                    {
+                        stockHistory.Total -= item.Qty;
+                    }
+
+                }
+
+
+
+                _context.SaveChanges();
+
+            }
+
+            var person = _context.People.Find(PID);
+            var mer = _context.Merchants.Find(IMerchantReciept.MerchantID);
+            mer.PreviousDebtsForMerchant -= IMerchantReciept.TotalOfReciept;
+
+            _context.Remove(IMerchantReciept);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+
         }
 
         // POST: IMerchantReciepts/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var iMerchantReciept = await _context.IMerchantReciept.FindAsync(id);
-            _context.IMerchantReciept.Remove(iMerchantReciept);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    var iMerchantReciept = await _context.IMerchantReciept.FindAsync(id);
+        //    _context.IMerchantReciept.Remove(iMerchantReciept);
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         private bool IMerchantRecieptExists(int id)
         {

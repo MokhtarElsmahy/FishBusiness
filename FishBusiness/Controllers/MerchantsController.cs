@@ -25,7 +25,10 @@ namespace FishBusiness.Controllers
         // GET: Merchants
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Merchants.Where(m=>m.IsOwner==false).ToListAsync());
+            MerchantsIndexVmcs model = new MerchantsIndexVmcs();
+            model.InternalMerchants = await _context.Merchants.Where(m => m.IsOwner == false && m.IsFromOutsideCity == false).ToListAsync();
+            model.ExternalMerchants = await _context.Merchants.Where(m => m.IsOwner == false &&m.IsFromOutsideCity==true).ToListAsync();
+            return View(model);
         }
         public DateTime TimeNow()
         {
@@ -63,7 +66,7 @@ namespace FishBusiness.Controllers
         [HttpGet]
         public IActionResult LatestRec(int? id)
         {
-           
+            //System.Threading.Thread.Sleep(5000);
             if (id == null)
             {
                 return NotFound();

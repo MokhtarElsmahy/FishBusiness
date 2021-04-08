@@ -1,0 +1,28 @@
+﻿@model List<HalakSellRecieptItem>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <td>نوع السمك</td>
+            <td>نوع الانتاج</td>
+            <td>الكمية</td>
+            <td>عدد البوكس</td>
+            <td>سعر الوحدة</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+
+            <tr>
+                <td>@item.Fish.FishName</td>
+                <td>@item.ProductionType.ProductionName</td>
+                <td>@item.Qty</td>
+                <td>@item.BoxQty</td>
+                <td>@item.UnitPrice</td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+

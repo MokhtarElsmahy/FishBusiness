@@ -24,5 +24,7 @@ namespace FishBusiness.Models
         public virtual ICollection<Stock> Stocks { get; set; }
         public virtual ICollection<SellerRecItem> SellerRecItems { get; set; }
 
+        public virtual ICollection<StockHistory> StockHistories { get; set; }
+
     }
 }

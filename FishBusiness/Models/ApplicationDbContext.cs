@@ -90,6 +90,17 @@ namespace FishBusiness
         public virtual DbSet<HalekDifference> HalekDifferences { get; set; }
 
 
+        public virtual DbSet<HalakSellReciept>  HalakSellReciepts { get; set; }
+        public virtual DbSet<HalakSellRecieptItem> HalakSellRecieptItems { get; set; }
+
+
+
+        public virtual DbSet<HalakaBuyReciept> HalakaBuyReciepts { get; set; }
+        public virtual DbSet<HalakaBuyRecieptItem> HalakaBuyRecieptItems { get; set; }
+
+        public virtual DbSet<StockHistory> StockHistories { get; set; }
+
+
 
 
 

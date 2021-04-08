@@ -1,0 +1,63 @@
+﻿@model FishBusiness.ViewModels.HalakaBuyRecDetailsVm
+
+<table class="table">
+    <thead class="">
+        <tr>
+            <th scope="col">النوع</th>
+            <th class="text-right" scope="col">الانتاج</th>
+            <th class="text-right" scope="col">الكمية</th>
+
+            <th class="text-right" scope="col">السعر</th>
+            <th class="text-right" scope="col">الاجمالى</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.NormalIMerchantItems)
+        {
+            <tr>
+
+
+                <td>@item.Fish.FishName</td>
+                <td class="text-right">@item.ProductionType.ProductionName</td>
+                <td class="text-right">@item.Qty</td>
+
+                <td class="text-right">@item.UnitPrice</td>
+                <td class="text-right">@(item.UnitPrice*(decimal)item.Qty)</td>
+            </tr>
+        }
+        @foreach (var Amount in Model.Amounts)
+        {
+
+            var Fisheslist = Model.AmountIMerchantItems.Where(c => c.AmountId == Amount.AmountId).Select(c => c.Fish.FishName);
+            string fishes = "";
+            string Qts = "";
+            foreach (var item in Fisheslist)
+            {
+                fishes += item + "/";
+            }
+            var Qtylist = Model.AmountIMerchantItems.Where(c => c.AmountId == Amount.AmountId).Select(c => c.Qty);
+            foreach (var item in Qtylist)
+            {
+                Qts += item + "/";
+            }
+
+            <tr data-check="trAmount">
+                <td>@fishes  "بيعه"</td>
+                @{
+
+                    var info = Model.AmountIMerchantItems.FirstOrDefault(c => c.HalakaBuyRecieptItemID == Amount.items.ElementAt(0));
+
+                }
+                <td class="text-right">@info.ProductionType.ProductionName</td>
+
+                <td class="text-right">@Qts</td>
+                <td class="text-right"> @info.UnitPrice </td>
+
+                <td class="text-right">@info.UnitPrice</td>
+
+            </tr>
+
+
+        }
+    </tbody>
+</table>

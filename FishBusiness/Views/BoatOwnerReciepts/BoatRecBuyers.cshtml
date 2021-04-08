@@ -1,0 +1,42 @@
+﻿@model FishBusiness.ViewModels.BoatRecBuyerContainer
+
+
+<h3>توزيع مركب @Model.BoatName</h3>
+<h6>تاريخ @Model.date</h6>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>اسم التاجر</th>
+            <th>نوع السمك</th>
+            <th>النوع</th>
+            <th>الكمية</th>
+            <th>السعر</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.BoatRecBuyers.Any())
+        {
+
+            @foreach (var item in Model.BoatRecBuyers)
+            {
+                <tr>
+                    <td>@item.buyerName</td>
+                    <td>@item.FishName</td>
+                    <td>@item.ProductionType</td>
+                    <td>@item.Qty</td>
+                    <td>@item.unitPrice</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td></td>
+                
+                <td colspan="2">لم يتم توزيع هذه الفاتوره </td>
+                <td></td>
+                <td></td>
+            </tr>
+        }
+    </tbody>
+</table>

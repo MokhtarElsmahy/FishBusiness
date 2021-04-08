@@ -32,9 +32,12 @@ namespace FishBusiness.Controllers
         // GET: Stocks
         public IActionResult Index()
         {
-            var applicationDbContext = _context.Stocks.Include(s => s.Fish).Include(s => s.ProductionType).ToList();
+            StockIndexVm model = new StockIndexVm();
+            model.Stocks = _context.Stocks.Include(s => s.Fish).Include(s => s.ProductionType).ToList();
+            model.StockHistory = _context.StockHistories.Include(c => c.Fish).Include(c => c.ProductionType).ToList().Where(c => c.Date.ToShortDateString() == TimeNow().ToShortDateString()).ToList();
+            //var applicationDbContext = _context.Stocks.Include(s => s.Fish).Include(s => s.ProductionType).ToList();
             //return View( applicationDbContext.Where(s=>s.Date.ToShortDateString()==TimeNow().ToShortDateString()).ToList());
-            return View(applicationDbContext.ToList());
+            return View(model);
         }
 
         // GET: Stocks/Details/5
@@ -855,6 +858,41 @@ namespace FishBusiness.Controllers
 
                 return 0;
             }
+
+        }
+
+
+        public IActionResult GetStockHistoryMerchants(int FishID,int ProductionTypeID , string Date)
+        {
+            List<StockHistoryVm> model = new List<StockHistoryVm>();
+            var IMerchantReciepts = _context.IMerchantReciept.Include(c=>c.Merchant).ToList().Where(c => c.Date.ToShortDateString() == Date).ToList();
+            if (IMerchantReciepts.Any())
+            {
+                foreach (var ImerchRec in IMerchantReciepts)
+                {
+                    var Items = _context.IMerchantRecieptItem.Include(c=>c.ProductionType).Where(c => c.IMerchantRecieptID == ImerchRec.IMerchantRecieptID).ToList();
+                    if (Items.Any())
+                    {
+                        foreach (var item in Items)
+                        {
+                            if (item.FishID==FishID && item.ProductionTypeID ==ProductionTypeID)
+                            {
+                                StockHistoryVm stockHistory = new StockHistoryVm() { MerchantName = ImerchRec.Merchant.MerchantName, ProductionType = item.ProductionType.ProductionName, Qty = item.Qty };
+                                model.Add(stockHistory);
+                            }
+                        }
+                    }
+                }
+            }
+            return PartialView(model);
+        
+        }
+
+
+        public IActionResult GetHistoryDate(DateTime date)
+        {
+            var h = _context.StockHistories.Include(c=>c.Fish).Include(c=>c.ProductionType).ToList().Where(c => c.Date.ToShortDateString() == date.ToShortDateString()).ToList();
+            return PartialView(h);
 
         }
     }

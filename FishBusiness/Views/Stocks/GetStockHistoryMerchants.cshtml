@@ -1,0 +1,33 @@
+﻿@model List<FishBusiness.ViewModels.StockHistoryVm>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <td>اسم التاجر</td>
+            <td>الكميه</td>
+            <td>النوع</td>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.MerchantName</td>
+                    <td>@item.Qty</td>
+                    <td>@item.ProductionType</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td></td>
+                <td>لا توجد بيانات</td>
+                <td></td>
+            </tr>
+        }
+    </tbody>
+</table>

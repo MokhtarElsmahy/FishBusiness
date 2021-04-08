@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="mt-4 ml-auto">
-            <a asp-action="Create" class="btn btn-primary">اضافة فاتورة جديدة</a>
+            <a asp-action="PersonRecieptCreate" class="btn btn-primary">اضافة فاتورة جديدة</a>
         </div>
     </div>
 
@@ -48,7 +48,7 @@
                                 {
                                     <tr>
                                         <td>@item.PersonRecieptID</td>
-                                        <td>@item.Date</td>
+                                        <td>@item.Date.ToString("dd/MM/yyyy")</td>
                                         <td>@item.PersonName</td>
                                         <td>@item.TotalPrice</td>
                                   

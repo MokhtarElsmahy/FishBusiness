@@ -33,9 +33,9 @@
                                 <th>
                                     @Html.DisplayNameFor(model => model.Date)
                                 </th>
-                                @*<th>
-                                    @Html.DisplayNameFor(model => model.Merchant.MerchantName)
-                                </th>*@
+                                <th>
+                                   تم الشراء من
+                                </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.TotalOfReciept)
                                 </th>
@@ -50,11 +50,11 @@
                                 {
                             <tr>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Date)
+                                    @item.Date.ToString("dd/MM/yyyy")
                                 </td>
-                                @*<td>
+                                <td>
                                     @Html.DisplayFor(modelItem => item.Merchant.MerchantName)
-                                </td>*@
+                                </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.TotalOfReciept)
                                 </td>

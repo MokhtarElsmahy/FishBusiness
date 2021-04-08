@@ -126,11 +126,11 @@
                                 </th>
 
                                 <th>
-                                    الكمية كجم
+                                   الكمية(كجم/طاولة)
                                 </th>
 
                                 <th>
-                                    عدد
+                                    عدد البوكسات
                                 </th>
 
 
@@ -186,7 +186,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">الكمية</label>
+                            <label class="control-label">الكمية (كجم/طاولة)</label>
                             <input type="number" class="form-control" name="Qty" id="Qty" />
                             <span class="text-danger"></span>
                         </div>
@@ -236,7 +236,14 @@
                         //});
                         $("#OldtotalWeight").val(result.totalWeight)
                         $("#ProductionTypeID").val(result.productionTypeId)
-                        $("#IsellerNewRow").hide();
+                        if (result.productionTypeId == 2) {
+                            $("#NOfBoxes").val(0);
+                            $("#NOfBoxes").prop("disabled", true);
+                        } else {
+                            $("#NOfBoxes").val('');
+                            $("#NOfBoxes").prop("disabled", false);
+                        }
+                        $("#IsellerNewRow").hide();//loader
                     },
                     error: function () {
                         Swal.fire({

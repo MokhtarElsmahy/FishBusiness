@@ -32,6 +32,7 @@
                                 <th>رقم الفاتوره</th>
                                 <th>@Html.DisplayNameFor(i => i.Date)</th>
                                 <th>@Html.DisplayNameFor(i => i.Merchant.MerchantName)</th>
+                                <th>اجمالى الفاتوره</th>
                                 @*<th>@Html.DisplayNameFor(i => i.Merchant.PreviousDebts)</th>
                                     <th>@Html.DisplayNameFor(i => i.payment)</th>*@
 
@@ -47,8 +48,9 @@
                                 {
                                     <tr>
                                         <td>@item.MerchantRecieptID</td>
-                                        <td>@item.Date</td>
+                                        <td>@item.Date.ToString("dd/MM/yyyy")</td>
                                         <td>@item.Merchant.MerchantName</td>
+                                        <td>@item.TotalOfReciept</td>
                                         @*<td>@item.Merchant.PreviousDebts</td>
                                             <td>@item.payment</td>*@
                                         <td>

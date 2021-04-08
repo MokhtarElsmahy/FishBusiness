@@ -86,8 +86,8 @@
                                                             <th scope="col">النوع</th>
                                                             <th class="text-right" scope="col">الانتاج</th>
                                                             <th class="text-right" scope="col">الكمية</th>
-
                                                             <th class="text-right" scope="col">عدد البوكس</th>
+                                                            <th class="text-right" scope="col">اجمالى الكجم</th>
                                                             <th class="text-right" scope="col">السعر</th>
                                                         </tr>
                                                     </thead>
@@ -101,6 +101,7 @@
                                                                 <td class="text-right">@item.ProductionType.ProductionName</td>
                                                                 <td class="text-right">@item.Qty</td>
                                                                 <td class="text-right">@item.BoxQty</td>
+                                                                <td class="text-right">@( double.Parse(item.BoxQty.ToString()) * item.Qty)</td>
                                                                 <td class="text-right">@item.UnitPrice</td>
 
                                                             </tr>

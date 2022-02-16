@@ -9,9 +9,11 @@ using FishBusiness;
 using FishBusiness.Models;
 using FishBusiness.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FishBusiness.Controllers
 {
+    [Authorize]
     public class SarhasController : Controller
     {
         private readonly ApplicationDbContext _context;

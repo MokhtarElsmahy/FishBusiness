@@ -33,6 +33,12 @@ namespace FishBusiness.Models
 
         public virtual ICollection<MerchantRecieptItem> MerchantRecieptItems { get; set; }
 
+        public int? FromMerchant { get; set; }//التاجر اللى تم الشراء منه 
+        //بيتم تسجيله فى 
+        //SellerRecsController -- Mcreat()
+        //علشان نحدد التاجر اشترى من مين 
+        //
+
 
         //[Display(Name = "ما تم دفعه")]
 

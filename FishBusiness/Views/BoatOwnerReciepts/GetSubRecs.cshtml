@@ -1,0 +1,22 @@
+﻿@model List<int>
+@{
+    int i = 0;
+}
+@*
+    int
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@if (Model.Any())
+{
+    foreach (var item in Model)
+    {
+        <a asp-action="Details" asp-controller="BoatOwnerReciepts" target="_blank" asp-route-id="@item" class="btn btn-primary mb-2"> الفاتوره رقم @(++i)</a><br />
+       
+    }
+        <a asp-action="MasterDetails" asp-controller="BoatOwnerReciepts" target="_blank" asp-route-MasterRecId="@ViewBag.MasterId" class="btn btn-success mb-2"> عرض مجمع</a>
+
+ }
+ else
+ {
+    <span>حدث خطأ</span>
+ }

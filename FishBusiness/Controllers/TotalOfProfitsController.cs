@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using FishBusiness;
 using FishBusiness.Models;
 using FishBusiness.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FishBusiness.Controllers
 {
+    [Authorize]
     public class TotalOfProfitsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -42,24 +44,26 @@ namespace FishBusiness.Controllers
         {
 
             SummationVm model = new SummationVm();
-            string Datee = Date.ToShortDateString();
+            var Datee = Date.Date;
 
             var IMerchantReciepts = _context.IMerchantReciept.Include(m => m.Merchant).ToList();
-            model.IMerchantReciepts = IMerchantReciepts.Where(m => m.Date.ToShortDateString() == Datee).ToList();
+            model.IMerchantReciepts = IMerchantReciepts.Where(m => m.Date.Date == Datee).ToList();
+
+            model.HalakaBuyReciepts= _context.HalakaBuyReciepts.Where(x => x.Date.Date == Datee).ToList(); //مشترى الحلقه من افراد عاديين غير تجار 
 
             var ISellerReciepts = _context.ISellerReciepts.Include(m => m.Merchant).ToList();
-            model.ISellerReciepts = ISellerReciepts.Where(m => m.Date.ToShortDateString() == Datee).ToList();
+            model.ISellerReciepts = ISellerReciepts.Where(m => m.Date.Date == Datee).ToList();
             // labour
-            var additionalLabour = _context.AdditionalPayments.ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString() && x.Name == "عمال").Sum(x => x.Value);
+            var additionalLabour = _context.AdditionalPayments.Where(x => x.Date.Date == Datee && x.Name == "عمال").Sum(x => x.Value);
             //var debtSarhaLabour = _context.Debts_Sarhas.Include(x=>x.Debt).ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString() && x.Debt.DebtName == "عمال").Sum(x => x.Price);
-            var HalakaHalekLabour = _context.HalakaHaleks.Include(x=>x.Debt).ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString() && x.Debt.DebtName == "عمال").Sum(x => x.Price);
+            var HalakaHalekLabour = _context.HalakaHaleks.Include(x=>x.Debt).Where(x => x.Date.Date == Datee && x.Debt.DebtName == "عمال").Sum(x => x.Price);
             model.Labour = additionalLabour + HalakaHalekLabour;
             // ice
-            var additionalIce = _context.AdditionalPayments.ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString() && x.Name == "ثلج").Sum(x => x.Value);
+            var additionalIce = _context.AdditionalPayments.Where(x => x.Date.Date == Datee && x.Name == "ثلج").Sum(x => x.Value);
             //var debtSarhaIce = _context.Debts_Sarhas.Include(x => x.Debt).ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString() && x.Debt.DebtName == "ثلج").Sum(x => x.Price);
-            var HalakaHalekIce = _context.HalakaHaleks.Include(x => x.Debt).ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString() && x.Debt.DebtName == "ثلج").Sum(x => x.Price);
+            var HalakaHalekIce = _context.HalakaHaleks.Include(x => x.Debt).Where(x => x.Date.Date == Datee && x.Debt.DebtName == "ثلج").Sum(x => x.Price);
             model.Ice = additionalIce + HalakaHalekIce;
-            var TodayProfit = _context.TotalOfProfits.ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString());
+            var TodayProfit = _context.TotalOfProfits.Where(x => x.Date.Date == Datee);
             if (TodayProfit.Count() > 0)
             {
                 ViewBag.Profit = TodayProfit.FirstOrDefault().Profit;
@@ -85,31 +89,34 @@ namespace FishBusiness.Controllers
         {
 
             SummationVm model = new SummationVm();
-            string Datee = TimeNow().AddDays(10).ToShortDateString();
+            DateTime Datee = TimeNow().AddDays(10).Date;
 
-            var IMerchantReciepts = _context.IMerchantReciept.Include(m => m.Merchant).ToList();
-            model.IMerchantReciepts = IMerchantReciepts.Where(m => m.Date.ToShortDateString() == Datee).ToList();
+            var IMerchantReciepts = _context.IMerchantReciept.Include(m => m.Merchant);
+            model.IMerchantReciepts = IMerchantReciepts.Where(m => m.Date.Date == Datee).ToList();
 
-            var ISellerReciepts = _context.ISellerReciepts.Include(m => m.Merchant).ToList();
-            model.ISellerReciepts = ISellerReciepts.Where(m => m.Date.ToShortDateString() == Datee).ToList();
+            var ISellerReciepts = _context.ISellerReciepts.Include(m => m.Merchant);
+            model.ISellerReciepts = ISellerReciepts.Where(m => m.Date.Date == Datee).ToList();
             return View(model);
         }
        
         public IActionResult SummationOfAdayDate(DateTime Date)
         {
 
-            System.Threading.Thread.Sleep(2000);
-            string Datee = Date.ToShortDateString();
+          //  System.Threading.Thread.Sleep(2000);
+            DateTime Datee = Date.Date;
            
             var IMerchantReciepts = _context.IMerchantReciept.Include(m => m.Merchant).ToList();
-           var  IMerchantRecieptss = IMerchantReciepts.Where(m => m.Date.ToShortDateString() == Datee).Select(m=>new { merchantName = m.Merchant.MerchantName, totalOfReciept=m.TotalOfReciept });
+           var  IMerchantRecieptss = IMerchantReciepts.Where(m => m.Date.Date == Datee).Select(m=>new { merchantName = m.Merchant.MerchantName, totalOfReciept=m.TotalOfReciept });
             var TotalOfPurchases = IMerchantRecieptss.Select(c => c.totalOfReciept).Sum();
 
             var ISellerReciepts = _context.ISellerReciepts.Include(m => m.Merchant).ToList();
-            var ISellerRecieptss = ISellerReciepts.Where(m => m.Date.ToShortDateString() == Datee).Select(m=>new { merchantName=m.Merchant.MerchantName , salesValue =(m.TotalOfPrices-m.Commision) ,commision = m.Commision , totalOfPrices=m.TotalOfPrices , carDistination = m.CarDistination ,carPrice=m.CarPrice});
+            var ISellerRecieptss = ISellerReciepts.Where(m => m.Date.Date == Datee).Select(m=>new { merchantName=m.Merchant.MerchantName , salesValue =(m.TotalOfPrices-m.Commision) ,commision = m.Commision , totalOfPrices=m.TotalOfPrices , carDistination = m.CarDistination ,carPrice=m.CarPrice});
             var TotalOfSales = ISellerRecieptss.Select(c => (c.totalOfPrices - c.commision)).Sum();
 
-            var ice_labour_profit = _context.TotalOfProfits.ToList().Where(c=>c.Date.ToShortDateString()==Date.ToShortDateString()).FirstOrDefault();
+            var HalakaBuyReciepts = _context.HalakaBuyReciepts.Where(x => x.Date.Date == Datee).Select(m => new { merchantName = m.SellerName, totalOfReciept = m.TotalOfPrices }).ToList(); //مشترى الحلقه من افراد عاديين غير تجار
+            var HalakaBuyRecieptsTotal = HalakaBuyReciepts.Sum(c => c.totalOfReciept);
+
+            var ice_labour_profit = _context.TotalOfProfits.ToList().Where(c=>c.Date.Date==Datee).FirstOrDefault();
             double ice = 0.0;
             double labour = 0.0;
             double profit = 0.0;
@@ -120,7 +127,7 @@ namespace FishBusiness.Controllers
                 profit = ice_labour_profit.Profit;
             }
 
-            return Json(new { purchases = IMerchantRecieptss , totalOfReciepts= TotalOfPurchases , sales = ISellerRecieptss , totalOfSales= TotalOfSales ,ice= ice, labour= labour ,profit= profit });
+            return Json(new { halakaBuyReciepts= HalakaBuyReciepts, halakaBuyRecieptsTotal= HalakaBuyRecieptsTotal, purchases = IMerchantRecieptss , totalOfReciepts= TotalOfPurchases , sales = ISellerRecieptss , totalOfSales= TotalOfSales ,ice= ice, labour= labour ,profit= profit });
         }
 
     }

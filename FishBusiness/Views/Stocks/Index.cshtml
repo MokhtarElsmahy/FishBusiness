@@ -109,6 +109,7 @@
                                 <th>نوع السمك</th>
                                 <th>الانتاج</th>
                                 <th>الكميه</th>
+                              
                                 <th></th>
 
 
@@ -123,6 +124,7 @@
                                         <td>@item.Fish.FishName</td>
                                         <td>@item.ProductionType.ProductionName</td>
                                         <td>@item.Total</td>
+                                        
                                         <td>
                                             <a class="btn btn-info" href="#" onclick="GetHistoryDetails('@item.FishID','@item.ProductionTypeID','@DateTime.Now.ToShortDateString()')">تفاصيل</a>
                                         </td>

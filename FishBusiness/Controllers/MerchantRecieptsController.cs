@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using FishBusiness;
 using FishBusiness.Models;
 using FishBusiness.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FishBusiness.Controllers
 {
+    [Authorize]
     public class MerchantRecieptsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -40,6 +42,7 @@ namespace FishBusiness.Controllers
             var merchantReciept = await _context.MerchantReciepts
                 .Include(m => m.Merchant)
                 .FirstOrDefaultAsync(m => m.MerchantRecieptID == id);
+
             if (merchantReciept == null)
             {
                 return NotFound();
@@ -47,6 +50,15 @@ namespace FishBusiness.Controllers
             ViewBag.Items = _context.MerchantRecieptItems.Where(i => i.MerchantRecieptID == id).Include(x => x.Fish).Include(x => x.ProductionType).Include(x => x.Boat);
 
             MerchantRecDetailsVm model = new MerchantRecDetailsVm();
+            if (merchantReciept.FromMerchant.HasValue)
+            {
+
+                model.FromMerchnat = _context.Merchants.FirstOrDefault(c => c.MerchantID == merchantReciept.FromMerchant.Value).MerchantName;
+            }
+            else
+            {
+                model.FromMerchnat = "";
+            }
             model.MerchantReciept = merchantReciept;
             model.NormalMerchantItems = _context.MerchantRecieptItems.Include(c => c.Fish).Include(c => c.Boat).Include(c => c.ProductionType).Where(c => c.MerchantRecieptID == merchantReciept.MerchantRecieptID && c.AmountId == null).ToList();
             model.AmountMerchantItems = _context.MerchantRecieptItems.Include(c => c.Fish).Include(c => c.Boat).Include(c => c.ProductionType).Where(c => c.MerchantRecieptID == merchantReciept.MerchantRecieptID && c.AmountId != null).ToList();
@@ -86,7 +98,7 @@ namespace FishBusiness.Controllers
 
         public IActionResult GetMerchant(int? id, DateTime date)
         {
-            
+
             Merchant m = _context.Merchants.Find(id);
             if (m.IsOwner == false)
             {
@@ -134,7 +146,7 @@ namespace FishBusiness.Controllers
         public IActionResult GetFishPrice(int fishId, int boatId)
         {
 
-            var BoatrecId = _context.BoatOwnerReciepts.Where(i => i.BoatID == boatId).Max(i=>i.BoatOwnerRecieptID);
+            var BoatrecId = _context.BoatOwnerReciepts.Where(i => i.BoatID == boatId).Max(i => i.BoatOwnerRecieptID);
             var fishPrice = _context.BoatOwnerItems.SingleOrDefault(t => t.BoatOwnerRecieptID == BoatrecId && t.FishID == fishId);
 
             var res = new { unitPrice = fishPrice.UnitPrice };
@@ -161,7 +173,7 @@ namespace FishBusiness.Controllers
             Fish fish = _context.Fishes.Find(item.FishID);
             Boat boat = _context.Boats.Find(item.BoatID);
             ProductionType production = _context.ProductionTypes.Find(item.ProductionTypeID);
-            var res = new { boatName = boat.BoatName, productionName = production.ProductionName, fishName = fish.FishName, qty = item.Qty, unitPrice = item.UnitPrice, total = (decimal) item.Qty * item.UnitPrice };
+            var res = new { boatName = boat.BoatName, productionName = production.ProductionName, fishName = fish.FishName, qty = item.Qty, unitPrice = item.UnitPrice, total = (decimal)item.Qty * item.UnitPrice };
 
             return Json(res);
 
@@ -173,7 +185,7 @@ namespace FishBusiness.Controllers
         public IActionResult Create()
         {
             ViewData["MerchantID"] = new SelectList(_context.Merchants.Where(m => m.IsFromOutsideCity == false), "MerchantID", "MerchantName");
-            ViewData["Boats"] = new SelectList(_context.Boats.Where(b => b.IsActive == true &&b.BoatLicenseNumber!="0").ToList(), "BoatID", "BoatName");
+            ViewData["Boats"] = new SelectList(_context.Boats.Where(b => b.IsActive == true && b.BoatLicenseNumber != "0").ToList(), "BoatID", "BoatName");
             ViewData["ProductionTypeID"] = new SelectList(_context.ProductionTypes, "ProductionTypeID", "ProductionName");
 
             MRecVM vM = new MRecVM();
@@ -184,7 +196,7 @@ namespace FishBusiness.Controllers
         {
             if (model.MerchantID != 0)
             {
-               
+
 
                 var FishesCookie = model.FishNames.TrimEnd(model.FishNames[model.FishNames.Length - 1]);
                 var ProductionTypesCookie = model.ProductionTypes.TrimEnd(model.ProductionTypes[model.ProductionTypes.Length - 1]);
@@ -201,18 +213,18 @@ namespace FishBusiness.Controllers
 
 
                 Merchant m = _context.Merchants.Find(model.MerchantID);
-            
-                 _context.SaveChanges();
 
-                if (m.IsOwner==false)
+                _context.SaveChanges();
+
+                if (m.IsOwner == false)
                 {
                     MerchantReciept merchantReciept;
-                  
+
                     if (model.RecID == 0)
                     {
                         merchantReciept = new MerchantReciept() { Date = model.Date, payment = model.payment, TotalOfReciept = model.TotalOfReciept, MerchantID = model.MerchantID, CurrentDebt = model.CurrentDebt };
                         _context.Add(merchantReciept);
-                         _context.SaveChanges();
+                        _context.SaveChanges();
                     }
                     else
                     {
@@ -315,7 +327,7 @@ namespace FishBusiness.Controllers
                     m.PreviousDebts = model.CurrentDebt + model.TotalOfReciept;
                     merchantReciept.CurrentDebt = model.CurrentDebt;
 
-                     _context.SaveChanges();
+                    _context.SaveChanges();
                     return Json(new { message = "success", id = merchantReciept.MerchantRecieptID });
                 }
                 else
@@ -325,7 +337,7 @@ namespace FishBusiness.Controllers
                     {
                         ImerchantReciept = new IMerchantReciept() { Date = model.Date, MerchantID = model.MerchantID, TotalOfReciept = model.TotalOfReciept };
                         _context.Add(ImerchantReciept);
-                         _context.SaveChanges();
+                        _context.SaveChanges();
                     }
                     else
                     {
@@ -552,8 +564,14 @@ namespace FishBusiness.Controllers
 
         public async Task<IActionResult> PersonRecieptIndex()
         {
-            var applicationDbContext = _context.PersonReciepts;
+            var applicationDbContext = _context.PersonReciepts.Where(c=>c.Date==TimeNow().Date);
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        public IActionResult GetPersonRecieptHistory(DateTime date)
+        {
+            var applicationDbContext = _context.PersonReciepts.Where(c => c.Date.Date == date.Date);
+            return PartialView(applicationDbContext.ToListAsync());
         }
 
         public async Task<IActionResult> DetailsPersonReciept(int? id)
@@ -596,7 +614,7 @@ namespace FishBusiness.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
-        } 
+        }
         #endregion
 
 

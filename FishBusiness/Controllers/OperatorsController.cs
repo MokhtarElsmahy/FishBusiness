@@ -11,9 +11,11 @@ using FishBusiness.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FishBusiness.Controllers
 {
+    [Authorize]
     public class OperatorsController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -13,6 +13,6 @@ namespace FishBusiness.ViewModels
         public BoatOwnerReciept BoatOwnerReciept { get; set; }
         public List<BoatOwnerItem>  NormalboatOwnerItems { get; set; }
         public List<BoatOwnerItem>  AmountboatOwnerItems { get; set; }
-        public IEnumerable<AmountVm> Amounts { get; set; }
+        public List<AmountVm> Amounts { get; set; }
     }
 }

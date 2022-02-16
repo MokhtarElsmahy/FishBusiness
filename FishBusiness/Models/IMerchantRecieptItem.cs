@@ -29,7 +29,9 @@ namespace FishBusiness.Models
         public int ProductionTypeID { get; set; }
         public virtual ProductionType ProductionType { get; set; }
 
-      
+        [ForeignKey("Boat")]
+        public int? BoatID { get; set; }
+        public virtual Boat Boat { get; set; }
 
         [ForeignKey("IMerchantReciept")]
         public int IMerchantRecieptID { get; set; }

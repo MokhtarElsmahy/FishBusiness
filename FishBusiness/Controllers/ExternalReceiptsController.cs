@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using FishBusiness;
 using FishBusiness.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FishBusiness.Controllers
 {
+    [Authorize]
     public class ExternalReceiptsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,12 +23,21 @@ namespace FishBusiness.Controllers
             _context = context;
             _userManager = userManager;
         }
-
+    
         // GET: ExternalReceipts
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var applicationDbContext = _context.ExternalReceipts.Include(e => e.Boat).Include(e => e.Sarha);
-            return View(await applicationDbContext.ToListAsync());
+            
+            /// var applicationDbContext = _context.ExternalReceipts.Include(e => e.Boat).Include(e => e.Sarha).Where(c => c.Date.ToShortDateString() == TimeNow().ToShortDateString());
+            var applicationDbContext = _context.ExternalReceipts.Where(c => c.Date.Date == TimeNow().Date).Include(e => e.Boat).Include(e => e.Sarha).ToList();
+            return View( applicationDbContext.ToList());
+        }
+
+        public IActionResult GetExternalRecHistory(DateTime date)
+        {
+           
+            var applicationDbContext = _context.ExternalReceipts.Where(c => c.Date.Date == date.Date).Include(e => e.Boat).Include(e => e.Sarha).ToList();
+            return PartialView(applicationDbContext);
         }
         public DateTime TimeNow()
         {
@@ -34,6 +45,7 @@ namespace FishBusiness.Controllers
             DateTime currentDate = DateTime.Now;
             DateTime currentUTC =
            localZone.ToUniversalTime(currentDate);
+
             return currentUTC.AddHours(2);
         }
         // GET: ExternalReceipts/Details/5

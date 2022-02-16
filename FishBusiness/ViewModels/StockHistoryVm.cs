@@ -10,5 +10,6 @@ namespace FishBusiness.ViewModels
         public string MerchantName { get; set; }
         public string ProductionType { get; set; }
         public double Qty { get; set; }
+        public decimal price { get; set; }
     }
 }

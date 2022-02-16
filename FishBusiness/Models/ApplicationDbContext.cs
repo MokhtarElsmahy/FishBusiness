@@ -99,6 +99,7 @@ namespace FishBusiness
         public virtual DbSet<HalakaBuyRecieptItem> HalakaBuyRecieptItems { get; set; }
 
         public virtual DbSet<StockHistory> StockHistories { get; set; }
+        public virtual DbSet<MasterReciept> MasterReciepts { get; set; }
 
 
 

@@ -20,13 +20,12 @@
             <div class="widget-content widget-content-area br-6">
                 <h3>مشتريات</h3>
                 <div class="table-responsive mb-4 mt-4">
-                    <table  class="table table-hover">
-                        <thead>
+                    <table class="table table-hover">
+                        <thead style="border:dashed">
                             <tr>
 
                                 <th>اسم التاجر</th>
                                 <th>قيمة المشتريات منه</th>
-
                             </tr>
                         </thead>
                         <tbody>
@@ -48,6 +47,7 @@
                                 <tr>
 
                                     <td class="font-weight-bolder">لا توجد مشتريات اليوم</td>
+                                    <td class="font-weight-bolder"></td>
 
 
                                 </tr>
@@ -60,13 +60,76 @@
                                 <td>
                                     الاجمالى
                                 </td>
-                                <td id="totalOfPurchases">
+                                <td id="">
                                     @Model.IMerchantReciepts.Select(c => c.TotalOfReciept).Sum()
                                 </td>
                             </tr>
                         </tfoot>
 
                     </table>
+                    <hr />
+                    <table class="table table-hover">
+                        <thead style="border:dashed">
+                            <tr>
+                                <th>اسم الفرد</th>
+                                <th>قيمةالمشتريات منه</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.HalakaBuyReciepts.Any())
+                            {
+                                @foreach (var item in Model.HalakaBuyReciepts)
+                                {
+                                    <tr>
+
+                                        <td>@item.SellerName</td>
+                                        <td> @item.TotalOfPrices</td>
+
+                                    </tr>
+                                }
+
+                            }
+                            else
+                            {
+                                <tr>
+
+                                    <td class="font-weight-bolder">لا توجد مشتريات افراد عاديين اليوم</td>
+                                    <td class="font-weight-bolder"></td>
+
+                                </tr>
+                            }
+
+
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>
+                                    الاجمالى
+                                </td>
+                                <td id="">
+                                    @Model.HalakaBuyReciepts.Select(c => c.TotalOfPrices).Sum()
+                                </td>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+                    <hr />
+                    <table class="table table-hover">
+                        <tbody>
+                            <tr style="border:dashed">
+                                <td>
+                                    المجموع
+                                </td>
+                                <td id="totalOfPurchases">
+                                    @(Model.HalakaBuyReciepts.Select(c => c.TotalOfPrices).Sum()+ Model.IMerchantReciepts.Select(c => c.TotalOfReciept).Sum())
+                                </td>
+                            </tr>
+                        </tbody>
+
+
+                    </table>
+
 
 
                 </div>
@@ -77,7 +140,8 @@
             </div>
 
         </div>
-        
+
+
         <div class="col-xl-4 col-lg-4 col-sm-4  layout-spacing">
             <div class="widget-content widget-content-area br-6">
                 <h3>عربيات</h3>
@@ -159,23 +223,23 @@
 
 
                 @*<div class="form-group">
-                    <label  class="control-label">تلج</label>
-                    <input type="text" id="ice" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label class="control-label">عمال</label>
-                    <input type="text" id="labour" class="form-control" />
-                </div>*@
+                        <label  class="control-label">تلج</label>
+                        <input type="text" id="ice" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">عمال</label>
+                        <input type="text" id="labour" class="form-control" />
+                    </div>*@
                 @if (ViewBag.Profit == null)
                 {
-                <input type="button" id="CalcProfit" class="btn btn-primary" style="margin-right:135px;" value="حساب الارباح" />
+                    <input type="button" id="CalcProfit" class="btn btn-primary" style="margin-right:135px;" value="حساب الارباح" />
                 }
-                
-                <div class="row mt-4" >
+
+                <div class="row mt-4">
                     <h6>اجمالى الربح</h6>
                     <label class="text-info" style="margin-right:100px;" id="totalOfProfits">@ViewBag.Profit</label>
                 </div>
-             
+
 
             </div>
 
@@ -213,6 +277,7 @@
                                 <tr>
 
                                     <td class="font-weight-bolder">لا توجد مبيعات اليوم</td>
+                                    <td class="font-weight-bolder"></td>
 
 
                                 </tr>
@@ -226,7 +291,7 @@
                                     الاجمالى
                                 </td>
                                 <td id="totalOfSales">
-                                    @Model.ISellerReciepts.Select(c => (c.TotalOfPrices-c.Commision)).Sum()
+                                    @Model.ISellerReciepts.Select(c => (c.TotalOfPrices - c.Commision)).Sum()
                                 </td>
                             </tr>
                         </tfoot>
@@ -240,13 +305,13 @@
 
     <div class="row layout-top-spacing" id="cancel-row">
 
-        
+
 
     </div>
 
 
 </div>
-@section scripts{ 
+@section scripts{
     <script>
 
         $(document).ready(function () {
@@ -258,7 +323,7 @@
                 var totalOfSales = parseFloat($('#totalOfSales').text());
                 var totalOfCars = parseFloat($('#totalOfCars').text());
 
-                
+
 
                 $.ajax({
                     url: "/TotalOfProfits/CalcProfits/",
@@ -288,7 +353,7 @@
                             $('#labour').prop('disabled', true)
                             $('#CalcProfit').css("display", "none");
 
-                          
+
                         }
                     },
                     error: function () {

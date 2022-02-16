@@ -9,9 +9,11 @@ using FishBusiness;
 using FishBusiness.Models;
 using FishBusiness.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FishBusiness.Controllers
 {
+    [Authorize]
     public class MerchantsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -57,9 +59,9 @@ namespace FishBusiness.Controllers
             model.IMerchantReciepts = await _context.IMerchantReciept.Include(x => x.Merchant).Where(x => x.MerchantID == id).ToListAsync();
             model.ISellerReciepts = await _context.ISellerReciepts.Include(x => x.Merchant).Where(x => x.MerchantID == id && x.TotalOfPrices == 0).ToListAsync();
             model.ISellerRecieptsMoneytized = await _context.ISellerReciepts.Include(x => x.Merchant).Where(x => x.MerchantID == id && x.TotalOfPrices > 0).ToListAsync();
-            model.PaidForMerchantsFromUs = await _context.PaidForMerchant.Include(c=>c.Person).Where(c => c.IsPaidForUs == false).ToListAsync();
-            model.PaidForUs = await _context.PaidForMerchant.Include(c => c.Person).Where(c => c.IsPaidForUs == true).ToListAsync();
-            model.PaidForSeller = await _context.PaidForSellers.Include(c => c.Person).Where(c => c.MerchantID == id).ToListAsync();
+            model.PaidForMerchantsFromUs = await _context.PaidForMerchant.Include(c=>c.Person).Where(c => c.IsPaidForUs == false &&c.MerchantID== id).ToListAsync();
+            model.PaidForUs =              await _context.PaidForMerchant.Include(c => c.Person).Where(c => c.IsPaidForUs == true && c.MerchantID == id).ToListAsync();
+            model.PaidForSeller =          await _context.PaidForSellers.Include(c => c.Person).Where(c => c.MerchantID == id).ToListAsync();
             return View(model);
         }
 
@@ -97,6 +99,39 @@ namespace FishBusiness.Controllers
                           select new AmountVm { AmountId = g.Key, items = g };
 
             model.Amounts = results;
+
+            return PartialView(model);
+        }  [HttpGet]
+
+
+        [HttpGet]
+        public IActionResult LatestExternalRec(int? id)
+        {
+            //System.Threading.Thread.Sleep(5000);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var merchantReceipts = _context.ISellerReciepts.Include(b => b.Merchant).Where(x => x.MerchantID == id);
+            int ISellerRecieptID;
+            ISellerReciept mRec;
+            if (merchantReceipts.Count()==0)
+                return NotFound();
+            else
+            {
+                ISellerRecieptID = merchantReceipts.Max(x => x.ISellerRecieptID);
+                mRec = _context.ISellerReciepts.Find(ISellerRecieptID);
+            }
+            if (mRec == null)
+            {
+                return NotFound();
+            }
+
+            IsellerLatestRecForMerchantVm model = new IsellerLatestRecForMerchantVm();
+            model.sellerReciept = mRec;
+            model.sellerRecieptItems = _context.ISellerRecieptItems.Include(c => c.Fish).Include(c => c.ProductionType).Where(c => c.ISellerRecieptID == mRec.ISellerRecieptID).ToList();
+       
 
             return PartialView(model);
         }

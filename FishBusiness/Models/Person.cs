@@ -34,6 +34,7 @@ namespace FishBusiness.Models
         public virtual ICollection<HalakSellReciept> HalakSellReciepts { get; set; }
 
         public virtual ICollection<HalakaBuyReciept> HalakaBuyRecipets { get; set; }
+        //public virtual ICollection<MasterReciept> MasterReciepts { get; set; }
 
     }
 }

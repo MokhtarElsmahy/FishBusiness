@@ -1,0 +1,200 @@
+﻿@model IEnumerable<FishBusiness.Models.SellerRec>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Styles{
+    <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/datatables.css">
+    <link rel="stylesheet" type="text/css" href="~/plugins/table/datatable/dt-global_style.css">
+
+}
+<div class="layout-px-spacing">
+    <div class="container row">
+        <div class="page-header m-3">
+            <div class="page-title">
+                <h3>سجل بيعة لتاجر </h3>
+            </div>
+        </div>
+        <div class="mt-4 ml-auto">
+            <a asp-action="Create" class="btn btn-primary">اضافة بيعة لتاجر</a>
+        </div>
+    </div>
+
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+            <div class="widget-content widget-content-area br-6">
+                <div class="table-responsive mb-4 mt-4">
+                    <table id="zero-config" class="table table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>رقم الفاتوره</th>
+                                <th>التاريخ</th>
+                                <th>اسم التاجر</th>
+                                <th>السعر قبل</th>
+                                <th>العموله</th>
+                                <th>السعر بعد</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Any())
+                            {
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.SellerRecID</td>
+                                        <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                                        <td>@item.Merchant.MerchantName</td>
+                                        <td>@item.TotalBeforePaying</td>
+                                        <td>@item.Commission</td>
+                                        <td>@item.FinalIncome</td>
+
+                                        <td>
+
+                                            <a href="/SellerRecs/Detials?id=@item.SellerRecID" class="btn btn-info mb-2">تفاصيل</a>
+                                            <a class="btn btn-danger mb-2 delete"
+                                               data-id="@item.SellerRecID"
+                                               data-controller="HalakaBuyReciepts"
+                                               data-action="Delete"
+                                               data-body-message="هل انت متأكد من عملية الحذف ؟">حذف</a>
+                                        </td>
+
+                                    </tr>
+                                }
+
+                            }
+                            else
+                            {
+                                <tr>
+
+                                    <td class="font-weight-bolder">لا توجد فواتير</td>
+
+                                    @*<td><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle table-cancel"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></td>*@
+                                </tr>
+                            }
+
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+            <h3>ارشيف</h3>
+            <input type="date" id="HistoryDate" />
+            <input type="button" value="تحميل" onclick="History()" />
+            <img src="~/assets/img/loader.gif" id="HDloader" style="width:50px;height:50px;display:none;" />
+            <div class="widget-content widget-content-area br-6">
+                <div class="table-responsive mb-4 mt-4" id="HistoryDiv">
+                    <table class="table table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>رقم الفاتوره</th>
+                                <th>التاريخ</th>
+                                <th>اسم التاجر</th>
+                                <th>السعر قبل</th>
+                                <th>العموله</th>
+                                <th>السعر بعد</th>
+
+
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <img src="~/assets/img/loader.gif" id="loader" style="width:50px;height:50px;display:none" />
+            <div class="modal-body" id="ModalBodyDiv2">
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">اغلاق</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+
+    <script>
+
+        $(document).ready(function () {
+            $('#myModal').on('hidden.bs.modal', function () {
+
+
+                $("#ModalBodyDiv2").html('');
+                $("#myModal").modal('hide');
+            })
+        })
+
+        var Details = function (id) {
+            $("#loader").show();
+            $("#myModal").modal("show");
+            $.ajax({
+                url: "/HalakaBuyReciepts/Details",
+                type: "GET",
+                data: {
+
+                    id: id,
+
+                },
+                success: function (response) {
+
+                    $("#ModalBodyDiv2").html(response);
+                    $("#loader").hide();
+                }, error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'حدث خطأ',
+                        text: 'حاول وقت اخر ',
+                    });
+                    $("#loader").hide();
+                }
+
+
+
+            })
+
+        }
+
+
+        var History = function () {
+            if ($("#HistoryDate").val() == "") {
+                return false
+            }
+
+
+            $("#HDloader").show();
+            var date = $("#HistoryDate").val();
+            var url = "/SellerRecs/SellerRecsHistory?date=" + date;
+            $("#HistoryDiv").load(url, function () {
+                $("#HDloader").hide();
+            })
+
+
+        }
+    </script>
+
+
+
+}
+

@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using FishBusiness.ViewModels;
 using FishBusiness.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FishBusiness.Controllers
 {
+    [Authorize]
     public class HalakaBuyRecieptsController : Controller
     {
 
@@ -33,12 +35,21 @@ namespace FishBusiness.Controllers
             _userManager = userManager;
 
         }
+
+       
+
+       
+
         public IActionResult Index()
         {
-            var lst = _context.HalakaBuyReciepts.ToList();
+            var lst = _context.HalakaBuyReciepts.Where(c=>c.Date.Date==TimeNow().Date).ToList();
             return View(lst);
         }
-
+        public IActionResult HalakaBuyRecieptsHistory(DateTime date)
+        {
+            var lst = _context.HalakaBuyReciepts.Where(c => c.Date.Date == date.Date).ToList();
+            return PartialView(lst);
+        }
 
         public  IActionResult Details(int? id)
         {
@@ -111,6 +122,8 @@ namespace FishBusiness.Controllers
 
                 HalakaBuyReciept halakaBuyReciept = new HalakaBuyReciept() { Date = data.Date, PersonID = PID, SellerName = data.SellerName, TotalOfPrices = data.TotalOfReciept };
                 _context.HalakaBuyReciepts.Add(halakaBuyReciept);
+                var pp = _context.People.Find(PID);
+                pp.credit -= data.TotalOfReciept;
                 _context.SaveChanges();
 
                 for (int i = 0; i < Fishes.Length; i++)

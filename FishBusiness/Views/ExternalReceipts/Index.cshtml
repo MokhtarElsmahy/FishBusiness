@@ -85,5 +85,59 @@
 
     </div>
 
+
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+            <h3>ارشيف</h3>
+            <input type="date" id="HistoryDate" />
+            <input type="button" value="تحميل" onclick="History()" />
+            <img src="~/assets/img/loader.gif" id="HDloader" style="width:50px;height:50px;display:none;" />
+            <div class="widget-content widget-content-area br-6">
+                <div class="table-responsive mb-4 mt-4" id="HistoryDiv">
+                    <table class="table table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>رقم الفاتورة</th>
+                                <th>المركب</th>
+                                <th>@Html.DisplayNameFor(i => i.Date)</th>
+                                <th>@Html.DisplayNameFor(i => i.Commission)</th>
+                                <th>@Html.DisplayNameFor(i => i.TotalAfterPaying)</th>
+                                <th></th>
+
+
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </div>
 
+
+<script>
+
+
+    var History = function () {
+        if ($("#HistoryDate").val() == "") {
+            return false
+        }
+
+
+        $("#HDloader").show();
+        var date = $("#HistoryDate").val();
+        var url = "/ExternalReceipts/GetExternalRecHistory?date=" + date;
+        $("#HistoryDiv").load(url, function () {
+            $("#HDloader").hide();
+        })
+
+
+    }
+</script>
+
+
+
+}

@@ -113,6 +113,19 @@
                                                 </tr>
                                             }
 
+                                        } 
+                                        @if (Model.HalakSellReciept.Any())
+                                        {
+                                            @foreach (var item in Model.HalakSellReciept)
+                                            {
+                                                <tr>
+
+                                                    <td class="MerchantName">مبيع حلقة ل : @item.buyerName</td>
+                                                    <td class="Price"> @item.TotalOfPrices</td>
+
+                                                </tr>
+                                            }
+
                                         }
                                     </tbody>
                                     <tfoot>
@@ -133,7 +146,7 @@
 
                                         <tr>
                                             <td>الاجمالي</td>
-                                            <td id="totalOfIncome">@(Model.CurrentCredit+Model.Collecting+(decimal)Model.IsellerReciepts.Sum(x=>x.PaidFromDebt) + (decimal)Model.PaidForMerchants.Sum(x => x.Payment) + (decimal)Model.HalekDifferences.Sum(x => x.ReturnedValue))</td>
+                                            <td id="totalOfIncome">@(Model.CurrentCredit+Model.Collecting+(decimal)Model.IsellerReciepts.Sum(x=>x.PaidFromDebt) + (decimal)Model.PaidForMerchants.Sum(x => x.Payment) + (decimal)Model.HalekDifferences.Sum(x => x.ReturnedValue)+ Model.HalakSellReciept.Sum(c=>c.TotalOfPrices))</td>
                                         </tr>
                                     </tfoot>
 

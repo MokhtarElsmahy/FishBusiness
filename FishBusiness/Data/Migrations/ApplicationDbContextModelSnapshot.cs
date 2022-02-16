@@ -189,6 +189,9 @@ namespace FishBusiness.Data.Migrations
                     b.Property<bool>("IsCollected")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("MasterRecieptID")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("PaidFromDebts")
                         .HasColumnType("decimal(18,2)");
 
@@ -778,6 +781,9 @@ namespace FishBusiness.Data.Migrations
                     b.Property<Guid?>("AmountId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int?>("BoatID")
+                        .HasColumnType("int");
+
                     b.Property<int>("FishID")
                         .HasColumnType("int");
 
@@ -794,6 +800,8 @@ namespace FishBusiness.Data.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("IMerchantRecieptItemID");
+
+                    b.HasIndex("BoatID");
 
                     b.HasIndex("FishID");
 
@@ -963,6 +971,59 @@ namespace FishBusiness.Data.Migrations
                     b.ToTable("LeaderPaybacks");
                 });
 
+            modelBuilder.Entity("FishBusiness.Models.MasterReciept", b =>
+                {
+                    b.Property<int>("MasterRecieptID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("BoatID")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Commission")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("FinalIncome")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsCalculated")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsCheckedOut")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsCollected")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("PaidFromDebts")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("PercentageCommission")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PersonID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SarhaID")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalAfterPaying")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalBeforePaying")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("MasterRecieptID");
+
+                    b.HasIndex("PersonID");
+
+                    b.ToTable("MasterReciepts");
+                });
+
             modelBuilder.Entity("FishBusiness.Models.Merchant", b =>
                 {
                     b.Property<int>("MerchantID")
@@ -1011,6 +1072,9 @@ namespace FishBusiness.Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("FromMerchant")
+                        .HasColumnType("int");
+
                     b.Property<int>("MerchantID")
                         .HasColumnType("int");
 
@@ -1037,7 +1101,7 @@ namespace FishBusiness.Data.Migrations
                     b.Property<Guid?>("AmountId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("BoatID")
+                    b.Property<int?>("BoatID")
                         .HasColumnType("int");
 
                     b.Property<int>("FishID")
@@ -2085,6 +2149,10 @@ namespace FishBusiness.Data.Migrations
 
             modelBuilder.Entity("FishBusiness.Models.IMerchantRecieptItem", b =>
                 {
+                    b.HasOne("FishBusiness.Models.Boat", "Boat")
+                        .WithMany("IMerchantRecieptItems")
+                        .HasForeignKey("BoatID");
+
                     b.HasOne("FishBusiness.Models.Fish", "Fish")
                         .WithMany()
                         .HasForeignKey("FishID")
@@ -2173,6 +2241,15 @@ namespace FishBusiness.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FishBusiness.Models.MasterReciept", b =>
+                {
+                    b.HasOne("FishBusiness.Models.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("FishBusiness.Models.MerchantReciept", b =>
                 {
                     b.HasOne("FishBusiness.Models.Merchant", "Merchant")
@@ -2186,9 +2263,7 @@ namespace FishBusiness.Data.Migrations
                 {
                     b.HasOne("FishBusiness.Models.Boat", "Boat")
                         .WithMany("MerchantRecieptItems")
-                        .HasForeignKey("BoatID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BoatID");
 
                     b.HasOne("FishBusiness.Models.Fish", "Fish")
                         .WithMany("MerchantRecieptItems")

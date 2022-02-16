@@ -13,9 +13,11 @@ using System.Net.Http.Headers;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FishBusiness.Controllers
 {
+    [Authorize]
     public class ISellerRecieptsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -34,8 +36,14 @@ namespace FishBusiness.Controllers
         // GET: ISellerReciepts
         public IActionResult Index()
         {
-            var applicationDbContext = _context.ISellerReciepts.Include(i => i.Merchant).ToList();
+            var applicationDbContext = _context.ISellerReciepts.Where(c=>c.Date==TimeNow().Date).Include(i => i.Merchant).ToList();
             return View(applicationDbContext);
+        }
+
+        public IActionResult ISellerRecieptsHistory(DateTime date)
+        {
+            var applicationDbContext = _context.ISellerReciepts.Where(c=>c.Date.Date==date.Date).Include(i => i.Merchant).ToList();
+            return PartialView(applicationDbContext);
         }
         public DateTime TimeNow()
         {
@@ -143,6 +151,13 @@ namespace FishBusiness.Controllers
             merchant.PreviousDebts = (decimal)debts;
             _context.SaveChanges();
 
+
+            PaidForMerchant p = new PaidForMerchant() { IsPaidForUs = true, Payment =decimal.Parse(PaidFromDebt.ToString()), Date = TimeNow(), MerchantID = merchant.MerchantID, IsCash = true, PreviousDebtsForMerchant = (merchant.PreviousDebts), PersonID = PID };
+            _context.PaidForMerchant.Add(p);
+            //Person pp = _context.People.Find(1);
+            //pp.credit += PaidValue;
+            await _context.SaveChangesAsync();
+
             return Json(new { message = "success", totalDebts = debts, id = iSellerReciept.ISellerRecieptID });
 
         }
@@ -221,14 +236,14 @@ namespace FishBusiness.Controllers
                 _context.Add(sellerReciept);
 
 
-                /*
-                
-                دى مش هتتحسب دلوقت لان السواق مش شرط يتحاسب وقتها ممكن يتحاسب بعد كذا يوم 
+
+
+               // دى مش هتتحسب دلوقت لان السواق مش شرط يتحاسب وقتها ممكن يتحاسب بعد كذا يوم
 
                 Person p = _context.People.Find(1);
                 p.credit -= (decimal)CarPrice;
 
-                */
+
 
                 _context.SaveChanges();
 

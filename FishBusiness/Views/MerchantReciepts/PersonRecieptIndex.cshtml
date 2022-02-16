@@ -51,7 +51,7 @@
                                         <td>@item.Date.ToString("dd/MM/yyyy")</td>
                                         <td>@item.PersonName</td>
                                         <td>@item.TotalPrice</td>
-                                  
+
                                         <td>
 
                                             <a asp-action="DetailsPersonReciept" asp-route-id="@item.PersonRecieptID" class="btn btn-info mb-2">تفاصيل</a>
@@ -86,6 +86,62 @@
 
     </div>
 
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+            <h3>ارشيف</h3>
+            <input type="date" id="HistoryDate" />
+            <input type="button" value="تحميل" onclick="History()" />
+            <img src="~/assets/img/loader.gif" id="HDloader" style="width:50px;height:50px;display:none;" />
+            <div class="widget-content widget-content-area br-6">
+                <div class="table-responsive mb-4 mt-4" id="HistoryDiv">
+                    <table class="table table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>رقم الفاتوره</th>
+                                <th>@Html.DisplayNameFor(i => i.Date)</th>
+                                <th>@Html.DisplayNameFor(i => i.PersonName)</th>
+                                <th>@Html.DisplayNameFor(i => i.TotalPrice)</th>
+                                @*<th>@Html.DisplayNameFor(i => i.Merchant.PreviousDebts)</th>
+                <th>@Html.DisplayNameFor(i => i.payment)</th>*@
+
+                                <th></th>
+
+
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </div>
 
 
+
+@section scripts{
+
+    <script>
+
+        var History = function () {
+            if ($("#HistoryDate").val() == "") {
+                return false
+            }
+
+
+            $("#HDloader").show();
+            var date = $("#HistoryDate").val();
+            var url = "/MerchantReciepts/GetPersonRecieptHistory?date=" + date;
+            $("#HistoryDiv").load(url, function () {
+                $("#HDloader").hide();
+            })
+
+
+        }
+    </script>
+
+
+
+}

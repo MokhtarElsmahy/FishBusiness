@@ -17,6 +17,9 @@ namespace FishBusiness.Models
 
         public virtual BoatOwnerReciept BoatOwnerReciept { get; set; }
 
+       
+     
+
         [ForeignKey("Fish")]
         public int FishID { get; set; }
 

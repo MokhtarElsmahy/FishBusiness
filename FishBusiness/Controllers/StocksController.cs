@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using FishBusiness;
 using FishBusiness.Models;
 using FishBusiness.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FishBusiness.Controllers
 {
+    [Authorize]
     public class StocksController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -866,6 +868,7 @@ namespace FishBusiness.Controllers
         {
             List<StockHistoryVm> model = new List<StockHistoryVm>();
             var IMerchantReciepts = _context.IMerchantReciept.Include(c=>c.Merchant).ToList().Where(c => c.Date.ToShortDateString() == Date).ToList();
+            var halakabuyReciepts = _context.HalakaBuyReciepts.ToList().Where(c => c.Date.ToShortDateString() == Date).ToList();
             if (IMerchantReciepts.Any())
             {
                 foreach (var ImerchRec in IMerchantReciepts)
@@ -876,8 +879,28 @@ namespace FishBusiness.Controllers
                         foreach (var item in Items)
                         {
                             if (item.FishID==FishID && item.ProductionTypeID ==ProductionTypeID)
+                            { 
+                                StockHistoryVm stockHistory = new StockHistoryVm() { price = item.UnitPrice,  MerchantName = ImerchRec.Merchant.MerchantName, ProductionType = item.ProductionType.ProductionName, Qty = item.Qty };
+                                model.Add(stockHistory);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            if (halakabuyReciepts.Any())
+            {
+                foreach (var ImerchRec in halakabuyReciepts)
+                {
+                    var Items = _context.HalakaBuyRecieptItems.Include(c => c.ProductionType).Where(c => c.HalakaBuyRecieptID == ImerchRec.HalakaBuyRecieptID).ToList();
+                    if (Items.Any())
+                    {
+                        foreach (var item in Items)
+                        {
+                            if (item.FishID == FishID && item.ProductionTypeID == ProductionTypeID)
                             {
-                                StockHistoryVm stockHistory = new StockHistoryVm() { MerchantName = ImerchRec.Merchant.MerchantName, ProductionType = item.ProductionType.ProductionName, Qty = item.Qty };
+                                StockHistoryVm stockHistory = new StockHistoryVm() { price = item.UnitPrice, MerchantName = halakabuyReciepts.FirstOrDefault().SellerName, ProductionType = item.ProductionType.ProductionName, Qty = item.Qty };
                                 model.Add(stockHistory);
                             }
                         }

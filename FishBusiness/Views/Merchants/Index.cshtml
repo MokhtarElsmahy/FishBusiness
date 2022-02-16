@@ -142,7 +142,7 @@
 
                                                 @*<a href="#" onclick="EditShow(@merchant.MerchantID)" class="btn btn-success mb-2">تعديل</a>*@
                                                 <a asp-action="Details" asp-route-id="@merchant.MerchantID" class="btn btn-info mb-2">بروفايل</a>
-                                                <a href="#" onclick="Details(@merchant.MerchantID)" class="btn btn-info mb-2">اخر فاتورة</a>
+                                                <a href="#" onclick="DetailsForExternalMerchants(@merchant.MerchantID)" class="btn btn-info mb-2">اخر فاتورة</a>
                                                 <a class="btn btn-danger mb-2 delete"
                                                    data-id="@merchant.MerchantID"
                                                    data-controller="Merchants"
@@ -274,6 +274,15 @@
         }
         var Details = function (id) {
             var url = "/Merchants/LatestRec?id=" + id;
+            $("#ModalBodyDiv2").load(url, function () {
+                $("#myModal").modal("show");
+            })
+
+
+        }
+
+        var DetailsForExternalMerchants = function (id) {
+            var url = "/Merchants/LatestExternalRec?id=" + id;
             $("#ModalBodyDiv2").load(url, function () {
                 $("#myModal").modal("show");
             })

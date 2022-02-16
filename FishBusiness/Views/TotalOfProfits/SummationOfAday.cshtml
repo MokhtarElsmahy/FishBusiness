@@ -26,7 +26,7 @@
                 <img src="~/assets/img/loader.gif" class="loader" style="width:100px;height:100px;display:none" />
                 <div class="table-responsive mb-4 mt-4">
                     <table class="table table-hover">
-                        <thead>
+                        <thead style="border:dashed">
                             <tr>
 
                                 <th>اسم التاجر</th>
@@ -35,28 +35,29 @@
                             </tr>
                         </thead>
                         <tbody id="purchasesBody">
-                            @*@if (Model.IMerchantReciepts.Any())
-                                {
-                                    @foreach (var item in Model.IMerchantReciepts)
-                                    {
-                                        <tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td>
+                                    الاجمالى
+                                </td>
+                                <td id="totalOfPurchases">
+                                </td>
+                            </tr>
+                        </tfoot>
 
-                                            <td>@item.Merchant.MerchantName</td>
-                                            <td> @item.TotalOfReciept</td>
+                    </table>
 
-                                        </tr>
-                                    }
+                    <table class="table table-hover">
+                        <thead style="border:dashed">
+                            <tr>
+                                <th>اسم الفرد</th>
+                                <th>قيمةالمشتريات منه</th>
 
-                                }
-                                else
-                                {
-                                    <tr>
-
-                                        <td class="font-weight-bolder">لا توجد مشتريات اليوم</td>
-
-
-                                    </tr>
-                                }*@
+                            </tr>
+                        </thead>
+                        <tbody id="halakaBuyReciepts">
+                        
 
 
                         </tbody>
@@ -65,14 +66,28 @@
                                 <td>
                                     الاجمالى
                                 </td>
-                                <td id="totalOfPurchases">
-                                    @*  @Model.IMerchantReciepts.Select(c => c.TotalOfReciept).Sum()*@
+                                <td id="HalakaBuyRecieptsTotal">
+                                  
                                 </td>
                             </tr>
                         </tfoot>
 
                     </table>
+                    <hr />
+                    <table class="table table-hover">
+                        <tbody>
+                            <tr style="border:dashed">
+                                <td>
+                                    المجموع
+                                </td>
+                                <td id="totall">
+                                   
+                                </td>
+                            </tr>
+                        </tbody>
 
+
+                    </table>
 
                 </div>
 
@@ -181,28 +196,7 @@
                             </tr>
                         </thead>
                         <tbody id="SalesBody">
-                            @*@if (Model.ISellerReciepts.Any())
-                                {
-                                    @foreach (var item in Model.ISellerReciepts)
-                                    {
-                                        <tr>
-
-                                            <td>@item.Merchant.MerchantName</td>
-                                            <td>  @(item.TotalOfPrices-item.Commision)</td>
-
-                                        </tr>
-                                    }
-
-                                }
-                                else
-                                {
-                                    <tr>
-
-                                        <td class="font-weight-bolder">لا توجد مبيعات اليوم</td>
-
-
-                                    </tr>
-                                }*@
+                        
 
 
                         </tbody>
@@ -212,7 +206,7 @@
                                     الاجمالى
                                 </td>
                                 <td id="totalOfSales">
-                                    @* @Model.ISellerReciepts.Select(c => (c.TotalOfPrices - c.Commision)).Sum()*@
+                                    
                                 </td>
                             </tr>
                         </tfoot>
@@ -239,6 +233,7 @@
 
                 $(".loader").show();
                 body = $("#purchasesBody");
+                halakaBuyReciepts = $("#halakaBuyReciepts");
                 Salesbody = $("#SalesBody");
                 CarsBody = $("#CarsBody");
                 $.ajax({
@@ -261,8 +256,26 @@
 
                         $("#totalOfPurchases").text(result.totalOfReciepts)
 
-                        //---------------------------------------
 
+                        //-------------------------------------------------------------
+
+                        halakaBuyReciepts.empty()
+                        $.each(result.halakaBuyReciepts, function (i, item) {
+
+                            halakaBuyReciepts.append("<tr>" +
+                                "<td>" + item.merchantName + "</td>" +
+                                "<td>" + item.totalOfReciept + "</td>" +
+                                "</tr>");
+                        });
+
+                        $("#HalakaBuyRecieptsTotal").text(result.halakaBuyRecieptsTotal)
+
+
+                        //----------------------------------------------------------------
+                       
+                        var totall = (parseFloat(result.totalOfReciepts) + parseFloat(result.halakaBuyRecieptsTotal));
+                        $("#totall").text(totall);
+                        //----------------------------------------------------------------
                         Salesbody.empty();
 
                         $.each(result.sales, function (i, item) {

@@ -61,7 +61,9 @@ namespace FishBusiness.Models
         public bool IsActive { get; set; }
 
         public virtual ICollection<BoatOwnerReciept> BoatOwnerReciepts { get; set; }
+        //public virtual ICollection<MasterReciept> MasterReciepts { get; set; } 
         public virtual ICollection<MerchantRecieptItem> MerchantRecieptItems { get; set; }
+        public virtual ICollection<IMerchantRecieptItem> IMerchantRecieptItems { get; set; }
         public virtual ICollection<PersonRecieptItem> PersonRecieptItems { get; set; }
       
 

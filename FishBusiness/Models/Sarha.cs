@@ -30,6 +30,7 @@ namespace FishBusiness.Models
         public virtual Boat Boat { get; set; }
 
         public virtual ICollection<BoatOwnerReciept> BoatOwnerReciepts { get; set; }
+        //public virtual ICollection<MasterReciept> MasterReciepts { get; set; }
         public virtual ICollection<Fisherman> Fishermen { get; set; }
 
         public virtual ICollection<Debts_Sarha> Debts_Sarhas { get; set; }

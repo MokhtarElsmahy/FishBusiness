@@ -101,9 +101,23 @@
 
                             <tr>
 
-                                <td class="MerchantName">العمولات</td>
+                                <td class="MerchantName">عمولات من المراكب </td>
                                 <td class="Price"> @Model.Commisions</td>
                                 <td><a class="btn btn-primary" asp-action="GetTodaysReceiptsCommission">تفاصيل</a></td>
+
+                            </tr>
+                            <tr>
+
+                                <td class="MerchantName">عمولات بيعة لتاجر </td>
+                                <td class="Price"> @Model.CommisionsFromMerchants</td>
+                                @*<td><a class="btn btn-primary" asp-action="GetTodaysReceiptsCommission">تفاصيل</a></td>*@
+
+                            </tr> 
+                            <tr>
+
+                                <td class="MerchantName">مبيع الحلقة </td>
+                                <td class="Price"> @Model.HalakaSellRec</td>
+                                @*<td><a class="btn btn-primary" asp-action="GetTodaysReceiptsCommission">تفاصيل</a></td>*@
 
                             </tr>
                             <tr>
@@ -146,13 +160,13 @@
                                 <td><a class="btn btn-primary" asp-action="GetTodaysLeaderLoansPayBack">تفاصيل</a></td>
 
                             </tr>
-                            <tr>
+                            @*<tr>
 
                                 <td class="MerchantName">مبيعات</td>
                                 <td class="Price"> @Model.SalesTotal</td>
                                 <td><a class="btn btn-primary" asp-controller="TotalOfProfits" asp-action="SummationOfAday">تفاصيل</a></td>
 
-                            </tr>
+                            </tr>*@
                         </tbody>
                         <tfoot>
                             <tr id="totalOfPayment_tr">
@@ -160,7 +174,17 @@
                                     الاجمالى
                                 </td>
                                 <td id="totalOfPayment">
-                                    @(Model.Commisions + Model.IsellerReceiptsTotal + Model.externalReceiptsTotal + Model.SharedBoatsReceiptsTotal + Model.collectorForUsTotal + Model.LeaderLoansPaybackTotal + Model.SalesTotal+ Model.CheckoutsOfSharedBoats)
+                                    @*Model.SalesTotal+*@
+                                    @(Model.Commisions +
+                                        Model.IsellerReceiptsTotal +
+                                        Model.externalReceiptsTotal +
+                                        Model.SharedBoatsReceiptsTotal +
+                                        Model.collectorForUsTotal +
+                                        Model.LeaderLoansPaybackTotal +
+
+                                        Model.CheckoutsOfSharedBoats+
+                                        Model.CommisionsFromMerchants+
+                                        Model.HalakaSellRec)
                                 </td>
                             </tr>
                         </tfoot>
@@ -225,6 +249,13 @@
                                 <td><a class="btn btn-primary" asp-action="ProfileOfDay" asp-controller="Collectings">تفاصيل</a></td>
 
                             </tr>
+                            <tr>
+
+                                <td class="MerchantName">اجمالى مبيع الحلقه</td>
+                                <td class="Price"> @Model.HalakaBuyReciept</td>
+                                <td></td>
+
+                            </tr>
 
                         </tbody>
 
@@ -234,7 +265,7 @@
                                     الاجمالى
                                 </td>
                                 <td id="totalOfPayment">
-                                    @(Model.FathallahTotal + Model.CollectorTotalFromUs + Model.BuyingTotal + Model.CollectorTotalforMerchantsAndHalek)
+                                    @(Model.FathallahTotal + Model.CollectorTotalFromUs + Model.BuyingTotal + Model.CollectorTotalforMerchantsAndHalek+ Model.HalakaBuyReciept)
                                 </td>
                             </tr>
                         </tfoot>
@@ -265,7 +296,17 @@
                             <tr>
                                 <td> الاجمالي</td>
                                 <td>
-                                    @((Model.Commisions + Model.IsellerReceiptsTotal + Model.externalReceiptsTotal + Model.SharedBoatsReceiptsTotal + Model.collectorForUsTotal + Model.LeaderLoansPaybackTotal + Model.SalesTotal) -(Model.FathallahTotal + Model.CollectorTotalFromUs + Model.BuyingTotal + Model.CollectorTotalforMerchantsAndHalek))
+                                    @*Model.SalesTotal +*@
+                                    @((Model.Commisions +
+                                        Model.IsellerReceiptsTotal +
+                                        Model.externalReceiptsTotal +
+                                        Model.SharedBoatsReceiptsTotal +
+                                        Model.collectorForUsTotal +
+                                        Model.LeaderLoansPaybackTotal +
+
+                                        Model.CheckoutsOfSharedBoats +
+                                        Model.CommisionsFromMerchants +
+                                        Model.HalakaSellRec) -(Model.FathallahTotal + Model.CollectorTotalFromUs + Model.BuyingTotal + Model.CollectorTotalforMerchantsAndHalek+ Model.HalakaBuyReciept))
                                 </td>
                             </tr>
                         </tbody>

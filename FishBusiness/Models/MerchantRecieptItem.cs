@@ -28,7 +28,7 @@ namespace FishBusiness.Models
 
 
         [ForeignKey("Boat")]
-        public int BoatID { get; set; }
+        public int? BoatID { get; set; }
         public virtual Boat Boat { get; set; }
 
         [ForeignKey("Fish")]

@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using FishBusiness.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FishBusiness.Controllers
 {
+    [Authorize]
     public class BranchOfficesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -41,8 +43,8 @@ namespace FishBusiness.Controllers
             }
             else
                 ViewBag.title = "المكتب";
-            var branch = _context.BranchOffices.ToList().Where(x => x.Date.ToShortDateString() == TimeNow().AddDays(-1).ToShortDateString()).FirstOrDefault();
-            var c = _context.Collectings.ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString()).FirstOrDefault();
+            var branch = _context.BranchOffices.Where(x => x.Date.Date == TimeNow().Date.AddDays(-1)).FirstOrDefault();
+            var c = _context.Collectings.Where(x => x.Date.Date == TimeNow().Date).FirstOrDefault();
             BranchOfficeVM model = new BranchOfficeVM();
             if (c != null)
             {
@@ -51,19 +53,20 @@ namespace FishBusiness.Controllers
             }
             else
                 model.Collecting = 0.0m;
-            var halek = _context.Debts_Sarhas.Include(c => c.Sarha).Include(c => c.Debt).Include(c => c.Sarha.Boat).ToList().Where(c => c.Date.ToShortDateString() == TimeNow().ToShortDateString() && c.PersonID == PID).ToList();
+            var halek = _context.Debts_Sarhas.Include(c => c.Sarha).Include(c => c.Debt).Include(c => c.Sarha.Boat).Where(c => c.Date.Date == TimeNow().Date && c.PersonID == PID).ToList();
             model.CurrentCredit = 0.0m;
             if (branch != null)
             {
               model.CurrentCredit = branch.CurrentCredit;
 
             }
-            model.IsellerReciepts = _context.ISellerReciepts.Include(x => x.Merchant).ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString() && x.TotalOfPrices != 0 && x.PersonID == PID).ToList();
-            model.PaidForSellers = _context.PaidForSellers.Include(x => x.Merchant).ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString() && x.PersonID == PID).ToList();
-            model.PaidForMerchants = _context.PaidForMerchant.Include(x => x.Merchant).ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString() && x.PersonID == PID && x.IsCash==true && x.IsPaidForUs==true).ToList();
-            model.PaidForBoats = _context.PaidForBoats.Include(x => x.Boat).ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString() && x.PersonID == PID).ToList();
-            model.HalekDifferences = _context.HalekDifferences.Include(x => x.Boat).ToList().Where(x => x.Date.ToShortDateString() == TimeNow().ToShortDateString() && x.PersonID == PID).ToList();
+            model.IsellerReciepts = _context.ISellerReciepts.Include(x => x.Merchant).Where(x => x.Date.Date == TimeNow().Date && x.TotalOfPrices != 0 && x.PersonID == PID).ToList();
+            model.PaidForSellers = _context.PaidForSellers.Include(x => x.Merchant).Where(x => x.Date.Date == TimeNow().Date && x.PersonID == PID).ToList();
+            model.PaidForMerchants = _context.PaidForMerchant.Include(x => x.Merchant).Where(x => x.Date.Date == TimeNow().Date && x.PersonID == PID && x.IsCash==true && x.IsPaidForUs==true).ToList();
+            model.PaidForBoats = _context.PaidForBoats.Include(x => x.Boat).Where(x => x.Date.Date == TimeNow().Date && x.PersonID == PID).ToList();
+            model.HalekDifferences = _context.HalekDifferences.Include(x => x.Boat).Where(x => x.Date.Date == TimeNow().Date && x.PersonID == PID).ToList();
             model.Debts_Sarha = halek;
+            model.HalakSellReciept = _context.HalakSellReciepts.Where(c => c.Date.Date == TimeNow().Date).ToList();
             ViewBag.Merchant = new SelectList(_context.Merchants.Where(c => c.IsFromOutsideCity == false &&c.IsOwner==false).ToList(), "MerchantID", "MerchantName");
             ViewBag.Halek = new SelectList(_context.Debts.ToList(), "DebtID", "DebtName");
             var UnfinishedSarhas = _context.Sarhas.Where(x => x.IsFinished == false).Select(x => x.BoatID);
@@ -318,8 +321,8 @@ namespace FishBusiness.Controllers
             if (roles.Contains("partner"))
                 PID = 2;
             // الايرادات
-            var Yesterdaybranch = _context.BranchOffices.ToList().Where(x => x.Date.ToShortDateString() == Date.AddDays(-1).ToShortDateString()).FirstOrDefault();
-            var Todaybranch = _context.BranchOffices.ToList().Where(x => x.Date.ToShortDateString() == Date.ToShortDateString()).FirstOrDefault();
+            var Yesterdaybranch = _context.BranchOffices.Where(x => x.Date.Date == Date.Date.AddDays(-1)).FirstOrDefault();
+            var Todaybranch = _context.BranchOffices.Where(x => x.Date.Date == Date.Date).FirstOrDefault();
             decimal collecting = 0.0m;
             decimal PaidFromMagdy = 0.0m;
             decimal TotalIncome = 0.0m;
@@ -341,7 +344,7 @@ namespace FishBusiness.Controllers
                 totalSarhas = Todaybranch.SarhasTotal;
                 FinalTotal = Todaybranch.CurrentCredit; // رصيد مترحل
             }
-            var halek = _context.Debts_Sarhas.Include(c => c.Sarha).Include(c => c.Debt).Include(c => c.Sarha.Boat).ToList().Where(c => c.Date.ToShortDateString() == TimeNow().ToShortDateString() && c.PersonID == PID).ToList();
+            var halek = _context.Debts_Sarhas.Include(c => c.Sarha).Include(c => c.Debt).Include(c => c.Sarha.Boat).Where(c => c.Date.Date == TimeNow().Date && c.PersonID == PID).ToList();
 
             if (Yesterdaybranch != null)
             {
@@ -349,53 +352,53 @@ namespace FishBusiness.Controllers
 
             }
 
-            var IsellerReciepts = _context.ISellerReciepts.Include(x => x.Merchant).ToList()
-                .Where(x => x.Date.ToShortDateString() == Date.ToShortDateString() && x.TotalOfPrices != 0 && x.PersonID == PID)
+            var IsellerReciepts = _context.ISellerReciepts.Include(x => x.Merchant)
+                .Where(x => x.Date.Date == Date.Date && x.TotalOfPrices != 0 && x.PersonID == PID)
                 .Select(c => new { merchantName = c.Merchant.MerchantName, paidFromDebt = c.PaidFromDebt }).ToList();
 
             var paid_for_Us = _context.PaidForMerchant
-               .Include(c => c.Merchant).ToList()
-               .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.IsPaidForUs == true && c.PersonID == PID).ToList()
+               .Include(c => c.Merchant)
+               .Where(c => c.Date.Date == Date.Date && c.IsPaidForUs == true && c.PersonID == PID).ToList()
                .Select(c => new { merchantName = c.Merchant.MerchantName, payment = c.Payment }).ToList();
 
             ///////////////////////////////////////////////////////////////////
             // المصروف اليومي
             var Halek = _context.Debts_Sarhas.Include(c => c.Sarha)
                 .Include(c => c.Sarha.Boat)
-                .Include(c => c.Debt).ToList()
-                .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == PID).OrderBy(c => c.Sarha.BoatID)
+                .Include(c => c.Debt)
+                .Where(c => c.Date.Date == Date.Date && c.PersonID == PID).OrderBy(c => c.Sarha.BoatID)
                 .Select(c => new { boatName = c.Sarha.Boat.BoatName, price = c.Price, debtName = c.Debt.DebtName }).ToList();
 
 
 
             //فيها مشكله
-            var Loans = _context.LeaderLoans.Include(c => c.Boat).ToList()
-               .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == PID).Select(c => new { price = c.Price, boatName = c.Boat.BoatName }).ToList();
+            var Loans = _context.LeaderLoans.Include(c => c.Boat)
+               .Where(c => c.Date.Date == Date.Date && c.PersonID == PID).Select(c => new { price = c.Price, boatName = c.Boat.BoatName }).ToList();
 
           
             
 
 
             var SharedBoatExpenses = _context.Expenses.Include(c => c.Boat)
-             .ToList().Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == PID)
+             .ToList().Where(c => c.Date.Date == Date.Date && c.PersonID == PID)
              .Select(c => new { boatName = c.Boat.BoatName, price = c.Price, cause = c.Cause })
              .ToList();
 
-            PaidForFathallah = _context.FathAllahGifts.ToList().Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == PID).Sum(c => c.charge);
+            PaidForFathallah = _context.FathAllahGifts.Where(c => c.Date.Date == Date.Date && c.PersonID == PID).Sum(c => c.charge);
 
-            var AdditionalItems = _context.AdditionalForOffices.ToList().Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == PID).Select(c => new { name = c.Name, value = c.Value }).ToList();
+            var AdditionalItems = _context.AdditionalForOffices.Where(c => c.Date.Date == Date.Date && c.PersonID == PID).Select(c => new { name = c.Name, value = c.Value }).ToList();
 
-            var OperatorItems = _context.PaidForOperators.Include(c => c.Operator).ToList().Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == PID).Select(c => new { operatorName = c.Operator.OperatorName, payment = c.Payment }).ToList();
+            var OperatorItems = _context.PaidForOperators.Include(c => c.Operator).Where(c => c.Date.Date == Date.Date && c.PersonID == PID).Select(c => new { operatorName = c.Operator.OperatorName, payment = c.Payment }).ToList();
 
             //////////////////////////////////////////////////////////////////
             /// قبض السرح
             var paid_for_seller = _context.PaidForSellers.
-                Include(c => c.Merchant).ToList()
-                .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == PID)
+                Include(c => c.Merchant)
+                .Where(c => c.Date.Date == Date.Date && c.PersonID == PID)
                 .Select(c => new { merchantName = c.Merchant.MerchantName, payment = c.Payment }).ToList();
             var paid_for_boat = _context.PaidForBoats.
-              Include(c => c.Boat).ToList()
-              .Where(c => c.Date.ToShortDateString() == Date.ToShortDateString() && c.PersonID == PID)
+              Include(c => c.Boat)
+              .Where(c => c.Date.Date == Date.Date && c.PersonID == PID)
               .Select(c => new { boatName = c.Boat.BoatName, payment = c.Payment }).ToList();
 
             /////////////////////////////////////////////////////////////////

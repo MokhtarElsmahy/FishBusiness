@@ -10,9 +10,11 @@ using FishBusiness.Models;
 using FishBusiness.ViewModels;
 using System.Net.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FishBusiness.Controllers
 {
+    [Authorize]
     public class IMerchantRecieptsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -34,8 +36,15 @@ namespace FishBusiness.Controllers
         // GET: IMerchantReciepts
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.IMerchantReciept.Include(i => i.Merchant);
+            var applicationDbContext = _context.IMerchantReciept.Include(i => i.Merchant).Where(c=>c.Date.Date == TimeNow().Date);
             return View(await applicationDbContext.ToListAsync());
+        } 
+        
+        public IActionResult GetIMerchantRecHistory(DateTime date)
+        {
+            //System.Threading.Thread.Sleep(3000);
+            var applicationDbContext = _context.IMerchantReciept.Where(c => c.Date.Date == date.Date).Include(i => i.Merchant).ToList();
+            return PartialView( applicationDbContext);
         }
 
         // GET: IMerchantReciepts/Details/5

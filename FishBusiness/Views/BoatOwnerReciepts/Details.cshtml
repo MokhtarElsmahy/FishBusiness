@@ -118,10 +118,10 @@
                                                                 <td class="text-right"> @info.UnitPrice </td>
 
                                                                 <td class="text-right">@info.UnitPrice</td>
-                                                              
+
                                                             </tr>
 
-                                                           
+
                                                         }
 
                                                     </tbody>
@@ -154,13 +154,23 @@
                                                     <div class="col-sm-4 col-5">
                                                         <p class="">@Html.DisplayFor(model => model.BoatOwnerReciept.Commission)</p>
                                                     </div>
-
                                                     <div class="col-sm-8 col-7 hideInPrint">
                                                         <p class=" discount-rate">ما تم دفعه من الهالك </p>
                                                     </div>
-                                                    <div class="col-sm-4 col-5 hideInPrint">
-                                                        <p class="">@Html.DisplayFor(model => model.BoatOwnerReciept.PaidFromDebts)</p>
-                                                    </div>
+                                                    @if (Model.BoatOwnerReciept.MasterRecieptID == null)
+                                                    {
+
+
+                                                        <div class="col-sm-4 col-5 hideInPrint">
+                                                            <p class="">@Html.DisplayFor(model => model.BoatOwnerReciept.PaidFromDebts)</p>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="col-sm-4 col-5 hideInPrint">
+                                                            <p class=" discount-rate">جزء من فاتوره مجمعه  </p>
+                                                        </div>
+                                                    }
                                                     <div class="col-sm-8 col-7 hideInPrint">
                                                         <p class=" discount-rate">باقي الهالك علي المركب </p>
                                                     </div>
@@ -202,7 +212,7 @@
 </div>
 
 @section scripts{
- @*   <script src="~/assets/js/print.min.js"></script>*@
+    @*   <script src="~/assets/js/print.min.js"></script>*@
     <script src="~/assets/js/apps/invoice.js"></script>
     <script>
         $("#btnPrint").click(function () {

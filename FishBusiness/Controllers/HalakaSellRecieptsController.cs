@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using FishBusiness.ViewModels;
 using FishBusiness.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FishBusiness.Controllers
 {
+    [Authorize]
     public class HalakaSellRecieptsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -25,12 +27,26 @@ namespace FishBusiness.Controllers
             _userManager = userManager;
 
         }
-
+        public DateTime TimeNow()
+        {
+            TimeZone localZone = TimeZone.CurrentTimeZone;
+            DateTime currentDate = DateTime.Now;
+            DateTime currentUTC =
+           localZone.ToUniversalTime(currentDate);
+            return currentUTC.AddHours(2);
+        }
         //HalakaSellReciepts
         public IActionResult Index()
         {
-            var model = _context.HalakSellReciepts.ToList();
+            var model = _context.HalakSellReciepts.Where(c=>c.Date.Date== TimeNow().Date).ToList();
             return View(model);
+        }
+
+
+        public IActionResult HalakaSellRecieptsHistory(DateTime date)
+        {
+            var model = _context.HalakSellReciepts.Where(c => c.Date.Date == date.Date).ToList();
+            return PartialView(model);
         }
 
 

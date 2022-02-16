@@ -30,17 +30,17 @@
         </div>
     </div>
 
- 
+
 
     @*<div class="container row">
 
-        <div class="form-group">
-            <label class="control-label" style="margin-right:12px;">رصيد باقى</label>
-            <label id="credit" class="control-label" style="color:black"></label>
-            <span class="text-danger"></span>
-        </div>
+            <div class="form-group">
+                <label class="control-label" style="margin-right:12px;">رصيد باقى</label>
+                <label id="credit" class="control-label" style="color:black"></label>
+                <span class="text-danger"></span>
+            </div>
 
-    </div>*@
+        </div>*@
     <div class="container row">
 
 
@@ -71,8 +71,15 @@
 
                             <tr>
 
-                                <td class="MerchantName">العمولات</td>
+                                <td class="MerchantName">عمولات من المراكب</td>
                                 <td class="Price" id="Commisions"> @Model.Commisions</td>
+                                @*<td><a class="btn btn-primary" asp-action="GetTodaysReceiptsCommission">تفاصيل</a></td>*@
+
+                            </tr>
+                            <tr>
+
+                                <td class="MerchantName">عمولات بيعة لتاجر</td>
+                                <td class="Price" id="Commisions"> @Model.CommisionsFromMerchants</td>
                                 @*<td><a class="btn btn-primary" asp-action="GetTodaysReceiptsCommission">تفاصيل</a></td>*@
 
                             </tr>

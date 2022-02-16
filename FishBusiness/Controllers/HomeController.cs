@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FishBusiness.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -33,7 +34,7 @@ namespace FishBusiness.Controllers
             return currentUTC.AddHours(2);
         }
 
-        [Authorize]
+     
         public IActionResult Index()
         {
            
@@ -114,7 +115,7 @@ namespace FishBusiness.Controllers
             List<chartProfitVm> chatProfit = new List<chartProfitVm>();
             for (int i = 0; i < 7; i++)
             {
-                var profits = _context.TotalOfProfits.ToList().Where(x => x.Date.ToShortDateString() == TimeNow().AddDays(-i).ToShortDateString());
+                var profits = _context.TotalOfProfits.Where(x => x.Date.Date == TimeNow().AddDays(-i).Date);
                 if (profits.Count() > 0)
                 {
                     chartProfitVm vm = new chartProfitVm() { Day = profits.FirstOrDefault().Date, profit = (decimal)profits.Sum(c => c.Profit) };
@@ -132,7 +133,7 @@ namespace FishBusiness.Controllers
             for (int i = 0; i < 7; i++)
             {
               
-                var paidFromMechant = _context.PaidForMerchant.ToList().Where(c => c.Date.ToShortDateString() == TimeNow().AddDays(-i).ToShortDateString() && c.IsPaidForUs == true && (c.PersonID == 1 || c.PersonID == 2 || c.PersonID == 3));
+                var paidFromMechant = _context.PaidForMerchant.Include(c=>c.Merchant).Where(c=>c.Merchant.IsFromOutsideCity==false &&c.Date.Date == TimeNow().AddDays(-i).Date && c.IsPaidForUs == true && (c.PersonID == 1 || c.PersonID == 2 || c.PersonID == 3));
 
                 if (paidFromMechant.Count() > 0)
                 {
@@ -150,7 +151,7 @@ namespace FishBusiness.Controllers
             for (int i = 0; i < 7; i++)
             {
     
-                var paidFromExternalMechant = _context.ISellerReciepts.ToList().Where(c => c.Date.ToShortDateString() == TimeNow().AddDays(-i).ToShortDateString());
+                var paidFromExternalMechant = _context.ISellerReciepts.Include(c=>c.Merchant).Where(c => c.Date.Date == TimeNow().AddDays(-i).Date &&c.Merchant.IsFromOutsideCity==true);
 
                 if (paidFromExternalMechant.Count() > 0)
                 {
@@ -250,33 +251,35 @@ namespace FishBusiness.Controllers
         [HttpGet]
         public IActionResult Office()
         {
-            var date = TimeNow().ToShortDateString();
+            var date = TimeNow().Date;
             OfficeVM model = new OfficeVM();
             // income
-            model.Commisions = _context.BoatOwnerReciepts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.Commission);
+            model.Commisions = _context.BoatOwnerReciepts.Where(x => x.Date.Date == date).Sum(x => x.Commission);
+            model.CommisionsFromMerchants = _context.SellerRecs.Where(x => x.Date.Date == date).Sum(x => x.Commission);
+
 
             //the same ?
-            model.IsellerReceiptsTotal = (decimal)_context.ISellerReciepts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.PaidFromDebt);
-            model.SalesTotal = (decimal)_context.ISellerReciepts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.PaidFromDebt);
+            model.IsellerReceiptsTotal = (decimal)_context.ISellerReciepts.Where(x => x.Date.Date == date).Sum(x => x.PaidFromDebt);
+           // model.SalesTotal = (decimal)_context.ISellerReciepts.Where(x => x.Date.Date == date).Sum(x => x.PaidFromDebt);
 
-            model.externalReceiptsTotal = _context.ExternalReceipts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.FinalIncome);
-            model.SharedBoatsReceiptsTotal = _context.IncomesOfSharedBoats.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.Income);
-            model.collectorForUsTotal = _context.PaidForMerchant.ToList().Where(x => x.Date.ToShortDateString() == date && x.PersonID == 3 && x.IsPaidForUs == true).Sum(x => x.Payment);
-            model.LeaderLoansPaybackTotal = _context.LeaderPaybacks.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.Price);
-            model.CheckoutsOfSharedBoats = (decimal)_context.Checkouts.ToList().Where(c => c.Date.ToShortDateString() == date).Sum(c => c.PaidForUs);
-            //outcome
-            model.FathallahTotal = _context.FathAllahGifts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.charge);
-            model.CollectorTotalFromUs = _context.PaidForMerchant.Include(x => x.Merchant).ToList().Where(x => x.Date.ToShortDateString() == date && x.PersonID == 1 && x.IsPaidForUs == true && x.Merchant.IsOwner == true).Sum(x => x.Payment);
-            var CollectorPaidForMerchant = _context.PaidForMerchant.ToList().Where(x => x.Date.ToShortDateString() == date && x.PersonID == 3 && x.IsPaidForUs == false).Sum(x => x.Payment);
-            var CollectorPaidForHalek = _context.Debts_Sarhas.ToList().Where(x => x.Date.ToShortDateString() == date && x.PersonID == 3).Sum(x => x.Price);
-            var CollectorPaidForHalekFromFathallahAndMohamed = _context.Debts_Sarhas.ToList().Where(x => x.Date.ToShortDateString() == date && (x.PersonID == 3 || x.PersonID == 4)).Sum(x => x.Price);
+            model.externalReceiptsTotal = _context.ExternalReceipts.Where(x => x.Date.Date == date).Sum(x => x.FinalIncome);
+            model.SharedBoatsReceiptsTotal = _context.IncomesOfSharedBoats.Where(x => x.Date.Date == date).Sum(x => x.Income);
+            model.collectorForUsTotal = _context.PaidForMerchant.Where(x => x.Date.Date == date && x.PersonID == 3 && x.IsPaidForUs == true).Sum(x => x.Payment);
+            model.LeaderLoansPaybackTotal = _context.LeaderPaybacks.Where(x => x.Date.Date == date).Sum(x => x.Price);
+            model.CheckoutsOfSharedBoats = (decimal)_context.Checkouts.Where(c => c.Date.Date == date).Sum(c => c.PaidForUs);
+            //
+            model.FathallahTotal = _context.FathAllahGifts.Where(x => x.Date.Date == date).Sum(x => x.charge);
+            model.CollectorTotalFromUs = _context.PaidForMerchant.Include(x => x.Merchant).Where(x => x.Date.Date == date && x.PersonID == 1 && x.IsPaidForUs == true && x.Merchant.IsOwner == true).Sum(x => x.Payment);
+            var CollectorPaidForMerchant = _context.PaidForMerchant.Where(x => x.Date.Date == date && x.PersonID == 3 && x.IsPaidForUs == false).Sum(x => x.Payment);
+            var CollectorPaidForHalek = _context.Debts_Sarhas.Where(x => x.Date.Date == date && x.PersonID == 3).Sum(x => x.Price);
+            var CollectorPaidForHalekFromFathallahAndMohamed = _context.Debts_Sarhas.Where(x => x.Date.Date == date && (x.PersonID == 3 || x.PersonID == 4)).Sum(x => x.Price);
 
-            var CollectorPaidForFathallah = _context.FathAllahGifts.ToList().Where(x => x.Date.ToShortDateString() == date && x.PersonID == 3).Sum(x => x.charge);
-            var CollectorPaidForAdditional = _context.AdditionalPayments.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.Value);
+            var CollectorPaidForFathallah = _context.FathAllahGifts.Where(x => x.Date.Date == date && x.PersonID == 3).Sum(x => x.charge);
+            var CollectorPaidForAdditional = _context.AdditionalPayments.Where(x => x.Date.Date == date).Sum(x => x.Value);
             model.CollectorTotalforMerchantsAndHalek = CollectorPaidForMerchant + CollectorPaidForHalek + CollectorPaidForFathallah + CollectorPaidForAdditional;
 
-            var totalOfProfit = _context.TotalOfProfits.ToList().Where(x => x.Date.ToShortDateString() == date).FirstOrDefault();
-            var carPrices = _context.ISellerReciepts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.CarPrice);
+            var totalOfProfit = _context.TotalOfProfits.Where(x => x.Date.Date == date).FirstOrDefault();
+            var carPrices = _context.ISellerReciepts.Where(x => x.Date.Date == date).Sum(x => x.CarPrice);
 
 
             if (totalOfProfit != null)
@@ -295,27 +298,33 @@ namespace FishBusiness.Controllers
         }
         public IActionResult GetTodayOffice(DateTime Date)
         {
-            var date = Date.ToShortDateString();
+            var date = Date.Date;
             OfficeVM model = new OfficeVM();
             // income
-            model.Commisions = _context.BoatOwnerReciepts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.Commission);
-            model.IsellerReceiptsTotal = (decimal)_context.ISellerReciepts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.PaidFromDebt);
-            model.externalReceiptsTotal = _context.ExternalReceipts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.FinalIncome);
-            model.SharedBoatsReceiptsTotal = _context.BoatOwnerReciepts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.FinalIncome);
-            model.collectorForUsTotal = _context.PaidForMerchant.ToList().Where(x => x.Date.ToShortDateString() == date && x.PersonID == 3 && x.IsPaidForUs == true).Sum(x => x.Payment);
-            model.LeaderLoansPaybackTotal = _context.LeaderPaybacks.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.Price);
-            model.SalesTotal = (decimal)_context.ISellerReciepts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.PaidFromDebt);
-            model.CheckoutsOfSharedBoats = (decimal)_context.Checkouts.ToList().Where(c => c.Date.ToShortDateString() == date).Sum(c => c.PaidForUs);
+            model.Commisions = _context.BoatOwnerReciepts.Where(x => x.Date.Date == date).Sum(x => x.Commission);
+            model.CommisionsFromMerchants = _context.SellerRecs.Where(x => x.Date.Date == date).Sum(x => x.Commission);
+            model.HalakaSellRec = _context.HalakSellReciepts.Where(c => c.Date.Date == date).Sum(c => c.TotalOfPrices);//مبيع الحلقة
+
+            model.IsellerReceiptsTotal = (decimal)_context.ISellerReciepts.Where(x => x.Date.Date == date).Sum(x => x.PaidFromDebt);
+            model.externalReceiptsTotal = _context.ExternalReceipts.Where(x => x.Date.Date == date).Sum(x => x.FinalIncome);
+            model.SharedBoatsReceiptsTotal = _context.BoatOwnerReciepts.Where(x => x.Date.Date == date).Sum(x => x.FinalIncome);
+            model.collectorForUsTotal = _context.PaidForMerchant.Where(x => x.Date.Date == date && x.PersonID == 3 && x.IsPaidForUs == true).Sum(x => x.Payment);
+            model.LeaderLoansPaybackTotal = _context.LeaderPaybacks.Where(x => x.Date.Date == date).Sum(x => x.Price);
+            model.SalesTotal = (decimal)_context.ISellerReciepts.Where(x => x.Date.Date == date).Sum(x => x.PaidFromDebt);
+            model.CheckoutsOfSharedBoats = (decimal)_context.Checkouts.Where(c => c.Date.Date == date).Sum(c => c.PaidForUs);
             //outcome
-            model.FathallahTotal = _context.FathAllahGifts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.charge);
-            model.CollectorTotalFromUs = _context.PaidForMerchant.Include(x => x.Merchant).ToList().Where(x => x.Date.ToShortDateString() == date && x.PersonID == 1 && x.IsPaidForUs == true && x.Merchant.IsOwner == true).Sum(x => x.Payment);
-            var CollectorPaidForMerchant = _context.PaidForMerchant.ToList().Where(x => x.Date.ToShortDateString() == date && x.PersonID == 3 && x.IsPaidForUs == false).Sum(x => x.Payment);
-            var CollectorPaidForHalek = _context.Debts_Sarhas.ToList().Where(x => x.Date.ToShortDateString() == date && x.PersonID == 3).Sum(x => x.Price);
-            var CollectorPaidForFathallah = _context.FathAllahGifts.ToList().Where(x => x.Date.ToShortDateString() == date && x.PersonID == 3).Sum(x => x.charge);
-            var CollectorPaidForAdditional = _context.AdditionalPayments.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.Value);
+            model.FathallahTotal = _context.FathAllahGifts.Where(x => x.Date.Date == date).Sum(x => x.charge);
+            model.CollectorTotalFromUs = _context.PaidForMerchant.Include(x => x.Merchant).Where(x => x.Date.Date == date && x.PersonID == 1 && x.IsPaidForUs == true && x.Merchant.IsOwner == true).Sum(x => x.Payment);
+            var CollectorPaidForMerchant = _context.PaidForMerchant.Where(x => x.Date.Date == date && x.PersonID == 3 && x.IsPaidForUs == false).Sum(x => x.Payment);
+            var CollectorPaidForHalek = _context.Debts_Sarhas.Where(x => x.Date.Date == date && x.PersonID == 3).Sum(x => x.Price);
+            var CollectorPaidForFathallah = _context.FathAllahGifts.Where(x => x.Date.Date == date && x.PersonID == 3).Sum(x => x.charge);
+            var CollectorPaidForAdditional = _context.AdditionalPayments.Where(x => x.Date.Date == date).Sum(x => x.Value);
             model.CollectorTotalforMerchantsAndHalek = CollectorPaidForMerchant + CollectorPaidForHalek + CollectorPaidForFathallah + CollectorPaidForAdditional;
-            var totalOfProfit = _context.TotalOfProfits.ToList().Where(x => x.Date.ToShortDateString() == date).FirstOrDefault();
-            var carPrices = _context.ISellerReciepts.ToList().Where(x => x.Date.ToShortDateString() == date).Sum(x => x.CarPrice);
+
+
+            model.HalakaBuyReciept = _context.HalakaBuyReciepts.Where(c => c.Date.Date == date).Sum(c => c.TotalOfPrices);//مشترى الحلقه
+            var totalOfProfit = _context.TotalOfProfits.Where(x => x.Date.Date == date).FirstOrDefault();
+            var carPrices = _context.ISellerReciepts.Where(x => x.Date.Date == date).Sum(x => x.CarPrice);
             if (totalOfProfit != null)
             {
                 model.BuyingTotal = Convert.ToDecimal(totalOfProfit.TotalOfSales + totalOfProfit.Labour + totalOfProfit.Ice + carPrices);
@@ -323,7 +332,7 @@ namespace FishBusiness.Controllers
             else
                 model.BuyingTotal = 0.0m;
             var totalIncome = model.Commisions + model.IsellerReceiptsTotal + model.externalReceiptsTotal + model.SharedBoatsReceiptsTotal
-                + model.collectorForUsTotal + model.LeaderLoansPaybackTotal + model.SalesTotal + model.CheckoutsOfSharedBoats;
+                + model.collectorForUsTotal + model.LeaderLoansPaybackTotal + model.SalesTotal + model.CheckoutsOfSharedBoats + model.CommisionsFromMerchants + model.HalakaSellRec;
             var totalOutcome = model.FathallahTotal + model.CollectorTotalFromUs + model.CollectorTotalforMerchantsAndHalek + model.BuyingTotal;
             return Json(new
             {
@@ -339,6 +348,7 @@ namespace FishBusiness.Controllers
                 collectorTotalFromUs = model.CollectorTotalFromUs,
                 collectorTotalforMerchantsAndHalek = model.CollectorTotalforMerchantsAndHalek,
                 buyingTotal = model.BuyingTotal,
+                halakaSellRecs = model.HalakaSellRec,
                 credit = _context.People.Find(1).credit,
                 totalIncome = totalIncome,
                 totalOutcome = totalOutcome,

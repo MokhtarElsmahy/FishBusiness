@@ -10,6 +10,7 @@ namespace FishBusiness.ViewModels
         #region income
         // العمولات
         public decimal Commisions { get; set; }
+        public decimal CommisionsFromMerchants { get; set; } // عمولة بيعة لتاجر
         // اجمالي الفواتير اللي سافرت ورجعت
         public decimal IsellerReceiptsTotal { get; set; }
         // فواتير خارجيه للمراكب للشريكة
@@ -23,6 +24,9 @@ namespace FishBusiness.ViewModels
         // اجمالي مبيعات
         public decimal SalesTotal { get; set; }
         public decimal CheckoutsOfSharedBoats { get; set; }
+
+        //اجمالى مبيع الحلقه
+        public decimal HalakaSellRec { get; set; }
         #endregion
 
         #region outcome
@@ -34,6 +38,8 @@ namespace FishBusiness.ViewModels
         public decimal CollectorTotalforMerchantsAndHalek { get; set; }
         //  المشتريات من ضمنها التلج والعمال والعربيات
         public decimal BuyingTotal { get; set; } 
+        public decimal HalakaBuyReciept { get; set; } 
+
         #endregion
     }
 }

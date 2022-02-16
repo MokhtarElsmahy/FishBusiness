@@ -13,6 +13,8 @@ namespace FishBusiness.ViewModels
         public List<MerchantRecieptItem> NormalMerchantItems { get; set; }
         public List<MerchantRecieptItem> AmountMerchantItems { get; set; }
 
+        public string FromMerchnat { get; set; }
+
         public IEnumerable<AmountVm> Amounts { get; set; }
 
     }

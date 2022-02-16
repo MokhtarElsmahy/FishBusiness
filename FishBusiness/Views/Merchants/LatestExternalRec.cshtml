@@ -1,0 +1,66 @@
+﻿@model FishBusiness.ViewModels.IsellerLatestRecForMerchantVm
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<div class="row">
+    <div class="col-sm-7 align-self-center">
+        @*<p> @Html.DisplayNameFor(model => model.MerchantReciept.Merchant.MerchantName) : @Html.DisplayFor(model => model.MerchantReciept.Merchant.MerchantName)</p>*@
+        <p>رقم الفاتورة : @Html.DisplayFor(model => model.sellerReciept.ISellerRecieptID)</p>
+
+        <p>تاريخ  : @Html.DisplayFor(model => model.sellerReciept.Date)</p>
+
+    </div>
+</div>
+<div class="table-responsive">
+    <table class="table">
+        <thead class="">
+            <tr>
+              
+                <th scope="col">النوع</th>
+                <th class="text-right" scope="col">الانتاج</th>
+                <th class="text-right" scope="col">الكمية</th>
+                <th class="text-right" scope="col">سعر الوحدة</th>
+                <th class="text-right" scope="col">الاجمالي</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.sellerRecieptItems)
+            {
+                <tr>
+                   
+                    <td>@item.Fish.FishName</td>
+                    <td class="text-right">@item.ProductionType.ProductionName</td>
+                    <td class="text-right">@item.Qty</td>
+                    <td class="text-right">@item.UnitPrice</td>
+                    <td class="text-right">@Convert.ToDecimal(item.Qty * Convert.ToDouble(item.UnitPrice))</td>
+                </tr>
+            }
+           
+        </tbody>
+
+    </table>
+</div>
+<div class="row">
+    <div class="col-sm-8 col-7">
+        <p class="">اجمالى الفاتوره  </p>
+    </div>
+    <div class="col-sm-4 col-5">
+        <p class="">@Html.DisplayFor(model => model.sellerReciept.TotalOfPrices) </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-8 col-7">
+        <p class="">العموله  </p>
+    </div>
+    <div class="col-sm-4 col-5">
+        <p class="">@Html.DisplayFor(model => model.sellerReciept.Commision) </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-8 col-7">
+        <p class="">المدفوع من الديون</p>
+    </div>
+    <div class="col-sm-4 col-5">
+        <p class="">@Html.DisplayFor(model => model.sellerReciept.PaidFromDebt) </p>
+    </div>
+</div>

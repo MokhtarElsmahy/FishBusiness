@@ -18,6 +18,7 @@ namespace FishBusiness.ViewModels
         public virtual ICollection<PaidForSeller> PaidForSellers { get; set; }
         public virtual ICollection<PaidForBoat> PaidForBoats { get; set; }
         public virtual ICollection<PaidForMerchant> PaidForMerchants { get; set; }
+        public virtual ICollection<HalakSellReciept> HalakSellReciept { get; set; }
 
     }
 }

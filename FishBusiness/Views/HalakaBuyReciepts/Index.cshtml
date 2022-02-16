@@ -83,6 +83,33 @@
 
     </div>
 
+    <div class="row layout-top-spacing" id="cancel-row">
+
+        <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
+            <h3>ارشيف</h3>
+            <input type="date" id="HistoryDate" />
+            <input type="button" value="تحميل" onclick="History()" />
+            <img src="~/assets/img/loader.gif" id="HDloader" style="width:50px;height:50px;display:none;" />
+            <div class="widget-content widget-content-area br-6">
+                <div class="table-responsive mb-4 mt-4" id="HistoryDiv">
+                    <table class="table table-hover" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>رقم الفاتوره</th>
+                                <th>التاريخ</th>
+                                <th>البائع</th>
+                                <th>الاجمالى</th>
+                                <th></th>
+
+
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -140,6 +167,23 @@
 
 
             })
+
+        }
+
+
+        var History = function () {
+            if ($("#HistoryDate").val() == "") {
+                return false
+            }
+
+
+            $("#HDloader").show();
+            var date = $("#HistoryDate").val();
+            var url = "/HalakaBuyReciepts/HalakaBuyRecieptsHistory?date=" + date;
+            $("#HistoryDiv").load(url, function () {
+                $("#HDloader").hide();
+            })
+
 
         }
     </script>

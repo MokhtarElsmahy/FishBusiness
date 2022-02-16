@@ -75,7 +75,7 @@
                                                 <table class="table">
                                                     <thead class="">
                                                         <tr>
-                                                            <th scope="col">مركب</th>
+                                                            <th scope="col">مركب/تاجر</th>
                                                             <th scope="col">النوع</th>
                                                             <th class="text-right" scope="col">الانتاج</th>
                                                             <th class="text-right" scope="col">الكمية</th>
@@ -87,7 +87,7 @@
                                                         @foreach (var item in Model.NormalMerchantItems)
                                                         {
                                                             <tr>
-                                                                <td>@item.Boat.BoatName</td>
+                                                                <td>@(item.Boat!=null? item.Boat.BoatName:Model.FromMerchnat)</td>
                                                                 <td>@item.Fish.FishName</td>
                                                                 <td class="text-right">@item.ProductionType.ProductionName</td>
                                                                 <td class="text-right">@item.Qty</td>

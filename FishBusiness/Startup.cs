@@ -31,7 +31,7 @@ namespace FishBusiness
             //ServerConnection  -----  DefaultConnection
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("ServerConnection")));
+                    Configuration.GetConnectionString("DefaultConnection")));
 
             //services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
             //.AddEntityFrameworkStores<ApplicationDbContext>();
@@ -39,7 +39,7 @@ namespace FishBusiness
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false).AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
             services.ConfigureApplicationCookie(o =>
             {
-                o.ExpireTimeSpan = TimeSpan.FromHours(4);
+                o.ExpireTimeSpan = TimeSpan.FromHours(3);
                 o.SlidingExpiration = true;
             });
             services.AddControllersWithViews();

@@ -532,20 +532,21 @@ namespace FishBusiness.Controllers
 
                         LeaderSalary = finalIncome / 6;
                     }
-                    boat.IncomeOfSharedBoat += finalIncome - LeaderSalary + leaderPaidDebts;
-                    IncomesOfSharedBoat inc = new IncomesOfSharedBoat() { BoatID = boat.BoatID, Date = TimeNow(), Income = finalIncome+ leaderPaidDebts/*- LeaderSalary*/ };
+                    boat.IncomeOfSharedBoat += finalIncome - LeaderSalary;// + leaderPaidDebts;
+                    IncomesOfSharedBoat inc = new IncomesOfSharedBoat() { BoatID = boat.BoatID, Date = TimeNow(), Income = (finalIncome- LeaderSalary) };
                     db.IncomesOfSharedBoats.Add(inc);
+                    decimal payment = (finalIncome + LeaderSalary) - PaymentLeaderDebts;
                     PaidForBoat paidForBoat = new PaidForBoat()
                     {
                         BoatID = boat.BoatID,
                         Date = TimeNow(),
-                        Payment = finalIncome + LeaderSalary,
+                        Payment = payment,
                         PersonID = PID,
                         HalekDebtsTillNow = boat.DebtsOfHalek
                     };
                     db.PaidForBoats.Add(paidForBoat);
                     Person pp = db.People.Find(PID);
-                    pp.credit -= finalIncome + LeaderSalary;
+                    pp.credit -= payment;
                     db.SaveChanges();
 
                 }
@@ -575,7 +576,7 @@ namespace FishBusiness.Controllers
                 masterReciept.BoatID = boat.BoatID;
                 masterReciept.Commission = recs.Sum(c => c.Commission);
                 masterReciept.Date = TimeNow();
-                masterReciept.FinalIncome = finalIncome;
+                masterReciept.FinalIncome = finalIncome; // if equal 0 , then the boat is normal , not shared boat
                 masterReciept.TotalAfterPaying = total - leaderPaidDebts;
                 masterReciept.TotalBeforePaying = recs.Sum(c => c.TotalBeforePaying);
                 masterReciept.PersonID = PID;
@@ -624,20 +625,22 @@ namespace FishBusiness.Controllers
 
                             LeaderSalary = finalIncome / 6;
                         }
-                        boat.IncomeOfSharedBoat += finalIncome - LeaderSalary+ leaderPaidDebts;
-                        IncomesOfSharedBoat inc = new IncomesOfSharedBoat() { BoatID = boat.BoatID, Date = TimeNow(), Income = finalIncome+leaderPaidDebts /*- LeaderSalary */};
+                        boat.IncomeOfSharedBoat += finalIncome - LeaderSalary;// + leaderPaidDebts;
+                        IncomesOfSharedBoat inc = new IncomesOfSharedBoat() { BoatID = boat.BoatID, Date = TimeNow(), Income = finalIncome-LeaderSalary};
                         db.IncomesOfSharedBoats.Add(inc);
+
+                        decimal payment = (finalIncome + LeaderSalary) - PaymentLeaderDebts;
                         PaidForBoat paidForBoat = new PaidForBoat()
                         {
                             BoatID = boat.BoatID,
                             Date = TimeNow(),
-                            Payment = finalIncome + LeaderSalary,
+                            Payment = payment,// finalIncome + LeaderSalary,
                             PersonID = PID,
                             HalekDebtsTillNow = boat.DebtsOfHalek
                         };
                         db.PaidForBoats.Add(paidForBoat);
                         Person pp = db.People.Find(PID);
-                        pp.credit -= finalIncome + LeaderSalary;
+                        pp.credit -= payment;
                         db.SaveChanges();
                     }
                     else
@@ -685,18 +688,18 @@ namespace FishBusiness.Controllers
 
                             LeaderSalary = finalIncome / 6;
                         }
-
+                        decimal payment = (finalIncome + LeaderSalary) - PaymentLeaderDebts;
                         PaidForBoat paidForBoat = new PaidForBoat()
                         {
                             BoatID = boat.BoatID,
                             Date = TimeNow(),
-                            Payment = finalIncome + LeaderSalary,
+                            Payment = payment,
                             PersonID = PID,
                             HalekDebtsTillNow = boat.DebtsOfHalek
                         };
                         db.PaidForBoats.Add(paidForBoat);
                         Person pp = db.People.Find(PID);
-                        pp.credit -= finalIncome + LeaderSalary;
+                        pp.credit -= payment;
                         db.SaveChanges();
                     }
                     else

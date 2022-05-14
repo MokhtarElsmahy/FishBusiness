@@ -948,26 +948,73 @@
             //var PaidFromDebts = parseFloat($('#BoatOwnerReciept_PaidFromDebts').val());
             var TotalProduction = parseFloat($('#TotalProduction').val());
             var boatID = $("#boatDDL").val();
-            var FishNames = new cookieList("FishNames"); // all items in the array.
+
+            //var FishNames = new cookieList("FishNames"); // all items in the array.
+            //$('.fishes').each(function () {
+            //    FishNames.add($(this).text());
+            //})
+
+            var FishNames = ""; // all items in the array.
             $('.fishes').each(function () {
-                FishNames.add($(this).text());
+                if ($(this).text() != '') {
+                    FishNames += $(this).text();
+                    FishNames += ',';
+                }
             })
-            var ProductionTypes = new cookieList("ProductionTypes"); // all items in the array.
+            //var ProductionTypes = new cookieList("ProductionTypes"); // all items in the array.
+            //$('.productions').each(function () {
+            //    ProductionTypes.add($(this).text());
+            //})
+
+            var ProductionTypes = ""; // all items in the array.
             $('.productions').each(function () {
-                ProductionTypes.add($(this).text());
+                if ($(this).text() != '') {
+                    ProductionTypes += $(this).text();
+                    ProductionTypes += ',';
+                }
             })
-            var qtys = new cookieList("qtys"); // all items in the array.
+
+            //var qtys = new cookieList("qtys"); // all items in the array.
+            //$('.qtys').each(function () {
+            //    qtys.add($(this).text());
+            //})
+
+
+            var qtys = "" // all items in the array.
             $('.qtys').each(function () {
-                qtys.add($(this).text());
+                if ($(this).text() != '') {
+                    qtys += $(this).text();
+                    qtys += ',';
+                }
             })
-            var unitprices = new cookieList("unitprices"); // all items in the array.
+            //var unitprices = new cookieList("unitprices"); // all items in the array.
+            //$('.unitprices').each(function () {
+            //    unitprices.add($(this).text());
+            //})
+
+
+            var unitprices = ""; // all items in the array.
             $('.unitprices').each(function () {
-                unitprices.add($(this).text());
+                if ($(this).text() != '') {
+                    unitprices += $(this).text();
+                    unitprices += ',';
+                }
             })
-            var prices = new cookieList("prices"); // all items in the array.
+
+
+
+            var Price = ""
             $('.prices').each(function () {
-                prices.add($(this).text());
+                if ($(this).text() != '') {
+                    Price += $(this).text();
+                    Price += ',';
+                }
+
             })
+            //var prices = new cookieList("prices"); // all items in the array.
+            //$('.prices').each(function () {
+            //    prices.add($(this).text());
+            //})
 
 
             $.ajax({
@@ -981,7 +1028,12 @@
                     Commission: commision,
                     PercentageCommission: PercentageCommission,
                     //PaidFromDebts: PaidFromDebts,
-                    TotalAfterPaying: TotalProduction
+                    TotalAfterPaying: TotalProduction,
+                    fis: FishNames,
+                    prod: ProductionTypes,
+                    price: Price,
+                    uprice: unitprices,
+                    qtt: qtys
                 },
                 success: function (result) {
                     if (result.message == "success") {

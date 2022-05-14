@@ -34,9 +34,9 @@ namespace FishBusiness.Controllers
             return currentUTC.AddHours(2);
         }
         // GET: BoatOwnerReciepts
-        public  IActionResult Index()
+        public IActionResult Index()
         {
-           
+
             var applicationDbContext = _context.BoatOwnerReciepts.Where(c => c.Date == TimeNow().Date).Include(b => b.Boat).Include(b => b.Sarha)
                  .ToList();
             return View(applicationDbContext);
@@ -70,9 +70,9 @@ namespace FishBusiness.Controllers
                 }
             }
 
-            foreach (var itemR in  MerchantReciepts)
+            foreach (var itemR in MerchantReciepts)
             {
-                var lstR_Items = _context.MerchantRecieptItems.Include(c => c.ProductionType).Include(c => c.Fish).Where(c => c.MerchantRecieptID == itemR.MerchantRecieptID && c.BoatID == BoatId &&c.AmountId!=null).ToList();
+                var lstR_Items = _context.MerchantRecieptItems.Include(c => c.ProductionType).Include(c => c.Fish).Where(c => c.MerchantRecieptID == itemR.MerchantRecieptID && c.BoatID == BoatId && c.AmountId != null).ToList();
 
                 var results = from p in lstR_Items
                               group p.MerchantRecieptItemID by p.AmountId into g
@@ -96,7 +96,7 @@ namespace FishBusiness.Controllers
                     lst.Add(new BoatRecBuyers { buyerName = itemR.Merchant.MerchantName, FishName = fishes, Qty = Qts, unitPrice = info.UnitPrice, ProductionType = info.ProductionType.ProductionName });
                 }
 
-               
+
             }
 
             ///---------------------------
@@ -144,7 +144,7 @@ namespace FishBusiness.Controllers
 
             BoatRecBuyerContainer boatRecBuyerContainer = new BoatRecBuyerContainer();
             boatRecBuyerContainer.BoatName = boatname;
-            boatRecBuyerContainer.BoatRecBuyers = lst.OrderBy(c=>c.buyerName).ToList();
+            boatRecBuyerContainer.BoatRecBuyers = lst.OrderBy(c => c.buyerName).ToList();
             boatRecBuyerContainer.date = BoatRecdate;
 
 
@@ -208,7 +208,7 @@ namespace FishBusiness.Controllers
             List<AmountVm> AmountVm = new List<AmountVm>();
             var recs = _context.BoatOwnerReciepts.Where(c => c.MasterRecieptID == MasterRecId.Value).ToList();
             var master = _context.MasterReciepts.Find(MasterRecId);
-            model.BoatOwnerReciept =new BoatOwnerReciept() { Date=master.Date , BoatOwnerRecieptID = master.MasterRecieptID , Boat = _context.Boats.Find(master.BoatID),   TotalAfterPaying = master.TotalAfterPaying , TotalBeforePaying = master.TotalBeforePaying , PaidFromDebts = master.PaidFromDebts , Commission = master.Commission};
+            model.BoatOwnerReciept = new BoatOwnerReciept() { Date = master.Date, BoatOwnerRecieptID = master.MasterRecieptID, Boat = _context.Boats.Find(master.BoatID), TotalAfterPaying = master.TotalAfterPaying, TotalBeforePaying = master.TotalBeforePaying, PaidFromDebts = master.PaidFromDebts, Commission = master.Commission };
             foreach (var item in recs)
             {
                 var boatOwnerRecieptt = await _context.BoatOwnerReciepts
@@ -221,20 +221,20 @@ namespace FishBusiness.Controllers
                 }
                 // ViewBag.Items = _context.BoatOwnerItems.Where(i => i.BoatOwnerRecieptID == item.BoatOwnerRecieptID).Include(x => x.Fish).Include(x => x.ProductionType);
 
-               
 
 
-                NormalboatOwnerItems.AddRange (_context.BoatOwnerItems.Include(c => c.Fish).Include(c => c.ProductionType).Where(c => c.BoatOwnerRecieptID == boatOwnerRecieptt.BoatOwnerRecieptID && c.AmountId == null).ToList());
+
+                NormalboatOwnerItems.AddRange(_context.BoatOwnerItems.Include(c => c.Fish).Include(c => c.ProductionType).Where(c => c.BoatOwnerRecieptID == boatOwnerRecieptt.BoatOwnerRecieptID && c.AmountId == null).ToList());
                 AmountboatOwnerItems.AddRange(_context.BoatOwnerItems.Include(c => c.Fish).Include(c => c.ProductionType).Where(c => c.BoatOwnerRecieptID == boatOwnerRecieptt.BoatOwnerRecieptID && c.AmountId != null).ToList());
-             
-               // model.AmountboatOwnerItems.AddRange(_context.BoatOwnerItems.Include(c => c.Fish).Include(c => c.ProductionType).Where(c => c.BoatOwnerRecieptID == boatOwnerRecieptt.BoatOwnerRecieptID && c.AmountId != null).ToList());
+
+                // model.AmountboatOwnerItems.AddRange(_context.BoatOwnerItems.Include(c => c.Fish).Include(c => c.ProductionType).Where(c => c.BoatOwnerRecieptID == boatOwnerRecieptt.BoatOwnerRecieptID && c.AmountId != null).ToList());
 
                 var resultss = from p in AmountboatOwnerItems
                                group p.BoatOwnerItemID by p.AmountId into g
-                              select new AmountVm { AmountId = g.Key, items = g };
-                AmountVm.AddRange( resultss);
+                               select new AmountVm { AmountId = g.Key, items = g };
+                AmountVm.AddRange(resultss);
 
-               
+
             }
             //var boatOwnerReciept = await _context.BoatOwnerReciepts
             //    .Include(b => b.Boat)
@@ -448,7 +448,7 @@ namespace FishBusiness.Controllers
                                 var existingFish = TodaysMerchantRecItems.Where(c => c.FishID == Individualfish.FishID && c.BoatID == boat.BoatID).FirstOrDefault();
                                 if (existingFish != null)
                                 {
-                                    if (existingFish.ProductionTypeID == IndividualProduc.ProductionTypeID && existingFish.UnitPrice == unitPrices[i] )
+                                    if (existingFish.ProductionTypeID == IndividualProduc.ProductionTypeID && existingFish.UnitPrice == unitPrices[i])
                                     {
                                         existingFish.Qty += Convert.ToDouble(qtys[i]);
                                     }
@@ -484,7 +484,7 @@ namespace FishBusiness.Controllers
                             await _context.SaveChangesAsync();
                         }
 
-                        else 
+                        else
                         {
                             //-----------------------------------------------------
                             IMerchantReciept ImerchantReciept;
@@ -520,7 +520,7 @@ namespace FishBusiness.Controllers
 
                             //var eee = Fishes[i].TrimEnd(Fishes[i][Fishes[i].Length - 1]);
                             //  string[] splitItem = eee.Split("/");
-                              var boat = _context.Boats.Find(_context.BoatOwnerReciepts.Find(model.RecID).BoatID);
+                            var boat = _context.Boats.Find(_context.BoatOwnerReciepts.Find(model.RecID).BoatID);
                             if (splitItemm.Length > 1)
                             {
                                 var amountId = Guid.NewGuid();
@@ -542,7 +542,7 @@ namespace FishBusiness.Controllers
                                         IMerchantRecieptID = ImerchantReciept.IMerchantRecieptID,
                                         FishID = fish.FishID,
                                         ProductionTypeID = Produc.ProductionTypeID,
-                                        BoatID =boat.BoatID,
+                                        BoatID = boat.BoatID,
                                         Qty = splitItemQty[z],
                                         UnitPrice = unitPrices[i],
                                         AmountId = amountId
@@ -627,7 +627,7 @@ namespace FishBusiness.Controllers
                                 // IMerchantRecieptItem IMerchantRecieptItems;
                                 if (IMerchantRecieptItems != null)
                                 {
-                                    if (IMerchantRecieptItems.ProductionTypeID == Produc.ProductionTypeID && IMerchantRecieptItems.UnitPrice==unitPrices[i])
+                                    if (IMerchantRecieptItems.ProductionTypeID == Produc.ProductionTypeID && IMerchantRecieptItems.UnitPrice == unitPrices[i])
                                     {
                                         IMerchantRecieptItems.Qty += Convert.ToDouble(qtys[i]);
                                     }
@@ -750,7 +750,7 @@ namespace FishBusiness.Controllers
 
                         }
                     }
-                   
+
                     else
                     {
                         var ee = Fishes[i].TrimEnd(Fishes[i][Fishes[i].Length - 1]);
@@ -777,7 +777,7 @@ namespace FishBusiness.Controllers
                         }
                         else
                         {
-                           PersonReciept personReciept = new PersonReciept() { Date = TimeNow(), PersonName = Merchants.ElementAt(i), TotalPrice = AddTo_TotalOfReciept };
+                            PersonReciept personReciept = new PersonReciept() { Date = TimeNow(), PersonName = Merchants.ElementAt(i), TotalPrice = AddTo_TotalOfReciept };
                             _context.PersonReciepts.Add(personReciept);
                         }
                         _context.SaveChanges();
@@ -851,13 +851,13 @@ namespace FishBusiness.Controllers
             //
             ViewData["MerchantID"] = new SelectList(_context.Merchants.Where(m => m.IsFromOutsideCity == false), "MerchantID", "MerchantName");
             // commission
-           // ViewBag.Commission = _context.Cofigs.Find(1);
+            // ViewBag.Commission = _context.Cofigs.Find(1);
             ViewBag.Commission = _context.Cofigs.Find(2);
             return View();
         }
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(BoatOwnerReciept boatOwnerReciept)
+        public async Task<IActionResult> Create(BoatOwnerReciept boatOwnerReciept , string fis , string prod , string qtt , string price , string uprice)
         {
             var user = await _userManager.GetUserAsync(User);
             var roles = await _userManager.GetRolesAsync(user);
@@ -876,7 +876,7 @@ namespace FishBusiness.Controllers
             var PaidFromDebtsCookie = boatOwnerReciept.PaidFromDebts;
             var TotalProductionCookie = boatOwnerReciept.TotalAfterPaying;
             //find latest sarha related to selected boat
-            var sarhaId =await _context.Sarhas.Where(x => x.BoatID == boatOwnerReciept.BoatID && x.IsFinished == false).MaxAsync(x => x.SarhaID);
+            var sarhaId = await _context.Sarhas.Where(x => x.BoatID == boatOwnerReciept.BoatID && x.IsFinished == false).MaxAsync(x => x.SarhaID);
             boatOwnerReciept.SarhaID = sarhaId;
             boatOwnerReciept.TotalBeforePaying = Convert.ToDecimal(TotalBeforePaymentCookie);
             boatOwnerReciept.Commission = Convert.ToDecimal(commisionCookie);
@@ -886,28 +886,28 @@ namespace FishBusiness.Controllers
             boatOwnerReciept.IsCollected = false;
             boatOwnerReciept.PaidFromDebts = Convert.ToDecimal(PaidFromDebtsCookie);
             boatOwnerReciept.PersonID = PID;
-            boatOwnerReciept.Date = TimeNow();
-         
+            // boatOwnerReciept.Date = TimeNow();
+
 
             // Subtracting Paid From Halek
-            var boat =await _context.Boats.FindAsync(boatOwnerReciept.BoatID);
+            var boat = await _context.Boats.FindAsync(boatOwnerReciept.BoatID);
             boat.DebtsOfHalek -= Convert.ToDecimal(PaidFromDebtsCookie);
             // Salary for Each One
-            var sarha =await _context.Sarhas.FindAsync(sarhaId);
+            var sarha = await _context.Sarhas.FindAsync(sarhaId);
             var IndividualSalary = (Convert.ToDecimal(TotalProductionCookie) / 2) / sarha.NumberOfFishermen;
             // Calculating Final Income 
             // for shared boats
             decimal FinalIncome = Convert.ToDecimal(TotalProductionCookie);
 
             boatOwnerReciept.FinalIncome = FinalIncome;
-           await _context.AddAsync(boatOwnerReciept);
+            await _context.AddAsync(boatOwnerReciept);
             await _context.SaveChangesAsync();
             // Cookies Of Receipt Items
-            var FishesCookie = Request.Cookies["FishNames"];
-            var ProductionTypesCookie = Request.Cookies["ProductionTypes"];
-            var qtysCookie = Request.Cookies["qtys"];
-            var unitpricesCookie = Request.Cookies["unitprices"];
-            var pricesCookie = Request.Cookies["prices"];
+            var FishesCookie = fis.TrimEnd(fis[fis.Length - 1]);
+            var ProductionTypesCookie = prod.TrimEnd(prod[prod.Length - 1]);
+            var qtysCookie = qtt.TrimEnd(qtt[qtt.Length - 1]);
+            var unitpricesCookie = uprice.TrimEnd(uprice[uprice.Length - 1]);
+            var pricesCookie = price.TrimEnd(price[price.Length - 1]);
 
 
             string[] Fishes = FishesCookie.Split(",").Select(c => Convert.ToString(c)).ToArray();
@@ -918,7 +918,7 @@ namespace FishBusiness.Controllers
 
 
 
-            var latestReceipt =await _context.BoatOwnerReciepts.MaxAsync(x => x.BoatOwnerRecieptID);
+            var latestReceipt = await _context.BoatOwnerReciepts.MaxAsync(x => x.BoatOwnerRecieptID);
             for (int i = 0; i < Fishes.Length; i++)
             {
 
@@ -931,19 +931,19 @@ namespace FishBusiness.Controllers
                     {
 
 
-                        var fish =await _context.Fishes.SingleAsync(x => x.FishName == splitItem[j]);
+                        var fish = await _context.Fishes.SingleAsync(x => x.FishName == splitItem[j]);
                         var Produc = await _context.ProductionTypes.SingleAsync(x => x.ProductionName == Productions[i]);
 
                         BoatOwnerItem boatOwnerItem = new BoatOwnerItem()
                         {
-                            BoatOwnerRecieptID = latestReceipt,
+                            BoatOwnerRecieptID = boatOwnerReciept.BoatOwnerRecieptID, //latestReceipt,
                             FishID = fish.FishID,
                             ProductionTypeID = Produc.ProductionTypeID,
                             Qty = splitItemQty[j],
                             UnitPrice = unitPrices[i],
                             AmountId = amountID
                         };
-                     await _context.BoatOwnerItems.AddAsync(boatOwnerItem);
+                        await _context.BoatOwnerItems.AddAsync(boatOwnerItem);
                         await _context.SaveChangesAsync();
                     }
                 }
@@ -954,7 +954,7 @@ namespace FishBusiness.Controllers
 
                     BoatOwnerItem boatOwnerItem = new BoatOwnerItem()
                     {
-                        BoatOwnerRecieptID = latestReceipt,
+                        BoatOwnerRecieptID = boatOwnerReciept.BoatOwnerRecieptID, //latestReceipt,
                         FishID = fish.FishID,
                         ProductionTypeID = Produc.ProductionTypeID,
                         Qty = double.Parse(qtys[i]),
@@ -973,14 +973,25 @@ namespace FishBusiness.Controllers
             //اضافة مبدئيه لمع حدوث اكسبشن مع احمدفتح الله ويجب على المالك تعديل بيانات السرحه قبل حساب فاتورة المركب
             //وسيتم تعديل التاريخ بعد عمل فاتوره المركب ليصبح بنفس تاريخ عمل الفاتوره
             Sarha s = new Sarha() { BoatID = boat.BoatID, IsFinished = false, NumberOfBoxes = 0, NumberOfFishermen = 6, DateOfSarha = TimeNow() };
-             await  _context.Sarhas.AddAsync(s);
+            await _context.Sarhas.AddAsync(s);
             //-------------------------------------------------------------------------------------------------------------------------------------------
             await _context.SaveChangesAsync();
+
+
+            //var cookiesToRemove = Request.Cookies.Keys.Where(c => !c.Contains("AspNetCore")).ToList();
+            //if (cookiesToRemove.Any())
+            //{
+
+            //    foreach (var cookie in cookiesToRemove)
+            //    {
+            //        Response.Cookies.Delete(cookie);
+            //    }
+            //}
             //return RedirectToAction(nameof(Index));
             //return RedirectToAction("Details",new { id= latestReceipt });
-            if (boatOwnerReciept.BoatOwnerRecieptID >0)
+            if (boatOwnerReciept.BoatOwnerRecieptID > 0)
             {
-               // return RedirectToAction("Distribute", new { id = boatOwnerReciept.BoatOwnerRecieptID });
+                // return RedirectToAction("Distribute", new { id = boatOwnerReciept.BoatOwnerRecieptID });
                 return Json(new { message = "success", id = boatOwnerReciept.BoatOwnerRecieptID, reciept = boatOwnerReciept.BoatOwnerRecieptID });
 
             }
@@ -999,7 +1010,7 @@ namespace FishBusiness.Controllers
 
         public async Task<IActionResult> Distribute(int id)
         {
-            var rec =await _context.BoatOwnerReciepts.Include(c => c.Boat).Where(c => c.BoatOwnerRecieptID == id).FirstOrDefaultAsync();
+            var rec = await _context.BoatOwnerReciepts.Include(c => c.Boat).Where(c => c.BoatOwnerRecieptID == id).FirstOrDefaultAsync();
             ViewBag.Merchants = new SelectList(await _context.Merchants.Where(c => c.IsFromOutsideCity == false).ToListAsync(), "MerchantID", "MerchantName");
 
             DistributionVm model = new DistributionVm();

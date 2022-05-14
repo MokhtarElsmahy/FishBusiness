@@ -75,7 +75,7 @@
 
                                             </tr>
                                         }
-                                        @if (Model.IsellerReciepts.Any())
+                                        @*@if (Model.IsellerReciepts.Any())
                                         {
                                             @foreach (var item in Model.IsellerReciepts)
                                             {
@@ -87,7 +87,7 @@
                                                 </tr>
                                             }
 
-                                        }
+                                        }*@
                                         @if (Model.PaidForMerchants.Any())
                                         {
                                             @foreach (var item in Model.PaidForMerchants)
@@ -113,7 +113,7 @@
                                                 </tr>
                                             }
 
-                                        } 
+                                        }
                                         @if (Model.HalakSellReciept.Any())
                                         {
                                             @foreach (var item in Model.HalakSellReciept)
@@ -146,7 +146,8 @@
 
                                         <tr>
                                             <td>الاجمالي</td>
-                                            <td id="totalOfIncome">@(Model.CurrentCredit+Model.Collecting+(decimal)Model.IsellerReciepts.Sum(x=>x.PaidFromDebt) + (decimal)Model.PaidForMerchants.Sum(x => x.Payment) + (decimal)Model.HalekDifferences.Sum(x => x.ReturnedValue)+ Model.HalakSellReciept.Sum(c=>c.TotalOfPrices))</td>
+                                            @*(decimal)Model.IsellerReciepts.Sum(x=>x.PaidFromDebt)*@
+                                            <td id="totalOfIncome">@(Model.CurrentCredit+Model.Collecting + (decimal)Model.PaidForMerchants.Sum(x => x.Payment) + (decimal)Model.HalekDifferences.Sum(x => x.ReturnedValue)+ Model.HalakSellReciept.Sum(c=>c.TotalOfPrices))</td>
                                         </tr>
                                     </tfoot>
 
@@ -1147,8 +1148,8 @@
                         totalSarhas: totalSarhas,
                         totalOfDailyExpense: totalOfDailyExpense,
                         FinalTotal: FinalTotal,
-                        InternalMerchant: InternalMerchant,
-                        InternalMerchantPrice: InternalMerchantPrice,
+                        //InternalMerchant: InternalMerchant,
+                        //InternalMerchantPrice: InternalMerchantPrice,
                         ToLeaderBoatName: ToLeaderBoatName,
                         ToLeaderPrice: ToLeaderPrice,
                         BoatNameForHalek: BoatNameForHalek,
